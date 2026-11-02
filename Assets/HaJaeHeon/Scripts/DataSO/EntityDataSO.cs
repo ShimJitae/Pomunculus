@@ -4,12 +4,18 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "EntityDataSO", menuName = "Scriptable Objects/EntityDataSO")]
 public class EntityDataSO : ScriptableObject
 {
-    [SerializeField] private int hp;
-    [SerializeField] private List<DroptableDataSO> dropList = new();
+    [SerializeField] protected int hp;
+    [SerializeField] protected int maxHp;
 
-    public EntityDataSO(int hp, List<DroptableDataSO> dropList)
+    [SerializeField] protected List<DroptableDataSO> dropList = new();
+
+    public int GetHp()
     {
-        this.hp = hp;
-        this.dropList = dropList;
+        return hp;
+    }
+
+    public int GetMaxHp()
+    {
+        return maxHp;
     }
 }
