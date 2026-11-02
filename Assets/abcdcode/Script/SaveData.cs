@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-public class SaveData : ISaveData
+public class SaveData
 {
     public static SaveData CreateSaveData<T>(T value)
     {
