@@ -576,7 +576,7 @@ GameObject:
   - component: {fileID: 1151420429}
   - component: {fileID: 1151420428}
   m_Layer: 0
-  m_Name: enemy
+  m_Name: Enemy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -595,10 +595,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
   isDie: 0
-  so: {fileID: 0}
+  so: {fileID: 11400000, guid: 180808db5a301424abdeff5287da9189, type: 2}
   behaviorGraphAgent: {fileID: 1151420429}
   target: {fileID: 0}
-  enemySO: {fileID: 11400000, guid: 180808db5a301424abdeff5287da9189, type: 2}
 --- !u!114 &1151420429
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -737,7 +736,7 @@ GameObject:
   - component: {fileID: 1989948962}
   - component: {fileID: 1989948961}
   m_Layer: 0
-  m_Name: entity
+  m_Name: Entity
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

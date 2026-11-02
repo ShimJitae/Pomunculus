@@ -12,9 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f1d21740cb5f9a4b83f7b515aa42e72, type: 3}
   m_Name: Slime
   m_EditorClassIdentifier: Assembly-CSharp::EnemyDataSO
-  hp: 0
+  hp: 50
+  maxHp: 50
   dropList: []
-  speed: 0
-  detectRange: 0
-  attackDamage: 0
+  speed: 5
+  detectRange: 5
+  attackDamage: 3
   behaviourGraph: {fileID: 0}
