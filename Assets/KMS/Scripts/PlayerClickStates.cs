@@ -39,8 +39,8 @@ namespace ClickMoveExample
         /// </summary>
         protected bool TryStartMove(PlayerClickFSM p)
         {
-            if (!p.ConsumeMoveCommand(out Vector3 destination)) return false;
-            p.MoveTo(destination);
+            if (!p.Input.ConsumeMoveCommand(out Vector3 destination)) return false;
+            p.Motor.MoveTo(destination);
             p.SetState(PlayerStateType.Move);
             return true;
         }
@@ -61,7 +61,7 @@ namespace ClickMoveExample
         public override void Enter(PlayerClickFSM p)
         {
             base.Enter(p);
-            p.StopMoving();
+            p.Motor.StopMoving();
             p.PlayAnim(PlayerClickFSM.LocomotionHash);
         }
 
@@ -97,10 +97,10 @@ namespace ClickMoveExample
             if (TryStartAction(p)) return;
             TryStartMove(p);   // 이동 중 다시 우클릭하면 목적지만 갱신
 
-            p.FaceMoveDirection();
-            p.SetAnimSpeed(p.NormalizedSpeed);
+            p.Motor.FaceMoveDirection();
+            p.SetAnimSpeed(p.Motor.NormalizedSpeed);
 
-            if (p.HasArrived) p.SetState(PlayerStateType.Idle);
+            if (p.Motor.HasArrived) p.SetState(PlayerStateType.Idle);
         }
     }
 
@@ -124,8 +124,8 @@ namespace ClickMoveExample
             target = p.AttackTarget;
             released = false;
 
-            p.StopMoving();
-            p.RotateTowards(target - p.transform.position, instant: true);
+            p.Motor.StopMoving();
+            p.Motor.RotateTowards(target - p.transform.position, instant: true);
             p.PlayAnim(PlayerClickFSM.AttackHash, restart: true);
         }
 
@@ -136,7 +136,7 @@ namespace ClickMoveExample
             // 1) 발사 (한 번만)
             if (!released && elapsed >= p.throwReleaseTime)
             {
-                p.ThrowProjectile(target);
+                p.Thrower.ThrowProjectile(target);
                 released = true;
             }
 
@@ -172,17 +172,17 @@ namespace ClickMoveExample
         public override void Enter(PlayerClickFSM p)
         {
             base.Enter(p);
-            p.StopMoving();
+            p.Motor.StopMoving();
 
             dir = p.transform.forward;
-            if (p.TryGetMouseWorldPoint(out Vector3 point))
+            if (p.Input.TryGetMouseWorldPoint(out Vector3 point))
             {
                 Vector3 toCursor = point - p.transform.position;
                 toCursor.y = 0f;
                 if (toCursor.sqrMagnitude > 0.01f) dir = toCursor.normalized;
             }
 
-            p.RotateTowards(dir, instant: true);
+            p.Motor.RotateTowards(dir, instant: true);
             p.MarkDodgeUsed();
             p.PlayAnim(PlayerClickFSM.DodgeHash, restart: true);
         }
@@ -191,7 +191,7 @@ namespace ClickMoveExample
         {
             base.Update(p);
 
-            p.Displace(dir * p.dodgeSpeed);
+            p.Motor.Displace(dir * p.dodgeSpeed);
 
             if (elapsed >= p.dodgeDuration) ReturnToIdleOrMove(p);
         }
@@ -209,13 +209,13 @@ namespace ClickMoveExample
         public override void Enter(PlayerClickFSM p)
         {
             base.Enter(p);
-            p.StopMoving();
+            p.Motor.StopMoving();
 
             Vector3 v = p.transform.position - p.LastHitSourcePosition;
             v.y = 0f;
             knockDir = v.sqrMagnitude > 0.0001f ? v.normalized : -p.transform.forward;
 
-            p.RotateTowards(-knockDir, instant: true);
+            p.Motor.RotateTowards(-knockDir, instant: true);
             p.PlayAnim(PlayerClickFSM.HitHash, restart: true);
         }
 
@@ -224,7 +224,7 @@ namespace ClickMoveExample
             base.Update(p);
 
             float t = Mathf.Clamp01(elapsed / p.hitStunDuration);
-            p.Displace(knockDir * p.knockbackSpeed * (1f - t));
+            p.Motor.Displace(knockDir * p.knockbackSpeed * (1f - t));
 
             if (elapsed >= p.hitStunDuration) ReturnToIdleOrMove(p);
         }
@@ -242,7 +242,7 @@ namespace ClickMoveExample
         public override void Enter(PlayerClickFSM p)
         {
             base.Enter(p);
-            p.SetAgentEnabled(false);
+            p.Motor.SetAgentEnabled(false);
             p.PlayAnim(PlayerClickFSM.DieHash);
         }
     }
