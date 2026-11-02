@@ -1,8 +1,8 @@
 public interface IState<TEnum, TOwner> where TEnum : System.Enum
 {
-    TEnum StateType { get; }      // ÀÌ »óÅÂÀÇ ÀÌ¸§Ç¥
+    TEnum StateType { get; }      // ì´ ìƒíƒœì˜ ì´ë¦„í‘œ
 
-    void Enter(TOwner owner);     // »óÅÂ ÁøÀÔ ½Ã 1È¸
-    void Update(TOwner owner);    // »óÅÂ À¯Áö Áß ¸Å ÇÁ·¹ÀÓ
-    void Exit(TOwner owner);      // »óÅÂ Á¾·á ½Ã 1È¸
+    void Enter(TOwner owner);     // ìƒíƒœ ì§„ì… ì‹œ 1íšŒ
+    void Update(TOwner owner);    // ìƒíƒœ ìœ ì§€ ì¤‘ ë§¤ í”„ë ˆì„
+    void Exit(TOwner owner);      // ìƒíƒœ ì¢…ë£Œ ì‹œ 1íšŒ
 }

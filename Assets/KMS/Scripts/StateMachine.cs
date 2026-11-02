@@ -3,8 +3,8 @@ using UnityEngine;
 
 public class StateMachine<TEnum, TOwner> where TEnum : System.Enum
 {
-    readonly Dictionary<TEnum, IState<TEnum, TOwner>> states = new Dictionary<TEnum, IState<TEnum, TOwner>>();
-    readonly TOwner owner;
+    private readonly Dictionary<TEnum, IState<TEnum, TOwner>> states = new Dictionary<TEnum, IState<TEnum, TOwner>>();
+    private readonly TOwner owner;
 
     public IState<TEnum, TOwner> CurrentState { get; private set; }
     public bool HasState => CurrentState != null;
@@ -15,7 +15,6 @@ public class StateMachine<TEnum, TOwner> where TEnum : System.Enum
 
     public StateMachine(TOwner owner) => this.owner = owner;
 
-    
     public void AddState(IState<TEnum, TOwner> state)
     {
         if (states.ContainsKey(state.StateType))
@@ -25,7 +24,6 @@ public class StateMachine<TEnum, TOwner> where TEnum : System.Enum
         }
         states.Add(state.StateType, state);
     }
-
 
     // 같은 상태로 다시 들어가는 것 허용 (연속 공격, 연속 피격)
     public bool ChangeState(TEnum next, bool allowReenter = false)

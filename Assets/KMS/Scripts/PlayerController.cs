@@ -3,14 +3,12 @@ using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
-
     [SerializeField] private Camera mainCamera;
-    [SerializeField] float moveSpeed = 5f;
-    [SerializeField] LayerMask groundLayer;
+    [SerializeField] private float moveSpeed = 5f;
+    [SerializeField] private LayerMask groundLayer;
 
-    Vector3 targetPos;
-    bool isMoving;
-
+    private Vector3 targetPos;
+    private bool isMoving;
 
     void Start()
     {
@@ -23,7 +21,6 @@ public class PlayerController : MonoBehaviour
 
         if (mouse.rightButton.isPressed)
         {
-            Debug.Log("마우스 클릭데스");
             Ray ray = mainCamera.ScreenPointToRay(mouse.position.ReadValue());
             if (Physics.Raycast(ray, out RaycastHit hit, 100f, groundLayer))
             {
@@ -44,9 +41,5 @@ public class PlayerController : MonoBehaviour
             else
                 isMoving = false;
         }
-
-
-
     }
 }
-

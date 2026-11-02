@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 /// <summary>
 /// 포물선으로 날아가 무언가에 닿으면 주변에 피해를 주고 사라지는 투사체.
@@ -9,17 +10,20 @@ using UnityEngine;
 public class ThrownProjectile : MonoBehaviour
 {
     [Tooltip("착탄 지점 주변 피해 반경. 0이면 직접 맞은 대상에게만 피해")]
-    public float impactRadius = 1.5f;
-    public float maxLifeTime = 5f;
-    public GameObject impactEffectPrefab;
+    [FormerlySerializedAs("impactRadius")]
+    public float ImpactRadius = 1.5f;
+    [FormerlySerializedAs("maxLifeTime")]
+    public float MaxLifeTime = 5f;
+    [FormerlySerializedAs("impactEffectPrefab")]
+    public GameObject ImpactEffectPrefab;
 
-    Rigidbody rb;
-    int damage;
-    LayerMask damageLayer;
-    bool hasImpacted;
+    private Rigidbody rb;
+    private int damage;
+    private LayerMask damageLayer;
+    private bool hasImpacted;
 
-    readonly Collider[] hitBuffer = new Collider[16];
-    readonly HashSet<IDamageable> hitTargets = new HashSet<IDamageable>();
+    private readonly Collider[] hitBuffer = new Collider[16];
+    private readonly HashSet<IDamageable> hitTargets = new HashSet<IDamageable>();
 
     void Awake()
     {
@@ -41,7 +45,7 @@ public class ThrownProjectile : MonoBehaviour
 
         rb.linearVelocity = velocity;
 
-        Destroy(gameObject, maxLifeTime);   // 맵 밖으로 떨어진 경우 대비
+        Destroy(gameObject, MaxLifeTime);   // 맵 밖으로 떨어진 경우 대비
     }
 
     void OnCollisionEnter(Collision collision)
@@ -65,9 +69,9 @@ public class ThrownProjectile : MonoBehaviour
         }
 
         // 범위 피해
-        if (impactRadius > 0f)
+        if (ImpactRadius > 0f)
         {
-            int count = Physics.OverlapSphereNonAlloc(point, impactRadius, hitBuffer, damageLayer);
+            int count = Physics.OverlapSphereNonAlloc(point, ImpactRadius, hitBuffer, damageLayer);
             for (int i = 0; i < count; i++)
             {
                 var target = hitBuffer[i].GetComponentInParent<IDamageable>();
@@ -78,8 +82,8 @@ public class ThrownProjectile : MonoBehaviour
         foreach (IDamageable target in hitTargets)
             target.TakeDamage(damage, point);   // 넉백 방향은 착탄 지점 기준
 
-        if (impactEffectPrefab != null)
-            Instantiate(impactEffectPrefab, point, Quaternion.identity);
+        if (ImpactEffectPrefab != null)
+            Instantiate(ImpactEffectPrefab, point, Quaternion.identity);
 
         Destroy(gameObject);
     }
@@ -89,6 +93,6 @@ public class ThrownProjectile : MonoBehaviour
     void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position, impactRadius);
+        Gizmos.DrawWireSphere(transform.position, ImpactRadius);
     }
 }

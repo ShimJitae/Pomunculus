@@ -1,172 +1,179 @@
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.InputSystem;
+using UnityEngine.Serialization;
 
-namespace ClickMoveExample
+/// <summary>
+/// 클릭 이동 플레이어 (FSM Owner)
+///  - 우클릭 : 이동 (누르고 있으면 커서를 따라감). 적을 클릭해도 이동만 한다.
+///  - 좌클릭 : 클릭한 지면 위치로 물체를 던짐
+///  - Space  : 커서 방향으로 회피
+/// 입력·이동·던지기·체력은 각 컴포넌트가 담당하고, 이 클래스는 FSM 구동과 상태 간 공유 데이터만 맡는다.
+/// </summary>
+[RequireComponent(typeof(NavMeshAgent))]
+[RequireComponent(typeof(PlayerClickInput), typeof(PlayerMotor), typeof(PlayerThrower))]
+[RequireComponent(typeof(Health))]
+public class PlayerClickFSM : MonoBehaviour
 {
-    /// <summary>
-    /// 클릭 이동 플레이어 (FSM Owner)
-    ///  - 우클릭 : 이동 (누르고 있으면 커서를 따라감). 적을 클릭해도 이동만 한다.
-    ///  - 좌클릭 : 클릭한 지면 위치로 물체를 던짐
-    ///  - Space  : 커서 방향으로 회피
-    /// 입력·이동·던지기·체력은 각 컴포넌트가 담당하고, 이 클래스는 FSM 구동과 상태 간 공유 데이터만 맡는다.
-    /// </summary>
-    [RequireComponent(typeof(NavMeshAgent))]
-    [RequireComponent(typeof(PlayerClickInput), typeof(PlayerMotor), typeof(PlayerThrower))]
-    [RequireComponent(typeof(Health))]
-    public class PlayerClickFSM : MonoBehaviour
+    [Header("공격 (던지기)")]
+    [FormerlySerializedAs("attackDuration")]
+    public float AttackDuration = 0.5f;       // 던지기 상태 전체 길이
+    [FormerlySerializedAs("throwReleaseTime")]
+    public float ThrowReleaseTime = 0.2f;     // 손에서 떠나는 시점
+    [FormerlySerializedAs("attackCancelTime")]
+    public float AttackCancelTime = 0.3f;     // 이후 회피/재공격/이동으로 캔슬 가능 (releaseTime보다 커야 함)
+
+    [Header("회피")]
+    [FormerlySerializedAs("dodgeSpeed")]
+    public float DodgeSpeed = 12f;
+    [FormerlySerializedAs("dodgeDuration")]
+    public float DodgeDuration = 0.35f;
+    [FormerlySerializedAs("dodgeInvincibleTime")]
+    public float DodgeInvincibleTime = 0.25f;
+    [FormerlySerializedAs("dodgeCooldown")]
+    public float DodgeCooldown = 0.5f;
+
+    [Header("피격")]
+    [FormerlySerializedAs("hitStunDuration")]
+    public float HitStunDuration = 0.4f;
+    [FormerlySerializedAs("knockbackSpeed")]
+    public float KnockbackSpeed = 6f;
+
+    [Header("디버그")]
+    [SerializeField] private PlayerStateType currentStateView;
+
+    public static readonly int LocomotionHash = Animator.StringToHash("Locomotion");
+    public static readonly int AttackHash = Animator.StringToHash("Attack");
+    public static readonly int DodgeHash = Animator.StringToHash("Dodge");
+    public static readonly int HitHash = Animator.StringToHash("Hit");
+    public static readonly int DieHash = Animator.StringToHash("Die");
+    public static readonly int SpeedParam = Animator.StringToHash("Speed");
+
+    private StateMachine<PlayerStateType, PlayerClickFSM> fsm;
+    private Animator anim;
+
+    // ───── 상태들이 사용하는 컴포넌트 ─────
+    public PlayerClickInput Input { get; private set; }
+    public PlayerMotor Motor { get; private set; }
+    public PlayerThrower Thrower { get; private set; }
+    public Health Health { get; private set; }
+
+    // ───── 상태들이 읽어 가는 데이터 ─────
+    public PlayerStateType CurrentStateType => fsm.CurrentStateType;
+    public PlayerStateType PreviousStateType => fsm.PreviousStateType;
+    public bool IsDead => fsm.HasState && fsm.CurrentStateType == PlayerStateType.Dead;
+    public Vector3 LastHitSourcePosition { get; private set; }
+    public Vector3 AttackTarget { get; private set; }   // ConsumeAttack 성공 시 설정
+
+    private float lastDodgeAt = float.NegativeInfinity;
+
+    void Awake()
     {
-        [Header("공격 (던지기)")]
-        public float attackDuration = 0.5f;       // 던지기 상태 전체 길이
-        public float throwReleaseTime = 0.2f;     // 손에서 떠나는 시점
-        public float attackCancelTime = 0.3f;     // 이후 회피/재공격/이동으로 캔슬 가능 (releaseTime보다 커야 함)
+        anim = GetComponentInChildren<Animator>();
+        Input = GetComponent<PlayerClickInput>();
+        Motor = GetComponent<PlayerMotor>();
+        Thrower = GetComponent<PlayerThrower>();
+        Health = GetComponent<Health>();
 
-        [Header("회피")]
-        public float dodgeSpeed = 12f;
-        public float dodgeDuration = 0.35f;
-        public float dodgeInvincibleTime = 0.25f;
-        public float dodgeCooldown = 0.5f;
+        Health.IsInvincible = () =>
+            IsDead || (fsm.CurrentState is PlayerStateBase state && state.IsInvincible(this));
+        Health.OnDamaged += HandleDamaged;
+        Health.OnDied += HandleDied;
 
-        [Header("피격")]
-        public float hitStunDuration = 0.4f;
-        public float knockbackSpeed = 6f;
+        fsm = new StateMachine<PlayerStateType, PlayerClickFSM>(this);
+        fsm.AddState(new PlayerIdleState());
+        fsm.AddState(new PlayerMoveState());
+        fsm.AddState(new PlayerAttackState());
+        fsm.AddState(new PlayerDodgeState());
+        fsm.AddState(new PlayerHitState());
+        fsm.AddState(new PlayerDeadState());
+        fsm.ValidateAllRegistered();
+    }
 
-        [Header("디버그")]
-        [SerializeField] PlayerStateType currentStateView;
+    void OnDestroy()
+    {
+        if (Health == null) return;
+        Health.OnDamaged -= HandleDamaged;
+        Health.OnDied -= HandleDied;
+    }
 
-        public static readonly int LocomotionHash = Animator.StringToHash("Locomotion");
-        public static readonly int AttackHash = Animator.StringToHash("Attack");
-        public static readonly int DodgeHash = Animator.StringToHash("Dodge");
-        public static readonly int HitHash = Animator.StringToHash("Hit");
-        public static readonly int DieHash = Animator.StringToHash("Die");
-        static readonly int SpeedParam = Animator.StringToHash("Speed");
+    void Start() => SetState(PlayerStateType.Idle);
 
-        StateMachine<PlayerStateType, PlayerClickFSM> fsm;
-        Animator anim;
-
-        // ───── 상태들이 사용하는 컴포넌트 ─────
-        public PlayerClickInput Input { get; private set; }
-        public PlayerMotor Motor { get; private set; }
-        public PlayerThrower Thrower { get; private set; }
-        public Health Health { get; private set; }
-
-        // ───── 상태들이 읽어 가는 데이터 ─────
-        public PlayerStateType CurrentStateType => fsm.CurrentStateType;
-        public PlayerStateType PreviousStateType => fsm.PreviousStateType;
-        public bool IsDead => fsm.HasState && fsm.CurrentStateType == PlayerStateType.Dead;
-        public Vector3 LastHitSourcePosition { get; private set; }
-        public Vector3 AttackTarget { get; private set; }   // ConsumeAttack 성공 시 설정
-
-        float lastDodgeAt = float.NegativeInfinity;
-
-        void Awake()
-        {
-            anim = GetComponentInChildren<Animator>();
-            Input = GetComponent<PlayerClickInput>();
-            Motor = GetComponent<PlayerMotor>();
-            Thrower = GetComponent<PlayerThrower>();
-            Health = GetComponent<Health>();
-
-            Health.IsInvincible = () =>
-                IsDead || (fsm.CurrentState is PlayerStateBase state && state.IsInvincible(this));
-            Health.Damaged += OnDamaged;
-            Health.Died += OnDied;
-
-            fsm = new StateMachine<PlayerStateType, PlayerClickFSM>(this);
-            fsm.AddState(new PlayerIdleState());
-            fsm.AddState(new PlayerMoveState());
-            fsm.AddState(new PlayerAttackState());
-            fsm.AddState(new PlayerDodgeState());
-            fsm.AddState(new PlayerHitState());
-            fsm.AddState(new PlayerDeadState());
-            fsm.ValidateAllRegistered();
-        }
-
-        void OnDestroy()
-        {
-            if (Health == null) return;
-            Health.Damaged -= OnDamaged;
-            Health.Died -= OnDied;
-        }
-
-        void Start() => SetState(PlayerStateType.Idle);
-
-        void Update()
-        {
-            Input.ReadInput();
+    void Update()
+    {
+        Input.ReadInput();
 #if UNITY_EDITOR
-            ReadDebugKeys();
+        ReadDebugKeys();
 #endif
-            fsm.Update();
-            currentStateView = fsm.CurrentStateType;
-        }
+        fsm.Update();
+        currentStateView = fsm.CurrentStateType;
+    }
 
-        public void SetState(PlayerStateType next, bool allowReenter = false)
-            => fsm.ChangeState(next, allowReenter);
+    public void SetState(PlayerStateType next, bool allowReenter = false)
+        => fsm.ChangeState(next, allowReenter);
 
-        // ═══════════════════════ 입력 ═══════════════════════
+    // ═══════════════════════ 입력 ═══════════════════════
 
 #if UNITY_EDITOR
-        void ReadDebugKeys()
-        {
-            Keyboard keyboard = Keyboard.current;
-            if (Mouse.current == null || keyboard == null) return;   // 기존과 동일하게 마우스가 없으면 건너뜀
+    void ReadDebugKeys()
+    {
+        Keyboard keyboard = Keyboard.current;
+        if (Mouse.current == null || keyboard == null) return;   // 기존과 동일하게 마우스가 없으면 건너뜀
 
-            if (keyboard.hKey.wasPressedThisFrame) Health.TakeDamage(10, transform.position + transform.forward);
-            if (keyboard.rKey.wasPressedThisFrame && IsDead) Revive();
-        }
+        if (keyboard.hKey.wasPressedThisFrame) Health.TakeDamage(10, transform.position + transform.forward);
+        if (keyboard.rKey.wasPressedThisFrame && IsDead) Revive();
+    }
 #endif
 
-        public bool ConsumeAttack()
-        {
-            if (!Input.ConsumeAttack(out Vector3 target)) return false;
-            AttackTarget = Thrower.ClampToThrowRange(target);
-            return true;
-        }
+    public bool ConsumeAttack()
+    {
+        if (!Input.ConsumeAttack(out Vector3 target)) return false;
+        AttackTarget = Thrower.ClampToThrowRange(target);
+        return true;
+    }
 
-        /// <summary>쿨다운 중이면 입력을 소비하지 않고 버퍼에 남겨 둔다</summary>
-        public bool ConsumeDodge()
-        {
-            if (Time.time - lastDodgeAt < dodgeCooldown) return false;
-            return Input.ConsumeDodge();
-        }
+    // 쿨다운 중이면 입력을 소비하지 않고 버퍼에 남겨 둔다
+    public bool ConsumeDodge()
+    {
+        if (Time.time - lastDodgeAt < DodgeCooldown) return false;
+        return Input.ConsumeDodge();
+    }
 
-        public void MarkDodgeUsed() => lastDodgeAt = Time.time;
+    public void MarkDodgeUsed() => lastDodgeAt = Time.time;
 
-        // ═══════════════════════ 피격 / 사망 ═══════════════════════
+    // ═══════════════════════ 피격 / 사망 ═══════════════════════
 
-        void OnDamaged(Vector3 sourcePosition)
-        {
-            LastHitSourcePosition = sourcePosition;
-            SetState(PlayerStateType.Hit, allowReenter: true);
-        }
+    void HandleDamaged(Vector3 sourcePosition)
+    {
+        LastHitSourcePosition = sourcePosition;
+        SetState(PlayerStateType.Hit, allowReenter: true);
+    }
 
-        void OnDied() => SetState(PlayerStateType.Dead);
+    void HandleDied() => SetState(PlayerStateType.Dead);
 
-        public void Revive()
-        {
-            Health.ResetHp();
-            Input.ClearMoveCommand();
-            if (!Motor.AgentEnabled) Motor.SetAgentEnabled(true);
-            SetState(PlayerStateType.Idle);
-        }
+    public void Revive()
+    {
+        Health.ResetHp();
+        Input.ClearMoveCommand();
+        if (!Motor.AgentEnabled) Motor.SetAgentEnabled(true);
+        SetState(PlayerStateType.Idle);
+    }
 
-        // ═══════════════════════ 애니메이션 ═══════════════════════
+    // ═══════════════════════ 애니메이션 ═══════════════════════
 
-        public void PlayAnim(int stateHash, bool restart = false, float fade = 0.08f)
-        {
-            if (anim == null) return;
-            if (restart) { anim.Play(stateHash, 0, 0f); return; }
+    public void PlayAnim(int stateHash, bool restart = false, float fade = 0.08f)
+    {
+        if (anim == null) return;
+        if (restart) { anim.Play(stateHash, 0, 0f); return; }
 
-            int playing = anim.IsInTransition(0)
-                ? anim.GetNextAnimatorStateInfo(0).shortNameHash
-                : anim.GetCurrentAnimatorStateInfo(0).shortNameHash;
-            if (playing != stateHash) anim.CrossFadeInFixedTime(stateHash, fade);
-        }
+        int playing = anim.IsInTransition(0)
+            ? anim.GetNextAnimatorStateInfo(0).shortNameHash
+            : anim.GetCurrentAnimatorStateInfo(0).shortNameHash;
+        if (playing != stateHash) anim.CrossFadeInFixedTime(stateHash, fade);
+    }
 
-        public void SetAnimSpeed(float value)
-        {
-            if (anim != null) anim.SetFloat(SpeedParam, value, 0.1f, Time.deltaTime);
-        }
+    public void SetAnimSpeed(float value)
+    {
+        if (anim != null) anim.SetFloat(SpeedParam, value, 0.1f, Time.deltaTime);
     }
 }
