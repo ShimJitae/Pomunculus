@@ -9,8 +9,4 @@ public class EnemyDataSO : EntityDataSO
     [SerializeField] private float detectRange;
     [SerializeField] private float attackDamage;
     [SerializeField] private BehaviorGraph behaviourGraph;
-
-    public EnemyDataSO(int hp, List<DroptableDataSO> dropList) : base(hp, dropList)
-    {
-    }
 }
