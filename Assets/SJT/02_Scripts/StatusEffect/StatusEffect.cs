@@ -7,6 +7,11 @@ public sealed class StatusEffect
     private float remainingDuration;
     private float tickTimer;
 
+    public StatusEffect()
+    {
+        Reset();
+    }
+
     // 초기 상태 등록 시 초기화
     public void Initialize(StatusEffectData data)
     {
@@ -16,7 +21,7 @@ public sealed class StatusEffect
         tickTimer = 0f;
     }
 
-    // 오브젝트 풀에 반납하기 전에 SO 참조·중첩·타이머 등을 초기화
+    // 상태이상 풀에 반납하기 전에 SO 참조·중첩·타이머 등을 초기화
     public void Reset()
     {
         statusEffectData = null;
@@ -47,28 +52,55 @@ public sealed class StatusEffect
         }
     }
 
-    public void Tick(float deltaTime)
+    /// <summary>
+    /// 상태 효과의 Tick 주기를 계산. 
+    /// </summary>
+    /// <param name="deltaTime">경과 시간</param>
+    /// <returns>Tick 진행 여부</returns>
+    public bool Tick(float deltaTime)
     {
         if (statusEffectData == null)
         {
 #if UNITY_EDITOR
             Debug.LogError("[StatusEffect] 초기화 되어 있지 않은 상태에서 중첩을 호출했습니다.");
 #endif
-            return;
+            return false;
         }
 
         tickTimer += deltaTime;
         if (tickTimer >= statusEffectData.TickSec)
         {
             tickTimer = 0f;
-            // 상태 효과 발동
+            return true;
+        }
+
+        return false;
+    }
+
+
+    /// <summary>
+    /// 상태 이상의 지속 시간을 계산
+    /// </summary>
+    /// <param name="deltaTime">경과 시간</param>
+    /// <returns>지속 시간 종료 여부</returns>
+    public bool AdvanceTime(float deltaTime)
+    {
+        if (statusEffectData == null)
+        {
+#if UNITY_EDITOR
+            Debug.LogError("[StatusEffect] 초기화 되어 있지 않은 상태에서 중첩을 호출했습니다.");
+#endif
+            return false;
         }
 
         remainingDuration -= deltaTime;
         if (remainingDuration <= 0f)
         {
             // 상태 효과 종료
+            return true;
         }
+
+        return false;
     }
 
     public int StatusId => statusEffectData.StatusId;
