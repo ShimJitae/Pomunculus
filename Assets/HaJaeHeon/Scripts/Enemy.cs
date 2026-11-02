@@ -7,14 +7,16 @@ public class Enemy : Entity
     [SerializeField] private BehaviorGraphAgent behaviorGraphAgent;
     [SerializeField] private GameObject target;
 
-    [SerializeField] private EnemyDataSO so;
+    protected EnemyDataSO enemySO
+    {
+        get { return so as EnemyDataSO; }
+    }
 
 
 
 
     protected override void OnEnable()
     {
-
         base.OnEnable();
     }
 
