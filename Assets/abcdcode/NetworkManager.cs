@@ -22,10 +22,16 @@ public enum NetworkState
 
 public class NetworkManager : Singleton<NetworkManager>, IConnectionCallbacks, ILobbyCallbacks, IMatchmakingCallbacks, IInRoomCallbacks
 {
+    // 연결이 끊긴 뒤 다시 호출하면 재접속
     public void Init()
     {
-        PhotonNetwork.AddCallbackTarget(this);
-        SceneManager.sceneLoaded += OnSceneLoaded;
+        if (!m_initialized)
+        {
+            PhotonNetwork.AddCallbackTarget(this);
+            SceneManager.sceneLoaded += OnSceneLoaded;
+            m_initialized = true;
+        }
+        if (PhotonNetwork.IsConnected) return;
         PhotonNetwork.GameVersion = $"v{GameManager.Instance.Version}";
         PhotonNetwork.NickName = GameManager.Instance.LocalUserProfile.UserName;
         PhotonNetwork.AutomaticallySyncScene = true;
@@ -35,6 +41,7 @@ public class NetworkManager : Singleton<NetworkManager>, IConnectionCallbacks, I
     {
         PhotonNetwork.RemoveCallbackTarget(this);
         SceneManager.sceneLoaded -= OnSceneLoaded;
+        m_initialized = false;
     }
 
     #region 상태
@@ -306,6 +313,7 @@ public class NetworkManager : Singleton<NetworkManager>, IConnectionCallbacks, I
 
     // PhotonNetwork.CurrentSceneProperty(internal)와 같은 키
     private const string CurrentSceneProperty = "curScn";
+    private bool m_initialized;
     private NetworkState m_state = NetworkState.Offline;
     private readonly Dictionary<string, RoomInfo> m_roomList = new();
 }
