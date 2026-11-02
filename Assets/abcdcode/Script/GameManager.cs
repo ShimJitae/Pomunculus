@@ -25,6 +25,10 @@ public class GameManager : SingletonBehavior<GameManager>
             d.Child["userName"] = SaveData.CreateSaveData(userName);
             */
         }
+        else
+        {
+            LocalUserProfile = SaveManager.Instance.Load(UserProfile).GetData<UserProfile>();
+        }
     }
     public void SaveProfile()
     {
