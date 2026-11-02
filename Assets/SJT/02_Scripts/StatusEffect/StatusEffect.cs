@@ -13,9 +13,9 @@ public sealed class StatusEffect
     }
 
     // 초기 상태 등록 시 초기화
-    public void Initialize(StatusEffectData data)
+    public void Initialize(StatusEffectType seType)
     {
-        statusEffectData = data;
+        statusEffectData = StatusEffectManager.Instance.GetSOData(seType);
         stackCount = 1;
         remainingDuration = statusEffectData.Duration;
         tickTimer = 0f;
@@ -76,7 +76,6 @@ public sealed class StatusEffect
 
         return false;
     }
-
 
     /// <summary>
     /// 상태 이상의 지속 시간을 계산

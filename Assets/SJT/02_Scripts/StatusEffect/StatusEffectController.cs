@@ -16,26 +16,27 @@ public class StatusEffectController : MonoBehaviour
     {
         for (int i = activeStatusEffects.Count - 1; i >= 0; i--)
         {
-            bool isActiveTick = activeStatusEffects[i].Tick(Time.deltaTime);
-            if (isActiveTick)
-            {
-
-            }
-
             bool isExpired = activeStatusEffects[i].AdvanceTime(Time.deltaTime);
             if (isExpired)
             {
                 // 상태 지속 시간이 끝나면 풀에 반납 및 리스트에서 제거
                 StatusEffectPool.Return(activeStatusEffects[i]);
                 activeStatusEffects.RemoveAt(i);
+                continue;
+            }
+
+            bool isActiveTick = activeStatusEffects[i].Tick(Time.deltaTime);
+            if (isActiveTick)
+            {
+                // 상태 효과 발동
             }
         }
     }
 
     public void RegisterStatusEffect(StatusEffectType seType)
     {
-        // StatusEffect statusEffect = StatusEffectPool.Get();
-        // statusEffect.Initialize(seType);
-        // activeStatusEffects.Add(statusEffect);
+        StatusEffect statusEffect = StatusEffectPool.Get();
+        statusEffect.Initialize(seType);
+        activeStatusEffects.Add(statusEffect);
     }
 }
