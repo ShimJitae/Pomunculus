@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 /// <summary>
 /// 포물선으로 날아가 무언가에 닿으면 주변에 피해를 주고 사라지는 투사체.
@@ -11,11 +10,8 @@ using UnityEngine.Serialization;
 public class ThrownProjectile : MonoBehaviour
 {
     [Tooltip("착탄 지점 주변 피해 반경. 0이면 직접 맞은 대상에게만 피해")]
-    [FormerlySerializedAs("impactRadius")]
     public float ImpactRadius = 1.5f;
-    [FormerlySerializedAs("maxLifeTime")]
     public float MaxLifeTime = 5f;
-    [FormerlySerializedAs("impactEffectPrefab")]
     public GameObject ImpactEffectPrefab;
 
     private Rigidbody rb;
