@@ -2,7 +2,8 @@ using Pomunculus.Items;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ItemDatabase : MonoBehaviour
+[CreateAssetMenu(fileName = "MaterialDatabase", menuName = "Scriptable Objects/MaterialDatabase")]
+public class ItemDatabase : ScriptableObject
 {
     [SerializeField] private List<MaterialData> data = new();
 
@@ -29,7 +30,7 @@ public class ItemDatabase : MonoBehaviour
             if (itemId <= 0 || !material.TryAdd(itemId, so))
                 continue;
 
-            Debug.Log($"키 : {itemId} / 밸류 : {material.Values}");
+            //Debug.Log($"키 : {itemId} / 밸류 : {material.Values}");
         }
     }
 
@@ -42,5 +43,26 @@ public class ItemDatabase : MonoBehaviour
 
         Debug.Log($"{itemId}에 해당하는 데이터 없음");
         return null;
+    }
+
+    public void ShowDB()
+    {
+        Debug.Log($"원본 목록: {data.Count}개 / 조회용 사전: {material.Count}개");
+        foreach (var entry in material)
+        {
+            Debug.Log($"ID : {entry.Key} / SO이름 : {entry.Value.name}");
+        }
+    }
+
+    public GameObject GetItemPrefab(int itemId)
+    {
+        MaterialData itemSO = TryGetDataSO(itemId);
+
+        if (itemSO == null)
+        {
+            Debug.Log($"{itemId}에 맞는 SO없음");
+            return null;
+        }
+        return itemSO.Prefab;
     }
 }
