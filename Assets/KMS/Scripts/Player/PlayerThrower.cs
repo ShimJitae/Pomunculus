@@ -35,7 +35,7 @@ public class PlayerThrower : MonoBehaviour
     {
         if (ProjectilePrefab == null)
         {
-            Debug.LogWarning("[PlayerClickFSM] projectilePrefab이 지정되지 않았습니다.");
+            Debug.LogWarning("[PlayerFSM] projectilePrefab이 지정되지 않았습니다.");
             return;
         }
 

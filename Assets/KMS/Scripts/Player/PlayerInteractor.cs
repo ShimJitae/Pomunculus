@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-// 플레이어 상호작용. 주변 대상을 감지만 하고, 입력(G)은 PlayerClickInput → FSM 상태가 Interact()를 호출한다
+// 플레이어 상호작용. 주변 대상을 감지만 하고, 입력(G)은 PlayerInputReader → FSM 상태가 Interact()를 호출한다
 public class PlayerInteractor : MonoBehaviour
 {
     [Header("감지")]

@@ -9,9 +9,9 @@ using UnityEngine.AI;
 /// 입력·이동·던지기·체력은 각 컴포넌트가 담당하고, 이 클래스는 FSM 구동과 상태 간 공유 데이터만 맡는다.
 /// </summary>
 [RequireComponent(typeof(NavMeshAgent))]
-[RequireComponent(typeof(PlayerClickInput), typeof(PlayerMotor), typeof(PlayerThrower))]
+[RequireComponent(typeof(PlayerInputReader), typeof(PlayerMotor), typeof(PlayerThrower))]
 [RequireComponent(typeof(Health))]
-public class PlayerClickFSM : MonoBehaviour
+public class PlayerFSM : MonoBehaviour
 {
     [Header("공격 (던지기)")]
     public float AttackDuration = 0.5f;       // 던지기 상태 전체 길이
@@ -26,7 +26,10 @@ public class PlayerClickFSM : MonoBehaviour
 
     [Header("피격")]
     public float HitStunDuration = 0.4f;
-    public float KnockbackSpeed = 3f;
+    public float KnockbackSpeed = 0f;
+
+    [Header("위치")]
+    public Transform SpawnPos;
 
     [Header("디버그")]
     [SerializeField] private PlayerStateType currentStateView;
@@ -38,11 +41,11 @@ public class PlayerClickFSM : MonoBehaviour
     public static readonly int DieHash = Animator.StringToHash("Die");
     public static readonly int SpeedParam = Animator.StringToHash("Speed");
 
-    private StateMachine<PlayerStateType, PlayerClickFSM> fsm;
+    private StateMachine<PlayerStateType, PlayerFSM> fsm;
     private Animator anim;
 
     // ───── 상태들이 사용하는 컴포넌트 ─────
-    public PlayerClickInput Input { get; private set; }
+    public PlayerInputReader Input { get; private set; }
     public PlayerMotor Motor { get; private set; }
     public PlayerThrower Thrower { get; private set; }
     public Health Health { get; private set; }
@@ -60,7 +63,7 @@ public class PlayerClickFSM : MonoBehaviour
     void Awake()
     {
         anim = GetComponentInChildren<Animator>();
-        Input = GetComponent<PlayerClickInput>();
+        Input = GetComponent<PlayerInputReader>();
         Motor = GetComponent<PlayerMotor>();
         Thrower = GetComponent<PlayerThrower>();
         Health = GetComponent<Health>();
@@ -71,7 +74,7 @@ public class PlayerClickFSM : MonoBehaviour
         Health.OnDamaged += HandleDamaged;
         Health.OnDied += HandleDied;
 
-        fsm = new StateMachine<PlayerStateType, PlayerClickFSM>(this);
+        fsm = new StateMachine<PlayerStateType, PlayerFSM>(this);
         fsm.AddState(new PlayerIdleState());
         fsm.AddState(new PlayerMoveState());
         fsm.AddState(new PlayerAttackState());
@@ -145,6 +148,7 @@ public class PlayerClickFSM : MonoBehaviour
         Health.ResetHp();
         Input.ClearMoveCommand();
         if (!Motor.AgentEnabled) Motor.SetAgentEnabled(true);
+        transform.position = SpawnPos.position;
         SetState(PlayerStateType.Idle);
     }
 

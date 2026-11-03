@@ -4,27 +4,27 @@ public enum PlayerStateType
 {
     Idle,
     Move,
-    Attack,   // 마우스 위치로 던지기
+    Attack,
     Dodge,
     Hit,
     Dead
 }
 
 // 클릭 이동 플레이어 상태의 공통 부모
-public abstract class PlayerStateBase : IState<PlayerStateType, PlayerClickFSM>
+public abstract class PlayerStateBase : IState<PlayerStateType, PlayerFSM>
 {
     public abstract PlayerStateType StateType { get; }
 
     protected float elapsed;
 
-    public virtual bool IsInvincible(PlayerClickFSM player) => false;
+    public virtual bool IsInvincible(PlayerFSM player) => false;
 
-    public virtual void Enter(PlayerClickFSM player) => elapsed = 0f;
-    public virtual void Update(PlayerClickFSM player) => elapsed += Time.deltaTime;
-    public virtual void Exit(PlayerClickFSM player) { }
+    public virtual void Enter(PlayerFSM player) => elapsed = 0f;
+    public virtual void Update(PlayerFSM player) => elapsed += Time.deltaTime;
+    public virtual void Exit(PlayerFSM player) { }
 
     // 회피 → 던지기 순으로 입력 확인. 전이했으면 true
-    protected bool TryStartAction(PlayerClickFSM player)
+    protected bool TryStartAction(PlayerFSM player)
     {
         if (player.ConsumeDodge()) { player.SetState(PlayerStateType.Dodge); return true; }
         if (player.ConsumeAttack()) { player.SetState(PlayerStateType.Attack); return true; }
@@ -35,7 +35,7 @@ public abstract class PlayerStateBase : IState<PlayerStateType, PlayerClickFSM>
     /// 대기 중인 우클릭 명령이 있으면 그 위치로 이동 시작.
     /// 이미 Move 상태라면 목적지만 갱신된다 (같은 상태로의 전이는 무시되므로).
     /// </summary>
-    protected bool TryStartMove(PlayerClickFSM player)
+    protected bool TryStartMove(PlayerFSM player)
     {
         if (!player.Input.ConsumeMoveCommand(out Vector3 destination)) return false;
         player.Motor.MoveTo(destination);
@@ -43,13 +43,13 @@ public abstract class PlayerStateBase : IState<PlayerStateType, PlayerClickFSM>
         return true;
     }
 
-    protected void ReturnToIdleOrMove(PlayerClickFSM player)
+    protected void ReturnToIdleOrMove(PlayerFSM player)
     {
         if (!TryStartMove(player)) player.SetState(PlayerStateType.Idle);
     }
 
     // 상호작용 입력이 있으면 주변 대상과 상호작용. 상태 전환은 하지 않는다 (Idle·Move에서만 호출)
-    protected void TryInteract(PlayerClickFSM player)
+    protected void TryInteract(PlayerFSM player)
     {
         if (player.Input.ConsumeInteract() && player.Interactor != null)
             player.Interactor.Interact();
@@ -63,14 +63,14 @@ public class PlayerIdleState : PlayerStateBase
 {
     public override PlayerStateType StateType => PlayerStateType.Idle;
 
-    public override void Enter(PlayerClickFSM player)
+    public override void Enter(PlayerFSM player)
     {
         base.Enter(player);
         player.Motor.StopMoving();
-        player.PlayAnim(PlayerClickFSM.LocomotionHash);
+        player.PlayAnim(PlayerFSM.LocomotionHash);
     }
 
-    public override void Update(PlayerClickFSM player)
+    public override void Update(PlayerFSM player)
     {
         base.Update(player);
 
@@ -89,14 +89,14 @@ public class PlayerMoveState : PlayerStateBase
 {
     public override PlayerStateType StateType => PlayerStateType.Move;
 
-    public override void Enter(PlayerClickFSM player)
+    public override void Enter(PlayerFSM player)
     {
         base.Enter(player);
-        player.PlayAnim(PlayerClickFSM.LocomotionHash);
+        player.PlayAnim(PlayerFSM.LocomotionHash);
         // 목적지 설정(MoveTo)은 이 상태로 오기 직전에 이미 호출됨
     }
 
-    public override void Update(PlayerClickFSM player)
+    public override void Update(PlayerFSM player)
     {
         base.Update(player);
 
@@ -123,9 +123,8 @@ public class PlayerAttackState : PlayerStateBase
 
     private Vector3 target;
     private bool released;
-    private Vector3 resumeDestination;
 
-    public override void Enter(PlayerClickFSM player)
+    public override void Enter(PlayerFSM player)
     {
         base.Enter(player);
         target = player.AttackTarget;
@@ -133,10 +132,10 @@ public class PlayerAttackState : PlayerStateBase
 
         player.Motor.StopMoving();
         player.Motor.RotateTowards(target - player.transform.position, instant: true);
-        player.PlayAnim(PlayerClickFSM.AttackHash, restart: true);
+        player.PlayAnim(PlayerFSM.AttackHash, restart: true);
     }
 
-    public override void Update(PlayerClickFSM player)
+    public override void Update(PlayerFSM player)
     {
         base.Update(player);
 
@@ -174,9 +173,9 @@ public class PlayerDodgeState : PlayerStateBase
 
     private Vector3 dir;
 
-    public override bool IsInvincible(PlayerClickFSM player) => elapsed <= player.DodgeInvincibleTime;
+    public override bool IsInvincible(PlayerFSM player) => elapsed <= player.DodgeInvincibleTime;
 
-    public override void Enter(PlayerClickFSM player)
+    public override void Enter(PlayerFSM player)
     {
         base.Enter(player);
         player.Motor.StopMoving();
@@ -191,10 +190,10 @@ public class PlayerDodgeState : PlayerStateBase
 
         player.Motor.RotateTowards(dir, instant: true);
         player.MarkDodgeUsed();
-        player.PlayAnim(PlayerClickFSM.DodgeHash, restart: true);
+        player.PlayAnim(PlayerFSM.DodgeHash, restart: true);
     }
 
-    public override void Update(PlayerClickFSM player)
+    public override void Update(PlayerFSM player)
     {
         base.Update(player);
 
@@ -213,7 +212,7 @@ public class PlayerHitState : PlayerStateBase
 
     private Vector3 knockDir;
 
-    public override void Enter(PlayerClickFSM player)
+    public override void Enter(PlayerFSM player)
     {
         base.Enter(player);
         player.Motor.StopMoving();
@@ -223,10 +222,10 @@ public class PlayerHitState : PlayerStateBase
         knockDir = v.sqrMagnitude > 0.0001f ? v.normalized : -player.transform.forward;
 
         player.Motor.RotateTowards(-knockDir, instant: true);
-        player.PlayAnim(PlayerClickFSM.HitHash, restart: true);
+        player.PlayAnim(PlayerFSM.HitHash, restart: true);
     }
 
-    public override void Update(PlayerClickFSM player)
+    public override void Update(PlayerFSM player)
     {
         base.Update(player);
 
@@ -244,12 +243,12 @@ public class PlayerDeadState : PlayerStateBase
 {
     public override PlayerStateType StateType => PlayerStateType.Dead;
 
-    public override bool IsInvincible(PlayerClickFSM player) => true;
+    public override bool IsInvincible(PlayerFSM player) => true;
 
-    public override void Enter(PlayerClickFSM player)
+    public override void Enter(PlayerFSM player)
     {
         base.Enter(player);
         player.Motor.SetAgentEnabled(false);
-        player.PlayAnim(PlayerClickFSM.DieHash);
+        player.PlayAnim(PlayerFSM.DieHash);
     }
 }

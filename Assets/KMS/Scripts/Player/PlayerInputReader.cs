@@ -5,9 +5,9 @@ using UnityEngine.InputSystem;
 /// <summary>
 /// 플레이어 입력을 읽는 유일한 곳. 키 정의는 PlayerControls.inputactions 에셋에 있다.
 /// 입력을 버퍼에 기록만 하고, 실제 행동은 상태들이 Consume* 로 꺼내 쓸 때 일어난다.
-/// 자체 Update 없음 — PlayerClickFSM이 매 프레임 ReadInput()을 호출한다.
+/// 자체 Update 없음 — PlayerFSM이 매 프레임 ReadInput()을 호출한다.
 /// </summary>
-public class PlayerClickInput : MonoBehaviour
+public class PlayerInputReader : MonoBehaviour
 {
     [Tooltip("PlayerControls.inputactions")]
     [SerializeField] private InputActionAsset controls;
