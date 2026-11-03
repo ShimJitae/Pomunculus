@@ -13,7 +13,10 @@ public class Enemy : Entity
         get { return so as EnemyDataSO; }
     }
 
-
+    private void Awake()
+    {
+        behaviorGraphAgent = GetComponent<BehaviorGraphAgent>();
+    }
 
 
     protected override void OnEnable()
