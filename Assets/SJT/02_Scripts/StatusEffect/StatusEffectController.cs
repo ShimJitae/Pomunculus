@@ -42,16 +42,34 @@ public class StatusEffectController : MonoBehaviour
                 continue;
             }
 
-            bool isActiveTick = activeStatusEffects[i].Tick(Time.deltaTime);
-            if (isActiveTick)
-            {
-                // 상태 효과 발동
-            }
+            activeStatusEffects[i].Tick(Time.deltaTime);
+        }
+    }
+
+    /// <summary>대상이 파괴될 때 남은 상태를 해제하고 실행 객체를 풀에 반납한다.</summary>
+    private void OnDestroy()
+    {
+        if (activeStatusEffects == null)
+        {
+            return;
+        }
+
+        for (int i = activeStatusEffects.Count - 1; i >= 0; i--)
+        {
+            StatusEffect effect = activeStatusEffects[i];
+            activeStatusEffects.RemoveAt(i);
+            effect.Remove();
+            StatusEffectPool.Return(effect);
         }
     }
 
     public void RegisterStatusEffect(StatusEffectType seType)
     {
+        if (entity == null || seType == StatusEffectType.None)
+        {
+            return;
+        }
+
         for (int i = 0; i < activeStatusEffects.Count; i++)
         {
             if (activeStatusEffects[i].Type == seType)
@@ -63,7 +81,7 @@ public class StatusEffectController : MonoBehaviour
 
         StatusEffect statusEffect = StatusEffectPool.Get();
 
-        if (!statusEffect.Initialize(seType))
+        if (!statusEffect.Initialize(seType, entity))
         {
             StatusEffectPool.Return(statusEffect);
             return;
