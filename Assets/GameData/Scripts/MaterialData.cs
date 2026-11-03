@@ -11,7 +11,7 @@ namespace Pomunculus.Items
         public int Id;
         public string ItemName;
 
-        [TextArea(2, 5)]
+        [TextArea(1, 5)]
         public string Description;
 
         [Header("속성")]
@@ -20,8 +20,7 @@ namespace Pomunculus.Items
         public float ColdElement;
         public float WindElement;
 
-        [Header("유니티에서 직접 연결")]
+        [Header("아이콘")]
         public Sprite Icon;
-        public GameObject WorldPrefab;
     }
 }

@@ -24,6 +24,7 @@ namespace Pomunculus.Items.Editor
             public float Cold;
             public float Wind;
             public string AssetPath;
+            public Sprite Icon;
         }
 
         [MenuItem(MenuPath)]
@@ -110,6 +111,7 @@ namespace Pomunculus.Items.Editor
             item.FireElement = row.Fire;
             item.ColdElement = row.Cold;
             item.WindElement = row.Wind;
+            item.Icon = row.Icon;
 
         }
 
@@ -202,7 +204,7 @@ namespace Pomunculus.Items.Editor
                 columns.Add(header, i);
             }
 
-            string[] required = { "Id", "Name", "PhysicsElement", "FireElement", "ColdElement", "WindElement", "Desc" };
+            string[] required = { "Id", "Name", "PhysicsElement", "FireElement", "ColdElement", "WindElement", "Desc", "icon_path" };
 
             foreach (string column in required)
             {
@@ -251,6 +253,16 @@ namespace Pomunculus.Items.Editor
                     return number;
                 }
 
+                string iconPath = Get("icon_path").Trim().Replace('\\', '/');
+
+                if (string.IsNullOrWhiteSpace(iconPath))
+                    throw new Exception($"ID {id}: icon_path가 비어 있습니다.");
+
+                Sprite icon = AssetDatabase.LoadAssetAtPath<Sprite>(iconPath);
+
+                if (icon == null)
+                    throw new Exception($"ID {id}: 아이콘을 불러올 수 없습니다.\n경로와 이미지의 Sprite 설정을 확인하세요.\n{iconPath}");
+
                 result.Add(new MaterialRow
                 {
                     Id = id,
@@ -259,7 +271,8 @@ namespace Pomunculus.Items.Editor
                     Physics = Number("PhysicsElement"),
                     Fire = Number("FireElement"),
                     Cold = Number("ColdElement"),
-                    Wind = Number("WindElement")
+                    Wind = Number("WindElement"),
+                    Icon = icon
                 });
             }
 
