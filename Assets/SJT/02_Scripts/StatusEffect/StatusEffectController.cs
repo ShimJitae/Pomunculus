@@ -5,11 +5,26 @@ public class StatusEffectController : MonoBehaviour
 {
     private List<StatusEffect> activeStatusEffects;
     [SerializeField] private int activeStatusEffectsCapacity = 20; // 초기 상태 효과 갯수
+    [SerializeField] private Entity entity; // 상태 효과를 적용할 엔티티
 
     private void Awake()
     {
         // 초기 상태 효과 갯수. activeStatusEffectsCapacity 크기로 설정.
         activeStatusEffects = new List<StatusEffect>(activeStatusEffectsCapacity);
+
+        if (entity == null)
+        {
+            if (gameObject.TryGetComponent(out Entity _entity))
+            {
+                entity = _entity;
+            }
+            else
+            {
+#if UNITY_EDITOR
+                Debug.LogError("[StatusEffectController] Entity가 할당되지 않았습니다.", this);
+#endif
+            }
+        }
     }
 
     private void Update()
