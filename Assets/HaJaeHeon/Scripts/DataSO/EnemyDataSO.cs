@@ -53,4 +53,9 @@ public class EnemyDataSO : EntityDataSO
     {
         return drop_name;
     }
+
+    public GameObject GetEnemyPrefab()
+    {
+        return enemyPrefab;
+    }
 }
