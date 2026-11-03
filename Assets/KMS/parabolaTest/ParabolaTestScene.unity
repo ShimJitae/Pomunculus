@@ -129,6 +129,7 @@ GameObject:
   m_Component:
   - component: {fileID: 462619096}
   - component: {fileID: 462619095}
+  - component: {fileID: 462619097}
   m_Layer: 0
   m_Name: Directional Light
   m_TagString: Untagged
@@ -216,6 +217,35 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &462619097
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 462619094}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 474bcb49853aa07438625e644c072ee6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.UniversalAdditionalLightData
+  m_UsePipelineSettings: 1
+  m_AdditionalLightsShadowResolutionTier: 2
+  m_CustomShadowLayers: 0
+  m_LightCookieSize: {x: 1, y: 1}
+  m_LightCookieOffset: {x: 0, y: 0}
+  m_SoftShadowQuality: 0
+  m_RenderingLayersMask:
+    serializedVersion: 0
+    m_Bits: 1
+  m_ShadowRenderingLayersMask:
+    serializedVersion: 0
+    m_Bits: 1
+  m_Version: 4
+  m_LightLayerMask: 1
+  m_ShadowLayerMask: 1
+  m_RenderingLayers: 1
+  m_ShadowRenderingLayers: 1
 --- !u!1 &699767160
 GameObject:
   m_ObjectHideFlags: 0
@@ -250,6 +280,10 @@ MonoBehaviour:
   target: {fileID: 1029270591}
   segmentCount: 30
   applyThrowRange: 1
+  followMouse: 1
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 64
 --- !u!120 &699767162
 LineRenderer:
   serializedVersion: 3
@@ -587,13 +621,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8139520814af5324a89556d40b62a630, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerThrower
-  ProjectilePrefab: {fileID: -4413370916858422293, guid: 80d7319d140098f44b4c8c6bd809c118, type: 3}
-  ThrowOrigin: {fileID: 2126649018}
-  MaxThrowRange: 10
-  ThrowHorizontalSpeed: 12
-  MinFlightTime: 0.35
-  AttackDamage: 10
-  EnemyLayer:
+  projectilePrefab: {fileID: -4413370916858422293, guid: 80d7319d140098f44b4c8c6bd809c118, type: 3}
+  throwOrigin: {fileID: 2126649018}
+  maxThrowRange: 10
+  throwHorizontalSpeed: 12
+  minFlightTime: 0.35
+  flightSpeedMultiplier: 1
+  attackDamage: 10
+  enemyLayer:
     serializedVersion: 2
     m_Bits: 128
 --- !u!4 &1886490433
@@ -704,7 +739,7 @@ GameObject:
   - component: {fileID: 1963636243}
   - component: {fileID: 1963636242}
   - component: {fileID: 1963636241}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Ground
   m_TagString: Untagged
   m_Icon: {fileID: 0}

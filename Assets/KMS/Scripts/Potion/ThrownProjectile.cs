@@ -4,7 +4,8 @@ using UnityEngine.Serialization;
 
 /// <summary>
 /// 포물선으로 날아가 무언가에 닿으면 주변에 피해를 주고 사라지는 투사체.
-/// 프리팹 구성: Rigidbody(Use Gravity 켜기) + Collider + 이 스크립트
+/// 프리팹 구성: Rigidbody + Collider + 이 스크립트.
+/// 중력은 Launch에서 받은 값을 직접 적용하므로 Rigidbody의 Use Gravity는 자동으로 꺼진다.
 /// </summary>
 [RequireComponent(typeof(Rigidbody))]
 public class ThrownProjectile : MonoBehaviour
@@ -20,6 +21,7 @@ public class ThrownProjectile : MonoBehaviour
     private Rigidbody rb;
     private int damage;
     private LayerMask damageLayer;
+    private Vector3 gravity;
     private bool hasImpacted;
 
     private readonly Collider[] hitBuffer = new Collider[16];
@@ -33,15 +35,23 @@ public class ThrownProjectile : MonoBehaviour
     void Awake()
     {
         rb = GetComponent<Rigidbody>();
-        rb.useGravity = true;
+        rb.useGravity = false;   // 투사체마다 다른 중력을 FixedUpdate에서 직접 적용
         rb.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;   // 빠른 투사체 관통 방지
 
     }
 
-    public void Launch(Vector3 velocity, int damage, LayerMask damageLayer, GameObject thrower)
+    // 궤적 모양을 유지하도록 계산된 중력을 매 물리 프레임 적용
+    void FixedUpdate()
+    {
+        rb.AddForce(gravity, ForceMode.Acceleration);
+    }
+
+    // 초기 속도와 이 투사체에만 적용할 중력을 받아 발사
+    public void Launch(Vector3 velocity, Vector3 gravity, int damage, LayerMask damageLayer, GameObject thrower)
     {
         this.damage = damage;
         this.damageLayer = damageLayer;
+        this.gravity = gravity;
 
         // 던진 사람 몸에 바로 부딪히지 않도록 충돌 무시
         Collider[] myColliders = GetComponentsInChildren<Collider>();
