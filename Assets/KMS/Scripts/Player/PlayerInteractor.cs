@@ -1,8 +1,7 @@
 using System;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
-// 플레이어 상호작용
+// 플레이어 상호작용. 주변 대상을 감지만 하고, 입력(G)은 PlayerClickInput → FSM 상태가 Interact()를 호출한다
 public class PlayerInteractor : MonoBehaviour
 {
     [Header("감지")]
@@ -10,9 +9,6 @@ public class PlayerInteractor : MonoBehaviour
     [Tooltip("상호작용 오브젝트만 들어 있는 레이어를 지정")]
     public LayerMask interactableLayer;
     public float scanInterval = 0.1f;
-
-    [Header("입력")]
-    public Key interactKey = Key.E;
 
     // 현재 대상이 바뀔 때 호출 (null = 주변에 없음). 안내 UI, 하이라이트 연결용
     public event Action<IInteractable> OnTargetChanged;
@@ -32,10 +28,6 @@ public class PlayerInteractor : MonoBehaviour
             nextScanAt = Time.time + scanInterval;
             Scan();
         }
-
-        Keyboard keyboard = Keyboard.current;
-        if (keyboard != null && keyboard[interactKey].wasPressedThisFrame)
-            Interact();
     }
 
     public void Interact()

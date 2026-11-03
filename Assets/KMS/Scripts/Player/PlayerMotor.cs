@@ -1,12 +1,11 @@
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.Serialization;
 
 // NavMeshAgent 이동과 회전 담당.
 [RequireComponent(typeof(NavMeshAgent))]
 public class PlayerMotor : MonoBehaviour
 {
-    
+
     public float MoveSpeed = 5f;
     public float Acceleration = 60f;          // 기본값 8은 액션 게임엔 너무 굼뜸
     public float RotateSpeed = 900f;          // 초당 회전 각도 (회전은 코드가 직접 처리)

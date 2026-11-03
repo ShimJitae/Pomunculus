@@ -1,7 +1,5 @@
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.InputSystem;
-using UnityEngine.Serialization;
 
 /// <summary>
 /// 클릭 이동 플레이어 (FSM Owner)
@@ -48,6 +46,7 @@ public class PlayerClickFSM : MonoBehaviour
     public PlayerMotor Motor { get; private set; }
     public PlayerThrower Thrower { get; private set; }
     public Health Health { get; private set; }
+    public PlayerInteractor Interactor { get; private set; }   // 없을 수 있음 (null 허용)
 
     // ───── 상태들이 읽어 가는 데이터 ─────
     public PlayerStateType CurrentStateType => fsm.CurrentStateType;
@@ -65,6 +64,7 @@ public class PlayerClickFSM : MonoBehaviour
         Motor = GetComponent<PlayerMotor>();
         Thrower = GetComponent<PlayerThrower>();
         Health = GetComponent<Health>();
+        Interactor = GetComponent<PlayerInteractor>();
 
         Health.IsInvincible = () =>
             IsDead || (fsm.CurrentState is PlayerStateBase state && state.IsInvincible(this));
@@ -106,13 +106,11 @@ public class PlayerClickFSM : MonoBehaviour
     // ═══════════════════════ 입력 ═══════════════════════
 
 #if UNITY_EDITOR
+    // 에디터 테스트용: H = 10 피해, R = 사망 상태에서 부활
     void ReadDebugKeys()
     {
-        Keyboard keyboard = Keyboard.current;
-        if (Mouse.current == null || keyboard == null) return;   // 기존과 동일하게 마우스가 없으면 건너뜀
-
-        if (keyboard.hKey.wasPressedThisFrame) Health.TakeDamage(10, transform.position + transform.forward);
-        if (keyboard.rKey.wasPressedThisFrame && IsDead) Revive();
+        if (Input.IsDebugDamagePressed()) Health.TakeDamage(10, transform.position + transform.forward);
+        if (Input.IsDebugRevivePressed() && IsDead) Revive();
     }
 #endif
 

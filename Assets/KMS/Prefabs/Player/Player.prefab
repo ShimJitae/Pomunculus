@@ -167,7 +167,6 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 1024
   scanInterval: 0.1
-  interactKey: 19
 --- !u!114 &6937716069554861855
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -180,6 +179,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 415080ad17bc42f43bca133fe794f3ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerClickInput
+  controls: {fileID: -944628639613478452, guid: d48b9795e128d284bbdce1df639b119c, type: 3}
   HoldRepathInterval: 0.1
   NavSampleRadius: 2
   GroundLayer:

@@ -1,14 +1,17 @@
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.InputSystem;
-using UnityEngine.Serialization;
 
 /// <summary>
-/// 마우스·키보드 입력을 읽어 버퍼에 기록한다. 실제 행동은 상태들이 Consume* 로 꺼내 쓸 때 일어난다.
+/// 플레이어 입력을 읽는 유일한 곳. 키 정의는 PlayerControls.inputactions 에셋에 있다.
+/// 입력을 버퍼에 기록만 하고, 실제 행동은 상태들이 Consume* 로 꺼내 쓸 때 일어난다.
 /// 자체 Update 없음 — PlayerClickFSM이 매 프레임 ReadInput()을 호출한다.
 /// </summary>
 public class PlayerClickInput : MonoBehaviour
 {
+    [Tooltip("PlayerControls.inputactions")]
+    [SerializeField] private InputActionAsset controls;
+
     public float HoldRepathInterval = 0.1f;   // 우클릭 홀드 시 목적지 갱신 간격
     public float NavSampleRadius = 2f;        // 클릭 지점을 NavMesh 위로 보정하는 범위
     public LayerMask GroundLayer;
@@ -23,19 +26,62 @@ public class PlayerClickInput : MonoBehaviour
     private Vector3 bufferedAttackTarget;
     private float attackPressedAt = float.NegativeInfinity;
     private float dodgePressedAt = float.NegativeInfinity;
+    private float interactPressedAt = float.NegativeInfinity;
     private float nextHoldRepathAt = float.NegativeInfinity;
 
-    void Awake() => cam = Camera.main;
+    private InputActionMap playerMap;
+    private InputAction moveAction;
+    private InputAction attackAction;
+    private InputAction dodgeAction;
+    private InputAction interactAction;
+    private InputAction pointAction;
+#if UNITY_EDITOR
+    private InputActionMap debugMap;
+    private InputAction debugDamageAction;
+    private InputAction debugReviveAction;
+#endif
 
+    // 카메라와 액션을 캐시한다. 액션 이름이 에셋과 다르면 여기서 바로 에러가 난다
+    void Awake()
+    {
+        cam = Camera.main;
+
+        playerMap = controls.FindActionMap("Player", throwIfNotFound: true);
+        moveAction = playerMap.FindAction("Move", throwIfNotFound: true);
+        attackAction = playerMap.FindAction("Attack", throwIfNotFound: true);
+        dodgeAction = playerMap.FindAction("Dodge", throwIfNotFound: true);
+        interactAction = playerMap.FindAction("Interact", throwIfNotFound: true);
+        pointAction = playerMap.FindAction("Point", throwIfNotFound: true);
+#if UNITY_EDITOR
+        debugMap = controls.FindActionMap("Debug", throwIfNotFound: true);
+        debugDamageAction = debugMap.FindAction("DebugDamage", throwIfNotFound: true);
+        debugReviveAction = debugMap.FindAction("DebugRevive", throwIfNotFound: true);
+#endif
+    }
+
+    // 이 컴포넌트가 켜져 있는 동안만 입력을 받는다 (원격 플레이어는 컴포넌트를 끄면 됨)
+    void OnEnable()
+    {
+        playerMap.Enable();
+#if UNITY_EDITOR
+        debugMap.Enable();
+#endif
+    }
+
+    void OnDisable()
+    {
+        playerMap.Disable();
+#if UNITY_EDITOR
+        debugMap.Disable();
+#endif
+    }
+
+    // 이번 프레임의 입력을 읽어 버퍼에 기록한다
     public void ReadInput()
     {
-        Mouse mouse = Mouse.current;
-        Keyboard keyboard = Keyboard.current;
-        if (mouse == null) return;
-
         // 우클릭: 이동 명령. 누르고 있으면 일정 간격으로 목적지 갱신
-        bool rightDown = mouse.rightButton.wasPressedThisFrame;
-        bool rightHeld = mouse.rightButton.isPressed;
+        bool rightDown = moveAction.WasPressedThisFrame();
+        bool rightHeld = moveAction.IsPressed();
         if (rightDown || (rightHeld && Time.time >= nextHoldRepathAt))
         {
             nextHoldRepathAt = Time.time + HoldRepathInterval;
@@ -48,15 +94,14 @@ public class PlayerClickInput : MonoBehaviour
         }
 
         // 좌클릭: 던지기. 클릭한 순간의 마우스 위치를 목표로 저장
-        if (mouse.leftButton.wasPressedThisFrame && TryGetMouseWorldPoint(out Vector3 target))
+        if (attackAction.WasPressedThisFrame() && TryGetMouseWorldPoint(out Vector3 target))
         {
             attackPressedAt = Time.time;
             bufferedAttackTarget = target;
         }
 
-        if (keyboard == null) return;
-
-        if (keyboard.spaceKey.wasPressedThisFrame) dodgePressedAt = Time.time;
+        if (dodgeAction.WasPressedThisFrame()) dodgePressedAt = Time.time;
+        if (interactAction.WasPressedThisFrame()) interactPressedAt = Time.time;
     }
 
     /// <summary>
@@ -90,14 +135,29 @@ public class PlayerClickInput : MonoBehaviour
         return true;
     }
 
+    // 버퍼에 남은 상호작용 입력을 꺼낸다
+    public bool ConsumeInteract()
+    {
+        if (Time.time - interactPressedAt > InputBufferTime) return false;
+        interactPressedAt = float.NegativeInfinity;
+        return true;
+    }
+
+#if UNITY_EDITOR
+    // 디버그 피격 키(H)를 이번 프레임에 눌렀는지
+    public bool IsDebugDamagePressed() => debugDamageAction.WasPressedThisFrame();
+
+    // 디버그 부활 키(R)를 이번 프레임에 눌렀는지
+    public bool IsDebugRevivePressed() => debugReviveAction.WasPressedThisFrame();
+#endif
+
     // 마우스 아래 지면 위치 (지형 높이 반영). 실패 시 플레이어 높이 평면으로 대체
     public bool TryGetMouseWorldPoint(out Vector3 point)
     {
         point = default;
-        Mouse mouse = Mouse.current;
-        if (cam == null || mouse == null) return false;
+        if (cam == null || pointAction.controls.Count == 0) return false;   // 포인터 장치가 없음
 
-        Ray ray = cam.ScreenPointToRay(mouse.position.ReadValue());
+        Ray ray = cam.ScreenPointToRay(pointAction.ReadValue<Vector2>());
 
         if (Physics.Raycast(ray, out RaycastHit hit, 500f, GroundLayer, QueryTriggerInteraction.Ignore))
         {

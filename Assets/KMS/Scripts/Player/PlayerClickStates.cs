@@ -47,6 +47,13 @@ public abstract class PlayerStateBase : IState<PlayerStateType, PlayerClickFSM>
     {
         if (!TryStartMove(player)) player.SetState(PlayerStateType.Idle);
     }
+
+    // 상호작용 입력이 있으면 주변 대상과 상호작용. 상태 전환은 하지 않는다 (Idle·Move에서만 호출)
+    protected void TryInteract(PlayerClickFSM player)
+    {
+        if (player.Input.ConsumeInteract() && player.Interactor != null)
+            player.Interactor.Interact();
+    }
 }
 
 // ─────────────────────────────────────────────
@@ -67,6 +74,7 @@ public class PlayerIdleState : PlayerStateBase
     {
         base.Update(player);
 
+        TryInteract(player);
         if (TryStartAction(player)) return;
         if (TryStartMove(player)) return;
 
@@ -92,6 +100,7 @@ public class PlayerMoveState : PlayerStateBase
     {
         base.Update(player);
 
+        TryInteract(player);
         if (TryStartAction(player)) return;
         TryStartMove(player);   // 이동 중 다시 우클릭하면 목적지만 갱신
 
