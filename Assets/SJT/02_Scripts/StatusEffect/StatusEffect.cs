@@ -4,6 +4,7 @@ public sealed class StatusEffect
 {
     private StatusEffectData statusEffectData;
     private IStatusBehavior statusBehavior;
+    private Entity target;
     private int stackCount;
     private float remainingDuration;
     private float tickTimer;
@@ -14,16 +15,41 @@ public sealed class StatusEffect
     }
 
     // 초기 상태 등록 시 초기화
-    public bool Initialize(StatusEffectType seType)
+    public bool Initialize(StatusEffectType seType, Entity target)
     {
-        statusEffectData = StatusEffectManager.Instance.GetSOData(seType);
-        statusBehavior = StatusEffectManager.Instance.GetStatusBehavior(seType);
+        Reset();
+
+        if (target == null || seType == StatusEffectType.None)
+        {
+            return false;
+        }
+
+        StatusEffectManager manager = StatusEffectManager.Instance;
+        if (manager == null)
+        {
+#if UNITY_EDITOR
+            Debug.LogError("[StatusEffect] StatusEffectManager가 준비되지 않았습니다.", target);
+#endif
+            return false;
+        }
+
+        statusEffectData = manager.GetSOData(seType);
+        statusBehavior = manager.GetStatusBehavior(seType);
 
         if (statusEffectData == null || statusBehavior == null)
         {
             return false;
         }
 
+        if (statusEffectData.MaxStackCount < 1)
+        {
+#if UNITY_EDITOR
+            Debug.LogError("[StatusEffect] 최대 중첩 수는 1 이상이어야 합니다.", statusEffectData);
+#endif
+            return false;
+        }
+
+        this.target = target;
         stackCount = 1;
         tickTimer = 0f;
         return true;
@@ -41,6 +67,7 @@ public sealed class StatusEffect
     {
         statusEffectData = null;
         statusBehavior = null;
+        target = null;
         stackCount = 0;
         remainingDuration = 0f;
         tickTimer = 0f;
@@ -129,6 +156,13 @@ public sealed class StatusEffect
     }
 
     public StatusEffectType Type => statusEffectData.StatusEffectType; // 현재 상태의 종류이다. 
+
+    /// <summary>상태 효과가 적용되는 대상을 반환한다.</summary>
+    public Entity Target => target;
+
+    /// <summary>중첩 하나당 한 번의 주기 발동에 적용할 피해량을 반환한다.</summary>
+    public int TickDamagePerStack => statusEffectData.TickDamagePerStack;
+
     public float TickSec => statusEffectData.TickSec;
     public int StackCount => stackCount;
 }
