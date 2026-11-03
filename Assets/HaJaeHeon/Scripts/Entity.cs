@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class Entity : MonoBehaviour
 {
+    protected int entityId;
+
     protected int currentHp;
 
     public int CurrentHp
@@ -49,7 +51,7 @@ public class Entity : MonoBehaviour
         if (CurrentHp <= 0)
         {
             isDie = true;
-            Debug.Log("Entity 사망");
+            OnDie();
         }
 
         Debug.Log($"데미지 계산 후 HP : {CurrentHp}");
@@ -71,5 +73,15 @@ public class Entity : MonoBehaviour
     public virtual void Take10Damage()
     {
         TakeDamage(10);
+    }
+
+    protected virtual void OnDie()
+    {
+        Debug.Log("Entity 사망");
+    }
+
+    protected virtual int GetId()
+    {
+        return entityId;
     }
 }

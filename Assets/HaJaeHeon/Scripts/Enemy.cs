@@ -1,5 +1,6 @@
 using Unity.Behavior;
 using UnityEngine;
+using UnityEngine.LightTransport;
 
 [RequireComponent(typeof(BehaviorGraphAgent))]
 public class Enemy : Entity
@@ -7,7 +8,7 @@ public class Enemy : Entity
     [SerializeField] private BehaviorGraphAgent behaviorGraphAgent;
     [SerializeField] private GameObject target;
 
-    protected EnemyDataSO enemySO
+    protected EnemyDataSO monsterSO
     {
         get { return so as EnemyDataSO; }
     }
@@ -28,5 +29,15 @@ public class Enemy : Entity
     public override bool CheckDie()
     {
         return base.CheckDie();
+    }
+
+    protected override int GetId()
+    {
+        return monsterSO.GetMonsterId();
+    }
+
+    protected override void OnDie()
+    {
+        DropItemManager.Instance.SpawnDropItem(GetId());
     }
 }

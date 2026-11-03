@@ -12,10 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 864150b1474b29c46b25acae04f4cdbc, type: 3}
   m_Name: "\uB808\uB4DC \uB4DC\uB798\uACE4"
   m_EditorClassIdentifier: Assembly-CSharp::MonsterDataSO
+  hp: 450
+  maxHp: 450
   monster_id: 42003
   monster_name: "\uB808\uB4DC \uB4DC\uB798\uACE4"
   kind: 1
-  hp: 450
   atk: 30
   speed: 2
   zone_id: 3
@@ -23,3 +24,6 @@ MonoBehaviour:
   drop_id: 25041
   drop_name: "\uC6A9\uC758 \uBE44\uB298"
   behaviour: "\uD654\uC5FC\uAD6C, \uBE44\uC0C1, \uBE0C\uB808\uC2A4, \uCC29\uC9C0"
+  detectRange: 0
+  attackDamage: 0
+  behaviourGraph: {fileID: 0}
