@@ -1,3 +1,4 @@
+using Unity.Behavior;
 using UnityEngine;
 
 public class Entity : MonoBehaviour

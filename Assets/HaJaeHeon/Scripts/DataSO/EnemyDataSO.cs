@@ -58,4 +58,9 @@ public class EnemyDataSO : EntityDataSO
     {
         return enemyPrefab;
     }
+
+    public BehaviorGraph GetBehaviorGraph()
+    {
+        return behaviourGraph;
+    }
 }

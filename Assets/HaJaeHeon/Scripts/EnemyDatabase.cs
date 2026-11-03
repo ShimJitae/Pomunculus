@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Unity.Behavior;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "EnemyDatabase", menuName = "Scriptable Objects/EnemyDatabase")]
@@ -87,5 +88,8 @@ public class EnemyDatabase : ScriptableObject
         GameObject prefab = data[value].GetEnemyPrefab();
 
         GameObject enemyObject = GameObject.Instantiate(prefab, spawnTransform.position, spawnTransform.rotation);
+
+        GameObject target = PoolEnemy.Instance.player;
+        enemyObject.GetComponent<Enemy>().SetTarget(target);
     }
 }
