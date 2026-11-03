@@ -2,20 +2,14 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Serialization;
 
-/// <summary>
-/// NavMeshAgent 이동과 회전 담당.
-/// 이동은 NavMeshAgent가 담당하므로 CharacterController는 사용하지 않는다.
-/// </summary>
+// NavMeshAgent 이동과 회전 담당.
 [RequireComponent(typeof(NavMeshAgent))]
 public class PlayerMotor : MonoBehaviour
 {
-    [FormerlySerializedAs("moveSpeed")]
+    
     public float MoveSpeed = 5f;
-    [FormerlySerializedAs("acceleration")]
     public float Acceleration = 60f;          // 기본값 8은 액션 게임엔 너무 굼뜸
-    [FormerlySerializedAs("rotateSpeed")]
     public float RotateSpeed = 900f;          // 초당 회전 각도 (회전은 코드가 직접 처리)
-    [FormerlySerializedAs("stoppingDistance")]
     public float StoppingDistance = 0.1f;
 
     private NavMeshAgent agent;

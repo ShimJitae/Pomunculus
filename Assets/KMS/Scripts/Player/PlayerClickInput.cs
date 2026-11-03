@@ -9,17 +9,11 @@ using UnityEngine.Serialization;
 /// </summary>
 public class PlayerClickInput : MonoBehaviour
 {
-    [FormerlySerializedAs("holdRepathInterval")]
     public float HoldRepathInterval = 0.1f;   // 우클릭 홀드 시 목적지 갱신 간격
-    [FormerlySerializedAs("navSampleRadius")]
     public float NavSampleRadius = 2f;        // 클릭 지점을 NavMesh 위로 보정하는 범위
-    [Tooltip("마우스 레이캐스트 대상. 바닥 레이어만 지정하는 것을 권장")]
-    [FormerlySerializedAs("groundLayer")]
-    public LayerMask GroundLayer = ~0;
-    [Tooltip("선택: 클릭 위치에 표시할 오브젝트 (파티클 등, 씬에 하나 두고 재사용)")]
-    [FormerlySerializedAs("moveMarker")]
+    public LayerMask GroundLayer;
+    [Tooltip("클릭 위치에 표시할 오브젝트")]
     public GameObject MoveMarker;
-    [FormerlySerializedAs("inputBufferTime")]
     public float InputBufferTime = 0.15f;
 
     public bool HasPendingMove { get; private set; }     // 아직 처리되지 않은 우클릭 이동 명령
@@ -37,7 +31,7 @@ public class PlayerClickInput : MonoBehaviour
     {
         Mouse mouse = Mouse.current;
         Keyboard keyboard = Keyboard.current;
-        if (mouse == null) return;   // 마우스가 없는 환경 (모바일 등)
+        if (mouse == null) return;
 
         // 우클릭: 이동 명령. 누르고 있으면 일정 간격으로 목적지 갱신
         bool rightDown = mouse.rightButton.wasPressedThisFrame;

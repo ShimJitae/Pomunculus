@@ -16,28 +16,19 @@ using UnityEngine.Serialization;
 public class PlayerClickFSM : MonoBehaviour
 {
     [Header("공격 (던지기)")]
-    [FormerlySerializedAs("attackDuration")]
     public float AttackDuration = 0.5f;       // 던지기 상태 전체 길이
-    [FormerlySerializedAs("throwReleaseTime")]
     public float ThrowReleaseTime = 0.2f;     // 손에서 떠나는 시점
-    [FormerlySerializedAs("attackCancelTime")]
     public float AttackCancelTime = 0.3f;     // 이후 회피/재공격/이동으로 캔슬 가능 (releaseTime보다 커야 함)
 
     [Header("회피")]
-    [FormerlySerializedAs("dodgeSpeed")]
-    public float DodgeSpeed = 12f;
-    [FormerlySerializedAs("dodgeDuration")]
+    public float DodgeSpeed = 7f;
     public float DodgeDuration = 0.35f;
-    [FormerlySerializedAs("dodgeInvincibleTime")]
     public float DodgeInvincibleTime = 0.25f;
-    [FormerlySerializedAs("dodgeCooldown")]
     public float DodgeCooldown = 0.5f;
 
     [Header("피격")]
-    [FormerlySerializedAs("hitStunDuration")]
     public float HitStunDuration = 0.4f;
-    [FormerlySerializedAs("knockbackSpeed")]
-    public float KnockbackSpeed = 6f;
+    public float KnockbackSpeed = 3f;
 
     [Header("디버그")]
     [SerializeField] private PlayerStateType currentStateView;
