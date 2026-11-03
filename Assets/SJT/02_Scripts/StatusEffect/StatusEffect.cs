@@ -3,6 +3,7 @@ using UnityEngine;
 public sealed class StatusEffect
 {
     private StatusEffectData statusEffectData;
+    private IStatusBehavior statusBehavior;
     private int stackCount;
     private float remainingDuration;
     private float tickTimer;
@@ -13,18 +14,33 @@ public sealed class StatusEffect
     }
 
     // 초기 상태 등록 시 초기화
-    public void Initialize(StatusEffectData data)
+    public bool Initialize(StatusEffectType seType)
     {
-        statusEffectData = data;
+        statusEffectData = StatusEffectManager.Instance.GetSOData(seType);
+        statusBehavior = StatusEffectManager.Instance.GetStatusBehavior(seType);
+
+        if (statusEffectData == null || statusBehavior == null)
+        {
+            return false;
+        }
+
         stackCount = 1;
-        remainingDuration = statusEffectData.Duration;
         tickTimer = 0f;
+        return true;
+    }
+
+    /// <summary>활성 목록에 등록된 상태의 최초 동작을 실행한다.</summary>
+    public void Register()
+    {
+        statusBehavior.OnRegistered(this);
+        remainingDuration = statusEffectData.Duration;
     }
 
     // 상태이상 풀에 반납하기 전에 SO 참조·중첩·타이머 등을 초기화
     public void Reset()
     {
         statusEffectData = null;
+        statusBehavior = null;
         stackCount = 0;
         remainingDuration = 0f;
         tickTimer = 0f;
@@ -50,6 +66,9 @@ public sealed class StatusEffect
         {
             stackCount++;
         }
+
+        statusBehavior.OnReapply(this);
+        remainingDuration = statusEffectData.Duration;
     }
 
     /// <summary>
@@ -71,12 +90,12 @@ public sealed class StatusEffect
         if (tickTimer >= statusEffectData.TickSec)
         {
             tickTimer = 0f;
+            statusBehavior.OnTick(this);
             return true;
         }
 
         return false;
     }
-
 
     /// <summary>
     /// 상태 이상의 지속 시간을 계산
@@ -103,7 +122,13 @@ public sealed class StatusEffect
         return false;
     }
 
-    public int StatusId => statusEffectData.StatusId;
+    /// <summary>상태가 적용한 효과를 해제한다.</summary>
+    public void Remove()
+    {
+        statusBehavior.OnRemove(this);
+    }
+
+    public StatusEffectType Type => statusEffectData.StatusEffectType; // 현재 상태의 종류이다. 
     public float TickSec => statusEffectData.TickSec;
     public int StackCount => stackCount;
 }
