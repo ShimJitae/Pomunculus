@@ -7,7 +7,7 @@ public class EntityDataSO : ScriptableObject
     [SerializeField] protected int hp;
     [SerializeField] protected int maxHp;
 
-    [SerializeField] protected List<DroptableDataSO> dropList = new();
+    //[SerializeField] protected List<DroptableDataSO> dropList = new();
 
     public int GetHp()
     {

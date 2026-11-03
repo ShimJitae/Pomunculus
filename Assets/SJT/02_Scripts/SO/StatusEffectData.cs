@@ -12,8 +12,8 @@ public class StatusEffectData : ScriptableObject
     [Tooltip("화상, 냉기 등 화면에 표시할 상태 이름")]
     [SerializeField] private string stateName;
 
-    [Tooltip("최대 중첩 수. -1이면 무제한")]
-    [SerializeField] private int maxStackCount = -1;
+    [Tooltip("최대 중첩 수.")]
+    [SerializeField] private int maxStackCount = 1;
 
     [Min(0f)]
     [Tooltip("상태 효과의 총 지속 시간. 단위는 초")]
