@@ -22,5 +22,7 @@ namespace Pomunculus.Items
 
         [Header("아이콘")]
         public Sprite Icon;
+
+        public GameObject Prefab;
     }
 }
