@@ -3,9 +3,9 @@ using UnityEngine;
 
 public class StatusEffectController : MonoBehaviour
 {
+    [SerializeField] private Entity entity; // 같은 오브젝트에 있는 Entity를 참조.
     private List<StatusEffect> activeStatusEffects;
     [SerializeField] private int activeStatusEffectsCapacity = 20; // 초기 상태 효과 갯수
-    [SerializeField] private Entity entity; // 상태 효과를 적용할 엔티티
 
     private void Awake()
     {
@@ -34,9 +34,11 @@ public class StatusEffectController : MonoBehaviour
             bool isExpired = activeStatusEffects[i].AdvanceTime(Time.deltaTime);
             if (isExpired)
             {
-                // 상태 지속 시간이 끝나면 풀에 반납 및 리스트에서 제거
-                StatusEffectPool.Return(activeStatusEffects[i]);
+                StatusEffect effect = activeStatusEffects[i];
+
                 activeStatusEffects.RemoveAt(i);
+                effect.Remove();
+                StatusEffectPool.Return(effect);
                 continue;
             }
 
@@ -50,8 +52,24 @@ public class StatusEffectController : MonoBehaviour
 
     public void RegisterStatusEffect(StatusEffectType seType)
     {
+        for (int i = 0; i < activeStatusEffects.Count; i++)
+        {
+            if (activeStatusEffects[i].Type == seType)
+            {
+                activeStatusEffects[i].Reapply();
+                return;
+            }
+        }
+
         StatusEffect statusEffect = StatusEffectPool.Get();
-        statusEffect.Initialize(seType);
+
+        if (!statusEffect.Initialize(seType))
+        {
+            StatusEffectPool.Return(statusEffect);
+            return;
+        }
+
+        statusEffect.Register();
         activeStatusEffects.Add(statusEffect);
     }
 }

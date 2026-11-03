@@ -29,4 +29,16 @@ public class StatusEffectManager : MonoBehaviour
         }
         return data;
     }
+
+    public IStatusBehavior GetStatusBehavior(StatusEffectType seType)
+    {
+        if (!statusEffectDatabase.TryGetBehavior(seType, out IStatusBehavior behavior))
+        {
+#if UNITY_EDITOR
+            Debug.LogError($"[StatusEffectManager] statusEffectDatabase에서 {seType}에 해당하는 행동을 찾을 수 없습니다.", this);
+#endif
+            return null;
+        }
+        return behavior;
+    }
 }
