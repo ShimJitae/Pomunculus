@@ -18,6 +18,7 @@ public class Enemy : Entity
 
     protected override void OnEnable()
     {
+
         base.OnEnable();
     }
 
