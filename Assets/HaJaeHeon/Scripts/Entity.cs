@@ -3,7 +3,9 @@ using UnityEngine;
 
 public class Entity : MonoBehaviour
 {
-    private int currentHp;
+    protected int entityId;
+
+    protected int currentHp;
 
     public int CurrentHp
     {
@@ -16,6 +18,8 @@ public class Entity : MonoBehaviour
             currentHp = Mathf.Clamp(value, 0, so.GetMaxHp());
         }
     }
+
+    [SerializeField] protected float moveSpeed;
     
     [SerializeField] protected bool isDie;
     [SerializeField] protected EntityDataSO so;
@@ -40,16 +44,44 @@ public class Entity : MonoBehaviour
             return;
         }
 
+        Debug.Log($"현재 HP : {CurrentHp} / 데미지 >> {damage}");
+
         CurrentHp -= damage;
 
         if (CurrentHp <= 0)
         {
             isDie = true;
+            OnDie();
         }
+
+        Debug.Log($"데미지 계산 후 HP : {CurrentHp}");
     }
 
     public virtual bool CheckDie()
     {
         return isDie;
+    }
+
+    [ContextMenu("사망 시키기")]
+    public virtual void KillEntity()
+    {
+        int damage = so.GetMaxHp();
+        TakeDamage(damage);
+    }
+
+    [ContextMenu("10씩 데미지 입히기")]
+    public virtual void Take10Damage()
+    {
+        TakeDamage(10);
+    }
+
+    protected virtual void OnDie()
+    {
+        Debug.Log("Entity 사망");
+    }
+
+    protected virtual int GetId()
+    {
+        return entityId;
     }
 }
