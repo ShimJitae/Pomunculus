@@ -6,7 +6,7 @@ public class EnemyDatabase : ScriptableObject
 {
     [SerializeField] private List<EnemyDataSO> data = new();
 
-    private Dictionary<int, EnemyDataSO> monster = new();
+    private Dictionary<int, EnemyDataSO> enemy = new();
 
     private void OnEnable()
     {
@@ -15,17 +15,32 @@ public class EnemyDatabase : ScriptableObject
 
     private void InitDatabase()
     {
-        monster.Clear();
+        enemy.Clear();
 
-        foreach (EnemyDataSO m in data)
+        for (int i = 0; i < data.Count; i++)
         {
-            monster.Add(m.GetMonsterId(), m);
+            EnemyDataSO so = data[i];
+
+            if (so == null)
+                continue;
+
+            int enemyId = so.GetEnemyId();
+
+            if (enemyId <= 0 || !enemy.TryAdd(enemyId, so))
+                continue;
+
+            Debug.Log($"키 : {enemyId} / 밸류 : {enemy.Values}");
         }
+
+        //foreach (EnemyDataSO m in data)
+        //{
+        //    enemy.Add(m.GetEnemyId(), m);
+        //}
     }
 
     public EnemyDataSO TryGetDataSO(int monsterId)
     {
-        if (monster.TryGetValue(monsterId, out EnemyDataSO so))
+        if (enemy.TryGetValue(monsterId, out EnemyDataSO so))
         {
             return so;
         }
@@ -36,7 +51,7 @@ public class EnemyDatabase : ScriptableObject
 
     public int TryGetDropItemID(int monsterId)
     {
-        if (monster.TryGetValue(monsterId, out EnemyDataSO so))
+        if (enemy.TryGetValue(monsterId, out EnemyDataSO so))
         {
             return so.GetDropId();
         }
@@ -47,7 +62,7 @@ public class EnemyDatabase : ScriptableObject
 
     public string TryGetDropItemName(int monsterId)
     {
-        if (monster.TryGetValue(monsterId, out EnemyDataSO so))
+        if (enemy.TryGetValue(monsterId, out EnemyDataSO so))
         {
             return so.GetDropName();
         }
@@ -59,10 +74,10 @@ public class EnemyDatabase : ScriptableObject
     [ContextMenu("DB확인")]
     public void ShowDB()
     {
-        Debug.Log($"원본 목록: {data.Count}개 / 조회용 사전: {monster.Count}개");
-        foreach (var entry in monster)
+        Debug.Log($"원본 목록: {data.Count}개 / 조회용 사전: {enemy.Count}개");
+        foreach (var entry in enemy)
         {
-            Debug.Log($"ID : {entry.Key} / SO이름 : {entry.Value.name} / Value : {entry.Value}");
+            Debug.Log($"ID : {entry.Key} / SO이름 : {entry.Value.name}");
         }
     }
 }

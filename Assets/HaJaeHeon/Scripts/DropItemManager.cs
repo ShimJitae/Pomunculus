@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
@@ -5,6 +6,8 @@ using UnityEngine;
 public class DropItemManager : SingletonBehavior<DropItemManager>
 {
     public EnemyDatabase monsterDatabase;
+
+    public event Action<int> OnDropItem;
 
     [ContextMenu("DB확인")]
     public void ShowDB()
@@ -25,12 +28,22 @@ public class DropItemManager : SingletonBehavior<DropItemManager>
 
     public void SpawnDropItem(int monsterId)
     {
-        if(monsterId == -1)
+        if(monsterDatabase == null || monsterId <= 0 || monsterDatabase.TryGetDataSO(monsterId) == null)
         {
-            Debug.Log("dropId 가 잘못되었습니다.");
+            Debug.Log("spawn에서 잘못됨");
             return;
         }
 
-        Debug.Log($"아이템 ID : {monsterDatabase.TryGetDropItemID(monsterId)} / 아이템 이름 : {monsterDatabase.TryGetDropItemName(monsterId)} >> 아이템 소환 /소환 로직 구현 추가되면 넣을 예정");
+        int dropId = monsterDatabase.TryGetDropItemID(monsterId);
+        string dropName = monsterDatabase.TryGetDropItemName(monsterId);
+
+        if(dropId <= 0 || dropName == null)
+        {
+            Debug.Log("db에서 가져오는데 잘못됨");
+            return;
+        }
+
+        OnDropItem?.Invoke(dropId);
+        Debug.Log($"아이템 ID : {dropId} / 아이템 이름 : {dropName} >> 아이템 소환 /소환 로직 구현 추가되면 넣을 예정");
     }
 }

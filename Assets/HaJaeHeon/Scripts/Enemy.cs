@@ -33,7 +33,7 @@ public class Enemy : Entity
 
     protected override int GetId()
     {
-        return monsterSO.GetMonsterId();
+        return monsterSO.GetEnemyId();
     }
 
     protected override void OnDie()
