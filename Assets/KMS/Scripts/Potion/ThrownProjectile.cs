@@ -25,11 +25,17 @@ public class ThrownProjectile : MonoBehaviour
     private readonly Collider[] hitBuffer = new Collider[16];
     private readonly HashSet<IDamageable> hitTargets = new HashSet<IDamageable>();
 
+    [Header("회전 (던질 때 한 번만 랜덤으로 정함)")]
+    public Vector2 spinSpeedRange = new Vector2(540f, 900f);
+    [Range(0f, 1f)] public float spinRandomness = 0.3f;
+    public bool randomSpinDirection = false;
+
     void Awake()
     {
         rb = GetComponent<Rigidbody>();
         rb.useGravity = true;
         rb.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;   // 빠른 투사체 관통 방지
+
     }
 
     public void Launch(Vector3 velocity, int damage, LayerMask damageLayer, GameObject thrower)
@@ -45,7 +51,26 @@ public class ThrownProjectile : MonoBehaviour
 
         rb.linearVelocity = velocity;
 
+        ApplyRandomSpin(velocity);
+
         Destroy(gameObject, MaxLifeTime);   // 맵 밖으로 떨어진 경우 대비
+    }
+
+    void ApplyRandomSpin(Vector3 velocity)
+    {
+        Vector3 tumbleAxis = Vector3.Cross(Vector3.up, velocity);
+        tumbleAxis = tumbleAxis.sqrMagnitude > 0.0001f
+            ? tumbleAxis.normalized
+            : Random.onUnitSphere;
+
+        Vector3 axis = Vector3.Slerp(tumbleAxis, Random.onUnitSphere, spinRandomness).normalized;
+        if (randomSpinDirection && Random.value < 0.5f) axis = -axis;
+
+        float speedRad = Random.Range(spinSpeedRange.x, spinSpeedRange.y) * Mathf.Deg2Rad;
+
+        // 기본 최대 회전 속도(7 rad/s ≈ 초당 400도)에 막히지 않도록 한도를 올림
+        rb.maxAngularVelocity = Mathf.Max(rb.maxAngularVelocity, speedRad);
+        rb.angularVelocity = axis * speedRad;
     }
 
     void OnCollisionEnter(Collision collision)

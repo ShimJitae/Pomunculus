@@ -19,6 +19,7 @@ public class PlayerThrower : MonoBehaviour
     [FormerlySerializedAs("enemyLayer")]
     public LayerMask EnemyLayer;
 
+    // 목표 지점이 최대 사거리 밖이면 같은 방향의 사거리 끝으로 당긴다 (높이는 유지)
     public Vector3 ClampToThrowRange(Vector3 target)
     {
         Vector3 flat = target - transform.position;
@@ -30,25 +31,36 @@ public class PlayerThrower : MonoBehaviour
         return clamped;
     }
 
+    // 발사 위치. ThrowOrigin이 없으면 머리 높이
+    public Vector3 GetThrowOrigin()
+    {
+        return ThrowOrigin != null
+            ? ThrowOrigin.position
+            : transform.position + Vector3.up * 1.5f;
+    }
+
+    // 목표 지점에 정확히 떨어지는 초기 속도와 체공 시간을 계산
+    public Vector3 CalculateLaunchVelocity(Vector3 origin, Vector3 target, out float flightTime)
+    {
+        Vector3 toTarget = target - origin;
+        float horizontalDist = new Vector2(toTarget.x, toTarget.z).magnitude;
+        flightTime = Mathf.Max(MinFlightTime, horizontalDist / ThrowHorizontalSpeed);
+
+        // 등가속도 운동: target = origin + v*t + 0.5*g*t²  →  v = (target - origin)/t - 0.5*g*t
+        return toTarget / flightTime - 0.5f * flightTime * Physics.gravity;
+    }
+
     // 목표 지점에 정확히 떨어지는 포물선 속도로 투사체 발사
     public void ThrowProjectile(Vector3 target)
     {
         if (ProjectilePrefab == null)
         {
-            Debug.LogWarning("[PlayerFSM] projectilePrefab이 지정되지 않았습니다.");
+            Debug.LogWarning("[PlayerThrower] ProjectilePrefab이 지정되지 않았습니다.");
             return;
         }
 
-        Vector3 origin = ThrowOrigin != null
-            ? ThrowOrigin.position
-            : transform.position + Vector3.up * 1.5f;
-
-        Vector3 toTarget = target - origin;
-        float horizontalDist = new Vector2(toTarget.x, toTarget.z).magnitude;
-        float flightTime = Mathf.Max(MinFlightTime, horizontalDist / ThrowHorizontalSpeed);
-
-        // 등가속도 운동: target = origin + v*t + 0.5*g*t²  →  v = (target - origin)/t - 0.5*g*t
-        Vector3 velocity = toTarget / flightTime - 0.5f * flightTime * Physics.gravity;
+        Vector3 origin = GetThrowOrigin();
+        Vector3 velocity = CalculateLaunchVelocity(origin, target, out _);
 
         ThrownProjectile projectile = Instantiate(ProjectilePrefab, origin, Quaternion.identity);
         projectile.Launch(velocity, AttackDamage, EnemyLayer, gameObject);
