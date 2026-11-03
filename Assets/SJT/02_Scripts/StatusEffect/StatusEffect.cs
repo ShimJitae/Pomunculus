@@ -25,6 +25,7 @@ public sealed class StatusEffect
         }
 
         stackCount = 1;
+        remainingDuration = statusEffectData.Duration;
         tickTimer = 0f;
         return true;
     }
@@ -96,6 +97,7 @@ public sealed class StatusEffect
 
         return false;
     }
+
 
     /// <summary>
     /// 상태 이상의 지속 시간을 계산
