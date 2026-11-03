@@ -1,4 +1,3 @@
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class Entity : MonoBehaviour
@@ -23,7 +22,7 @@ public class Entity : MonoBehaviour
         {
             return currentHp;
         }
-        private set
+        protected set
         {
             currentHp = Mathf.Clamp(value, 0, so.GetMaxHp());
         }
