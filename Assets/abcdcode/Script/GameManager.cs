@@ -1,4 +1,5 @@
 using System;
+using Photon.Pun;
 using UnityEngine;
 public class GameManager : SingletonBehavior<GameManager>
 {
@@ -7,6 +8,8 @@ public class GameManager : SingletonBehavior<GameManager>
         base.Awake();
         UserProfileInit();
         NetworkManager.Instance.Init();
+        PhotonNetwork.PrefabPool = new NetworkPrefabPool(Resources.Load<NetworkPrefabCatalog>("NetworkPrefabCatalog"));
+
     }
     public void UserProfileInit()
     {
