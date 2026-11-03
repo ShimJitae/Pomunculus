@@ -7,8 +7,8 @@ public class PlayerMotor : MonoBehaviour
 {
 
     public float MoveSpeed = 5f;
-    public float Acceleration = 60f;          // 기본값 8은 액션 게임엔 너무 굼뜸
-    public float RotateSpeed = 900f;          // 초당 회전 각도 (회전은 코드가 직접 처리)
+    public float Acceleration = 60f;          
+    public float RotateSpeed = 900f;          
     public float StoppingDistance = 0.1f;
 
     private NavMeshAgent agent;
@@ -20,8 +20,8 @@ public class PlayerMotor : MonoBehaviour
         agent.speed = MoveSpeed;
         agent.acceleration = Acceleration;
         agent.stoppingDistance = StoppingDistance;
-        agent.updateRotation = false;   // 던질 때 즉시 회전해야 하므로 회전은 직접 처리
-        agent.autoBraking = true;
+        agent.updateRotation = false;
+        agent.autoBraking = false;
     }
 
     bool AgentReady => agent.enabled && agent.isOnNavMesh;
@@ -40,7 +40,7 @@ public class PlayerMotor : MonoBehaviour
         if (!AgentReady) return;
         agent.isStopped = true;
         agent.ResetPath();
-        agent.velocity = Vector3.zero;   // 관성으로 미끄러지지 않게
+        agent.velocity = Vector3.zero;
     }
 
     // 경로 계산이 끝났고 목적지에 도착했는지
