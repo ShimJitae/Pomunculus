@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class Entity : MonoBehaviour
 {
-    private int currentHp;
+    protected int currentHp;
 
     public int CurrentHp
     {
@@ -16,6 +16,8 @@ public class Entity : MonoBehaviour
             currentHp = Mathf.Clamp(value, 0, so.GetMaxHp());
         }
     }
+
+    [SerializeField] protected float moveSpeed;
     
     [SerializeField] protected bool isDie;
     [SerializeField] protected EntityDataSO so;
