@@ -8,7 +8,7 @@ using UnityEngine;
 
 public class PacketData
 {
-    private static List<byte> buffer = new List<byte>();
+    private List<byte> buffer = new List<byte>();
     
     public PacketData()
     {
@@ -29,7 +29,8 @@ public class PacketData
 }
     public void Write<T>(T value) where T : unmanaged
 {
-    Span<T> span = new T[] { value };
+    Span<T> span = stackalloc T[1];
+    span[0] = value;
     Write(MemoryMarshal.AsBytes(span));
 }
 
@@ -129,6 +130,10 @@ public int ReadInt()
     public Vector2 ReadVector2()
     {
         return new Vector2(this,this);
+    }
+    public Vector3 ReadVector3()
+    {
+        return new Vector3(this,this,this);
     }
     public string ReadString()
 	{

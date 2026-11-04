@@ -3,8 +3,8 @@ using UnityEngine;
 
 public class StateMachine<TEnum, TOwner> where TEnum : System.Enum
 {
-    private readonly Dictionary<TEnum, IState<TEnum, TOwner>> states = new Dictionary<TEnum, IState<TEnum, TOwner>>();
-    private readonly TOwner owner;
+    readonly Dictionary<TEnum, IState<TEnum, TOwner>> states = new Dictionary<TEnum, IState<TEnum, TOwner>>();
+    readonly TOwner owner;
 
     public IState<TEnum, TOwner> CurrentState { get; private set; }
     public bool HasState => CurrentState != null;
