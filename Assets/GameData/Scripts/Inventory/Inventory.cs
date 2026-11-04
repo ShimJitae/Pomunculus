@@ -6,20 +6,22 @@ namespace Pomunculus.Items
     public class Inventory : MonoBehaviour
     {
         [SerializeField] private List<InventorySlot> slots = new List<InventorySlot>();
+        public event System.Action Changed;
         public void AddItem(int itemId, int amount = 1)
         {
             if (itemId <= 0 || amount <= 0)
                 return;
-
             foreach (InventorySlot slot in slots)
             {
                 if (slot.ItemId == itemId)
                 {
                     slot.Amount += amount;
+                    Changed?.Invoke();
                     return;
                 }
             }
             slots.Add(new InventorySlot(itemId, amount));
+            Changed?.Invoke();
         }
         public int GetItemCount(int itemId)
         {
@@ -51,6 +53,7 @@ namespace Pomunculus.Items
                 if (slot.Amount == 0)
                     slots.RemoveAt(i);
 
+                Changed?.Invoke();
                 return true;
             }
             return false;
