@@ -1,4 +1,3 @@
-using Unity.Behavior;
 using UnityEngine;
 
 [RequireComponent(typeof(StatusEffectController))]

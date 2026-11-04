@@ -30,23 +30,24 @@ public class Enemy : Entity
 
         behaviorGraphAgent.Graph = enemySO.GetBehaviorGraph();
         CurrentHp = enemySO.GetHp();
+        moveSpeed = enemySO.GetSpeed();
         isDie = CurrentHp <= 0;
     }
 
-    public override void TakeDamage(int damage)
-    {
-        base.TakeDamage(damage);
-    }
+    //public override void TakeDamage(int damage)
+    //{
+    //    base.TakeDamage(damage);
+    //}
 
-    public override bool CheckDie()
-    {
-        return base.CheckDie();
-    }
+    //public override bool CheckDie()
+    //{
+    //    return base.CheckDie();
+    //}
 
-    protected override int GetId()
-    {
-        return enemySO.GetEnemyId();
-    }
+    //protected override int GetId()
+    //{
+    //    return enemySO.GetEnemyId();
+    //}
 
     protected override void OnDie()
     {
