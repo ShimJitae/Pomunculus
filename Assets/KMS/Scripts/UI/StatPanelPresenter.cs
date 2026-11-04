@@ -1,14 +1,14 @@
 using System;
 
-public class PlayerHUDPresenter : IDisposable
+public class StatPanelPresenter : IDisposable
 {
     // Model
     private readonly PlayerStats stats;
 
     // View
-    private readonly IPlayerHUDView view;
+    private readonly IStatPanelView view;
 
-    public PlayerHUDPresenter(PlayerStats stats, IPlayerHUDView view)
+    public StatPanelPresenter(PlayerStats stats, IStatPanelView view)
     {
         this.stats = stats;
         this.view = view;
