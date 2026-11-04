@@ -1,4 +1,3 @@
-using Unity.VisualScripting;
 using UnityEngine;
 
 [RequireComponent(typeof(StatusEffectController))]
@@ -35,7 +34,7 @@ public class Entity : MonoBehaviour
         {
             return currentHp;
         }
-        private set
+        protected set
         {
             currentHp = Mathf.Clamp(value, 0, so.GetMaxHp());
         }

@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "MonsterDatabase", menuName = "Scriptable Objects/MonsterDatabase")]
+[CreateAssetMenu(fileName = "EnemyDatabase", menuName = "Scriptable Objects/EnemyDatabase")]
 public class EnemyDatabase : ScriptableObject
 {
     [SerializeField] private List<EnemyDataSO> data = new();
@@ -29,7 +29,7 @@ public class EnemyDatabase : ScriptableObject
             if (enemyId <= 0 || !enemy.TryAdd(enemyId, so))
                 continue;
 
-            Debug.Log($"키 : {enemyId} / 밸류 : {enemy.Values}");
+            //Debug.Log($"키 : {enemyId} / 밸류 : {enemy.Values}");
         }
 
         //foreach (EnemyDataSO m in data)
@@ -71,7 +71,6 @@ public class EnemyDatabase : ScriptableObject
         return null;
     }
 
-    [ContextMenu("DB확인")]
     public void ShowDB()
     {
         Debug.Log($"원본 목록: {data.Count}개 / 조회용 사전: {enemy.Count}개");
@@ -79,5 +78,14 @@ public class EnemyDatabase : ScriptableObject
         {
             Debug.Log($"ID : {entry.Key} / SO이름 : {entry.Value.name}");
         }
+    }
+
+    public void SpawnEnemy(Transform spawnTransform)
+    {
+        int value = Random.Range(0, data.Count);
+
+        GameObject prefab = data[value].GetEnemyPrefab();
+
+        GameObject enemyObject = GameObject.Instantiate(prefab, spawnTransform.position, spawnTransform.rotation);
     }
 }
