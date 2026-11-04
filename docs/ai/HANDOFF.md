@@ -58,4 +58,6 @@
 - `Volcano.unity`의 최신 결과는 `Volcano_Assembled`이며 [참고 이미지 기반 제작 기록](plans/2026-11-04-volcano-reference-build.md)을 따른다. 연속 암반·폐허·일반 용암 3곳, 중앙 28단 계단 위 보스 광장·구멍 2곳·균열 2곳·뿔 10개, 귀환 아치 1개와 표식 24개를 배치했다. 새 자산은 SJT Volcano의 `Assembled/`에 있고 기존 Main Camera를 보존했다.
 - 제작 도중 NUL 손상으로 `VolcanoMapAuthoring.cs` 오류가 발생했다. 사용자 승인으로 손상된 도구와 `ReferenceBuild`를 삭제하고 제작 전 백업에서 복구한 뒤 Unity 컴파일 통과를 확인했다. 이후 프로젝트에 제작용 C# 파일을 추가하지 않고 재제작했다. 복구 사본은 `Backups/Volcano_BeforeReferenceBuild_20261104.unity`이며 원래 씬 meta를 유지했다. 새 맵의 최종 참조·물리·저장 검사와 실제 렌더는 위 제작 기록을 따르며 이전 결과를 현재 검증으로 재사용하지 않는다. 실제 플레이어·NavMesh·용암 피해·지역 전환은 후속 범위이다.
 - 상태이상은 위 인수인계의 확정 규칙·현재 구현·미정 사항을 기준으로 이어간다. 데이터 에셋 등록·씬 연결이 완료됐다고 가정하지 않는다.
+- `Swamp.unity`에 [승인한 늪 숲과 거목 광장](plans/2026-11-04-swamp-assembly.md)을 저장했다. 루트는 `Swamp_Assembled`이며 공터 3곳과 순환길, 얕은 웅덩이 4곳, 남쪽 돌문 하나, 판자 계단과 높이 4m의 보스 광장, 배치 표식 20개가 있다. 실제 플레이 이동 시간, 스폰, 물 이동 효과, 지역 전환은 후속 범위이다.
+- `Snowy Mountain.unity`에 [설원과 암봉 광장](plans/2026-11-04-snowy-mountain-assembly.md)을 저장했다. 루트는 `SnowyMountain_Assembled`이며 돌문 하나, 설원 공터 3곳, 좌우 길과 가로 연결로, 18단 계단 위 4.5m 광장과 표식 20개가 있다. 실제 이동 시간, 지역 전환, 눈의 게임 효과는 후속 범위이다.
 - Snowy Mountain의 URP 셰이더·연기·별·눈 파티클 수정과 관련 컴파일·대표 렌더 검증을 완료했다. 과거 Synty Dungeon Map의 기반 팩 누락 조사는 [작업 계획](plans/2026-11-03-snowy-urp.md)에 남아 있지만 이번 Volcano 경로에는 해당 팩이 없고 초안에도 사용하지 않았다.

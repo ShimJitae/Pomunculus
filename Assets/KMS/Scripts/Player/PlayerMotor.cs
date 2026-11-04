@@ -5,28 +5,26 @@ using UnityEngine.AI;
 [RequireComponent(typeof(NavMeshAgent))]
 public class PlayerMotor : MonoBehaviour
 {
-
-    public float MoveSpeed = 5f;
-    public float Acceleration = 60f;          
-    public float RotateSpeed = 900f;          
-    public float StoppingDistance = 0.1f;
-
     private NavMeshAgent agent;
+    private PlayerTuningSO tuning;
+    private float baseMoveSpeed;
 
-    void Awake()
+
+    private bool AgentReady => agent.enabled && agent.isOnNavMesh;
+    public bool AgentEnabled => agent.enabled;
+
+    public void Initialize(PlayerTuningSO tuning, float baseMoveSpeed)
     {
         agent = GetComponent<NavMeshAgent>();
 
-        agent.speed = MoveSpeed;
-        agent.acceleration = Acceleration;
-        agent.stoppingDistance = StoppingDistance;
+        this.tuning = tuning;
+        this.baseMoveSpeed = baseMoveSpeed;
+        agent.speed = baseMoveSpeed;
+        agent.acceleration = tuning.Acceleration;
+        agent.stoppingDistance = tuning.StoppingDistance;
         agent.updateRotation = false;
         agent.autoBraking = false;
     }
-
-    bool AgentReady => agent.enabled && agent.isOnNavMesh;
-
-    public bool AgentEnabled => agent.enabled;
 
     public void MoveTo(Vector3 destination)
     {
@@ -66,8 +64,12 @@ public class PlayerMotor : MonoBehaviour
 
     public void FaceMoveDirection() => RotateTowards(agent.desiredVelocity);
 
+
+    // 기본 이동속도 대비 현재 속도 비율
     public float NormalizedSpeed =>
-        AgentReady ? Mathf.Clamp01(agent.velocity.magnitude / MoveSpeed) : 0f;
+        AgentReady && baseMoveSpeed > 0f
+            ? Mathf.Clamp01(agent.velocity.magnitude / baseMoveSpeed)
+            : 0f;
 
     public void SetAgentEnabled(bool enabled)
     {
@@ -90,6 +92,9 @@ public class PlayerMotor : MonoBehaviour
         Quaternion target = Quaternion.LookRotation(dir);
         transform.rotation = instant
             ? target
-            : Quaternion.RotateTowards(transform.rotation, target, RotateSpeed * Time.deltaTime);
+            : Quaternion.RotateTowards(transform.rotation, target, tuning.RotateSpeed * Time.deltaTime);
     }
+
+    // 상태이상까지 반영된 최종 이동속도를 적용한다.
+    public void SetMoveSpeed(float moveSpeed) => agent.speed = moveSpeed;
 }
