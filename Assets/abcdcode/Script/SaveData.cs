@@ -19,7 +19,7 @@ public class SaveData
             Version = GameManager.Instance.Version;
         }
     }
-    public int Version{get;private set;}
+    public int Version{get;set;}
     public JToken Data { get; set; }
     public Dictionary<string, SaveData> Child { get; set; }
 

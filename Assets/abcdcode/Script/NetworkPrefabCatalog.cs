@@ -48,7 +48,7 @@ public class NetworkPrefabCatalog : ScriptableObject
 
         var result = fromFolders
             .Concat(m_extraPrefabs)
-            .Where(go => go != null && go.GetComponent<PhotonView>() != null)
+            .Where(go => go != null && go.GetComponent<IWorldObj>() != null)
             .Distinct()
             .OrderBy(go => go.name)
             .ToList();
