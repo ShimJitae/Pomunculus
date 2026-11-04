@@ -74,13 +74,4 @@ public class RaiseEventManager : Singleton<RaiseEventManager>, IOnEventCallback
 }
 public static class RaiseEventUtil
 {
-    public static void UpdatePosition(this IWorldObj owner)
-    {
-        PacketData d = new();
-        d.Write(UPDATE_POSITION);
-        d.Write(owner.ID);
-        d.Write(owner.gameObject.transform.position);
-        RaiseEventManager.Instance.SendPacket(d);
-    }
-    public const int UPDATE_POSITION = 0;
 }

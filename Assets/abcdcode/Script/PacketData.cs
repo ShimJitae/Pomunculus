@@ -207,6 +207,7 @@ public void Save()
     public static implicit operator double(PacketData p) => p.ReadDouble();
     public static implicit operator string(PacketData p) => p.ReadString();
     public static implicit operator Vector2(PacketData p) => p.ReadVector2();
+    public static implicit operator Vector3(PacketData p) => p.ReadVector3();
 
     public static implicit operator List<bool>(PacketData p) => p.ReadList(p.ReadBool);
     public static implicit operator List<short>(PacketData p) => p.ReadList(p.ReadShort);
