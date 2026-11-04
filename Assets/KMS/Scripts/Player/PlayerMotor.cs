@@ -5,7 +5,6 @@ using UnityEngine.AI;
 [RequireComponent(typeof(NavMeshAgent))]
 public class PlayerMotor : MonoBehaviour
 {
-
     public float MoveSpeed = 5f;
     public float Acceleration = 60f;          
     public float RotateSpeed = 900f;          
@@ -92,4 +91,7 @@ public class PlayerMotor : MonoBehaviour
             ? target
             : Quaternion.RotateTowards(transform.rotation, target, RotateSpeed * Time.deltaTime);
     }
+
+    // 상태이상 이동속도 비율 적용
+    public void SetSpeedRatio(float ratio) => agent.speed = MoveSpeed * ratio;
 }

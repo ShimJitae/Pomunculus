@@ -109,9 +109,6 @@ PrefabInstance:
       addedObject: {fileID: 8396656383024416062}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f4f75312eb965614dab993c80e2de8f6, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 8783381607851535145}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f4f75312eb965614dab993c80e2de8f6, type: 3}
-      insertIndex: -1
       addedObject: {fileID: 8441542970358718260}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f4f75312eb965614dab993c80e2de8f6, type: 3}
       insertIndex: -1
@@ -215,28 +212,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8139520814af5324a89556d40b62a630, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerThrower
-  ProjectilePrefab: {fileID: 0}
-  ThrowOrigin: {fileID: 0}
-  MaxThrowRange: 10
-  ThrowHorizontalSpeed: 12
-  MinFlightTime: 0.35
-  AttackDamage: 10
-  EnemyLayer:
+  projectilePrefab: {fileID: 0}
+  throwOrigin: {fileID: 0}
+  maxThrowRange: 10
+  throwHorizontalSpeed: 12
+  minFlightTime: 0.35
+  flightSpeedMultiplier: 1
+  attackDamage: 10
+  enemyLayer:
     serializedVersion: 2
-    m_Bits: 128
---- !u!114 &8783381607851535145
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4072954961796356756}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 14576c84a245e844ab0a5d3c7321bdda, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Health
-  MaxHp: 100
+    m_Bits: 0
 --- !u!114 &8441542970358718260
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -249,6 +234,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0225230ba9314e146b9e9aa994e7165a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerClickFSM
+  moveSpeed: 0
+  isDie: 0
+  so: {fileID: 0}
   AttackDuration: 0.5
   ThrowReleaseTime: 0.2
   AttackCancelTime: 0.3
@@ -258,6 +246,7 @@ MonoBehaviour:
   DodgeCooldown: 0.5
   HitStunDuration: 0.4
   KnockbackSpeed: 6
+  SpawnPos: {fileID: 0}
   currentStateView: 0
 --- !u!114 &7489094407706414488
 MonoBehaviour:

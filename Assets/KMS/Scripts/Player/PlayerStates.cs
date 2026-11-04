@@ -37,6 +37,7 @@ public abstract class PlayerStateBase : IState<PlayerStateType, PlayerFSM>
     /// </summary>
     protected bool TryStartMove(PlayerFSM player)
     {
+        if (!player.CanMove) return false;
         if (!player.Input.ConsumeMoveCommand(out Vector3 destination)) return false;
         player.Motor.MoveTo(destination);
         player.SetState(PlayerStateType.Move);
@@ -98,6 +99,7 @@ public class PlayerMoveState : PlayerStateBase
 
     public override void Update(PlayerFSM player)
     {
+        if (!player.CanMove) { player.SetState(PlayerStateType.Idle); return; }
         base.Update(player);
 
         TryInteract(player);

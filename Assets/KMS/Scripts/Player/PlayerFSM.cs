@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -10,9 +11,14 @@ using UnityEngine.AI;
 /// </summary>
 [RequireComponent(typeof(NavMeshAgent))]
 [RequireComponent(typeof(PlayerInputReader), typeof(PlayerMotor), typeof(PlayerThrower))]
-[RequireComponent(typeof(Health))]
-public class PlayerFSM : MonoBehaviour
+public class PlayerFSM : Entity
 {
+    [SerializeField] private PlayerTuningSO tuning;
+    public PlayerTuningSO Tuning => tuning;
+    public PlayerDataSO Data => so as PlayerDataSO;
+
+
+
     [Header("공격 (던지기)")]
     public float AttackDuration = 0.5f;       // 던지기 상태 전체 길이
     public float ThrowReleaseTime = 0.2f;     // 손에서 떠나는 시점
@@ -48,17 +54,21 @@ public class PlayerFSM : MonoBehaviour
     public PlayerInputReader Input { get; private set; }
     public PlayerMotor Motor { get; private set; }
     public PlayerThrower Thrower { get; private set; }
-    public Health Health { get; private set; }
     public PlayerInteractor Interactor { get; private set; }   // 없을 수 있음 (null 허용)
 
     // ───── 상태들이 읽어 가는 데이터 ─────
     public PlayerStateType CurrentStateType => fsm.CurrentStateType;
     public PlayerStateType PreviousStateType => fsm.PreviousStateType;
-    public bool IsDead => fsm.HasState && fsm.CurrentStateType == PlayerStateType.Dead;
+    public bool IsDead => CheckDie();
     public Vector3 LastHitSourcePosition { get; private set; }
     public Vector3 AttackTarget { get; private set; }   // ConsumeAttack 성공 시 설정
 
     private float lastDodgeAt = float.NegativeInfinity;
+
+    public event Action OnHpChanged;
+    private bool IsDamageBlocked =>
+    IsInvincible || CheckDie() ||
+    (fsm.CurrentState is PlayerStateBase state && state.IsInvincible(this));
 
     void Awake()
     {
@@ -66,13 +76,7 @@ public class PlayerFSM : MonoBehaviour
         Input = GetComponent<PlayerInputReader>();
         Motor = GetComponent<PlayerMotor>();
         Thrower = GetComponent<PlayerThrower>();
-        Health = GetComponent<Health>();
         Interactor = GetComponent<PlayerInteractor>();
-
-        Health.IsInvincible = () =>
-            IsDead || (fsm.CurrentState is PlayerStateBase state && state.IsInvincible(this));
-        Health.OnDamaged += HandleDamaged;
-        Health.OnDied += HandleDied;
 
         fsm = new StateMachine<PlayerStateType, PlayerFSM>(this);
         fsm.AddState(new PlayerIdleState());
@@ -84,13 +88,6 @@ public class PlayerFSM : MonoBehaviour
         fsm.ValidateAllRegistered();
     }
 
-    void OnDestroy()
-    {
-        if (Health == null) return;
-        Health.OnDamaged -= HandleDamaged;
-        Health.OnDied -= HandleDied;
-    }
-
     void Start() => SetState(PlayerStateType.Idle);
 
     void Update()
@@ -100,6 +97,7 @@ public class PlayerFSM : MonoBehaviour
         ReadDebugKeys();
 #endif
         fsm.Update();
+        Motor.SetSpeedRatio(MoveSpeedRatio);
         currentStateView = fsm.CurrentStateType;
     }
 
@@ -112,13 +110,35 @@ public class PlayerFSM : MonoBehaviour
     // 에디터 테스트용: H = 10 피해, R = 사망 상태에서 부활
     void ReadDebugKeys()
     {
-        if (Input.IsDebugDamagePressed()) Health.TakeDamage(10, transform.position + transform.forward);
+        if (Input.IsDebugDamagePressed()) TakeDamage(10, transform.position + transform.forward);
         if (Input.IsDebugRevivePressed() && IsDead) Revive();
     }
 #endif
 
+    public override void TakeDamage(int damage)
+    {
+        if (IsDamageBlocked) return;
+        base.TakeDamage(Mathf.RoundToInt(damage * DamageTakenRatio));
+        OnHpChanged?.Invoke();
+    }
+
+    // 투사체·공격 피해. 맞은 위치로 넉백 + 경직
+    public void TakeDamage(int damage, Vector3 sourcePosition)
+    {
+        int hpBefore = CurrentHp;
+        TakeDamage(damage);
+        if (CurrentHp < hpBefore && !CheckDie())
+        {
+            LastHitSourcePosition = sourcePosition;
+            SetState(PlayerStateType.Hit, allowReenter: true);
+        }
+    }
+
+    protected override void OnDie() => SetState(PlayerStateType.Dead);
+
     public bool ConsumeAttack()
     {
+        if (!CanAttack) return false;
         if (!Input.ConsumeAttack(out Vector3 target)) return false;
         AttackTarget = Thrower.ClampToThrowRange(target);
         return true;
@@ -127,25 +147,18 @@ public class PlayerFSM : MonoBehaviour
     // 쿨다운 중이면 입력을 소비하지 않고 버퍼에 남겨 둔다
     public bool ConsumeDodge()
     {
+        if (!CanDodge) return false;
         if (Time.time - lastDodgeAt < DodgeCooldown) return false;
         return Input.ConsumeDodge();
     }
 
     public void MarkDodgeUsed() => lastDodgeAt = Time.time;
 
-    // ═══════════════════════ 피격 / 사망 ═══════════════════════
-
-    void HandleDamaged(Vector3 sourcePosition)
-    {
-        LastHitSourcePosition = sourcePosition;
-        SetState(PlayerStateType.Hit, allowReenter: true);
-    }
-
-    void HandleDied() => SetState(PlayerStateType.Dead);
-
     public void Revive()
     {
-        Health.ResetHp();
+        CurrentHp = so.GetMaxHp();
+        isDie = false;
+        OnHpChanged?.Invoke();
         Input.ClearMoveCommand();
         if (!Motor.AgentEnabled) Motor.SetAgentEnabled(true);
         transform.position = SpawnPos.position;
