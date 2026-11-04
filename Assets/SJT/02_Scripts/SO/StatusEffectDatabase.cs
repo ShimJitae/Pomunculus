@@ -72,7 +72,18 @@ public class StatusEffectDatabase : ScriptableObject
 
         var behaviorLookup = new Dictionary<StatusEffectType, IStatusBehavior>
         {
-            [StatusEffectType.Burn] = new BurnBehavior()
+            [StatusEffectType.Burn] = new BurnBehavior(),
+            [StatusEffectType.Chill] = new ChillBehavior(),
+            [StatusEffectType.Poison] = new PoisonBehavior(),
+            [StatusEffectType.Slime] = new SlimeBehavior(),
+            [StatusEffectType.Wet] = new WetBehavior(),
+            [StatusEffectType.Stun] = new StunBehavior(),
+            [StatusEffectType.Freeze] = new FreezeBehavior(),
+            [StatusEffectType.Bind] = new BindBehavior(),
+            [StatusEffectType.Vulnerable] = new VulnerableBehavior(),
+            [StatusEffectType.Haste] = new HasteBehavior(),
+            [StatusEffectType.Petrify] = new PetrifyBehavior(),
+            [StatusEffectType.Invincible] = new InvincibleBehavior()
         };
 
         // 등록된 모든 데이터에 대응하는 행동이 있는지 검사한다.

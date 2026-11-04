@@ -41,4 +41,9 @@ public sealed class BurnBehavior : IStatusBehavior
     public void OnRemove(StatusEffect effect)
     {
     }
+
+    /// <summary>화상은 상태이상 수치를 바꾸지 않는다.</summary>
+    public void ApplyModifier(StatusEffect effect)
+    {
+    }
 }
