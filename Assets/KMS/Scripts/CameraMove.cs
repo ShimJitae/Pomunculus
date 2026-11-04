@@ -2,9 +2,9 @@ using UnityEngine;
 
 public class CameraMove : MonoBehaviour
 {
-    [SerializeField] Transform target;
-    [SerializeField] float smooth = 5f;
-    Vector3 offset;
+    [SerializeField] private Transform target;
+    [SerializeField] private float smooth = 5f;
+    private Vector3 offset;
 
     void Start() => offset = transform.position - target.position;  // 처음 배치한 거리 유지
 

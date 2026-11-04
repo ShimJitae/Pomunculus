@@ -3,7 +3,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PlayerHUD : MonoBehaviour, IPlayerHUDView
+public class PlayerHUD : MonoBehaviour, IStatPanelView
 {
     [Header("Stat Panel")]
     [SerializeField] private Slider hpBar;
