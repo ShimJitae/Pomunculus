@@ -163,6 +163,9 @@ public sealed class StatusEffect
     /// <summary>중첩 하나당 한 번의 주기 발동에 적용할 피해량을 반환한다.</summary>
     public int TickDamagePerStack => statusEffectData.TickDamagePerStack;
 
+    /// <summary>상태별 수치를 반환한다. 의미는 상태 종류마다 다르다.</summary>
+    public float ValuePerStack => statusEffectData.ValuePerStack;
+
     public float TickSec => statusEffectData.TickSec;
     public int StackCount => stackCount;
 }
