@@ -256,6 +256,63 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 277835701}
   m_CullTransparentMesh: 1
+--- !u!1001 &285728807
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 317719133583306164, guid: e028f60b50cc6df4e961a71d23d4c7ca, type: 3}
+      propertyPath: m_Name
+      value: StatusEffectManager
+      objectReference: {fileID: 0}
+    - target: {fileID: 4028164411471032009, guid: e028f60b50cc6df4e961a71d23d4c7ca, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.93219
+      objectReference: {fileID: 0}
+    - target: {fileID: 4028164411471032009, guid: e028f60b50cc6df4e961a71d23d4c7ca, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4028164411471032009, guid: e028f60b50cc6df4e961a71d23d4c7ca, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.34579
+      objectReference: {fileID: 0}
+    - target: {fileID: 4028164411471032009, guid: e028f60b50cc6df4e961a71d23d4c7ca, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4028164411471032009, guid: e028f60b50cc6df4e961a71d23d4c7ca, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4028164411471032009, guid: e028f60b50cc6df4e961a71d23d4c7ca, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4028164411471032009, guid: e028f60b50cc6df4e961a71d23d4c7ca, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4028164411471032009, guid: e028f60b50cc6df4e961a71d23d4c7ca, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4028164411471032009, guid: e028f60b50cc6df4e961a71d23d4c7ca, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4028164411471032009, guid: e028f60b50cc6df4e961a71d23d4c7ca, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: e028f60b50cc6df4e961a71d23d4c7ca, type: 3}
 --- !u!1 &743951790
 GameObject:
   m_ObjectHideFlags: 0
@@ -267,6 +324,7 @@ GameObject:
   - component: {fileID: 743951793}
   - component: {fileID: 743951792}
   - component: {fileID: 743951791}
+  - component: {fileID: 743951794}
   m_Layer: 0
   m_Name: Ice
   m_TagString: Untagged
@@ -326,6 +384,22 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &743951794
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 743951790}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5906a5903973cc844b6efa71368af563, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StatusEffectController
+  entity: {fileID: 0}
+  activeStatusEffectsCapacity: 20
+  logStatusEffects: 1
+  debugStatusEffectType: 1
 --- !u!1 &744346601
 GameObject:
   m_ObjectHideFlags: 0
@@ -858,6 +932,7 @@ GameObject:
   - component: {fileID: 1380060841}
   - component: {fileID: 1380060840}
   - component: {fileID: 1380060839}
+  - component: {fileID: 1380060842}
   m_Layer: 0
   m_Name: Golrem
   m_TagString: Untagged
@@ -917,6 +992,22 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1380060842
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1380060838}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5906a5903973cc844b6efa71368af563, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StatusEffectController
+  entity: {fileID: 0}
+  activeStatusEffectsCapacity: 20
+  logStatusEffects: 1
+  debugStatusEffectType: 1
 --- !u!1001 &1445948329
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1211,6 +1302,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1989948962}
   - component: {fileID: 1989948961}
+  - component: {fileID: 1989948963}
   m_Layer: 0
   m_Name: Entity
   m_TagString: Untagged
@@ -1248,6 +1340,22 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1989948963
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1989948960}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5906a5903973cc844b6efa71368af563, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StatusEffectController
+  entity: {fileID: 0}
+  activeStatusEffectsCapacity: 20
+  logStatusEffects: 1
+  debugStatusEffectType: 1
 --- !u!1 &2026732565
 GameObject:
   m_ObjectHideFlags: 0
@@ -1311,3 +1419,4 @@ SceneRoots:
   - {fileID: 2026732567}
   - {fileID: 744346602}
   - {fileID: 1256118174}
+  - {fileID: 285728807}

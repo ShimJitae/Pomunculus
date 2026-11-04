@@ -50,6 +50,8 @@ public class Enemy : Entity
 
     protected override void OnDie()
     {
+        behaviorGraphAgent.SetVariableValue<bool>("IsDie", true);
+
         DropItemManager.Instance.SpawnDropItem(GetId(), transform.position);
 
         Destroy(gameObject, 1f);
