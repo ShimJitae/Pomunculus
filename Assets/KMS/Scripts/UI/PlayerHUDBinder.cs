@@ -9,7 +9,7 @@ public class PlayerHUDBinder : MonoBehaviour
 
     private List<IDisposable> presenters;
 
-    private PlayerHUDPresenter presenter;
+    private StatPanelPresenter presenter;
 
     private void Start()
     {
@@ -18,10 +18,10 @@ public class PlayerHUDBinder : MonoBehaviour
 
     public void Bind(PlayerFSM localPlayer)
     {
-        presenters.Add(new PlayerHUDPresenter(localPlayer.Stats, hud));
+        presenters.Add(new StatPanelPresenter(localPlayer.Stats, hud));
 
         presenter?.Dispose();   // 이전 연결 해제 (부활·재접속 대비)
-        presenter = new PlayerHUDPresenter(localPlayer.Stats, hud);
+        presenter = new StatPanelPresenter(localPlayer.Stats, hud);
 
 
     }
