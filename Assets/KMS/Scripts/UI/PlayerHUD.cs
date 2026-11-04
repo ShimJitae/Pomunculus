@@ -1,67 +1,53 @@
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PlayerHUD : MonoBehaviour
+public class PlayerHUD : MonoBehaviour, IPlayerHUDView
 {
     [Header("Stat Panel")]
-    [SerializeField] private Slider HPBar;
-    [SerializeField] private Slider StaminaBar;
+    [SerializeField] private Slider hpBar;
+    [SerializeField] private TMP_Text hpText;
+    [SerializeField] private Slider staminaBar;
+    [SerializeField] private TMP_Text staminaText;
 
     [Header("Status Panel")]
-    [SerializeField] private GameObject StatusSlot;
-    [SerializeField] private List<Image> StatusIcon;
+    [SerializeField] private GameObject statusSlot;
+    [SerializeField] private List<Image> statusIcon;
 
     [Header("Potion Slot")]
-    [SerializeField] private Image[] PotionIcon;
+    [SerializeField] private Image[] potionIcon;
 
-    private void Awake()
+    // HP ë³€ê²½ì‹œ
+    public void SetHp(int currentHp, int maxHp)
     {
-        
+        hpBar.maxValue = Mathf.Max(1, maxHp);
+        hpBar.value = currentHp;
+        hpText.text = $"{currentHp} / {maxHp}";
     }
 
-    private void OnEnable()
+    // ìŠ¤íƒœë¯¸ë‚˜ ë³€ê²½ ì‹œ
+    public void SetStamina(int currentStamina, int maxStamina)
     {
-        
+        staminaBar.maxValue = Mathf.Max(1, maxStamina);
+        staminaBar.value = currentStamina;
+        staminaText.text = $"{currentStamina} / {maxStamina}";
     }
 
-    private void OnDisable()
-    {
-        
-    }
-
-    private void Start()
-    {
-
-    }
-
-    // Ã¼·Â º¯°æ ½Ã
-    private void OnHpHandler(int hp)
-    {
-        HPBar.value += hp;
-    }
-
-    // ½ºÅ×¹Ì³ª º¯°æ ½Ã
-    private void OnStaminaHandler(int stamina)
-    {
-        StaminaBar.value += stamina;
-    }
-
-
-    // »óÅÂÀÌ»ó º¯°æ ½Ã
-    private void OnStatusEffectHandler()
+    // ìƒíƒœì´ìƒ ë³€ê²½ ì‹œ
+    public void AddStatusIcon()
     {
 
     }
 
-    // Æ÷¼Ç ÀåÂø ½Ã(ÀÎº¥Åä¸®¿¡¼­)
-    private void OnPotionEquipHandler()
+    // í¬ì…˜ ì¥ì°© ì‹œ(ì¸ë²¤í† ë¦¬ì—ì„œ ìŠ¬ë¡¯ìœ¼ë¡œ)
+    public void PotionEquip()
     {
 
     }
 
-    // Æ÷¼Ç º¯°æ ½Ã(¸¶¿ì½º ÈÙ ~ ÁöÁ¤Å°)
-    private void OnPotionSwapHandler()
+    // í¬ì…˜ ë³€ê²½ ì‹œ(ë§ˆìš°ìŠ¤ íœ  ~ ì§€ì •í‚¤)
+    public void PotionSwap()
     {
 
     }
