@@ -155,6 +155,12 @@ public sealed class StatusEffect
         statusBehavior.OnRemove(this);
     }
 
+    /// <summary>현재 중첩 기준으로 대상의 상태이상 수치에 이 상태의 몫을 보탠다.</summary>
+    public void ApplyModifier()
+    {
+        statusBehavior.ApplyModifier(this);
+    }
+
     public StatusEffectType Type => statusEffectData.StatusEffectType; // 현재 상태의 종류이다. 
 
     /// <summary>상태 효과가 적용되는 대상을 반환한다.</summary>
@@ -165,7 +171,8 @@ public sealed class StatusEffect
 
     /// <summary>상태별 수치를 반환한다. 의미는 상태 종류마다 다르다.</summary>
     public float ValuePerStack => statusEffectData.ValuePerStack;
-
-    public float TickSec => statusEffectData.TickSec;
     public int StackCount => stackCount;
+
+    /// <summary>남은 지속 시간을 반환한다. 단위는 초</summary>
+    public float RemainingDuration => remainingDuration;
 }

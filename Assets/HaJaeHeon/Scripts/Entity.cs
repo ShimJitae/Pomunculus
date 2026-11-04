@@ -1,6 +1,7 @@
 using Unity.VisualScripting;
 using UnityEngine;
 
+[RequireComponent(typeof(StatusEffectController))]
 public class Entity : MonoBehaviour
 {
     #region 상태 이상에 따른 수치
@@ -11,6 +12,17 @@ public class Entity : MonoBehaviour
     public bool CanDodge { get; set; } = true; // 회피 가능 여부. 기본값은 true
     public bool CanAttack { get; set; } = true; // 공격 가능 여부. 기본값은 true
     public bool IsInvincible { get; set; } = false; // 무적 상태 여부. 기본값은 false
+
+    public void ResetStatusModifiers()
+    {
+        MoveSpeedRatio = 1f;
+        HealReceivedRatio = 1f;
+        DamageTakenRatio = 1f;
+        CanMove = true;
+        CanDodge = true;
+        CanAttack = true;
+        IsInvincible = false;
+    }
     #endregion
 
     protected int entityId;
