@@ -1,10 +1,10 @@
 using Unity.Behavior;
 using UnityEngine;
 
-[RequireComponent(typeof(BehaviorGraphAgent))]
+//[RequireComponent(typeof(BehaviorGraphAgent))]
 public class Enemy : Entity
 {
-    [SerializeField] private BehaviorGraphAgent behaviorGraphAgent;
+    //[SerializeField] private BehaviorGraphAgent behaviorGraphAgent;
     [SerializeField] private GameObject target;
 
     protected EnemyDataSO enemySO
@@ -15,7 +15,7 @@ public class Enemy : Entity
 
     private void Awake()
     {
-        behaviorGraphAgent = GetComponent<BehaviorGraphAgent>();
+        //behaviorGraphAgent = GetComponent<BehaviorGraphAgent>();
     }
 
 
@@ -28,7 +28,6 @@ public class Enemy : Entity
             return;
         }
 
-        behaviorGraphAgent.Graph = enemySO.GetBehaviorGraph();
         CurrentHp = enemySO.GetHp();
         isDie = CurrentHp <= 0;
     }
@@ -50,16 +49,8 @@ public class Enemy : Entity
 
     protected override void OnDie()
     {
-        behaviorGraphAgent.SetVariableValue<bool>("IsDie", true);
-
         DropItemManager.Instance.SpawnDropItem(GetId(), transform.position);
 
         Destroy(gameObject, 1f);
-    }
-
-    public void SetTarget(GameObject player)
-    {
-        target = player;
-        behaviorGraphAgent.SetVariableValue<GameObject>("Target", player);
     }
 }
