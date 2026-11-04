@@ -490,6 +490,7 @@ GameObject:
   - component: {fileID: 621326819874624766}
   - component: {fileID: 155848308908504721}
   - component: {fileID: 503575596568036090}
+  - component: {fileID: -554093891386864532}
   m_Layer: 0
   m_Name: SalamanderPADefault
   m_TagString: Untagged
@@ -524,7 +525,7 @@ Animator:
   m_GameObject: {fileID: 2398039129503895482}
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: 613109035ecf43d0b2123966a3861501, type: 3}
-  m_Controller: {fileID: 9100000, guid: 5fdc5088eaae4fe094699b586f5365d3, type: 2}
+  m_Controller: {fileID: 9100000, guid: 0a715b07015fcdc4d871f7bff40db199, type: 2}
   m_CullingMode: 1
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -611,6 +612,21 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
+--- !u!114 &-554093891386864532
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2398039129503895482}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 84df11e0aff5f6e4ab00d85810316fb4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyMovement
+  patrolRadius: 8
+  minAngleStep: 60
+  maxAngleStep: 150
 --- !u!1 &2688864491292062616
 GameObject:
   m_ObjectHideFlags: 0

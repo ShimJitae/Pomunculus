@@ -336,6 +336,7 @@ GameObject:
   - component: {fileID: 5260135486999606202}
   - component: {fileID: 5098416399893211610}
   - component: {fileID: -5277070514650005169}
+  - component: {fileID: -6026095681018270582}
   m_Layer: 0
   m_Name: BishopKnightPADefault
   m_TagString: Untagged
@@ -370,7 +371,7 @@ Animator:
   m_GameObject: {fileID: 3320979724154213149}
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: db39d76c3a2c436fa76587eab2502f8f, type: 3}
-  m_Controller: {fileID: 9100000, guid: 37e6b3e039904a6d99b204b48649d9b5, type: 2}
+  m_Controller: {fileID: 9100000, guid: 0a715b07015fcdc4d871f7bff40db199, type: 2}
   m_CullingMode: 1
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -457,6 +458,21 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
+--- !u!114 &-6026095681018270582
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3320979724154213149}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 84df11e0aff5f6e4ab00d85810316fb4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyMovement
+  patrolRadius: 8
+  minAngleStep: 60
+  maxAngleStep: 150
 --- !u!1 &3334078438678431290
 GameObject:
   m_ObjectHideFlags: 0

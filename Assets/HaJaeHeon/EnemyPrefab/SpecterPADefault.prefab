@@ -295,6 +295,7 @@ GameObject:
   - component: {fileID: 4843574891333192651}
   - component: {fileID: 8510539619908634184}
   - component: {fileID: -4595452241099232904}
+  - component: {fileID: 993046682618070196}
   m_Layer: 0
   m_Name: SpecterPADefault
   m_TagString: Untagged
@@ -329,7 +330,7 @@ Animator:
   m_GameObject: {fileID: 2958174608505672778}
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: 9c9d9d98218345b992c6f72529f4c471, type: 3}
-  m_Controller: {fileID: 9100000, guid: d74b1966278345b49d6afb1eb6985e86, type: 2}
+  m_Controller: {fileID: 9100000, guid: 0a715b07015fcdc4d871f7bff40db199, type: 2}
   m_CullingMode: 1
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -416,6 +417,21 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
+--- !u!114 &993046682618070196
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2958174608505672778}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 84df11e0aff5f6e4ab00d85810316fb4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyMovement
+  patrolRadius: 8
+  minAngleStep: 60
+  maxAngleStep: 150
 --- !u!1 &2958174608505672780
 GameObject:
   m_ObjectHideFlags: 0

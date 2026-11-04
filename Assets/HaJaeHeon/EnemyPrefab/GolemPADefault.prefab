@@ -1374,6 +1374,7 @@ GameObject:
   - component: {fileID: 8659960106648976312}
   - component: {fileID: 2784947151098797786}
   - component: {fileID: -4910035412837827652}
+  - component: {fileID: -5979598193005558188}
   m_Layer: 0
   m_Name: GolemPADefault
   m_TagString: Untagged
@@ -1408,7 +1409,7 @@ Animator:
   m_GameObject: {fileID: 1706760125350986}
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: da17702f68754f39868928b8199ce9e7, type: 3}
-  m_Controller: {fileID: 9100000, guid: 3e17259f711047829ec9735c0c5d317b, type: 2}
+  m_Controller: {fileID: 9100000, guid: 0a715b07015fcdc4d871f7bff40db199, type: 2}
   m_CullingMode: 1
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -1495,6 +1496,21 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
+--- !u!114 &-5979598193005558188
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1706760125350986}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 84df11e0aff5f6e4ab00d85810316fb4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyMovement
+  patrolRadius: 8
+  minAngleStep: 60
+  maxAngleStep: 150
 --- !u!1 &1713691074708414
 GameObject:
   m_ObjectHideFlags: 0

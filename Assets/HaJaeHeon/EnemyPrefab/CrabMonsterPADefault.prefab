@@ -497,6 +497,7 @@ GameObject:
   - component: {fileID: 2239708773933214757}
   - component: {fileID: 4046715898353637233}
   - component: {fileID: 3322510125349510941}
+  - component: {fileID: -1719825883721651937}
   m_Layer: 0
   m_Name: CrabMonsterPADefault
   m_TagString: Untagged
@@ -531,7 +532,7 @@ Animator:
   m_GameObject: {fileID: 6928589415477418788}
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: 5f314e04e7584e83b11aa8dedfb6d19e, type: 3}
-  m_Controller: {fileID: 9100000, guid: 7db74cf474a64fa7a9d2256ed121ac57, type: 2}
+  m_Controller: {fileID: 9100000, guid: 0a715b07015fcdc4d871f7bff40db199, type: 2}
   m_CullingMode: 1
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -618,6 +619,21 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
+--- !u!114 &-1719825883721651937
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6928589415477418788}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 84df11e0aff5f6e4ab00d85810316fb4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyMovement
+  patrolRadius: 8
+  minAngleStep: 60
+  maxAngleStep: 150
 --- !u!1 &6928589415477418790
 GameObject:
   m_ObjectHideFlags: 0

@@ -1376,6 +1376,7 @@ GameObject:
   - component: {fileID: 2175064652112380528}
   - component: {fileID: 6654978091444480619}
   - component: {fileID: 3794257856453814373}
+  - component: {fileID: 5579225231793239152}
   m_Layer: 0
   m_Name: MonsterPlantPADefault
   m_TagString: Untagged
@@ -1410,7 +1411,7 @@ Animator:
   m_GameObject: {fileID: 1748489546896114}
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: f4eb4cc0838243bcb22e7925b0cb8216, type: 3}
-  m_Controller: {fileID: 9100000, guid: 8dcb375fe30441a4be410a80c53fa296, type: 2}
+  m_Controller: {fileID: 9100000, guid: 0a715b07015fcdc4d871f7bff40db199, type: 2}
   m_CullingMode: 1
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -1497,6 +1498,21 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
+--- !u!114 &5579225231793239152
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1748489546896114}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 84df11e0aff5f6e4ab00d85810316fb4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyMovement
+  patrolRadius: 8
+  minAngleStep: 60
+  maxAngleStep: 150
 --- !u!1 &1781689967026810
 GameObject:
   m_ObjectHideFlags: 0

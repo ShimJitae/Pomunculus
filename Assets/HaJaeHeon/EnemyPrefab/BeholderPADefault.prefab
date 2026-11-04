@@ -1544,6 +1544,7 @@ GameObject:
   - component: {fileID: 3798658047920969299}
   - component: {fileID: 1977159610157025425}
   - component: {fileID: -278150601190932524}
+  - component: {fileID: 8551811599229608235}
   m_Layer: 0
   m_Name: BeholderPADefault
   m_TagString: Untagged
@@ -1578,7 +1579,7 @@ Animator:
   m_GameObject: {fileID: 4530003306004163418}
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: e5a55d49eb764a93914a6aa399640e16, type: 3}
-  m_Controller: {fileID: 9100000, guid: 856de64d99094758a5a5f930c1270ded, type: 2}
+  m_Controller: {fileID: 9100000, guid: 0a715b07015fcdc4d871f7bff40db199, type: 2}
   m_CullingMode: 1
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -1665,6 +1666,21 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
+--- !u!114 &8551811599229608235
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4530003306004163418}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 84df11e0aff5f6e4ab00d85810316fb4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyMovement
+  patrolRadius: 8
+  minAngleStep: 60
+  maxAngleStep: 150
 --- !u!1 &4530003306004163420
 GameObject:
   m_ObjectHideFlags: 0

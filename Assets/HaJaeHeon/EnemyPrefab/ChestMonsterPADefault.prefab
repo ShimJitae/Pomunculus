@@ -166,6 +166,7 @@ GameObject:
   - component: {fileID: 9119791122201776298}
   - component: {fileID: 4912978576705673312}
   - component: {fileID: 2287179867789092965}
+  - component: {fileID: 3332628674966799820}
   m_Layer: 0
   m_Name: ChestMonsterPADefault
   m_TagString: Untagged
@@ -200,7 +201,7 @@ Animator:
   m_GameObject: {fileID: 2219292830553907877}
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: d7e4aa9c5d644727a262e2b22d8586af, type: 3}
-  m_Controller: {fileID: 9100000, guid: ebfddc7a41cc424791cbedf3d89f8361, type: 2}
+  m_Controller: {fileID: 9100000, guid: 0a715b07015fcdc4d871f7bff40db199, type: 2}
   m_CullingMode: 1
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -287,6 +288,21 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
+--- !u!114 &3332628674966799820
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2219292830553907877}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 84df11e0aff5f6e4ab00d85810316fb4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyMovement
+  patrolRadius: 8
+  minAngleStep: 60
+  maxAngleStep: 150
 --- !u!1 &2219292830553907879
 GameObject:
   m_ObjectHideFlags: 0
