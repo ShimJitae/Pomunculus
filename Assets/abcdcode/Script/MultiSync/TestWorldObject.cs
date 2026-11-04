@@ -4,9 +4,9 @@ using UnityEngine.InputSystem;
 
 public class TestWorldObject : MonoBehaviour, IWorldObj
 {
-    public string PrefabId {get; private set;}
+    public string PrefabId {get;set;}
 
-    public int ID {get;private set;}
+    public int ID {get;set;}
 
     // 이 큐브를 조종하는 플레이어의 ActorNumber
     public int OwnerActor {get; private set;} = -1;
