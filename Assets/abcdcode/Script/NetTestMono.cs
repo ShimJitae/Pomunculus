@@ -61,19 +61,22 @@ public class NetTestMono : MonoBehaviour
         var network = NetworkManager.Instance;
         GUI.enabled = network.State == NetworkState.InLobby;
 
-        GUILayout.Label("── 방 생성 ──");
-        GUILayout.BeginHorizontal();
-        GUILayout.Label("이름", GUILayout.Width(40f));
-        m_roomName = GUILayout.TextField(m_roomName);
-        GUILayout.Label("최대", GUILayout.Width(40f));
-        m_maxPlayers = GUILayout.TextField(m_maxPlayers, GUILayout.Width(40f));
-        GUILayout.EndHorizontal();
-        if (GUILayout.Button("방 생성"))
+        if (m_allowCreateRoom)
         {
-            m_message = null;
-            network.CreateRoom(m_roomName, int.TryParse(m_maxPlayers, out var maxPlayers) ? maxPlayers : 4);
+            GUILayout.Label("── 방 생성 ──");
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("이름", GUILayout.Width(40f));
+            m_roomName = GUILayout.TextField(m_roomName);
+            GUILayout.Label("최대", GUILayout.Width(40f));
+            m_maxPlayers = GUILayout.TextField(m_maxPlayers, GUILayout.Width(40f));
+            GUILayout.EndHorizontal();
+            if (GUILayout.Button("방 생성"))
+            {
+                m_message = null;
+                network.CreateRoom(m_roomName, int.TryParse(m_maxPlayers, out var maxPlayers) ? maxPlayers : 4);
+            }
+            GUILayout.Space(10f);
         }
-        GUILayout.Space(10f);
 
         GUILayout.Label("── 방 참가 ──");
         GUILayout.BeginHorizontal();
@@ -132,6 +135,8 @@ public class NetTestMono : MonoBehaviour
         if (GUILayout.Button("방 나가기")) network.LeaveRoom();
         GUI.enabled = true;
     }
+
+    [SerializeField] private bool m_allowCreateRoom = true; // 타이틀에서는 꺼서 참가만 가능하게
 
     private const float ReferenceHeight = 720f;
     private const float PanelWidth = 420f;
