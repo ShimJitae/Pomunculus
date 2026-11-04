@@ -1,8 +1,29 @@
-using Unity.VisualScripting;
 using UnityEngine;
 
+[RequireComponent(typeof(StatusEffectController))]
 public class Entity : MonoBehaviour
 {
+    #region 상태 이상에 따른 수치
+    [Min(0f)] public float MoveSpeedRatio { get; set; } = 1f; // 이동속도 비율. 기본값은 1.0f (100%)
+    [Min(0f)] public float HealReceivedRatio { get; set; } = 1f; // 회복량 비율. 기본값은 1.0f (100%)
+    [Min(0f)] public float DamageTakenRatio { get; set; } = 1f; // 받는 피해량 비율. 기본값은 1.0f (100%)
+    public bool CanMove { get; set; } = true; // 이동 가능 여부. 기본값은 true
+    public bool CanDodge { get; set; } = true; // 회피 가능 여부. 기본값은 true
+    public bool CanAttack { get; set; } = true; // 공격 가능 여부. 기본값은 true
+    public bool IsInvincible { get; set; } = false; // 무적 상태 여부. 기본값은 false
+
+    public void ResetStatusModifiers()
+    {
+        MoveSpeedRatio = 1f;
+        HealReceivedRatio = 1f;
+        DamageTakenRatio = 1f;
+        CanMove = true;
+        CanDodge = true;
+        CanAttack = true;
+        IsInvincible = false;
+    }
+    #endregion
+
     protected int entityId;
 
     protected int currentHp;
@@ -13,14 +34,14 @@ public class Entity : MonoBehaviour
         {
             return currentHp;
         }
-        private set
+        protected set
         {
             currentHp = Mathf.Clamp(value, 0, so.GetMaxHp());
         }
     }
 
     [SerializeField] protected float moveSpeed;
-    
+
     [SerializeField] protected bool isDie;
     [SerializeField] protected EntityDataSO so;
 
@@ -32,13 +53,13 @@ public class Entity : MonoBehaviour
 
     public virtual void TakeDamage(int damage)
     {
-        if(isDie)
+        if (isDie)
         {
             Debug.Log("이미 죽은 상태입니다.");
             return;
         }
 
-        if(damage <= 0)
+        if (damage <= 0)
         {
             Debug.Log($"{damage}가 0보다 작거나 같습니다.");
             return;
