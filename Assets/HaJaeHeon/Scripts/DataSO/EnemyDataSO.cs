@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using Unity.Behavior;
 using UnityEngine;
 
@@ -35,7 +34,6 @@ public class EnemyDataSO : EntityDataSO
 
     [Header("추가로 등록할 내용")]
     [SerializeField] private float detectRange;
-    [SerializeField] private float attackDamage;
     [SerializeField] private BehaviorGraph behaviourGraph;
     [SerializeField] private GameObject enemyPrefab;
 
