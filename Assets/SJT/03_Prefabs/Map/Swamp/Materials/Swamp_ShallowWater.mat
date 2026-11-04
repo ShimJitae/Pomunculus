@@ -1,0 +1,108 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Swamp_ShallowWater
+  m_Shader: {fileID: 4800000, guid: 9ab0bc142fdeec3448812d184130909d, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords:
+  - _SWAMP
+  m_InvalidKeywords:
+  - _BLENDMODE_MULTIPLY
+  - _CAUSTICENABLED_ON
+  - _CELENABLED_ON
+  - _POLYENABLED_ON
+  - _REFLENABLED_ON
+  - _SWAMP_ALGAE
+  - _SWAMP_BUBBLES
+  - _SWAMP_ON
+  - _SWAMP_SCUM
+  - _SWAMP_SILT
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _NoiseTex:
+        m_Texture: {fileID: 2800000, guid: a7c4d56ded07bdd4d810fa91a56e62d8, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _NormalMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _CausticEnabled: 1
+    - _CausticScale: 5.06
+    - _CausticSharpness: 9.99
+    - _CausticStrength: 0.248
+    - _CelBias: 1
+    - _CelEnabled: 1
+    - _CelSteps: 5.37
+    - _Depth: 1.56
+    - _DepthDistance: 1.21
+    - _FoamDistance: 0.36
+    - _FoamTiling: 1.77
+    - _Fresnel: 0.496
+    - _Gloss: 1
+    - _Mem_Cel_Bias: 0.81
+    - _Mem_Cel_Steps: 6.33
+    - _Mem_Grad_Bias: 0.5
+    - _Mem_Grad_Steps: 4
+    - _NoiseIntensity: 1
+    - _NormalScale: 0.23
+    - _NormalSpeed: 0.02
+    - _NormalStr: 0.6
+    - _NormalStrength: 0
+    - _OpacityIntensity: 0.399
+    - _PolyDensity: 3.8
+    - _PolyEnabled: 1
+    - _PolySpeed: 0.2
+    - _PolyStrength: 0.083
+    - _ReflBrightness: 1
+    - _ReflDensity: 0.161
+    - _ReflEnabled: 1
+    - _ReflScale: 2.81
+    - _ReflSharpness: 32
+    - _ReflSpeed: 0.15
+    - _RefractStrength: 0.0243
+    - _ScaleNoise: 0.23
+    - _ScatterDensity: 0.187
+    - _ScatterEnabled: 0
+    - _ScatterOpacity: 0.373
+    - _ScatterScale: 2.27
+    - _ScatterSpeed: -0.37
+    - _SizeFoam: 0.06
+    - _Smoothness: 0.771
+    - _Specular: 0.481
+    - _Speed: 0.35
+    - _SwampMurkiness: 0.16
+    - _SwampOn: 1
+    - _WaveHeight: 0.013
+    - _WaveScale: 0
+    - _WaveSpeed: 0.02
+    - _WaveTiling: 1
+    m_Colors:
+    - _DeepColor: {r: 0.02, g: 0.11999995, b: 0.34999996, a: 0.92}
+    - _DepthColor: {r: 0.20784314, g: 0.34117648, b: 0.34901962, a: 1}
+    - _FoamColor: {r: 1, g: 1, b: 1, a: 1}
+    - _ShallowColor: {r: 0.14999998, g: 0.6, b: 0.75, a: 0.65}
+    - _SwampDepthColor: {r: 0.21176471, g: 0.3529412, b: 0.3647059, a: 1}
+    - _SwampFoamColor: {r: 0.46666667, g: 0.5294118, b: 0.47843137, a: 1}
+    - _SwampMurkColor: {r: 0.33333334, g: 0.44705883, b: 0.40784314, a: 1}
+    - _SwampWaterColor: {r: 0.2901961, g: 0.45490196, b: 0.44705883, a: 1}
+    - _WaterColor: {r: 0.24, g: 0.49, b: 0.48, a: 0.82}
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1
