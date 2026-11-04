@@ -34,15 +34,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: f4f75312eb965614dab993c80e2de8f6, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -2.2430017
+      value: -14
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: f4f75312eb965614dab993c80e2de8f6, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.175
+      value: 1.17
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: f4f75312eb965614dab993c80e2de8f6, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -6.3478007
+      value: -14
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: f4f75312eb965614dab993c80e2de8f6, type: 3}
       propertyPath: m_LocalRotation.w
@@ -119,6 +119,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f4f75312eb965614dab993c80e2de8f6, type: 3}
       insertIndex: -1
       addedObject: {fileID: 9007856692369991479}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f4f75312eb965614dab993c80e2de8f6, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4318981986115598492}
   m_SourcePrefab: {fileID: 100100000, guid: f4f75312eb965614dab993c80e2de8f6, type: 3}
 --- !u!1 &4072954961796356756 stripped
 GameObject:
@@ -196,10 +199,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1cb5d49edd0370945a4aade1cd9ea511, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMotor
-  MoveSpeed: 5
-  Acceleration: 60
-  RotateSpeed: 900
-  StoppingDistance: 0.1
 --- !u!114 &8396656383024416062
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -212,16 +211,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8139520814af5324a89556d40b62a630, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerThrower
-  projectilePrefab: {fileID: 0}
-  throwOrigin: {fileID: 0}
+  projectilePrefab: {fileID: -4413370916858422293, guid: 80d7319d140098f44b4c8c6bd809c118, type: 3}
+  throwOrigin: {fileID: 6633543304050246393}
   maxThrowRange: 10
-  throwHorizontalSpeed: 12
-  minFlightTime: 0.35
-  flightSpeedMultiplier: 1
+  throwHorizontalSpeed: 6
+  minFlightTime: 0.1
+  flightSpeedMultiplier: 1.5
   attackDamage: 10
   enemyLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 128
 --- !u!114 &8441542970358718260
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -236,17 +235,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerClickFSM
   moveSpeed: 0
   isDie: 0
-  so: {fileID: 0}
-  AttackDuration: 0.5
-  ThrowReleaseTime: 0.2
-  AttackCancelTime: 0.3
-  DodgeSpeed: 12
-  DodgeDuration: 0.35
-  DodgeInvincibleTime: 0.25
-  DodgeCooldown: 0.5
-  HitStunDuration: 0.4
-  KnockbackSpeed: 6
-  SpawnPos: {fileID: 0}
+  so: {fileID: 11400000, guid: 7b0404bf8374dff42a33a9eb3fbbfcc1, type: 2}
+  tuning: {fileID: 11400000, guid: b6e52e3df09f34b42bbbe2fa41e7e942, type: 2}
+  spawnPos: {fileID: 0}
   currentStateView: 0
 --- !u!114 &7489094407706414488
 MonoBehaviour:
@@ -260,7 +251,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1228df3122876c946abf7ec69e3f64e5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InteractHighlighter
-  outlineMaterial: {fileID: 0}
+  outlineMaterial: {fileID: 2100000, guid: c488e86a76a70424a9960ac316dc16a8, type: 2}
 --- !u!136 &1351096583823189692
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -306,3 +297,24 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &4318981986115598492
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4072954961796356756}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5906a5903973cc844b6efa71368af563, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StatusEffectController
+  entity: {fileID: 8441542970358718260}
+  activeStatusEffectsCapacity: 20
+  logStatusEffects: 1
+  debugStatusEffectType: 1
+--- !u!4 &6633543304050246393 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7514387204552156476, guid: f4f75312eb965614dab993c80e2de8f6, type: 3}
+  m_PrefabInstance: {fileID: 3767088622541760453}
+  m_PrefabAsset: {fileID: 0}

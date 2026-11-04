@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -17,26 +16,9 @@ public class PlayerFSM : Entity
     public PlayerTuningSO Tuning => tuning;
     public PlayerDataSO Data => so as PlayerDataSO;
 
-
-
-    [Header("공격 (던지기)")]
-    public float AttackDuration = 0.5f;       // 던지기 상태 전체 길이
-    public float ThrowReleaseTime = 0.2f;     // 손에서 떠나는 시점
-    public float AttackCancelTime = 0.3f;     // 이후 회피/재공격/이동으로 캔슬 가능 (releaseTime보다 커야 함)
-
-    [Header("회피")]
-    public float DodgeSpeed = 7f;
-    public float DodgeDuration = 0.35f;
-    public float DodgeInvincibleTime = 0.25f;
-    public float DodgeCooldown = 0.5f;
-
-    [Header("피격")]
-    public float HitStunDuration = 0.4f;
-    public float KnockbackSpeed = 0f;
-
     [Header("위치")]
-    public Transform SpawnPos;
-
+    [SerializeField] private Transform spawnPos;
+    private Vector3 startPos;
     [Header("디버그")]
     [SerializeField] private PlayerStateType currentStateView;
 
@@ -51,6 +33,7 @@ public class PlayerFSM : Entity
     private Animator anim;
 
     // ───── 상태들이 사용하는 컴포넌트 ─────
+    public PlayerStats Stats { get; private set; }
     public PlayerInputReader Input { get; private set; }
     public PlayerMotor Motor { get; private set; }
     public PlayerThrower Thrower { get; private set; }
@@ -65,18 +48,24 @@ public class PlayerFSM : Entity
 
     private float lastDodgeAt = float.NegativeInfinity;
 
-    public event Action OnHpChanged;
     private bool IsDamageBlocked =>
     IsInvincible || CheckDie() ||
     (fsm.CurrentState is PlayerStateBase state && state.IsInvincible(this));
 
     void Awake()
     {
+        if (Data == null) Debug.LogError("[PlayerFSM] so 슬롯에 PlayerDataSO가 필요합니다.", this);
+        if (tuning == null) Debug.LogError("[PlayerFSM] tuning 슬롯이 비어 있습니다.", this);
+
         anim = GetComponentInChildren<Animator>();
         Input = GetComponent<PlayerInputReader>();
         Motor = GetComponent<PlayerMotor>();
         Thrower = GetComponent<PlayerThrower>();
         Interactor = GetComponent<PlayerInteractor>();
+
+        Motor.Initialize(Tuning, Data.MoveSpeed);
+        Stats = new PlayerStats(this, Data);
+        startPos = transform.position;
 
         fsm = new StateMachine<PlayerStateType, PlayerFSM>(this);
         fsm.AddState(new PlayerIdleState());
@@ -97,7 +86,8 @@ public class PlayerFSM : Entity
         ReadDebugKeys();
 #endif
         fsm.Update();
-        Motor.SetSpeedRatio(MoveSpeedRatio);
+        Stats.Tick(Time.deltaTime);
+        Motor.SetMoveSpeed(Stats.MoveSpeed);
         currentStateView = fsm.CurrentStateType;
     }
 
@@ -115,11 +105,14 @@ public class PlayerFSM : Entity
     }
 #endif
 
+    // 받는 피해 비율을 적용해 피해를 입고, HP가 바뀌었으면 알린다.
     public override void TakeDamage(int damage)
     {
         if (IsDamageBlocked) return;
+
+        int hpBefore = CurrentHp;
         base.TakeDamage(Mathf.RoundToInt(damage * DamageTakenRatio));
-        OnHpChanged?.Invoke();
+        if (CurrentHp != hpBefore) Stats.NotifyHpChanged();
     }
 
     // 투사체·공격 피해. 맞은 위치로 넉백 + 경직
@@ -138,18 +131,23 @@ public class PlayerFSM : Entity
 
     public bool ConsumeAttack()
     {
-        if (!CanAttack) return false;
+        if (!CanAttack || !Stats.CanUseStamina) return false;
         if (!Input.ConsumeAttack(out Vector3 target)) return false;
+
         AttackTarget = Thrower.ClampToThrowRange(target);
+        Stats.SpendStamina(Data.ThrowStaminaCost);
         return true;
     }
 
     // 쿨다운 중이면 입력을 소비하지 않고 버퍼에 남겨 둔다
     public bool ConsumeDodge()
     {
-        if (!CanDodge) return false;
-        if (Time.time - lastDodgeAt < DodgeCooldown) return false;
-        return Input.ConsumeDodge();
+        if (!CanDodge || !Stats.CanUseStamina) return false;
+        if (Time.time - lastDodgeAt < tuning.DodgeCooldown) return false;
+        if (!Input.ConsumeDodge()) return false;
+
+        Stats.SpendStamina(Data.DodgeStaminaCost);
+        return true;
     }
 
     public void MarkDodgeUsed() => lastDodgeAt = Time.time;
@@ -158,10 +156,13 @@ public class PlayerFSM : Entity
     {
         CurrentHp = so.GetMaxHp();
         isDie = false;
-        OnHpChanged?.Invoke();
+        Stats.RestoreAll();
         Input.ClearMoveCommand();
         if (!Motor.AgentEnabled) Motor.SetAgentEnabled(true);
-        transform.position = SpawnPos.position;
+        if (spawnPos == null)
+            transform.position = startPos;
+        else
+            transform.position = spawnPos.position;
         SetState(PlayerStateType.Idle);
     }
 

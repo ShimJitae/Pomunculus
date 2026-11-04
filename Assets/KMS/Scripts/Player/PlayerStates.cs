@@ -142,14 +142,14 @@ public class PlayerAttackState : PlayerStateBase
         base.Update(player);
 
         // 1) 발사 (한 번만)
-        if (!released && elapsed >= player.ThrowReleaseTime)
+        if (!released && elapsed >= player.Tuning.ThrowReleaseTime)
         {
             player.Thrower.ThrowProjectile(target);
             released = true;
         }
 
         // 2) 캔슬 구간
-        if (elapsed >= player.AttackCancelTime)
+        if (elapsed >= player.Tuning.AttackCancelTime)
         {
             if (player.ConsumeDodge()) { player.SetState(PlayerStateType.Dodge); return; }
             if (player.ConsumeAttack()) { player.SetState(PlayerStateType.Attack, allowReenter: true); return; }
@@ -157,7 +157,7 @@ public class PlayerAttackState : PlayerStateBase
         }
 
         // 3) 종료
-        if (elapsed >= player.AttackDuration)
+        if (elapsed >= player.Tuning.AttackDuration)
         {
             if (TryStartMove(player)) return;
 
@@ -175,7 +175,7 @@ public class PlayerDodgeState : PlayerStateBase
 
     private Vector3 dir;
 
-    public override bool IsInvincible(PlayerFSM player) => elapsed <= player.DodgeInvincibleTime;
+    public override bool IsInvincible(PlayerFSM player) => elapsed <= player.Tuning.DodgeInvincibleTime;
 
     public override void Enter(PlayerFSM player)
     {
@@ -199,9 +199,9 @@ public class PlayerDodgeState : PlayerStateBase
     {
         base.Update(player);
 
-        player.Motor.Displace(dir * player.DodgeSpeed);
+        player.Motor.Displace(dir * player.Tuning.DodgeSpeed);
 
-        if (elapsed >= player.DodgeDuration) ReturnToIdleOrMove(player);
+        if (elapsed >= player.Tuning.DodgeDuration) ReturnToIdleOrMove(player);
     }
 }
 
@@ -231,10 +231,10 @@ public class PlayerHitState : PlayerStateBase
     {
         base.Update(player);
 
-        float t = Mathf.Clamp01(elapsed / player.HitStunDuration);
-        player.Motor.Displace(knockDir * player.KnockbackSpeed * (1f - t));
+        float t = Mathf.Clamp01(elapsed / player.Tuning.HitStunDuration);
+        player.Motor.Displace(knockDir * player.Tuning.KnockbackSpeed * (1f - t));
 
-        if (elapsed >= player.HitStunDuration) ReturnToIdleOrMove(player);
+        if (elapsed >= player.Tuning.HitStunDuration) ReturnToIdleOrMove(player);
     }
 }
 

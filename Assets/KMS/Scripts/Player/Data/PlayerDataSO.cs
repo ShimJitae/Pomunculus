@@ -4,19 +4,19 @@ using UnityEngine;
 public class PlayerDataSO : EntityDataSO
 {
     [Header("스테미나")]
-    [SerializeField] private int stamina;
-    public int Stamina => stamina;
+    [SerializeField] private int maxStamina = 100;
+    public int MaxStamina => maxStamina;
     [SerializeField] private float staminaRegenPerSecond;
     public float StaminaRegenPerSecond => staminaRegenPerSecond;
     [SerializeField] private float staminaRegenDelay;
     public float StaminaRegenDelay => staminaRegenDelay;
-    [SerializeField] private int sodgeStaminaCost;
-    public int SodgeStaminaCost => sodgeStaminaCost;
+    [SerializeField] private int dodgeStaminaCost;
+    public int DodgeStaminaCost => dodgeStaminaCost;
     [SerializeField] private int throwStaminaCost;
     public int ThrowStaminaCost => throwStaminaCost;
 
     [Header("속도")]
-    [SerializeField] private float moveSpeed;
+    [SerializeField] private float moveSpeed = 5f;
     public float MoveSpeed => moveSpeed;
 
 }
