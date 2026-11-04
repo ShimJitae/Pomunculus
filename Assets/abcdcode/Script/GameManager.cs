@@ -10,6 +10,19 @@ public class GameManager : SingletonBehavior<GameManager>
         NetworkManager.Instance.Init();
         PhotonNetwork.PrefabPool = new NetworkPrefabPool(Resources.Load<NetworkPrefabCatalog>("NetworkPrefabCatalog"));
 
+        SaveWorldDataTest();
+    }
+    public void SaveWorldDataTest()
+    {
+        WorldData wd = new WorldData();
+        wd.Data = new TestObjData()
+        {
+            X = 1,
+            Y = 2,
+            Z = 3
+        };
+        var sd = SaveData.CreateSaveData(wd);
+        SaveManager.Instance.Save("Test",sd);
     }
     public void UserProfileInit()
     {

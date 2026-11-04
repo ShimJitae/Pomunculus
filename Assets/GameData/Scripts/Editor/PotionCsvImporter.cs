@@ -19,6 +19,10 @@ namespace Pomunculus.Items.Editor
             public string Name;
             public string Description;
             public Sprite Icon;
+            public float PhysicsElement;
+            public float FireElement;
+            public float ColdElement;
+            public float WindElement;
         }
 
         [MenuItem("Tools/GameData/포션 CSV 가져오기")]
@@ -68,6 +72,10 @@ namespace Pomunculus.Items.Editor
                     potion.ItemName = row.Name;
                     potion.Description = row.Description;
                     potion.Icon = row.Icon;
+                    potion.PhysicsElement = row.PhysicsElement;
+                    potion.FireElement = row.FireElement;
+                    potion.ColdElement = row.ColdElement;
+                    potion.WindElement = row.WindElement;
                     potion.name = $"{row.Id}_{row.Name}";
 
                     if (isNew)
@@ -115,7 +123,7 @@ namespace Pomunculus.Items.Editor
                 columns.Add(column, i);
             }
 
-            foreach (string required in new[] { "Id", "Name", "Desc" })
+            foreach (string required in new[] { "Id", "Name", "Desc", "icon_path", "PhysicsElement", "FireElement", "ColdElement", "WindElement" })
             {
                 if (!columns.ContainsKey(required))
                     throw new Exception($"필수 열이 없습니다: {required}");
@@ -163,12 +171,25 @@ namespace Pomunculus.Items.Editor
                 if (icon == null)
                     throw new Exception($"ID {id}: 아이콘을 불러올 수 없습니다.\n경로와 이미지의 Sprite 설정을 확인하세요.\n{iconPath}");
 
+                float Number(string column)
+                {
+                    string value = cells[columns[column]].Trim();
+
+                    if (!float.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out float number) || float.IsNaN(number) || float.IsInfinity(number))
+                        throw new Exception($"ID {id}: {column} 값이 숫자가 아닙니다: {value}");
+
+                    return number;
+                }
                 result.Add(new PotionRow
                 {
                     Id = id,
                     Name = itemName,
                     Description = cells[columns["Desc"]].Trim(),
-                    Icon = icon
+                    Icon = icon,
+                    PhysicsElement = Number("PhysicsElement"),
+                    FireElement = Number("FireElement"),
+                    ColdElement = Number("ColdElement"),
+                    WindElement = Number("WindElement")
                 });
             }
 
