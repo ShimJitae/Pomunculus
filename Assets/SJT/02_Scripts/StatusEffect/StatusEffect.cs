@@ -4,6 +4,7 @@ public sealed class StatusEffect
 {
     private StatusEffectData statusEffectData;
     private IStatusBehavior statusBehavior;
+    private Entity target;
     private int stackCount;
     private float remainingDuration;
     private float tickTimer;
@@ -14,16 +15,41 @@ public sealed class StatusEffect
     }
 
     // 초기 상태 등록 시 초기화
-    public bool Initialize(StatusEffectType seType)
+    public bool Initialize(StatusEffectType seType, Entity target)
     {
-        statusEffectData = StatusEffectManager.Instance.GetSOData(seType);
-        statusBehavior = StatusEffectManager.Instance.GetStatusBehavior(seType);
+        Reset();
+
+        if (target == null || seType == StatusEffectType.None)
+        {
+            return false;
+        }
+
+        StatusEffectManager manager = StatusEffectManager.Instance;
+        if (manager == null)
+        {
+#if UNITY_EDITOR
+            Debug.LogError("[StatusEffect] StatusEffectManager가 준비되지 않았습니다.", target);
+#endif
+            return false;
+        }
+
+        statusEffectData = manager.GetSOData(seType);
+        statusBehavior = manager.GetStatusBehavior(seType);
 
         if (statusEffectData == null || statusBehavior == null)
         {
             return false;
         }
 
+        if (statusEffectData.MaxStackCount < 1)
+        {
+#if UNITY_EDITOR
+            Debug.LogError("[StatusEffect] 최대 중첩 수는 1 이상이어야 합니다.", statusEffectData);
+#endif
+            return false;
+        }
+
+        this.target = target;
         stackCount = 1;
         remainingDuration = statusEffectData.Duration;
         tickTimer = 0f;
@@ -42,6 +68,7 @@ public sealed class StatusEffect
     {
         statusEffectData = null;
         statusBehavior = null;
+        target = null;
         stackCount = 0;
         remainingDuration = 0f;
         tickTimer = 0f;
@@ -130,7 +157,24 @@ public sealed class StatusEffect
         statusBehavior.OnRemove(this);
     }
 
+    /// <summary>현재 중첩 기준으로 대상의 상태이상 수치에 이 상태의 몫을 보탠다.</summary>
+    public void ApplyModifier()
+    {
+        statusBehavior.ApplyModifier(this);
+    }
+
     public StatusEffectType Type => statusEffectData.StatusEffectType; // 현재 상태의 종류이다. 
-    public float TickSec => statusEffectData.TickSec;
+
+    /// <summary>상태 효과가 적용되는 대상을 반환한다.</summary>
+    public Entity Target => target;
+
+    /// <summary>중첩 하나당 한 번의 주기 발동에 적용할 피해량을 반환한다.</summary>
+    public int TickDamagePerStack => statusEffectData.TickDamagePerStack;
+
+    /// <summary>상태별 수치를 반환한다. 의미는 상태 종류마다 다르다.</summary>
+    public float ValuePerStack => statusEffectData.ValuePerStack;
     public int StackCount => stackCount;
+
+    /// <summary>남은 지속 시간을 반환한다. 단위는 초</summary>
+    public float RemainingDuration => remainingDuration;
 }

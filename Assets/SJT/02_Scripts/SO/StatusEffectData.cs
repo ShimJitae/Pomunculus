@@ -12,7 +12,8 @@ public class StatusEffectData : ScriptableObject
     [Tooltip("화상, 냉기 등 화면에 표시할 상태 이름")]
     [SerializeField] private string stateName;
 
-    [Tooltip("최대 중첩 수.")]
+    [Min(1)]
+    [Tooltip("최대 중첩 수. 1 이상으로 설정")]
     [SerializeField] private int maxStackCount = 1;
 
     [Min(0f)]
@@ -23,6 +24,15 @@ public class StatusEffectData : ScriptableObject
     [Tooltip("상태 효과의 발동 간격. 단위는 초")]
     [SerializeField] private float tickSec = 0.2f;
 
+    [Min(0)]
+    [Tooltip("중첩 하나당 한 번의 주기 발동에 적용할 피해량. 0이면 피해를 주지 않음")]
+    [SerializeField] private int tickDamagePerStack;
+
+    [Min(0f)]
+    [Tooltip("상태별 수치. 냉기: 스택당 감속률(0.1 = 10%), 독: 스택당 회복 감소율, 점액·젖음: 감속률(스택 무관), " +
+             "취약: 스택당 받는 피해 증가율, 헤이스트: 스택당 이동속도 증가율. 기절·빙결·구속·석화·무적은 사용하지 않음")]
+    [SerializeField] private float valuePerStack;
+
     public int StatusId => statusId;
     public StatusEffectType StatusEffectType => statusEffectType;
     public string StateName => stateName;
@@ -31,4 +41,10 @@ public class StatusEffectData : ScriptableObject
     public float Duration => duration;
 
     public float TickSec => tickSec;
+
+    /// <summary>중첩 하나당 한 번의 주기 발동에 적용할 피해량을 반환한다.</summary>
+    public int TickDamagePerStack => tickDamagePerStack;
+
+    /// <summary>상태별 수치를 반환한다. 의미는 상태 종류마다 다르다.</summary>
+    public float ValuePerStack => valuePerStack;
 }

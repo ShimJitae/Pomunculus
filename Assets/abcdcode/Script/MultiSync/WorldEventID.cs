@@ -1,0 +1,16 @@
+// RaiseEventManager 패킷 맨 앞에 쓰는 id (RaiseEventCode와 별개)
+// 새 패킷을 추가할 때는 여기에 추가해서 번호가 겹치지 않게 관리
+public enum WorldEventID : int
+{
+    UpdatePosition = 0,     // RaiseEventUtil
+
+    RequestSnapshot = 10,   // WorldManager
+    WorldSnapshot = 11,
+    SpawnObj = 12,
+    DespawnObj = 13,
+
+    AnimatorSync = 14,      // WorldAnimatorSync
+    TransformSync = 15,     // WorldTransformSync
+
+    TestSpawnRequest = 100, // GameManager 테스트용
+}

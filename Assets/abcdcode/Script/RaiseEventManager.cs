@@ -27,6 +27,16 @@ public class RaiseEventManager : Singleton<RaiseEventManager>, IOnEventCallback
         m_raiseActionDic.Clear();
         m_initialized = false;
     }
+    public void RegisterEvent(int id, Action<EventData,PacketData> action)
+    {
+        Init();
+        m_raiseActionDic[id] = action;
+    }
+    public void UnRegisterEvent(int id)
+    {
+        Init();
+        m_raiseActionDic.Remove(id);
+    }
 
     #region 송신
     public bool SendPacket(PacketData data)
@@ -50,14 +60,18 @@ public class RaiseEventManager : Singleton<RaiseEventManager>, IOnEventCallback
         if(photonEvent.Code == (byte)RaiseEventCode.Normal)
         {
             PacketData p = new PacketData((byte[])photonEvent.CustomData);
-            
+            int id = p;
+            if(m_raiseActionDic.ContainsKey(id))
+            {
+                m_raiseActionDic[id](photonEvent,p);
+            }
         }
     }
     #endregion
-
-    public event Action<Player, string> OnChatEvent;
-    public event Action<Player, int> OnDamageEvent;
     private Dictionary<int,Action<EventData,PacketData>> m_raiseActionDic;
 
     private bool m_initialized;
+}
+public static class RaiseEventUtil
+{
 }
