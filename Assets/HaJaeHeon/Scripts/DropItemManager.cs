@@ -10,7 +10,9 @@ public class DropItemManager : SingletonBehavior<DropItemManager>
 
     public event Action<int> OnDropItem;
 
-    public Transform SpawnTransform;
+    public float randomRange;
+
+    public Vector3 ItemDropOffset;
 
     [ContextMenu("DB확인")]
     public void ShowEnemyDB()
@@ -54,7 +56,7 @@ public class DropItemManager : SingletonBehavior<DropItemManager>
         if (ItemDatabase != null && ItemDatabase.GetItemPrefab(dropId) != null)
         {
             GameObject item = ItemDatabase.GetItemPrefab(dropId);
-            GameObject.Instantiate(item, spawnPosition, Quaternion.identity);
+            GameObject.Instantiate(item, spawnPosition + ItemDropOffset, Quaternion.identity);
         }
 
         Debug.Log($"아이템 ID : {dropId} / 아이템 이름 : {dropName} >> 아이템 소환 /소환 로직 구현 추가되면 넣을 예정");
@@ -62,15 +64,23 @@ public class DropItemManager : SingletonBehavior<DropItemManager>
         OnDropItem?.Invoke(dropId);
     }
 
+    public Vector3 RandomPositionSpawn()
+    {
+        float randomValue = UnityEngine.Random.Range(-randomRange, randomRange);
+        Vector3 randomPosition = new Vector3(randomValue, 0f, randomValue);
+
+        return randomPosition;
+    }
+
     [ContextMenu("적 소환")]
     public void SpawnEnemy()
     {
-        EnemyDatabase.SpawnEnemy(SpawnTransform);
+        EnemyDatabase.SpawnEnemy(RandomPositionSpawn());
     }
 
     [ContextMenu("마녀 소환")]
     public void SpawnWitch()
     {
-        EnemyDatabase.SpawnWitch(SpawnTransform);
+        EnemyDatabase.SpawnWitch(RandomPositionSpawn());
     }
 }

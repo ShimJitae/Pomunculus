@@ -81,19 +81,19 @@ public class EnemyDatabase : ScriptableObject
         }
     }
 
-    public void SpawnEnemy(Transform spawnTransform)
+    public void SpawnEnemy(Vector3 spawnPositon)
     {
         int value = Random.Range(0, data.Count);
 
         GameObject prefab = data[value].GetEnemyPrefab();
 
-        GameObject enemyObject = GameObject.Instantiate(prefab, spawnTransform.position, spawnTransform.rotation);
+        GameObject enemyObject = GameObject.Instantiate(prefab, spawnPositon, Quaternion.identity);
 
         //GameObject target = PoolEnemy.Instance.player;
         //enemyObject.GetComponent<Enemy>().SetTarget(target);
     }
 
-    public void SpawnWitch(Transform spawnTransform)
+    public void SpawnWitch(Vector3 spawnPositon)
     {
         GameObject prefab;
 
@@ -101,7 +101,7 @@ public class EnemyDatabase : ScriptableObject
         {
             prefab = so.GetEnemyPrefab();
 
-            GameObject enemyObject = GameObject.Instantiate(prefab, spawnTransform.position, spawnTransform.rotation);
+            GameObject enemyObject = GameObject.Instantiate(prefab, spawnPositon, Quaternion.identity);
 
             //GameObject target = PoolEnemy.Instance.player;
             //enemyObject.GetComponent<Enemy>().SetTarget(target);
