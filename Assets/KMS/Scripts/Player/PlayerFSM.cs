@@ -10,7 +10,7 @@ using UnityEngine.AI;
 /// </summary>
 [RequireComponent(typeof(NavMeshAgent))]
 [RequireComponent(typeof(PlayerInputReader), typeof(PlayerMotor), typeof(PlayerThrower))]
-public class PlayerFSM : Entity
+public class PlayerFSM : Entity, IWorldObj
 {
     [SerializeField] private PlayerTuningSO tuning;
     public PlayerTuningSO Tuning => tuning;
@@ -51,6 +51,11 @@ public class PlayerFSM : Entity
     private bool IsDamageBlocked =>
     IsInvincible || CheckDie() ||
     (fsm.CurrentState is PlayerStateBase state && state.IsInvincible(this));
+
+    public string PrefabId { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
+    
+    // 겟셋하면 알아감 (Photon ViewID랑 유사한 시스템)
+    public int ID { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
 
     void Awake()
     {
@@ -182,5 +187,31 @@ public class PlayerFSM : Entity
     public void SetAnimSpeed(float value)
     {
         if (anim != null) anim.SetFloat(SpeedParam, value, 0.1f, Time.deltaTime);
+    }
+
+    // 오브젝트 소환 (Awake 초기화)를 여기서
+    // id -> 월드 매니저쪽에서 지정해주는 아이디
+    // prefabId -> 프리팹 이름이 곧 아이디
+    public void InitWorldObj(int id, string prefabId)
+    {
+        
+    }
+
+    // 데이터 저장 및 불어오기 위치값은 굳이 안넣어도 됨 이미 알아하는중
+
+
+    // 데이터 저장
+    // 상시 저장 알아한다.
+    // 소유권? 인벤토리 데이터, 알아낸 레시피 기록 - 이외에도 필요한거 생각해보기
+    public void SaveData(SaveData _data)
+    {
+        
+    }
+
+    // 데이터 불러오기
+    // 다른 플레이어가 들어왔을 때 이미 있던 플레이어 데이터 가져오기
+    public void LoadData(SaveData _data)
+    {
+        
     }
 }
