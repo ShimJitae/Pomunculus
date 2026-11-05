@@ -5,6 +5,8 @@ public class StatusEffectController : MonoBehaviour
 {
     [SerializeField] private Entity entity; // 같은 오브젝트에 있는 Entity를 참조.
     private List<StatusEffect> activeStatusEffects;
+    public List<StatusEffect> ActiveStatusEffects;
+
     [SerializeField] private int activeStatusEffectsCapacity = 20; // 초기 상태 효과 갯수
 
     private void Awake()
@@ -24,6 +26,23 @@ public class StatusEffectController : MonoBehaviour
                 Debug.LogError("[StatusEffectController] Entity가 할당되지 않았습니다.", this);
 #endif
             }
+        }
+    }
+
+    /// <summary>대상이 파괴될 때 남은 상태를 해제하고 실행 객체를 풀에 반납한다.</summary>
+    private void OnDestroy()
+    {
+        if (activeStatusEffects == null)
+        {
+            return;
+        }
+
+        for (int i = activeStatusEffects.Count - 1; i >= 0; i--)
+        {
+            StatusEffect effect = activeStatusEffects[i];
+            activeStatusEffects.RemoveAt(i);
+            effect.Remove();
+            StatusEffectPool.Return(effect);
         }
     }
 
@@ -48,23 +67,6 @@ public class StatusEffectController : MonoBehaviour
             {
                 LogStatus("틱", effect);
             }
-        }
-    }
-
-    /// <summary>대상이 파괴될 때 남은 상태를 해제하고 실행 객체를 풀에 반납한다.</summary>
-    private void OnDestroy()
-    {
-        if (activeStatusEffects == null)
-        {
-            return;
-        }
-
-        for (int i = activeStatusEffects.Count - 1; i >= 0; i--)
-        {
-            StatusEffect effect = activeStatusEffects[i];
-            activeStatusEffects.RemoveAt(i);
-            effect.Remove();
-            StatusEffectPool.Return(effect);
         }
     }
 
