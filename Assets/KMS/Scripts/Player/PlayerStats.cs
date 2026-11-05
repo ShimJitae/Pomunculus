@@ -79,6 +79,11 @@ public class PlayerStats
         NotifyHpChanged();
     }
 
+    public void LoadStamina(int value)
+    {
+        SetStamina(value);
+    }
+
     private void SetStamina(int value)
     {
         int clamped = Math.Clamp(value, 0, MaxStamina);

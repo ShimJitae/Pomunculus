@@ -1,3 +1,4 @@
+using Photon.Pun;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -10,7 +11,7 @@ using UnityEngine.AI;
 /// </summary>
 [RequireComponent(typeof(NavMeshAgent))]
 [RequireComponent(typeof(PlayerInputReader), typeof(PlayerMotor), typeof(PlayerThrower))]
-public class PlayerFSM : Entity, IWorldObj
+public class PlayerFSM : Entity, IPlayerObj
 {
     [SerializeField] private PlayerTuningSO tuning;
     public PlayerTuningSO Tuning => tuning;
@@ -32,6 +33,10 @@ public class PlayerFSM : Entity, IWorldObj
     private StateMachine<PlayerStateType, PlayerFSM> fsm;
     private Animator anim;
 
+    // ───── 네트워크 시 사용하는 컴포넌트 ─────
+    private WorldTransformSync worldTransform;
+    private WorldAnimatorSync worldAnimator;
+
     // ───── 상태들이 사용하는 컴포넌트 ─────
     public PlayerStats Stats { get; private set; }
     public PlayerInputReader Input { get; private set; }
@@ -52,15 +57,18 @@ public class PlayerFSM : Entity, IWorldObj
     IsInvincible || CheckDie() ||
     (fsm.CurrentState is PlayerStateBase state && state.IsInvincible(this));
 
-    public string PrefabId { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
-    
-    // 겟셋하면 알아감 (Photon ViewID랑 유사한 시스템)
-    public int ID { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
-
-    void Awake()
+    public int Owner { get; set; }
+    public bool IsMine => !PhotonNetwork.InRoom ||
+                      (PhotonNetwork.LocalPlayer != null && PhotonNetwork.LocalPlayer.ActorNumber == Owner);
+    protected override void Awake()
     {
+        base.Awake();
+
         if (Data == null) Debug.LogError("[PlayerFSM] so 슬롯에 PlayerDataSO가 필요합니다.", this);
         if (tuning == null) Debug.LogError("[PlayerFSM] tuning 슬롯이 비어 있습니다.", this);
+
+        worldTransform = GetComponent<WorldTransformSync>();
+        worldAnimator = GetComponent<WorldAnimatorSync>();
 
         anim = GetComponentInChildren<Animator>();
         Input = GetComponent<PlayerInputReader>();
@@ -82,10 +90,67 @@ public class PlayerFSM : Entity, IWorldObj
         fsm.ValidateAllRegistered();
     }
 
-    void Start() => SetState(PlayerStateType.Idle);
+
+    // ══════════════════GameManager 관리 ═══════════════════════
+    // 오브젝트 소환 (Awake 초기화)를 여기서
+    // id -> 월드 매니저쪽에서 지정해주는 아이디
+    // prefabId -> 프리팹 이름이 곧 아이디
+    public override void InitWorldObj(int id, string prefabId)
+    {
+        //ID = id;
+        //PrefabId = prefabId;
+        SetOwner(Owner);
+    }
+
+    // ActorNumber 가져오기
+    public void SetOwner(int actor)
+    {
+        Owner = actor;
+        if (worldTransform != null) worldTransform.IsOwner = () => IsMine;
+        if (worldAnimator != null) worldAnimator.IsOwner = () => IsMine;
+        Motor.SetAgentEnabled(IsMine);
+
+        // TODO 다른 플레이어의 포션색상 다르게 하기?
+        //if (TryGetComponent(out Renderer r)) r.material.color = IsMine ? Color.green : Color.red;
+    }
+
+
+    // 데이터 저장 및 불어오기 위치값은 굳이 안넣어도 됨 이미 알아하는중
+    // 데이터 저장
+    // 상시 저장 알아한다.
+    // 소유권? 인벤토리 데이터, 알아낸 레시피 기록 - 이외에도 필요한거 생각해보기
+
+    // 현재 상태를 묶어서 저장 데이터에 담는다.
+    public override void SaveData(SaveData _data)
+    {
+        var state = new PlayerWorldData
+        {
+            Owner = Owner,
+            CurrentHp = CurrentHp,
+            CurrentStamina = Stats.CurrentStamina,
+        };
+        _data.SetData(state);
+    }
+
+    // 저장 데이터에서 상태를 꺼내 적용한다.
+    public override void LoadData(SaveData _data)
+    {
+        if (_data?.Data == null) return; // 처음 생성됐거나 예전 세이브라 데이터가 없을 때
+
+        var state = _data.GetData<PlayerWorldData>();
+        SetOwner(state.Owner);
+        CurrentHp = state.CurrentHp;
+        isDie = CurrentHp <= 0;
+        Stats.LoadStamina(state.CurrentStamina);
+        Stats.NotifyHpChanged();
+    }
+
+    void Start() => SetState(IsDead ? PlayerStateType.Dead : PlayerStateType.Idle);
 
     void Update()
     {
+        if (!IsMine) return;
+
         Input.ReadInput();
 #if UNITY_EDITOR
         ReadDebugKeys();
@@ -187,31 +252,5 @@ public class PlayerFSM : Entity, IWorldObj
     public void SetAnimSpeed(float value)
     {
         if (anim != null) anim.SetFloat(SpeedParam, value, 0.1f, Time.deltaTime);
-    }
-
-    // 오브젝트 소환 (Awake 초기화)를 여기서
-    // id -> 월드 매니저쪽에서 지정해주는 아이디
-    // prefabId -> 프리팹 이름이 곧 아이디
-    public void InitWorldObj(int id, string prefabId)
-    {
-        
-    }
-
-    // 데이터 저장 및 불어오기 위치값은 굳이 안넣어도 됨 이미 알아하는중
-
-
-    // 데이터 저장
-    // 상시 저장 알아한다.
-    // 소유권? 인벤토리 데이터, 알아낸 레시피 기록 - 이외에도 필요한거 생각해보기
-    public void SaveData(SaveData _data)
-    {
-        
-    }
-
-    // 데이터 불러오기
-    // 다른 플레이어가 들어왔을 때 이미 있던 플레이어 데이터 가져오기
-    public void LoadData(SaveData _data)
-    {
-        
     }
 }

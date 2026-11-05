@@ -52,7 +52,7 @@ public class Entity : MonoBehaviour, IWorldObj
     [SerializeField] protected bool isDie;
     [SerializeField] protected EntityDataSO so;
 
-    private void Awake()
+    protected virtual void Awake()
     {
         statusEffectController = GetComponent<StatusEffectController>();
     }
