@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(StatusEffectController))]
-public class Entity : MonoBehaviour, IWorldObj
+public class Entity : MonoBehaviour, IWorldObj, IDamageable
 {
     public string PrefabId { get; set; }
     public int ID { get; set; }
@@ -143,5 +143,11 @@ public class Entity : MonoBehaviour, IWorldObj
     {
         var sd = _data.Child["sec"];
         statusEffectController.LoadData(sd);
+    }
+
+    public void TakeDamage(int damage, Vector3 sourcePosition)
+    {
+        Debug.Log($"{damage}만큼 피격!");
+        TakeDamage(damage);
     }
 }
