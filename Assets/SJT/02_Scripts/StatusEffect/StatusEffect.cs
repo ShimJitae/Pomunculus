@@ -165,6 +165,7 @@ public sealed class StatusEffect
 
     #region 플레이어 HUD에 표시할 데이터
     public StatusEffectType Type => statusEffectData.StatusEffectType; // 현재 상태의 종류이다.
+    public EffectCategory Category => statusEffectData.EffectCategory; // 현재 상태의 분류(버프·디버프·저주)이다.
     public int StackCount => stackCount;
     /// <summary>남은 지속 시간을 반환한다. 단위는 초</summary>
     public float RemainingDuration => remainingDuration;
