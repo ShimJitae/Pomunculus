@@ -49,10 +49,10 @@ public sealed class StatusEffectVisualizer : MonoBehaviour
             return;
         }
 
-        controller.D_EffectRegistered += HandleRegistered;
-        controller.D_EffectReapplied += HandleReapplied;
-        controller.D_EffectTicked += HandleTicked;
-        controller.D_EffectRemoved += HandleRemoved;
+        controller.OnEffectRegistered += HandleRegistered;
+        controller.OnEffectReapplied += HandleReapplied;
+        controller.OnEffectTicked += HandleTicked;
+        controller.OnEffectRemoved += HandleRemoved;
 
         // 비활성화 중에도 남아 있던 상태의 지속 연출(외곽선 등)만 다시 켠다.
         IReadOnlyList<StatusEffect> activeEffects = controller.ActiveStatusEffects;
@@ -71,10 +71,10 @@ public sealed class StatusEffectVisualizer : MonoBehaviour
     {
         if (controller != null)
         {
-            controller.D_EffectRegistered -= HandleRegistered;
-            controller.D_EffectReapplied -= HandleReapplied;
-            controller.D_EffectTicked -= HandleTicked;
-            controller.D_EffectRemoved -= HandleRemoved;
+            controller.OnEffectRegistered -= HandleRegistered;
+            controller.OnEffectReapplied -= HandleReapplied;
+            controller.OnEffectTicked -= HandleTicked;
+            controller.OnEffectRemoved -= HandleRemoved;
         }
 
         outlineChannel?.Clear();

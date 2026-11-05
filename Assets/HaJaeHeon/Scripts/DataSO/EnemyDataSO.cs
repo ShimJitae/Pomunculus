@@ -61,4 +61,9 @@ public class EnemyDataSO : EntityDataSO
     {
         return behaviourGraph;
     }
+
+    public float GetDetectRange()
+    {
+        return detectRange;
+    }
 }
