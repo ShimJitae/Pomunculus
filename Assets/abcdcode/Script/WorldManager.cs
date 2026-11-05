@@ -227,10 +227,6 @@ public class WorldManager : Singleton<WorldManager>
             Object.Destroy(go);
             return null;
         }
-        if(obj is IPlayerObj pbj)
-        {
-            pbj.Owner = PhotonNetwork.LocalPlayer.ActorNumber;
-        }
         obj.ID = id;
         obj.PrefabId = prefabId;
         obj.InitWorldObj(id, prefabId);
