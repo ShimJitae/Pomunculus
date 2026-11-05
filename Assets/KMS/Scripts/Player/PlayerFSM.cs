@@ -63,7 +63,7 @@ public class PlayerFSM : Entity
         Thrower = GetComponent<PlayerThrower>();
         Interactor = GetComponent<PlayerInteractor>();
 
-        Motor.Initialize(Tuning, Data.MoveSpeed);
+        Motor.Initialize(Tuning, Data.GetSpeed());
         Stats = new PlayerStats(this, Data);
         startPos = transform.position;
 
