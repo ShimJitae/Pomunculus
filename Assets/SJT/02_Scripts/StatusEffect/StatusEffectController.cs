@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class StatusEffectController : MonoBehaviour
+public class StatusEffectController : MonoBehaviour, ISavable
 {
     [SerializeField] private Entity entity; // 같은 오브젝트에 있는 Entity를 참조.
     private List<StatusEffect> activeStatusEffects;
@@ -10,21 +10,22 @@ public class StatusEffectController : MonoBehaviour
     [SerializeField] private int activeStatusEffectsCapacity = 20; // 초기 상태 효과 갯수
 
     /// <summary>새 상태가 걸린 직후 발생한다. 연출 등 로직 밖의 반응에 사용한다.</summary>
-    public event Action<StatusEffect> D_EffectRegistered;
+    public event Action<StatusEffect> OnEffectRegistered;
 
     /// <summary>이미 걸린 상태가 다시 걸려 중첩된 직후 발생한다.</summary>
-    public event Action<StatusEffect> D_EffectReapplied;
+    public event Action<StatusEffect> OnEffectReapplied;
 
     /// <summary>상태의 발동 주기가 돌아 Tick이 실행된 직후 발생한다.</summary>
-    public event Action<StatusEffect> D_EffectTicked;
+    public event Action<StatusEffect> OnEffectTicked;
 
     /// <summary>상태가 만료되어 해제된 직후, 풀에 반납되기 전에 발생한다. 대상 파괴로 인한 정리에서는 발생하지 않는다.</summary>
-    public event Action<StatusEffect> D_EffectRemoved;
+    public event Action<StatusEffect> OnEffectRemoved;
 
-    private void Awake()
+    private void OnEnable()
     {
         // 초기 상태 효과 갯수. activeStatusEffectsCapacity 크기로 설정.
-        activeStatusEffects = new List<StatusEffect>(activeStatusEffectsCapacity);
+        if (activeStatusEffects == null)
+            activeStatusEffects = new List<StatusEffect>(activeStatusEffectsCapacity);
 
         if (entity == null)
         {
@@ -41,34 +42,8 @@ public class StatusEffectController : MonoBehaviour
         }
     }
 
-    private void Update()
-    {
-        for (int i = activeStatusEffects.Count - 1; i >= 0; i--)
-        {
-            StatusEffect effect = activeStatusEffects[i];
-
-            bool isExpired = effect.AdvanceTime(Time.deltaTime);
-            if (isExpired)
-            {
-                activeStatusEffects.RemoveAt(i);
-                effect.Remove();
-                RecalculateModifiers(); // 목록에서 뺀 뒤 계산해야 남은 상태의 효과만 반영된다.
-                D_EffectRemoved?.Invoke(effect); // 풀 반납(Reset) 전에 알려야 구독자가 데이터를 읽을 수 있다.
-                LogStatus("종료", effect); // 풀 반납(Reset) 전에 기록해야 데이터를 읽을 수 있다.
-                StatusEffectPool.Return(effect);
-                continue;
-            }
-
-            if (effect.Tick(Time.deltaTime))
-            {
-                D_EffectTicked?.Invoke(effect);
-                LogStatus("틱", effect);
-            }
-        }
-    }
-
     /// <summary>대상이 파괴될 때 남은 상태를 해제하고 실행 객체를 풀에 반납한다.</summary>
-    private void OnDestroy()
+    private void OnDisable()
     {
         if (activeStatusEffects == null)
         {
@@ -84,11 +59,37 @@ public class StatusEffectController : MonoBehaviour
         }
     }
 
-    public void RegisterStatusEffect(StatusEffectType seType)
+    private void Update()
+    {
+        for (int i = activeStatusEffects.Count - 1; i >= 0; i--)
+        {
+            StatusEffect effect = activeStatusEffects[i];
+
+            bool isExpired = effect.AdvanceTime(Time.deltaTime);
+            if (isExpired)
+            {
+                activeStatusEffects.RemoveAt(i);
+                effect.Remove();
+                RecalculateModifiers(); // 목록에서 뺀 뒤 계산해야 남은 상태의 효과만 반영된다.
+                OnEffectRemoved?.Invoke(effect); // 풀 반납(Reset) 전에 알려야 구독자가 데이터를 읽을 수 있다.
+                LogStatus("종료", effect); // 풀 반납(Reset) 전에 기록해야 데이터를 읽을 수 있다.
+                StatusEffectPool.Return(effect);
+                continue;
+            }
+
+            if (effect.Tick(Time.deltaTime))
+            {
+                OnEffectTicked?.Invoke(effect);
+                LogStatus("틱", effect);
+            }
+        }
+    }
+
+    public StatusEffect RegisterStatusEffect(StatusEffectType seType)
     {
         if (entity == null || seType == StatusEffectType.None)
         {
-            return;
+            return null;
         }
 
         for (int i = 0; i < activeStatusEffects.Count; i++)
@@ -97,9 +98,9 @@ public class StatusEffectController : MonoBehaviour
             {
                 activeStatusEffects[i].Reapply();
                 RecalculateModifiers();
-                D_EffectReapplied?.Invoke(activeStatusEffects[i]);
+                OnEffectReapplied?.Invoke(activeStatusEffects[i]);
                 LogStatus("중첩", activeStatusEffects[i]);
-                return;
+                return activeStatusEffects[i];
             }
         }
 
@@ -108,14 +109,15 @@ public class StatusEffectController : MonoBehaviour
         if (!statusEffect.Initialize(seType, entity))
         {
             StatusEffectPool.Return(statusEffect);
-            return;
+            return null;
         }
 
         statusEffect.Register();
         activeStatusEffects.Add(statusEffect);
         RecalculateModifiers();
-        D_EffectRegistered?.Invoke(statusEffect);
+        OnEffectRegistered?.Invoke(statusEffect);
         LogStatus("걸림", statusEffect);
+        return statusEffect;
     }
 
     /// <summary>
@@ -174,4 +176,57 @@ public class StatusEffectController : MonoBehaviour
         RegisterStatusEffect(debugStatusEffectType);
     }
 #endif
+
+    #region 다른 플레이어가 월드에 들어왔을 때, 보낼 상태이상 데이터
+    public void SaveData(SaveData _data)
+    {
+        PacketData d = new();
+        List<int> type = new List<int>();
+        List<int> stackCount = new List<int>();
+        List<float> duration = new List<float>();
+        foreach (var a in activeStatusEffects)
+        {
+            type.Add((int)a.Type);
+            stackCount.Add(a.StackCount);
+            duration.Add(a.RemainingDuration);
+        }
+        d.WriteList(type, d.Write);
+        d.WriteList(stackCount, d.Write);
+        d.WriteList(duration, d.Write);
+        d.Save();
+        _data.SetData(d.GetData());
+    }
+
+    public void LoadData(SaveData _data)
+    {
+        var p = new PacketData(_data.GetData<byte[]>());
+        List<int> type = p;
+        List<int> stackCount = p;
+        List<float> duration = p;
+        int count = Mathf.Min(type.Count, Mathf.Min(stackCount.Count, duration.Count));
+        for (int i = 0; i < count; i++)
+        {
+            RestoreStatusEffect((StatusEffectType)type[i], stackCount[i], duration[i]);
+        }
+    }
+
+    private void RestoreStatusEffect(StatusEffectType type, int stack, float remaining)
+    {
+        StatusEffect effect = StatusEffectPool.Get();
+        if (!effect.Initialize(type, entity))
+        {
+            StatusEffectPool.Return(effect); // StatusEffectManager가 아직 준비되지 않았을 때 등
+            return;
+        }
+
+        effect.Register();                        // OnRegistered 1회 실행. 남은 시간이 SO 값으로 초기화된다
+        effect.StackCount = Mathf.Max(1, stack);  // 그래서 Register 다음에 덮어쓴다
+        effect.RemainingDuration = remaining;
+
+        activeStatusEffects.Add(effect);
+        RecalculateModifiers();                   // 중첩 수가 반영된 수치로 다시 계산
+        OnEffectRegistered?.Invoke(effect);       // 연출은 상태마다 한 번만
+        LogStatus("복원", effect);
+    }
+    #endregion
 }
