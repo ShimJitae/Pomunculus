@@ -12,5 +12,5 @@ public enum WorldEventID : int
     AnimatorSync = 14,      // WorldAnimatorSync
     TransformSync = 15,     // WorldTransformSync
 
-    TestSpawnRequest = 100, // GameManager 테스트용
+    PlayerSpawnRequest = 16, // GameManager
 }
