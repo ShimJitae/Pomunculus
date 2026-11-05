@@ -13,25 +13,39 @@ public class StatusPanelView : MonoBehaviour, IStatusPanelView
     private readonly List<GameObject> statusIcons = new();
 
     // 상태이상이 걸렸을 때 아이콘 추가
-    public void AddStatusIcon(Sprite icon)
+    public void AddStatusIcon(StatusEffect icon)
     {
         GameObject statusIcon = Instantiate(statusIconPrefab, statusSlot);
         Transform iconChild = statusIcon.transform.Find(IconChildName);
         if (iconChild != null && iconChild.TryGetComponent(out Image iconImage))
         {
-            iconImage.sprite = icon;
+            //iconImage.sprite = icon;
         }
 
         statusIcons.Add(statusIcon);
     }
 
-    // 상태이상이 끝났을 때 해당 순서의 아이콘 제거
     public void RemoveStatusIcon(int index)
     {
         if (index < 0 || index >= statusIcons.Count) return;
 
         Destroy(statusIcons[index]);
         statusIcons.RemoveAt(index);
+    }
+
+    public void AddStatusIcon(StatusEffectType type, Sprite icon, int stackCount, float remainingDuration, float totalDuration)
+    {
+        
+    }
+
+    public void UpdateStatusIcon(StatusEffectType type, int stackCount, float remainingDuration, float totalDuration)
+    {
+        
+    }
+
+    public void RemoveStatusIcon(StatusEffectType type)
+    {
+        
     }
 
     // 모든 상태이상 아이콘 제거 (사망·부활 등)

@@ -124,7 +124,7 @@ public class PlayerFSM : Entity, IPlayerObj
     public override void SaveData(SaveData _data)
     {
         var s = new SaveData();
-        base.SaveData(s);
+        base.SaveData(s); // Entity 내부 SaveData 불러오기 -> 상태이상 데이터와 플레이어의 데이터 구분
         var state = new PlayerWorldData
         {
             Owner = Owner,
