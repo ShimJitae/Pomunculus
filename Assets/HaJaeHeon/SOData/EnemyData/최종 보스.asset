@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MonsterDataSO
   hp: 1000
   maxHp: 1000
+  moveSpeed: 4
   monster_id: 42004
   monster_name: "\uCD5C\uC885 \uBCF4\uC2A4"
   kind: 1
@@ -25,5 +26,6 @@ MonoBehaviour:
   drop_name: 
   behaviour: 
   detectRange: 0
+  attackDamage: 0
   behaviourGraph: {fileID: 0}
   enemyPrefab: {fileID: 2219292830553907877, guid: 665210f44dc27ad44b46cf9390fac7d6, type: 3}
