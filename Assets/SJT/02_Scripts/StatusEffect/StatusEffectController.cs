@@ -6,6 +6,7 @@ public class StatusEffectController : MonoBehaviour
 {
     [SerializeField] private Entity entity; // 같은 오브젝트에 있는 Entity를 참조.
     private List<StatusEffect> activeStatusEffects;
+    public List<StatusEffect> ActiveStatusEffects { get => activeStatusEffects; set => activeStatusEffects = value; }
     [SerializeField] private int activeStatusEffectsCapacity = 20; // 초기 상태 효과 갯수
 
     /// <summary>새 상태가 걸린 직후 발생한다. 연출 등 로직 밖의 반응에 사용한다.</summary>
@@ -19,9 +20,6 @@ public class StatusEffectController : MonoBehaviour
 
     /// <summary>상태가 만료되어 해제된 직후, 풀에 반납되기 전에 발생한다. 대상 파괴로 인한 정리에서는 발생하지 않는다.</summary>
     public event Action<StatusEffect> D_EffectRemoved;
-
-    /// <summary>현재 활성 상태 목록을 반환한다. 읽기 전용이며 Awake 전에는 null이다.</summary>
-    public IReadOnlyList<StatusEffect> ActiveStatusEffects => activeStatusEffects;
 
     private void Awake()
     {

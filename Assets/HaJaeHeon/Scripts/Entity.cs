@@ -4,8 +4,8 @@ using UnityEngine;
 [RequireComponent(typeof(StatusEffectController))]
 public class Entity : MonoBehaviour, IWorldObj
 {
-    public string PrefabId { get; }
-    public int ID { get; }
+    public string PrefabId { get; set; }
+    public int ID { get; set; }
 
     #region 상태 이상에 따른 수치
     [Min(0f)] public float MoveSpeedRatio { get; set; } = 1f; // 이동속도 비율. 기본값은 1.0f (100%)
