@@ -1,11 +1,14 @@
 using Unity.Behavior;
 using UnityEngine;
+using UnityEngine.AI;
 
-[RequireComponent(typeof(BehaviorGraphAgent))]
+[RequireComponent(typeof(BehaviorGraphAgent)), RequireComponent(typeof(NavMeshAgent))]
 public class Enemy : Entity
 {
     [SerializeField] private BehaviorGraphAgent behaviorGraphAgent;
     [SerializeField] private GameObject target;
+    [SerializeField] private EnemyDetector detector;
+
 
     protected EnemyDataSO enemySO
     {
@@ -16,6 +19,7 @@ public class Enemy : Entity
     private void Awake()
     {
         behaviorGraphAgent = GetComponent<BehaviorGraphAgent>();
+        detector = GetComponentInChildren<EnemyDetector>();
     }
 
 
@@ -32,22 +36,14 @@ public class Enemy : Entity
         CurrentHp = enemySO.GetHp();
         moveSpeed = enemySO.GetSpeed();
         isDie = CurrentHp <= 0;
+        detector.SetRadius(enemySO.GetDetectRange());
+        detector.OnPlayersChanged += RefreshTarget;
     }
 
-    //public override void TakeDamage(int damage)
-    //{
-    //    base.TakeDamage(damage);
-    //}
-
-    //public override bool CheckDie()
-    //{
-    //    return base.CheckDie();
-    //}
-
-    //protected override int GetId()
-    //{
-    //    return enemySO.GetEnemyId();
-    //}
+    private void OnDisable()
+    {
+        detector.OnPlayersChanged -= RefreshTarget;
+    }
 
     protected override void OnDie()
     {
@@ -62,5 +58,14 @@ public class Enemy : Entity
     {
         target = player;
         behaviorGraphAgent.SetVariableValue<GameObject>("Target", player);
+        behaviorGraphAgent.SetVariableValue("HasTarget", player != null);
+    }
+
+    public void RefreshTarget()
+    {
+        if (target != null && target.activeInHierarchy && detector.Contains(target))
+            return;
+
+        SetTarget(detector.GetNearestPlayer());
     }
 }
