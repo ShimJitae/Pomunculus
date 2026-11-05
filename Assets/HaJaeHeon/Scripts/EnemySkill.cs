@@ -11,7 +11,7 @@ public class EnemySkill : MonoBehaviour
     [SerializeField] private float hitAngle = 120f;
 
     private readonly Collider[] hitColliders = new Collider[16];
-    private readonly HashSet<Entity> alreadyHitEntities = new();
+    private readonly HashSet<IDamageable> alreadyHitTargets = new();
 
     private Enemy enemy;
 
@@ -29,21 +29,21 @@ public class EnemySkill : MonoBehaviour
         int hitCount = Physics.OverlapSphereNonAlloc(
             GetHitCenter(), hitRadius, hitColliders, hitLayers, QueryTriggerInteraction.Ignore);
 
-        // 데미지 계산
         int damage = Mathf.RoundToInt(enemy.Data.GetAtk() * damagePercent / 100f);
-        alreadyHitEntities.Clear();
+        alreadyHitTargets.Clear();
 
         for (int index = 0; index < hitCount; index++)
         {
-            Entity hitEntity = hitColliders[index].GetComponentInParent<Entity>();
-            if (hitEntity == null || hitEntity == enemy) continue;   // 자기 자신 제외
-            if (!alreadyHitEntities.Add(hitEntity)) continue;        // 중복 타격 방지
+            IDamageable damageTarget = hitColliders[index].GetComponentInParent<IDamageable>();
+            if (damageTarget is not Component targetComponent) continue;          // 못 찾음
+            if (targetComponent.gameObject == gameObject) continue;               // 자기 자신 제외
+            if (!alreadyHitTargets.Add(damageTarget)) continue;                   // 중복 타격 방지
 
-            Vector3 directionToEntity = hitEntity.transform.position - transform.position;
-            directionToEntity.y = 0f;
-            if (Vector3.Angle(transform.forward, directionToEntity) > hitAngle * 0.5f) continue;
+            Vector3 directionToTarget = targetComponent.transform.position - transform.position;
+            directionToTarget.y = 0f;
+            if (Vector3.Angle(transform.forward, directionToTarget) > hitAngle * 0.5f) continue;
 
-            hitEntity.TakeDamage(damage);
+            damageTarget.TakeDamage(damage, transform.position);
         }
     }
 
