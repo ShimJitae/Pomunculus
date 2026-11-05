@@ -10,8 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1889493198238976225}
   - component: {fileID: 8208708626660283887}
-  - component: {fileID: 1622185342465021380}
-  - component: {fileID: 3632043648575805050}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -47,48 +45,3 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
   m_version: 1
---- !u!114 &1622185342465021380
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8976078719144225130}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d06466c03d263624786afa88b52928b6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: PhotonUnityNetworking.Utilities::Photon.Pun.UtilityScripts.PhotonStatsGui
-  statsWindowOn: 1
-  statsOn: 1
-  healthStatsVisible: 0
-  trafficStatsOn: 0
-  buttonsOn: 0
-  statsRect:
-    serializedVersion: 2
-    x: 0
-    y: 100
-    width: 300
-    height: 100
-  WindowId: 100
---- !u!114 &3632043648575805050
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8976078719144225130}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2168a9a8c7dab264da1911f052ed9eea, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::NetStatsGui
-  m_windowOn: 1
-  m_toggleKey: 96
-  m_rect:
-    serializedVersion: 2
-    x: 0
-    y: 100
-    width: 450
-    height: 100
-  m_windowId: 101

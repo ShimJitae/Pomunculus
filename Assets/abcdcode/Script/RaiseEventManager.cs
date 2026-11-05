@@ -47,9 +47,7 @@ public class RaiseEventManager : Singleton<RaiseEventManager>, IOnEventCallback
     {
         data.Save();
         var p = data.GetData();
-        bool sent = PhotonNetwork.RaiseEvent((byte)RaiseEventCode.Normal,p,options,sendOptions);
-        if (sent) NetStats.Instance.RecordSend(p, options);
-        return sent;
+        return PhotonNetwork.RaiseEvent((byte)RaiseEventCode.Normal,p,options,sendOptions);
     }
     #endregion
 
@@ -61,9 +59,7 @@ public class RaiseEventManager : Singleton<RaiseEventManager>, IOnEventCallback
         //패킷 이벤트
         if(photonEvent.Code == (byte)RaiseEventCode.Normal)
         {
-            var bytes = (byte[])photonEvent.CustomData;
-            NetStats.Instance.RecordReceive(bytes);
-            PacketData p = new PacketData(bytes);
+            PacketData p = new PacketData((byte[])photonEvent.CustomData);
             int id = p;
             if(m_raiseActionDic.ContainsKey(id))
             {
