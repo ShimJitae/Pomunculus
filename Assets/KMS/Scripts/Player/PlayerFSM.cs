@@ -123,6 +123,8 @@ public class PlayerFSM : Entity, IPlayerObj
     // 현재 상태를 묶어서 저장 데이터에 담는다.
     public override void SaveData(SaveData _data)
     {
+        var s = new SaveData();
+        base.SaveData(s);
         var state = new PlayerWorldData
         {
             Owner = Owner,
@@ -130,11 +132,14 @@ public class PlayerFSM : Entity, IPlayerObj
             CurrentStamina = Stats.CurrentStamina,
         };
         _data.SetData(state);
+        _data.Child["b"] = s;
     }
 
     // 저장 데이터에서 상태를 꺼내 적용한다.
     public override void LoadData(SaveData _data)
     {
+        base.LoadData(_data.Child["b"]); // Entity 내부 데이터(지금은 상태이상 값) 불러오기
+
         if (_data?.Data == null) return; // 처음 생성됐거나 예전 세이브라 데이터가 없을 때
 
         var state = _data.GetData<PlayerWorldData>();
