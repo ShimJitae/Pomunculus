@@ -14,6 +14,7 @@ namespace Pomunculus.Items
         }
         private class DisplayItem
         {
+            public PotionData Potion;
             public int Id;
             public string Name;
             public string Description;
@@ -37,6 +38,8 @@ namespace Pomunculus.Items
         private const int MinimumSlotCount = 36;
         private const int ColumnCount = 6;
         private readonly List<InventorySlotUI> slotViews = new List<InventorySlotUI>();
+        [Header("포션 슬롯 등록")]
+        [SerializeField] private PotionSlotSelector potionSlotSelector;
 
         private InventoryTab currentTab = InventoryTab.All;
 
@@ -56,6 +59,8 @@ namespace Pomunculus.Items
 
             if (tooltip != null)
                 tooltip.Hide();
+            if (potionSlotSelector != null)
+                potionSlotSelector.CancelSelection();
         }
 
         public void Refresh()
@@ -85,9 +90,14 @@ namespace Pomunculus.Items
                     continue;
 
                 if (i < items.Count)
+                {
                     view.ShowItem(items[i].Icon, items[i].Amount, items[i].Name, items[i].Description, tooltip);
+                    view.SetPotionSelection(items[i].Potion, potionSlotSelector);
+                }
                 else
+                {
                     view.ShowEmpty();
+                }
             }
         }
         private List<DisplayItem> GetDisplayItems()
@@ -134,7 +144,8 @@ namespace Pomunculus.Items
                         Name = potion.ItemName,
                         Description = potion.Description,
                         Icon = potion.Icon,
-                        Amount = amount
+                        Amount = amount,
+                        Potion = potion
                     });
                 }
             }
