@@ -89,8 +89,8 @@ public class EnemyDatabase : ScriptableObject
 
         GameObject enemyObject = GameObject.Instantiate(prefab, spawnTransform.position, spawnTransform.rotation);
 
-        GameObject target = PoolEnemy.Instance.player;
-        enemyObject.GetComponent<Enemy>().SetTarget(target);
+        //GameObject target = PoolEnemy.Instance.player;
+        //enemyObject.GetComponent<Enemy>().SetTarget(target);
     }
 
     public void SpawnWitch(Transform spawnTransform)
@@ -103,8 +103,8 @@ public class EnemyDatabase : ScriptableObject
 
             GameObject enemyObject = GameObject.Instantiate(prefab, spawnTransform.position, spawnTransform.rotation);
 
-            GameObject target = PoolEnemy.Instance.player;
-            enemyObject.GetComponent<Enemy>().SetTarget(target);
+            //GameObject target = PoolEnemy.Instance.player;
+            //enemyObject.GetComponent<Enemy>().SetTarget(target);
         }
     }
 }

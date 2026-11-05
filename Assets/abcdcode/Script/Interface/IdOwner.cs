@@ -1,4 +1,4 @@
 public interface IdOwner
 {
-    public int ID{get;}
+    public int ID{get;set;}
 }

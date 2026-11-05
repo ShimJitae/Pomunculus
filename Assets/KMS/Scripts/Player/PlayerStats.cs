@@ -21,7 +21,7 @@ public class PlayerStats
     public bool CanUseStamina => CurrentStamina >= 1;
 
     // Speed
-    public float MoveSpeed => data.MoveSpeed * owner.MoveSpeedRatio;
+    public float MoveSpeed => data.GetSpeed() * owner.MoveSpeedRatio;
 
     // 소유자와 기본 데이터를 받아 스태미나를 최대로 채운 상태로 시작한다.
     public PlayerStats(PlayerFSM owner, PlayerDataSO data)
@@ -77,6 +77,11 @@ public class PlayerStats
         regenDelayRemaining = 0f;
         SetStamina(MaxStamina);
         NotifyHpChanged();
+    }
+
+    public void LoadStamina(int value)
+    {
+        SetStamina(value);
     }
 
     private void SetStamina(int value)

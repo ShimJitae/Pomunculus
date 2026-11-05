@@ -1,8 +1,12 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(StatusEffectController))]
-public class Entity : MonoBehaviour
+public class Entity : MonoBehaviour, IWorldObj
 {
+    public string PrefabId { get; set; }
+    public int ID { get; set; }
+
     #region 상태 이상에 따른 수치
     [Min(0f)] public float MoveSpeedRatio { get; set; } = 1f; // 이동속도 비율. 기본값은 1.0f (100%)
     [Min(0f)] public float HealReceivedRatio { get; set; } = 1f; // 회복량 비율. 기본값은 1.0f (100%)
@@ -11,6 +15,9 @@ public class Entity : MonoBehaviour
     public bool CanDodge { get; set; } = true; // 회피 가능 여부. 기본값은 true
     public bool CanAttack { get; set; } = true; // 공격 가능 여부. 기본값은 true
     public bool IsInvincible { get; set; } = false; // 무적 상태 여부. 기본값은 false
+
+    private StatusEffectController statusEffectController;
+    private List<StatusEffect> statusList;
 
     public void ResetStatusModifiers()
     {
@@ -44,6 +51,11 @@ public class Entity : MonoBehaviour
 
     [SerializeField] protected bool isDie;
     [SerializeField] protected EntityDataSO so;
+
+    protected virtual void Awake()
+    {
+        statusEffectController = GetComponent<StatusEffectController>();
+    }
 
     protected virtual void OnEnable()
     {
@@ -114,5 +126,17 @@ public class Entity : MonoBehaviour
     protected virtual int GetId()
     {
         return entityId;
+    }
+
+    public virtual void InitWorldObj(int id, string prefabId)
+    {
+    }
+
+    public virtual void SaveData(SaveData _data)
+    {
+    }
+
+    public virtual void LoadData(SaveData _data)
+    {
     }
 }

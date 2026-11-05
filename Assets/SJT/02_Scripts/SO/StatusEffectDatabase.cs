@@ -62,6 +62,14 @@ public class StatusEffectDatabase : ScriptableObject
                 continue;
             }
 
+#if UNITY_EDITOR
+            // 분류 누락은 로직에 영향이 없으므로 경고만 남긴다.
+            if (data.EffectCategory == EffectCategory.None)
+            {
+                Debug.LogWarning($"[StatusEffectDatabase] {type}의 분류(버프·디버프·저주)가 지정되지 않았습니다.", data);
+            }
+#endif
+
             lookup.Add(type, data);
         }
 
