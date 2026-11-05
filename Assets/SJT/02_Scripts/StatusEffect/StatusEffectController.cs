@@ -6,8 +6,6 @@ public class StatusEffectController : MonoBehaviour
 {
     [SerializeField] private Entity entity; // 같은 오브젝트에 있는 Entity를 참조.
     private List<StatusEffect> activeStatusEffects;
-    public List<StatusEffect> ActiveStatusEffects;
-
     [SerializeField] private int activeStatusEffectsCapacity = 20; // 초기 상태 효과 갯수
 
     /// <summary>새 상태가 걸린 직후 발생한다. 연출 등 로직 밖의 반응에 사용한다.</summary>
@@ -45,23 +43,6 @@ public class StatusEffectController : MonoBehaviour
         }
     }
 
-    /// <summary>대상이 파괴될 때 남은 상태를 해제하고 실행 객체를 풀에 반납한다.</summary>
-    private void OnDestroy()
-    {
-        if (activeStatusEffects == null)
-        {
-            return;
-        }
-
-        for (int i = activeStatusEffects.Count - 1; i >= 0; i--)
-        {
-            StatusEffect effect = activeStatusEffects[i];
-            activeStatusEffects.RemoveAt(i);
-            effect.Remove();
-            StatusEffectPool.Return(effect);
-        }
-    }
-
     private void Update()
     {
         for (int i = activeStatusEffects.Count - 1; i >= 0; i--)
@@ -85,6 +66,23 @@ public class StatusEffectController : MonoBehaviour
                 D_EffectTicked?.Invoke(effect);
                 LogStatus("틱", effect);
             }
+        }
+    }
+
+    /// <summary>대상이 파괴될 때 남은 상태를 해제하고 실행 객체를 풀에 반납한다.</summary>
+    private void OnDestroy()
+    {
+        if (activeStatusEffects == null)
+        {
+            return;
+        }
+
+        for (int i = activeStatusEffects.Count - 1; i >= 0; i--)
+        {
+            StatusEffect effect = activeStatusEffects[i];
+            activeStatusEffects.RemoveAt(i);
+            effect.Remove();
+            StatusEffectPool.Return(effect);
         }
     }
 
