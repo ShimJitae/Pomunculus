@@ -291,7 +291,11 @@ public class NetworkManager : Singleton<NetworkManager>, IConnectionCallbacks, I
 
     #region IInRoomCallbacks
     public void OnPlayerEnteredRoom(Player newPlayer) { }
-    public void OnPlayerLeftRoom(Player otherPlayer) { }
+    public void OnPlayerLeftRoom(Player otherPlayer)
+    {
+        Debug.Log($"[Network] 플레이어 퇴장 : #{otherPlayer.ActorNumber} {otherPlayer.NickName}");
+        OnPlayerLeftRoomEvent?.Invoke(otherPlayer);
+    }
     public void OnRoomPropertiesUpdate(Hashtable propertiesThatChanged)
     {
         // 룸 안에서 마스터가 씬을 바꾼 경우
@@ -310,6 +314,7 @@ public class NetworkManager : Singleton<NetworkManager>, IConnectionCallbacks, I
     public event Action OnJoinedRoomEvent;
     public event Action<short, string> OnJoinRoomFailedEvent;
     public event Action OnLeftRoomEvent;
+    public event Action<Player> OnPlayerLeftRoomEvent;
 
     // PhotonNetwork.CurrentSceneProperty(internal)와 같은 키
     private const string CurrentSceneProperty = "curScn";
