@@ -1,9 +1,7 @@
 using System;
-using System.Collections.Generic;
-using System.Threading;
 using UnityEngine;
 
-public class DropItemManager : SingletonBehavior<DropItemManager>
+public class DataDBManager : SingletonBehavior<DataDBManager>
 {
     public EnemyDatabase EnemyDatabase;
     public ItemDatabase ItemDatabase;

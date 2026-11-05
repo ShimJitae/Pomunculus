@@ -61,7 +61,7 @@ public class Enemy : Entity
     {
         behaviorGraphAgent.SetVariableValue<bool>("IsDie", true);
 
-        DropItemManager.Instance.SpawnDropItem(GetId(), transform.position);
+        DataDBManager.Instance.SpawnDropItem(GetId(), transform.position);
 
         Destroy(gameObject, 1f);
     }

@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Unity.Behavior;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "EnemyDatabase", menuName = "Scriptable Objects/EnemyDatabase")]
@@ -30,7 +29,6 @@ public class EnemyDatabase : ScriptableObject
             if (enemyId <= 0 || !enemy.TryAdd(enemyId, so))
                 continue;
 
-            //Debug.Log($"키 : {enemyId} / 밸류 : {enemy.Values}");
         }
 
         //foreach (EnemyDataSO m in data)
@@ -88,9 +86,6 @@ public class EnemyDatabase : ScriptableObject
         GameObject prefab = data[value].GetEnemyPrefab();
 
         GameObject enemyObject = GameObject.Instantiate(prefab, spawnPositon, Quaternion.identity);
-
-        //GameObject target = PoolEnemy.Instance.player;
-        //enemyObject.GetComponent<Enemy>().SetTarget(target);
     }
 
     public void SpawnWitch(Vector3 spawnPositon)
@@ -102,9 +97,6 @@ public class EnemyDatabase : ScriptableObject
             prefab = so.GetEnemyPrefab();
 
             GameObject enemyObject = GameObject.Instantiate(prefab, spawnPositon, Quaternion.identity);
-
-            //GameObject target = PoolEnemy.Instance.player;
-            //enemyObject.GetComponent<Enemy>().SetTarget(target);
         }
     }
 }
