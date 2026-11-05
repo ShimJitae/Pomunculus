@@ -163,7 +163,15 @@ public sealed class StatusEffect
         statusBehavior.ApplyModifier(this);
     }
 
-    public StatusEffectType Type => statusEffectData.StatusEffectType; // 현재 상태의 종류이다. 
+    #region 플레이어 HUD에 표시할 데이터
+    public StatusEffectType Type => statusEffectData.StatusEffectType; // 현재 상태의 종류이다.
+    public int StackCount => stackCount;
+    /// <summary>남은 지속 시간을 반환한다. 단위는 초</summary>
+    public float RemainingDuration => remainingDuration;
+    #endregion
+
+    /// <summary>현재 상태의 SO 데이터를 반환한다. 풀에 반납된 뒤에는 null이다.</summary>
+    public StatusEffectData Data => statusEffectData;
 
     /// <summary>상태 효과가 적용되는 대상을 반환한다.</summary>
     public Entity Target => target;
@@ -173,8 +181,4 @@ public sealed class StatusEffect
 
     /// <summary>상태별 수치를 반환한다. 의미는 상태 종류마다 다르다.</summary>
     public float ValuePerStack => statusEffectData.ValuePerStack;
-    public int StackCount => stackCount;
-
-    /// <summary>남은 지속 시간을 반환한다. 단위는 초</summary>
-    public float RemainingDuration => remainingDuration;
 }
