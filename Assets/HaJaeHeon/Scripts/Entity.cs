@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(StatusEffectController))]
-public class Entity : MonoBehaviour, IWorldObj
+public class Entity : MonoBehaviour, IWorldObj, IDamageable
 {
     public string PrefabId { get; set; }
     public int ID { get; set; }
@@ -80,10 +80,20 @@ public class Entity : MonoBehaviour, IWorldObj
         Debug.Log($"현재 HP : {CurrentHp} / 데미지 >> {damage}");
 
         CurrentHp -= damage;
-
+        //기존
+        //if (CurrentHp <= 0)
+        //{
+        //    isDie = true;
+        //    OnDie();
+        //}
+        //임시 테스트용 habin
         if (CurrentHp <= 0)
         {
             isDie = true;
+
+            if (TryGetComponent<ItemDropper>(out ItemDropper dropper))
+                dropper.DropItems();
+
             OnDie();
         }
 
@@ -133,5 +143,11 @@ public class Entity : MonoBehaviour, IWorldObj
     {
         var sd = _data.Child["sec"];
         statusEffectController.LoadData(sd);
+    }
+
+    public void TakeDamage(int damage, Vector3 sourcePosition)
+    {
+        Debug.Log($"{damage}만큼 피격!");
+        TakeDamage(damage);
     }
 }
