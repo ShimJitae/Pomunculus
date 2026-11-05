@@ -123,7 +123,7 @@ public class GameManager : SingletonBehavior<GameManager>
         int count = WorldManager.Instance.Objects.GetList().Count;
         var pos = new Vector3(count % 5 * 1.5f - 3f, 0.5f, count / 5 * 1.5f); // 생성 순서대로 격자 배치
         var obj = WorldManager.Instance.Spawn(m_testPrefabId, pos, Quaternion.identity,
-            o => { if (o is TestWorldObject t) t.SetOwner(ownerActor); });
+            o => { if (o is IPlayerObj t) t.Owner = ownerActor; });
         Debug.Log($"[Test] TestCube 생성 (ID : {obj?.ID}, 소유자 : {ownerActor}, 월드 오브젝트 수 : {WorldManager.Instance.Objects.GetList().Count})");
     }
 
