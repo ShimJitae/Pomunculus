@@ -35,6 +35,7 @@ public class GameManager : SingletonBehavior<GameManager>
         NetworkManager.Instance.OnPlayerLeftRoomEvent += OnPlayerLeftRoom;
         NetworkManager.Instance.OnStateChangedEvent += OnNetworkStateChanged;
         SceneManager.sceneLoaded += OnSceneLoaded;
+        WorldManager.Instance.OnSpawnedEvent += OnWorldObjSpawned;
         m_playerSpawnRegistered = true;
     }
     private void PlayerSpawnUnregister()
@@ -44,6 +45,7 @@ public class GameManager : SingletonBehavior<GameManager>
         NetworkManager.Instance.OnPlayerLeftRoomEvent -= OnPlayerLeftRoom;
         NetworkManager.Instance.OnStateChangedEvent -= OnNetworkStateChanged;
         SceneManager.sceneLoaded -= OnSceneLoaded;
+        WorldManager.Instance.OnSpawnedEvent -= OnWorldObjSpawned;
         m_playerSpawnRegistered = false;
     }
     private void OnJoinedRoom()
@@ -109,6 +111,13 @@ public class GameManager : SingletonBehavior<GameManager>
         var obj = WorldManager.Instance.Spawn(PlayerPrefabId, PlayerSpawnPosition, Quaternion.identity,
             o => { if (o is IPlayerObj p) p.Owner = ownerActor; });
         Debug.Log($"[GameManager] 플레이어 생성 (ID : {obj?.ID}, 소유자 : {ownerActor})");
+    }
+    // 내 소유의 플레이어가 생성되면 카메라가 따라가도록 지정
+    private void OnWorldObjSpawned(IWorldObj obj)
+    {
+        if (obj is not IPlayerObj p || p.Owner != PhotonNetwork.LocalPlayer.ActorNumber) return;
+        var cam = PlayerCameraController.Instance;
+        if (cam != null) cam.SetPlayer(obj);
     }
     // 다른 플레이어가 나가면 방장이 그 플레이어 소유의 오브젝트를 제거
     private void OnPlayerLeftRoom(Player player)
