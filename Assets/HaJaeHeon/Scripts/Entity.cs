@@ -52,7 +52,7 @@ public class Entity : MonoBehaviour, IWorldObj
     [SerializeField] protected bool isDie;
     [SerializeField] protected EntityDataSO so;
 
-    private void Awake()
+    protected virtual void Awake()
     {
         statusEffectController = GetComponent<StatusEffectController>();
     }
@@ -124,9 +124,14 @@ public class Entity : MonoBehaviour, IWorldObj
 
     public virtual void SaveData(SaveData _data)
     {
+        var sd = new SaveData();
+        statusEffectController.SaveData(sd);
+        _data.Child["sec"] = sd;
     }
 
     public virtual void LoadData(SaveData _data)
     {
+        var sd = _data.Child["sec"];
+        statusEffectController.LoadData(sd);
     }
 }
