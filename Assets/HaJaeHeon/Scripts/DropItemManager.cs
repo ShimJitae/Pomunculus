@@ -67,4 +67,10 @@ public class DropItemManager : SingletonBehavior<DropItemManager>
     {
         EnemyDatabase.SpawnEnemy(SpawnTransform);
     }
+
+    [ContextMenu("마녀 소환")]
+    public void SpawnWitch()
+    {
+        EnemyDatabase.SpawnWitch(SpawnTransform);
+    }
 }
