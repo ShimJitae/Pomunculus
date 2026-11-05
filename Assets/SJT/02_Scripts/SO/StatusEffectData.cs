@@ -9,6 +9,9 @@ public class StatusEffectData : ScriptableObject
     [Tooltip("상태 효과의 카테고리. Burn, Freeze 등")]
     [SerializeField] private StatusEffectType statusEffectType;
 
+    [Tooltip("상태의 분류. 버프·디버프·저주 중 하나로 지정")]
+    [SerializeField] private EffectCategory effectCategory;
+
     [Tooltip("화상, 냉기 등 화면에 표시할 상태 이름")]
     [SerializeField] private string stateName;
 
@@ -35,6 +38,9 @@ public class StatusEffectData : ScriptableObject
 
     public int StatusId => statusId;
     public StatusEffectType StatusEffectType => statusEffectType;
+
+    /// <summary>상태의 분류(버프·디버프·저주)를 반환한다.</summary>
+    public EffectCategory EffectCategory => effectCategory;
     public string StateName => stateName;
     public int MaxStackCount => maxStackCount;
 

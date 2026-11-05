@@ -163,7 +163,8 @@ public sealed class StatusEffect
         statusBehavior.ApplyModifier(this);
     }
 
-    public StatusEffectType Type => statusEffectData.StatusEffectType; // 현재 상태의 종류이다. 
+    public StatusEffectType Type => statusEffectData.StatusEffectType; // 현재 상태의 종류이다.
+    public EffectCategory Category => statusEffectData.EffectCategory; // 현재 상태의 분류(버프·디버프·저주)이다.
 
     /// <summary>상태 효과가 적용되는 대상을 반환한다.</summary>
     public Entity Target => target;
