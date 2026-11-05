@@ -184,15 +184,18 @@ public class StatusEffectController : MonoBehaviour, ISavable
         List<int> type = new List<int>();
         List<int> stackCount = new List<int>();
         List<float> duration = new List<float>();
+        List<float> tickTimer = new List<float>();
         foreach (var a in activeStatusEffects)
         {
             type.Add((int)a.Type);
             stackCount.Add(a.StackCount);
             duration.Add(a.RemainingDuration);
+            tickTimer.Add(a.TickTimer);
         }
         d.WriteList(type, d.Write);
         d.WriteList(stackCount, d.Write);
         d.WriteList(duration, d.Write);
+        d.WriteList(tickTimer, d.Write);
         d.Save();
         _data.SetData(d.GetData());
     }
@@ -203,14 +206,15 @@ public class StatusEffectController : MonoBehaviour, ISavable
         List<int> type = p;
         List<int> stackCount = p;
         List<float> duration = p;
+        List<float> tickTimer = p;
         int count = Mathf.Min(type.Count, Mathf.Min(stackCount.Count, duration.Count));
         for (int i = 0; i < count; i++)
         {
-            RestoreStatusEffect((StatusEffectType)type[i], stackCount[i], duration[i]);
+            RestoreStatusEffect((StatusEffectType)type[i], stackCount[i], duration[i], tickTimer[i]);
         }
     }
 
-    private void RestoreStatusEffect(StatusEffectType type, int stack, float remaining)
+    private void RestoreStatusEffect(StatusEffectType type, int stack, float remaining, float tickTimer)
     {
         StatusEffect effect = StatusEffectPool.Get();
         if (!effect.Initialize(type, entity))
@@ -222,6 +226,7 @@ public class StatusEffectController : MonoBehaviour, ISavable
         effect.Register();                        // OnRegistered 1회 실행. 남은 시간이 SO 값으로 초기화된다
         effect.StackCount = Mathf.Max(1, stack);  // 그래서 Register 다음에 덮어쓴다
         effect.RemainingDuration = remaining;
+        effect.TickTimer = tickTimer;
 
         activeStatusEffects.Add(effect);
         RecalculateModifiers();                   // 중첩 수가 반영된 수치로 다시 계산

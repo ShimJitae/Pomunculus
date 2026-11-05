@@ -169,6 +169,7 @@ public sealed class StatusEffect
     public int StackCount { get => stackCount; set => stackCount = Mathf.Clamp(value, 0, statusEffectData.MaxStackCount); } // 현재 중첩 수. 0~MaxStackCount 사이로 제한된다.
     /// <summary>남은 지속 시간을 반환한다. 단위는 초</summary>
     public float RemainingDuration { get => remainingDuration; set => remainingDuration = Mathf.Max(0f, value); } // 남은 지속 시간. 0 이상으로 제한된다.
+    public float TickTimer { get => tickTimer; set => tickTimer = value; }
     #endregion
 
     /// <summary>현재 상태의 SO 데이터를 반환한다. 풀에 반납된 뒤에는 null이다.</summary>

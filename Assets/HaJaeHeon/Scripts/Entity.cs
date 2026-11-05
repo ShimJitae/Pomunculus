@@ -124,8 +124,6 @@ public class Entity : MonoBehaviour, IWorldObj
 
     public virtual void SaveData(SaveData _data)
     {
-        _data.SetData(CurrentHp);
-
         var sd = new SaveData();
         statusEffectController.SaveData(sd);
         _data.Child["sec"] = sd;
@@ -133,7 +131,6 @@ public class Entity : MonoBehaviour, IWorldObj
 
     public virtual void LoadData(SaveData _data)
     {
-        CurrentHp = _data.GetData<int>();
         var sd = _data.Child["sec"];
         statusEffectController.LoadData(sd);
     }
