@@ -14,5 +14,11 @@ namespace Pomunculus.Items
 
         [Header("아이콘")]
         public Sprite Icon;
+
+        [Header("원소 수치")]
+        public float PhysicsElement;
+        public float FireElement;
+        public float ColdElement;
+        public float WindElement;
     }
 }
