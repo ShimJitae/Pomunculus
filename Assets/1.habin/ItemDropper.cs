@@ -14,8 +14,8 @@ public class ItemDropper : MonoBehaviour, IWorldObj
 
     private bool hasDropped;
 
-    public int ID { get; private set; } = -1;
-    public string PrefabId { get; private set; }
+    public int ID { get; set; } = -1;
+    public string PrefabId { get; set; }
 
     public void DropItems()
     {

@@ -10,8 +10,8 @@ namespace Pomunculus.Items
         [SerializeField, Min(1)] private int amount = 1;
         public MaterialData Material => material;
         public int Amount => amount;
-        public int ID { get; private set; } = -1;
-        public string PrefabId { get; private set; }
+        public int ID { get; set; } = -1;
+        public string PrefabId { get; set; }
 
         public void InitWorldObj(int id, string prefabId)
         {
@@ -21,10 +21,12 @@ namespace Pomunculus.Items
 
         public void SaveData(SaveData data)
         {
+
         }
 
         public void LoadData(SaveData data)
         {
+
         }
     }
 }
