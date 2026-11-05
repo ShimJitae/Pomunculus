@@ -68,10 +68,20 @@ public class Entity : MonoBehaviour
         Debug.Log($"현재 HP : {CurrentHp} / 데미지 >> {damage}");
 
         CurrentHp -= damage;
-
+        //기존
+        //if (CurrentHp <= 0)
+        //{
+        //    isDie = true;
+        //    OnDie();
+        //}
+        //임시 테스트용 habin
         if (CurrentHp <= 0)
         {
             isDie = true;
+
+            if (TryGetComponent<ItemDropper>(out ItemDropper dropper))
+                dropper.DropItems();
+
             OnDie();
         }
 
