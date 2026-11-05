@@ -102,8 +102,8 @@ public class GameManager : SingletonBehavior<GameManager>
             foreach (var obj in WorldManager.Instance.Objects.GetList())
             {
                 if (obj is not TestWorldObject t) continue;
-                if (t.OwnerActor == OfflineActor) t.SetOwner(myActor);
-                if (t.OwnerActor == myActor) hasMine = true;
+                if (t.Owner == OfflineActor) t.SetOwner(myActor);
+                if (t.Owner == myActor) hasMine = true;
             }
             if (!hasMine) TestSpawnCube(myActor);
         }
@@ -132,7 +132,7 @@ public class GameManager : SingletonBehavior<GameManager>
     {
         foreach (var obj in WorldManager.Instance.Objects.GetList())
         {
-            var owner = obj is TestWorldObject t ? t.OwnerActor : -1;
+            var owner = obj is TestWorldObject t ? t.Owner : -1;
             Debug.Log($"[Test] ID : {obj.ID}, Prefab : {obj.PrefabId}, 소유자 : {owner}, 위치 : {obj.gameObject.transform.position}");
         }
     }

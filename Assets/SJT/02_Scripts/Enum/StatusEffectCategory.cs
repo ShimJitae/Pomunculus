@@ -1,10 +1,12 @@
 using UnityEngine;
 
+// 상태의 분류. SO에 정수값으로 저장되므로 값을 명시한다.
 public enum EffectCategory
 {
-    None,
-    Buff,
-    Debuff
+    None = 0,
+    Buff = 1,       // 버프
+    Debuff = 2,     // 디버프
+    Curse = 3       // 저주
 }
 
 // SO에는 정수값으로 저장되므로 일부만 주석을 해제해도 값이 밀리지 않도록 명시한다.
