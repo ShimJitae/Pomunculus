@@ -34,6 +34,7 @@ public class EnemyDataSO : EntityDataSO
 
     [Header("추가로 등록할 내용")]
     [SerializeField] private float detectRange;
+    [SerializeField] private float attackRange;
     [SerializeField] private BehaviorGraph behaviourGraph;
     [SerializeField] private GameObject enemyPrefab;
 
@@ -65,5 +66,15 @@ public class EnemyDataSO : EntityDataSO
     public float GetDetectRange()
     {
         return detectRange;
+    }
+
+    public float GetAttackRange()
+    {
+        return attackRange;
+    }
+
+    public int GetAtk()
+    {
+        return atk;
     }
 }

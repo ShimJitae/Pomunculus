@@ -3,5 +3,4 @@ using UnityEngine.Pool;
 
 public class PoolEnemy : SingletonBehavior<PoolEnemy>
 {
-    public GameObject player;
 }

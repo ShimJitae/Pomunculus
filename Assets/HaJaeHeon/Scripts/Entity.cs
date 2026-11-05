@@ -84,6 +84,10 @@ public class Entity : MonoBehaviour, IWorldObj
         if (CurrentHp <= 0)
         {
             isDie = true;
+
+            if (TryGetComponent<ItemDropper>(out ItemDropper dropper))
+                dropper.DropItems();
+
             OnDie();
         }
 
