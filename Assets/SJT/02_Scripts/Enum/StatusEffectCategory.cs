@@ -4,7 +4,8 @@ public enum EffectCategory
 {
     None,
     Buff,
-    Debuff
+    Debuff,
+    Cursed
 }
 
 // SO에는 정수값으로 저장되므로 일부만 주석을 해제해도 값이 밀리지 않도록 명시한다.
