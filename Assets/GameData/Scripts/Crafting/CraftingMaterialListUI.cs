@@ -32,13 +32,9 @@ namespace Pomunculus.Items
         [SerializeField] private Button backButton;
         [SerializeField] private Button nextButton;
         [SerializeField] private TMP_Text pageText;
-
         private const int SlotsPerPage = 6;
-
         private readonly MaterialData[] displayedMaterials = new MaterialData[SlotsPerPage];
-
         private int currentPage;
-
         private void Awake()
         {
             for (int i = 0; i < SlotsPerPage; i++)
