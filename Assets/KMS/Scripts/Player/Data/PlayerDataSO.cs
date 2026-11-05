@@ -3,7 +3,7 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "PlayerDataSO", menuName = "Scriptable Objects/PlayerDataSO")]
 public class PlayerDataSO : EntityDataSO
 {
-    [Header("스테미나")]
+    [Header("스태미나")]
     [SerializeField] private int maxStamina = 100;
     public int MaxStamina => maxStamina;
     [SerializeField] private float staminaRegenPerSecond;
@@ -15,8 +15,8 @@ public class PlayerDataSO : EntityDataSO
     [SerializeField] private int throwStaminaCost;
     public int ThrowStaminaCost => throwStaminaCost;
 
-    [Header("속도")]
-    [SerializeField] private float moveSpeed = 5f;
-    public float MoveSpeed => moveSpeed;
+    //[Header("속도")]
+    //[SerializeField] private float moveSpeed = 5f;
+    //public float MoveSpeed => moveSpeed;
 
 }

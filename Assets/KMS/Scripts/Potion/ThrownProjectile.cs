@@ -1,11 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-/// <summary>
-/// 포물선으로 날아가 무언가에 닿으면 주변에 피해를 주고 사라지는 투사체.
-/// 프리팹 구성: Rigidbody + Collider + 이 스크립트.
-/// 중력은 Launch에서 받은 값을 직접 적용하므로 Rigidbody의 Use Gravity는 자동으로 꺼진다.
-/// </summary>
+// 포물선으로 날아가 무언가에 닿으면 주변에 피해를 주고 사라지는 포션.
 [RequireComponent(typeof(Rigidbody))]
 public class ThrownProjectile : MonoBehaviour
 {
