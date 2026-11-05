@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+[DisallowMultipleComponent]
 public class StatusEffectController : MonoBehaviour, ISavable
 {
     [SerializeField] private Entity entity; // 같은 오브젝트에 있는 Entity를 참조.
