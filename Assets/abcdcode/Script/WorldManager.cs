@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using ExitGames.Client.Photon;
-using Newtonsoft.Json;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
@@ -68,7 +67,7 @@ public class WorldManager : Singleton<WorldManager>
 
     #region 플레이어
     // 플레이어 오브젝트 생성 후 등록. 방장 쪽에서 저장 대상이 됨
-    public void RegisterPlayer(string uid, ISavable player)
+    public void RegisterPlayer(string uid, IWorldObj player)
     {
         m_players[uid] = player;
         if (IsMaster) CurWorldData?.LoadPlayer(uid, player);
@@ -83,6 +82,14 @@ public class WorldManager : Singleton<WorldManager>
         if (!m_players.TryGetValue(uid, out var player)) return;
         if (IsMaster) CurWorldData?.SavePlayer(uid, player); // 나간 플레이어 데이터 보존
         m_players.Remove(uid);
+    }
+    public PlayerFSM GetLocalPlayer()
+    {
+        return GetPlayer(GameManager.Instance.LocalUserProfile.UID);
+    }
+    public PlayerFSM GetPlayer(string uid)
+    {
+        return (PlayerFSM)m_players[uid];
     }
     #endregion
 
@@ -104,7 +111,7 @@ public class WorldManager : Singleton<WorldManager>
 
         PacketData p = new();
         p.Write((int)WorldEventID.SpawnObj);
-        p.Write(JsonConvert.SerializeObject(WorldObjSaveData.Create(obj)));
+        WorldObjSaveData.Create(obj).Write(p);
         RaiseEventManager.Instance.SendPacket(p, new() { Receivers = ReceiverGroup.Others }, SendOptions.SendReliable);
         return obj;
     }
@@ -155,14 +162,13 @@ public class WorldManager : Singleton<WorldManager>
 
         PacketData r = new();
         r.Write((int)WorldEventID.WorldSnapshot);
-        r.Write(JsonConvert.SerializeObject(snapshot));
+        snapshot.Write(r);
         RaiseEventManager.Instance.SendPacket(r, new() { TargetActors = new[] { e.Sender } }, SendOptions.SendReliable);
     }
     private void OnReceiveSnapshot(EventData e, PacketData p)
     {
         if (IsMaster) return;
-        string json = p;
-        var snapshot = JsonConvert.DeserializeObject<WorldSnapshot>(json);
+        var snapshot = WorldSnapshot.Read(p);
 
         ClearWorld();
         CurWorldData = new WorldData() { Day = snapshot.Day, Time = snapshot.Time };
@@ -179,8 +185,7 @@ public class WorldManager : Singleton<WorldManager>
     private void OnReceiveSpawn(EventData e, PacketData p)
     {
         if (IsMaster) return;
-        string json = p;
-        var d = JsonConvert.DeserializeObject<WorldObjSaveData>(json);
+        var d = WorldObjSaveData.Read(p);
         RunOrQueue(() => SpawnLocal(d));
     }
     private void OnReceiveDespawn(EventData e, PacketData p)
@@ -250,7 +255,7 @@ public class WorldManager : Singleton<WorldManager>
 
     private NetworkPrefabCatalog m_catalog;
     private Dictionary<string, GameObject> m_prefabs;
-    private readonly Dictionary<string, ISavable> m_players = new();
+    private readonly Dictionary<string, IWorldObj> m_players = new();
     private readonly Queue<Action> m_pendingEvents = new();
     private SaveData m_pendingPlayerData;
     private bool m_initialized;

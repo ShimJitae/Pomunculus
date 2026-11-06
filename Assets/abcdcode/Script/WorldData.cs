@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Newtonsoft.Json;
 using UnityEngine;
 
 public class WorldData
@@ -37,6 +38,24 @@ public class WorldSnapshot
     public float Time{get;set;}
     public List<WorldObjSaveData> Entities{get;set;} = new();
     public SaveData Player{get;set;} // 입장한 플레이어 본인의 저장 데이터, 없으면 null
+
+    // 네트워크 전송용 바이너리
+    public void Write(PacketData p)
+    {
+        p.Write(Day);
+        p.Write(Time);
+        p.Write(Entities.Count);
+        foreach(var e in Entities) e.Write(p);
+        p.WriteSaveData(Player);
+    }
+    public static WorldSnapshot Read(PacketData p)
+    {
+        var s = new WorldSnapshot { Day = p, Time = p };
+        int count = p;
+        for(int i = 0; i < count; i++) s.Entities.Add(WorldObjSaveData.Read(p));
+        s.Player = p.ReadSaveData();
+        return s;
+    }
 }
 
 // 엔티티 상태 자체는 ISavable에 맡기고, 여기엔 다시 생성하는 데 필요한 정보만 둔다
@@ -61,6 +80,39 @@ public class WorldObjSaveData
             Rotation = t.eulerAngles,
             State = state
         };
+    }
+
+    // 네트워크 전송용 바이너리. 다시 생성하는 데 필요한 값은 고정 크기로 쓰고,
+    // 상태(SaveData)는 Entity마다 형태가 달라서 JSON 문자열로 둔다
+    public void Write(PacketData p)
+    {
+        p.Write(ID);
+        p.Write(PrefabId);
+        p.Write(Position.ToVector3());
+        p.Write(Rotation.ToVector3());
+        p.WriteSaveData(State);
+    }
+    public static WorldObjSaveData Read(PacketData p) => new()
+    {
+        ID = p,
+        PrefabId = p,
+        Position = p.ReadVector3(),
+        Rotation = p.ReadVector3(),
+        State = p.ReadSaveData()
+    };
+}
+
+public static class SaveDataPacketExtensions
+{
+    // null이면 bool 하나만 씀
+    public static void WriteSaveData(this PacketData p, SaveData d)
+    {
+        p.Write(d != null);
+        if(d != null) p.Write(JsonConvert.SerializeObject(d));
+    }
+    public static SaveData ReadSaveData(this PacketData p)
+    {
+        return p.ReadBool() ? JsonConvert.DeserializeObject<SaveData>(p.ReadString()) : null;
     }
 }
 

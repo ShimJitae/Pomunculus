@@ -5,6 +5,7 @@ public class DataDBManager : SingletonBehavior<DataDBManager>
 {
     public EnemyDatabase EnemyDatabase;
     public ItemDatabase ItemDatabase;
+    public PatternDatabase PatternDatabase;
 
     public event Action<int> OnDropItem;
 
@@ -12,15 +13,22 @@ public class DataDBManager : SingletonBehavior<DataDBManager>
 
     public Vector3 ItemDropOffset;
 
-    [ContextMenu("DB확인")]
+    [ContextMenu("Enemy DB확인")]
     public void ShowEnemyDB()
     {
         EnemyDatabase.ShowDB();
     }
 
+    [ContextMenu("Item DB확인")]
     public void ShowItemDB()
     {
         ItemDatabase.ShowDB();
+    }
+
+    [ContextMenu("Pattern DB확인")]
+    public void ShowPatternDB()
+    {
+        PatternDatabase.ShowDB();
     }
 
     public int TryGetDropItemID(int monsterId)

@@ -27,7 +27,7 @@ public class GameManager : SingletonBehavior<GameManager>
     // 온라인 : 방에 들어와 월드 씬 로딩이 끝나면 자기 소유의 플레이어를 하나 생성 (생성 자체는 방장이 처리)
     // 플레이어가 방을 나가면 방장이 그 플레이어 소유의 오브젝트를 제거
     public const string TitleSceneName = "abcdcode_TitleTestScene";
-    public const string TestSceneName = "abcdcode_TestScene";
+    public const string TestSceneName = "IntegrationTestScene";
 
     private void PlayerSpawnRegister()
     {
