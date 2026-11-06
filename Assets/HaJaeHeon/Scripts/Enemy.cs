@@ -15,19 +15,14 @@ public class Enemy : Entity
 
     public int MaxHp => so != null ? so.GetMaxHp() : 0;
 
-    public int PresentHp
-    {
-        get { return currentHp; }
-        private set
-        {
-            currentHp = Mathf.Clamp(value, 0, MaxHp);
-            OnHpChanged?.Invoke(currentHp, MaxHp);
-        }
-    }
-
     [SerializeField] private BehaviorGraphAgent behaviorGraphAgent;
     [SerializeField] private GameObject target;
     [SerializeField] private EnemyDetector detector;
+    [SerializeField] private float knockbackDistance;
+
+    private bool IsDamageBlock => IsInvincible || CheckDie();
+    private NavMeshAgent agent;
+    private Animator animator;
 
     protected EnemyDataSO enemySO
     {
@@ -37,8 +32,12 @@ public class Enemy : Entity
 
     protected override void Awake()
     {
+        base.Awake();
+
         behaviorGraphAgent = GetComponent<BehaviorGraphAgent>();
         detector = GetComponentInChildren<EnemyDetector>();
+        agent = GetComponent<NavMeshAgent>();
+        animator = GetComponent<Animator>();
     }
 
 
@@ -50,31 +49,82 @@ public class Enemy : Entity
             gameObject.SetActive(false);
             return;
         }
-
+        
         behaviorGraphAgent.Graph = enemySO.GetBehaviorGraph();
+
+        base.OnEnable();
         
-        CurrentHp = enemySO.GetHp();
-        moveSpeed = enemySO.GetSpeed();
-        
-        isDie = CurrentHp <= 0;
         detector.SetRadius(enemySO.GetDetectRange());
         detector.OnPlayersChanged += RefreshTarget;
+
+        OnHpChanged?.Invoke(CurrentHp, MaxHp);
     }
 
-    private void OnDisable()
+    protected override void OnDisable()
     {
+        base.OnDisable();
+
         detector.OnPlayersChanged -= RefreshTarget;
     }
 
     private void Start()
     {
         float attackRange = enemySO.GetAttackRange();
-        float bodyRadius = GetComponent<NavMeshAgent>().radius;   // Navigate가 더하는 몸 반지름
+        float bodyRadius = agent.radius;   // Navigate가 더하는 몸 반지름
         float chaseMargin = 0.2f;                                  // 경계 오차 여유
 
-        behaviorGraphAgent.SetVariableValue("MoveSpeed", enemySO.GetSpeed() * MoveSpeedRatio);
         behaviorGraphAgent.SetVariableValue("AttackRange", attackRange);
         behaviorGraphAgent.SetVariableValue("ChaseDistance", Mathf.Max(0.1f, attackRange - bodyRadius - chaseMargin));
+    }
+
+    public override void TakeDamage(int damage)
+    {
+        if (IsDamageBlock || damage <= 0)
+            return;
+
+        CurrentHp -=  Mathf.CeilToInt(damage * DamageTakenRatio);
+        OnHpChanged?.Invoke(CurrentHp, MaxHp);
+
+        if (CurrentHp <= 0)
+        {
+            isDie = true;
+
+            OnDie();
+        }
+    }
+
+    //public override void TakeDamage(int damage, Vector3 sourcePosition)
+    //{
+    //    if (isDamageBlock || damage <= 0)
+    //        return;
+
+    //    CurrentHp -= damage;
+
+    //    if (CurrentHp <= 0)
+    //    {
+    //        isDie = true;
+
+    //        if (TryGetComponent<ItemDropper>(out ItemDropper dropper))
+    //            dropper.DropItems();
+
+    //        OnDie();
+    //    }
+    //
+    //    OnHpChanged?.Invoke(currentHp, MaxHp);
+
+    //    transform.position += (transform.position - sourcePosition) * knockbackDistance;
+    //}
+
+    protected override void OnStatusModifiersChanged(StatusModifiers modifiers)
+    {
+        base.OnStatusModifiersChanged(modifiers);
+
+
+        float currentMoveSpeed = CanMove ? enemySO.GetSpeed() * MoveSpeedRatio : 0f;
+
+        behaviorGraphAgent.SetVariableValue("MoveSpeed", currentMoveSpeed);
+        agent.speed = currentMoveSpeed;
+        animator.SetFloat("MoveAnimSpeed", CanMove ? MoveSpeedRatio : 0f);
     }
 
     protected override void OnDie()
