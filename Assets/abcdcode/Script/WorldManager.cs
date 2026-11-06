@@ -21,6 +21,7 @@ public class WorldManager : Singleton<WorldManager>
         RaiseEventManager.Instance.RegisterEvent((int)WorldEventID.WorldSnapshot, OnReceiveSnapshot);
         RaiseEventManager.Instance.RegisterEvent((int)WorldEventID.SpawnObj, OnReceiveSpawn);
         RaiseEventManager.Instance.RegisterEvent((int)WorldEventID.DespawnObj, OnReceiveDespawn);
+        RaiseEventManager.Instance.RegisterEvent((int)WorldEventID.WorldRPC, RPCHelper.OnReceive);
         m_initialized = true;
     }
     public void Release()
@@ -30,6 +31,7 @@ public class WorldManager : Singleton<WorldManager>
         RaiseEventManager.Instance.UnRegisterEvent((int)WorldEventID.WorldSnapshot);
         RaiseEventManager.Instance.UnRegisterEvent((int)WorldEventID.SpawnObj);
         RaiseEventManager.Instance.UnRegisterEvent((int)WorldEventID.DespawnObj);
+        RaiseEventManager.Instance.UnRegisterEvent((int)WorldEventID.WorldRPC);
         ClearWorld();
         m_initialized = false;
     }
@@ -199,7 +201,7 @@ public class WorldManager : Singleton<WorldManager>
         RunOrQueue(() => DespawnLocal(id));
     }
     // 스냅샷 적용 전이면 쌓아뒀다가 적용 후 실행
-    private void RunOrQueue(Action action)
+    public void RunOrQueue(Action action)
     {
         if (IsReady) action();
         else m_pendingEvents.Enqueue(action);
