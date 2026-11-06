@@ -49,6 +49,24 @@ namespace Pomunculus.Items
 
             Debug.Log("모든 재료 41종을 각각 50개씩 추가했습니다.", this);
         }
+        [ContextMenu("모든 포션 50개씩 추가")]
+        public void GiveAllPotion()
+        {
+            if (!Application.isPlaying)
+            {
+                Debug.Log("플레이 모드에서 사용해 주세요.");
+                return;
+            }
+
+            Inventory inventory = GetComponent<Inventory>();
+
+            for (int id = 10001; id <= 10022; id++)
+            {
+                inventory.AddItem(id, 50);
+            }
+
+            Debug.Log("모든 포션 21종을 각각 50개씩 추가했습니다.", this);
+        }
     }
 
 }
