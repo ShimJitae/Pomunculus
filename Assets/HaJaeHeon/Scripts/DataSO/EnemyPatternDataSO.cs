@@ -28,4 +28,19 @@ public class EnemyPatternDataSO : ScriptableObject
     public float Recovery => recovery;
     public float Interval => interval;
     public string Note => note;
+
+    public string GetPatternName()
+    {
+        return patternName;
+    }
+
+    public int GetPatternId()
+    {
+        return patternId;
+    }
+
+    public int GetMonsterId()
+    {
+        return monsterId;
+    }
 }
