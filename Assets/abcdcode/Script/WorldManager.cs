@@ -14,6 +14,7 @@ public class WorldManager : Singleton<WorldManager>
     public void Init()
     {
         if (m_initialized) return;
+        Debug.Log($"WorldManager Init");
         m_catalog = Resources.Load<NetworkPrefabCatalog>("NetworkPrefabCatalog");
         m_prefabs = m_catalog.Entries.ToDictionary(x => x.name);
         RaiseEventManager.Instance.RegisterEvent((int)WorldEventID.RequestSnapshot, OnRequestSnapshot);
@@ -24,6 +25,7 @@ public class WorldManager : Singleton<WorldManager>
     }
     public void Release()
     {
+        Debug.Log($"WorldManager Release");
         RaiseEventManager.Instance.UnRegisterEvent((int)WorldEventID.RequestSnapshot);
         RaiseEventManager.Instance.UnRegisterEvent((int)WorldEventID.WorldSnapshot);
         RaiseEventManager.Instance.UnRegisterEvent((int)WorldEventID.SpawnObj);
@@ -113,6 +115,7 @@ public class WorldManager : Singleton<WorldManager>
         p.Write((int)WorldEventID.SpawnObj);
         WorldObjSaveData.Create(obj).Write(p);
         RaiseEventManager.Instance.SendPacket(p, new() { Receivers = ReceiverGroup.Others }, SendOptions.SendReliable);
+        Debug.Log($"방장 소환 명령 : {prefabId}");
         return obj;
     }
     public void Despawn(int id)
@@ -186,6 +189,7 @@ public class WorldManager : Singleton<WorldManager>
     {
         if (IsMaster) return;
         var d = WorldObjSaveData.Read(p);
+        Debug.Log($"소환 명령 : {d.PrefabId}");
         RunOrQueue(() => SpawnLocal(d));
     }
     private void OnReceiveDespawn(EventData e, PacketData p)

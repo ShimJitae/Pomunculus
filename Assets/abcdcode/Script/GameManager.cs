@@ -92,6 +92,10 @@ public class GameManager : SingletonBehavior<GameManager>
                 if (p.Owner == myActor) hasMine = true;
             }
             if (!hasMine) SpawnPlayer(myActor);
+
+
+            //테스트 코드. 월드가 온라인 될때 잡몹 하나 소환
+           // WorldManager.Instance.Spawn("EvilMagePADefault",new Vector3(5,1,5),Quaternion.identity,null);
         }
         else
         {
