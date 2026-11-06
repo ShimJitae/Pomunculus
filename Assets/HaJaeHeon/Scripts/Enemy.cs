@@ -93,6 +93,28 @@ public class Enemy : Entity
         }
     }
 
+    //public override void TakeDamage(int damage, Vector3 sourcePosition)
+    //{
+    //    if (isDamageBlock || damage <= 0)
+    //        return;
+
+    //    CurrentHp -= damage;
+
+    //    if (CurrentHp <= 0)
+    //    {
+    //        isDie = true;
+
+    //        if (TryGetComponent<ItemDropper>(out ItemDropper dropper))
+    //            dropper.DropItems();
+
+    //        OnDie();
+    //    }
+    //
+    //    OnHpChanged?.Invoke(currentHp, MaxHp);
+
+    //    transform.position += (transform.position - sourcePosition) * knockbackDistance;
+    //}
+
     protected override void OnStatusModifiersChanged(StatusModifiers modifiers)
     {
         base.OnStatusModifiersChanged(modifiers);
@@ -136,11 +158,24 @@ public class Enemy : Entity
 
     public override void SaveData(SaveData _data)
     {
+        SaveData enemyHpData = new SaveData();
+        enemyHpData.SetData(CurrentHp);
+        _data.Child["enemyHp"] = enemyHpData;
+
         base.SaveData(_data);
     }
 
     public override void LoadData(SaveData _data)
     {
         base.LoadData(_data);
+
+        if (!_data.Child.TryGetValue("enemyHp", out SaveData enemyHpData))
+            return;
+
+        CurrentHp = enemyHpData.GetData<int>();
+        isDie = CurrentHp <= 0;
+
+        behaviorGraphAgent.SetVariableValue("IsDie", isDie);
+        OnHpChanged?.Invoke(CurrentHp, MaxHp);
     }
 }
