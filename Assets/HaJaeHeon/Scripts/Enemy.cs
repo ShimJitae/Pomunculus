@@ -20,7 +20,7 @@ public class Enemy : Entity
         private set { so = value; }
     }
 
-    private void Awake()
+    protected override void Awake()
     {
         behaviorGraphAgent = GetComponent<BehaviorGraphAgent>();
         detector = GetComponentInChildren<EnemyDetector>();
