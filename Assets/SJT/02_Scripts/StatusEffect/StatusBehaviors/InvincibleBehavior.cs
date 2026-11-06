@@ -17,14 +17,8 @@ public sealed class InvincibleBehavior : IStatusBehavior
     {
     }
 
-    public void ApplyModifier(StatusEffect effect)
+    public void ApplyModifier(StatusEffect effect, ref StatusModifiers modifiers)
     {
-        Entity target = effect.Target;
-        if (target == null)
-        {
-            return;
-        }
-
-        target.IsInvincible = true;
+        modifiers.IsInvincible = true;
     }
 }

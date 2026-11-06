@@ -14,6 +14,9 @@ public sealed class StatusEffectVisualizer : MonoBehaviour
     [Tooltip("Feel의 Target Reference Holder에 전달할 대상. 비우면 이 오브젝트를 사용")]
     [SerializeField] private Transform feedbackTarget;
 
+    [Tooltip("활성 모델의 범위에 1m 기준 연출의 중심과 크기를 생성 시 한 번 맞춤")]
+    [SerializeField] private bool fitToModelBounds;
+
     private readonly Dictionary<StatusEffect, StatusEffectFeedback> activeFeedbacks = new Dictionary<StatusEffect, StatusEffectFeedback>();
     private readonly List<StatusEffectFeedback> endingFeedbacks = new List<StatusEffectFeedback>();
     private StatusEffectController controller;
@@ -95,7 +98,15 @@ public sealed class StatusEffectVisualizer : MonoBehaviour
             return existing;
         }
 
-        StatusEffectFeedback instance = Instantiate(effect.Data.FeedbackPrefab, Anchor, false);
+        Transform effectAnchor = Anchor;
+        Bounds modelBounds = default;
+        bool shouldFit = fitToModelBounds && TryGetModelBounds(effectAnchor, out modelBounds);
+        StatusEffectFeedback instance = Instantiate(effect.Data.FeedbackPrefab, effectAnchor, false);
+        if (shouldFit)
+        {
+            instance.transform.localPosition = modelBounds.center;
+            instance.transform.localScale = Vector3.Max(modelBounds.size, Vector3.one * 0.01f);
+        }
         GameObject target = feedbackTarget != null ? feedbackTarget.gameObject : gameObject;
         instance.Initialize(target);
         if (!isActiveAndEnabled)
@@ -105,6 +116,47 @@ public sealed class StatusEffectVisualizer : MonoBehaviour
         }
         activeFeedbacks.Add(effect, instance);
         return instance;
+    }
+
+    private bool TryGetModelBounds(Transform effectAnchor, out Bounds bounds)
+    {
+        bounds = default;
+        if (EncapsulateModelBounds(GetComponentsInChildren<SkinnedMeshRenderer>(), effectAnchor, ref bounds))
+        {
+            return true;
+        }
+        return EncapsulateModelBounds(GetComponentsInChildren<MeshRenderer>(), effectAnchor, ref bounds);
+    }
+
+    private static bool EncapsulateModelBounds(Renderer[] renderers, Transform effectAnchor, ref Bounds bounds)
+    {
+        bool hasBounds = false;
+        foreach (Renderer renderer in renderers)
+        {
+            if (!renderer.enabled || renderer.GetComponentInParent<StatusEffectFeedback>() != null)
+            {
+                continue;
+            }
+
+            // 각 Renderer의 로컬 범위를 anchor 공간으로 옮겨 부모 회전·크기와 여러 모델 파트를 반영한다.
+            Bounds localBounds = renderer.localBounds;
+            Matrix4x4 toAnchor = effectAnchor.worldToLocalMatrix * renderer.localToWorldMatrix;
+            for (int corner = 0; corner < 8; corner++)
+            {
+                Vector3 point = localBounds.center + Vector3.Scale(localBounds.extents, new Vector3((corner & 1) == 0 ? -1f : 1f, (corner & 2) == 0 ? -1f : 1f, (corner & 4) == 0 ? -1f : 1f));
+                point = toAnchor.MultiplyPoint3x4(point);
+                if (!hasBounds)
+                {
+                    bounds = new Bounds(point, Vector3.zero);
+                    hasBounds = true;
+                }
+                else
+                {
+                    bounds.Encapsulate(point);
+                }
+            }
+        }
+        return hasBounds;
     }
 
     private void HandleRegistered(StatusEffect effect)

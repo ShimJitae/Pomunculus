@@ -11,16 +11,16 @@
 <!-- harness:status:end -->
 - Claude Code 겸용 레이어를 이 프로젝트에만 추가했다(UnityHarness 원본 미반영). `CLAUDE.md`, `.claude/`, `scripts/ai/sync-claude.ps1`이 해당하며 Codex 파일은 바꾸지 않았다. 스킬·역할은 Codex 원본을 고친 뒤 `sync-claude.ps1`로 다시 생성한다.
 
-## 상태이상 Feel 연동 — 2026-11-05
+## 상태이상 파티클 연출 — 2026-11-06
 
-- 후속 범용화 요청에 따라 몸 색·Renderer·머티리얼 처리와 최근 색 정책을 공통 코드에서 제거했다. Visualizer는 이벤트와 프리팹 수명, StatusEffectFeedback은 대상 연결과 다섯 Feel Player 실행만 담당한다. [현재 구조](PROJECT.md#상태-효과-feel-연출)와 [작업 계획](plans/2026-11-05-status-effect-feel.md)을 따른다.
+- 사용자와 정한 1차 범위는 화상·냉기·빙결의 파티클 연출이다. 모델 색·재질 변경과 커스텀 Feedback은 제외한다. 기존 구조를 유지하며 Visualizer에 생성 시 모델 bounds 자동 맞춤만 추가했다. [현재 구조](PROJECT.md#상태-효과-feel-연출)와 [현재 계획](plans/2026-11-06-status-effect-particles.md)을 따른다.
 - 템플릿은 Registered·Reapplied·Tick·Removed·WhileActive 다섯 Player의 Feedback 목록이 모두 비어 있다. 상태 시작 시 Registered+WhileActive, 재부여·틱은 각 Player, 종료 시 유지 연출 정지 후 Removed를 재생한다.
 - 사용할 때 Label이 Target인 MMF Reference Holder를 필요한 Player에 추가하고 개별 Feedback의 대상 선택을 구성한다. Initialize(target)가 대상을 주입하며, 다른 Label은 건드리지 않는다. feedbackTarget이 비어 있으면 대상 자신의 GameObject를 전달한다.
 - modelRoot와 bodyColorFeedbacks 필드는 FormerlySerializedAs로 이전한다. 템플릿 GUID와 기존 Player fileID는 보존했다.
 - 값 복원·상태 간 연출 충돌 처리는 외부 연출 구성의 책임이다. 종료 Player는 유한하게 구성하고 비활성화·파괴 정리가 필요하면 외부 컴포넌트에서 처리한다.
-- 템플릿 복제 후 상태 데이터의 feedbackPrefab과 대상 Visualizer를 연결하는 작업은 남아 있다. 기존 씬 배치와 상태 데이터 연결은 변경하지 않았다.
-- PlayMode와 실제 효과 관찰은 미검증이다. 편집 모드 임시 인스턴스 두 개에서 Target Holder 10개의 개별 대상 연결, Other Holder 유지, 원본 템플릿의 빈 목록을 확인했다.
-- 최종 Unity 재컴파일·프리팹 로드·필드 이전 검사와 독립 재리뷰를 완료했다. 코드·자산 해시와 사용자 Controller·씬·설정 변경을 보존했다. 종료 콜백의 비활성화 재진입 정리도 보완했다.
+- SEFeedback_Burn·Chill·Freeze와 대응 VFX를 만들고 세 상태 데이터에 연결했다.
+- StatusEffectScene의 기존 Player·Capsule만 fitToModelBounds를 켰다. 원본 플레이어·몬스터 프리팹과 다른 씬은 변경하지 않았다.
+- 최초 컴파일·독립 정적 리뷰와 최종 보강 자산의 Play 검사 30개를 통과했다. 최초 부여·재부여·겹침·만료·비활성/복구·모델 재질 불변을 확인했고, 시각 튜닝과 증거는 [현재 계획](plans/2026-11-06-status-effect-particles.md)에 있다. 원본 몬스터 적용·다수 대상 성능 측정은 후속이다. 이전 대상 Holder·필드 이전 검증은 [기존 범용화 기록](plans/2026-11-05-status-effect-feel.md)을 참고한다.
 
 ## 상태이상 작업 인수인계 — 2026-11-03
 

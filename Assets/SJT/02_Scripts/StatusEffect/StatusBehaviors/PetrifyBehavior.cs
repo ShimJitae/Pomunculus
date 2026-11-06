@@ -17,18 +17,12 @@ public sealed class PetrifyBehavior : IStatusBehavior
     {
     }
 
-    public void ApplyModifier(StatusEffect effect)
+    public void ApplyModifier(StatusEffect effect, ref StatusModifiers modifiers)
     {
-        Entity target = effect.Target;
-        if (target == null)
-        {
-            return;
-        }
-
-        target.CanMove = false;
-        target.CanAttack = false;
-        target.CanDodge = false;
-        target.MoveSpeedRatio = 0f;
-        target.IsInvincible = true;
+        modifiers.CanMove = false;
+        modifiers.CanAttack = false;
+        modifiers.CanDodge = false;
+        modifiers.MoveSpeedRatio = 0f;
+        modifiers.IsInvincible = true;
     }
 }
