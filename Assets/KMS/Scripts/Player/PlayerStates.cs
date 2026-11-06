@@ -1,3 +1,4 @@
+using Pomunculus.Items;
 using UnityEngine;
 
 public enum PlayerStateType
@@ -125,12 +126,14 @@ public class PlayerAttackState : PlayerStateBase
 
     private Vector3 target;
     private bool released;
+    private PotionData currentPotion;
 
     public override void Enter(PlayerFSM player)
     {
         base.Enter(player);
         target = player.AttackTarget;
         released = false;
+        currentPotion = player.AttackPotion;
 
         player.Motor.StopMoving();
         player.Motor.RotateTowards(target - player.transform.position, instant: true);
@@ -144,7 +147,12 @@ public class PlayerAttackState : PlayerStateBase
         // 1) 발사 (한 번만)
         if (!released && elapsed >= player.Tuning.ThrowReleaseTime)
         {
-            player.Thrower.ThrowProjectile(target);
+            // 포션은 인벤토리에서 하나 꺼낼 수 있을 때만 던지고, 아니면 빈 병(null)을 던진다
+            PotionData thrownPotion = currentPotion;
+            if (thrownPotion != null && !player.Inventory.RemoveItem(thrownPotion.Id))
+                thrownPotion = null;
+
+            player.Thrower.ThrowProjectile(target, thrownPotion);
             released = true;
         }
 

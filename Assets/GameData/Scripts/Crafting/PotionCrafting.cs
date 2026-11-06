@@ -7,8 +7,7 @@ namespace Pomunculus.Items
 {
     public class PotionCrafting : MonoBehaviour
     {
-        [Header("플레이어 인벤토리")]
-        [SerializeField] private Inventory inventory;
+        public Inventory inventory;
         [Header("전체 포션 데이터")]
         [SerializeField] private List<PotionData> potions = new List<PotionData>();
         [Header("실패했을 때 지급할 포션")]
