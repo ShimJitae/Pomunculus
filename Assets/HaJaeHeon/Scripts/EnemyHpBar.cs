@@ -13,7 +13,7 @@ public class EnemyHpBar : MonoBehaviour
     private void Awake()
     {
         if (owner == null)
-            owner = transform.root.GetComponent<Enemy>();
+            owner = transform.root.GetComponentInChildren<Enemy>();
     }
 
     private void OnEnable()
