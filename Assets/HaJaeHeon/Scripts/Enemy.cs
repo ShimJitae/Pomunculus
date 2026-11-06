@@ -1,3 +1,4 @@
+using System;
 using Unity.Behavior;
 using UnityEngine;
 using UnityEngine.AI;
@@ -9,6 +10,20 @@ public class Enemy : Entity
     public GameObject Target => target;
     public bool CanDoAttack => !isDie && CanAttack;
     public EnemyDataSO Data => enemySO;
+
+    public event Action<int, int> OnHpChanged; // (현재HP / 최대HP)
+
+    public int MaxHp => so != null ? so.GetMaxHp() : 0;
+
+    public int PresentHp
+    {
+        get { return currentHp; }
+        private set
+        {
+            currentHp = Mathf.Clamp(value, 0, MaxHp);
+            OnHpChanged?.Invoke(currentHp, MaxHp);
+        }
+    }
 
     [SerializeField] private BehaviorGraphAgent behaviorGraphAgent;
     [SerializeField] private GameObject target;
