@@ -155,4 +155,14 @@ public class Enemy : Entity
     {
         return enemySO.GetEnemyId();
     }
+
+    public override void SaveData(SaveData _data)
+    {
+        base.SaveData(_data);
+    }
+
+    public override void LoadData(SaveData _data)
+    {
+        base.LoadData(_data);
+    }
 }
