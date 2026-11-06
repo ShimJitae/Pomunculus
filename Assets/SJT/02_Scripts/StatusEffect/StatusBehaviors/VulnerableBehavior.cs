@@ -18,14 +18,8 @@ public sealed class VulnerableBehavior : IStatusBehavior
     }
 
     // 받는 피해 배율 × (1 + 증가율 × 중첩).
-    public void ApplyModifier(StatusEffect effect)
+    public void ApplyModifier(StatusEffect effect, ref StatusModifiers modifiers)
     {
-        Entity target = effect.Target;
-        if (target == null)
-        {
-            return;
-        }
-
-        target.DamageTakenRatio *= 1f + effect.ValuePerStack * effect.StackCount;
+        modifiers.DamageTakenRatio *= 1f + effect.ValuePerStack * effect.StackCount;
     }
 }

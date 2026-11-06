@@ -157,10 +157,10 @@ public sealed class StatusEffect
         statusBehavior.OnRemove(this);
     }
 
-    /// <summary>현재 중첩 기준으로 대상의 상태이상 수치에 이 상태의 몫을 보탠다.</summary>
-    public void ApplyModifier()
+    /// <summary>현재 중첩 기준으로 modifiers에 이 상태의 몫을 보탠다.</summary>
+    public void ApplyModifier(ref StatusModifiers modifiers)
     {
-        statusBehavior.ApplyModifier(this);
+        statusBehavior.ApplyModifier(this, ref modifiers);
     }
 
     #region 플레이어 HUD에 표시할 데이터

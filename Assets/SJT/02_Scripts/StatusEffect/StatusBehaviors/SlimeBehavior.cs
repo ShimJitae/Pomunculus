@@ -20,15 +20,9 @@ public sealed class SlimeBehavior : IStatusBehavior
     }
 
     // 이동속도 배율 × (1 − 감속률), 중첩 무관. 구르기 불가.
-    public void ApplyModifier(StatusEffect effect)
+    public void ApplyModifier(StatusEffect effect, ref StatusModifiers modifiers)
     {
-        Entity target = effect.Target;
-        if (target == null)
-        {
-            return;
-        }
-
-        target.MoveSpeedRatio *= Mathf.Max(0f, 1f - effect.ValuePerStack);
-        target.CanDodge = false;
+        modifiers.MoveSpeedRatio *= Mathf.Max(0f, 1f - effect.ValuePerStack);
+        modifiers.CanDodge = false;
     }
 }

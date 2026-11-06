@@ -17,16 +17,10 @@ public sealed class StunBehavior : IStatusBehavior
     {
     }
 
-    public void ApplyModifier(StatusEffect effect)
+    public void ApplyModifier(StatusEffect effect, ref StatusModifiers modifiers)
     {
-        Entity target = effect.Target;
-        if (target == null)
-        {
-            return;
-        }
-
-        target.CanMove = false;
-        target.CanAttack = false;
-        target.CanDodge = false;
+        modifiers.CanMove = false;
+        modifiers.CanAttack = false;
+        modifiers.CanDodge = false;
     }
 }

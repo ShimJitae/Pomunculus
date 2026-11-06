@@ -22,6 +22,17 @@ public class StatusEffectController : MonoBehaviour, ISavable
     /// <summary>상태가 만료되어 해제된 직후, 풀에 반납되기 전에 발생한다. 대상 파괴로 인한 정리에서는 발생하지 않는다.</summary>
     public event Action<StatusEffect> OnEffectRemoved;
 
+    private StatusModifiers modifiers = StatusModifiers.Default;
+
+    /// <summary>활성 상태 전체가 적용한 현재 수치이다. 늦게 구독한 쪽이 초기값을 맞출 때 읽는다.</summary>
+    public StatusModifiers Modifiers => modifiers;
+
+    /// <summary>
+    /// 상태이상 수치가 실제로 바뀐 직후 발생한다. 걸림·중첩·만료·복원 중 값이 달라질 때만 호출된다.
+    /// 수치를 바꾸지 않는 상태(예: 화상)가 걸리거나 끝날 때는 발생하지 않는다.
+    /// </summary>
+    public event Action<StatusModifiers> OnModifiersChanged;
+
     private void OnEnable()
     {
         // 초기 상태 효과 갯수. activeStatusEffectsCapacity 크기로 설정.
@@ -122,24 +133,26 @@ public class StatusEffectController : MonoBehaviour, ISavable
     }
 
     /// <summary>
-    /// 대상의 상태이상 수치를 기본값으로 되돌린 뒤 활성 상태 전체의 몫을 다시 반영한다.
+    /// 기본값에서 시작해 활성 상태 전체의 몫을 다시 반영한다.
     /// 같은 수치를 쓰는 상태가 겹쳐도 먼저 끝난 쪽이 남은 쪽의 효과를 풀지 않게 한다.
-    /// 상태가 걸리거나·중첩되거나·끝날 때만 호출한다.
+    /// 상태가 걸리거나·중첩되거나·끝날 때만 호출하며, 값이 달라졌을 때만 OnModifiersChanged를 발생시킨다.
     /// </summary>
     private void RecalculateModifiers()
     {
-        if (entity == null)
+        StatusModifiers next = StatusModifiers.Default;
+
+        for (int i = 0; i < activeStatusEffects.Count; i++)
+        {
+            activeStatusEffects[i].ApplyModifier(ref next);
+        }
+
+        if (next == modifiers)
         {
             return;
         }
 
-        // 상태이상 수치 7개를 기본값으로 되돌린 뒤, 남아 있는 상태의 몫만 다시 반영한다.
-        entity.ResetStatusModifiers();
-
-        for (int i = 0; i < activeStatusEffects.Count; i++)
-        {
-            activeStatusEffects[i].ApplyModifier();
-        }
+        modifiers = next;
+        OnModifiersChanged?.Invoke(modifiers);
     }
 
     /// <summary>상태 단계와 대상의 상태이상 수치를 기록한다. 빌드에서는 호출 자체가 제거된다.</summary>

@@ -1162,6 +1162,8 @@ GameObject:
   - component: {fileID: -690103522099812246}
   - component: {fileID: 2476253165477942513}
   - component: {fileID: 451304765473268782}
+  - component: {fileID: -940495177206895338}
+  - component: {fileID: -4567853140864783940}
   m_Layer: 7
   m_Name: EvilMagePADefault
   m_TagString: Enemy
@@ -1342,6 +1344,59 @@ MonoBehaviour:
   hitForwardOffset: 2
   hitAboveOffset: 1
   hitAngle: 120
+--- !u!114 &-940495177206895338
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3972964382682025698}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2f436a32bf1648545b18ea32d0c17fc9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::WorldTransformSync
+  m_synchronizePosition: 1
+  m_synchronizeRotation: 1
+  m_synchronizeScale: 0
+  m_useLocal: 1
+  m_sendRate: 10
+  m_positionThreshold: 0.01
+  m_rotationThreshold: 0.5
+  m_scaleThreshold: 0.01
+  m_keyframeInterval: 1
+--- !u!114 &-4567853140864783940
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3972964382682025698}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c3b5c848637f534418ad1939dfe864c3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::WorldAnimatorSync
+  m_layers:
+  - SynchronizeType: 1
+    LayerIndex: 0
+  m_parameters:
+  - Type: 9
+    SynchronizeType: 0
+    Name: Attack1
+  - Type: 9
+    SynchronizeType: 0
+    Name: Die
+  - Type: 1
+    SynchronizeType: 0
+    Name: MoveState
+  - Type: 1
+    SynchronizeType: 0
+    Name: TakeDamage
+  m_sendRate: 10
+  m_sampleRate: 30
+  m_changeThreshold: 0.001
+  m_keyframeInterval: 1
 --- !u!1 &3972964382682025700
 GameObject:
   m_ObjectHideFlags: 0
