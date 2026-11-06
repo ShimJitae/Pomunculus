@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(StatusEffectController))]
@@ -8,27 +7,31 @@ public class Entity : MonoBehaviour, IWorldObj, IDamageable
     public int ID { get; set; }
 
     #region 상태 이상에 따른 수치
-    [Min(0f)] public float MoveSpeedRatio { get; set; } = 1f; // 이동속도 비율. 기본값은 1.0f (100%)
-    [Min(0f)] public float HealReceivedRatio { get; set; } = 1f; // 회복량 비율. 기본값은 1.0f (100%)
-    [Min(0f)] public float DamageTakenRatio { get; set; } = 1f; // 받는 피해량 비율. 기본값은 1.0f (100%)
-    public bool CanMove { get; set; } = true; // 이동 가능 여부. 기본값은 true
-    public bool CanDodge { get; set; } = true; // 회피 가능 여부. 기본값은 true
-    public bool CanAttack { get; set; } = true; // 공격 가능 여부. 기본값은 true
-    public bool IsInvincible { get; set; } = false; // 무적 상태 여부. 기본값은 false
+    // StatusEffectController.OnModifiersChanged로만 갱신된다.
+    public float MoveSpeedRatio { get; private set; } = 1f; // 이동속도 비율. 기본값은 1.0f (100%)
+    public float HealReceivedRatio { get; private set; } = 1f; // 회복량 비율. 기본값은 1.0f (100%)
+    public float DamageTakenRatio { get; private set; } = 1f; // 받는 피해량 비율. 기본값은 1.0f (100%)
+    public bool CanMove { get; private set; } = true; // 이동 가능 여부. 기본값은 true
+    public bool CanDodge { get; private set; } = true; // 회피 가능 여부. 기본값은 true
+    public bool CanAttack { get; private set; } = true; // 공격 가능 여부. 기본값은 true
+    public bool IsInvincible { get; private set; } = false; // 무적 상태 여부. 기본값은 false
 
     private StatusEffectController statusEffectController;
-    private List<StatusEffect> statusList;
 
-    public void ResetStatusModifiers()
+    private void HandleModifiersChanged(StatusModifiers m)
     {
-        MoveSpeedRatio = 1f;
-        HealReceivedRatio = 1f;
-        DamageTakenRatio = 1f;
-        CanMove = true;
-        CanDodge = true;
-        CanAttack = true;
-        IsInvincible = false;
+        MoveSpeedRatio = m.MoveSpeedRatio;
+        HealReceivedRatio = m.HealReceivedRatio;
+        DamageTakenRatio = m.DamageTakenRatio;
+        CanMove = m.CanMove;
+        CanDodge = m.CanDodge;
+        CanAttack = m.CanAttack;
+        IsInvincible = m.IsInvincible;
+        OnStatusModifiersChanged(m);
     }
+
+    /// <summary>상태이상 수치가 바뀐 직후 호출된다. 자식이 속도·애니메이션 등을 갱신할 지점이다.</summary>
+    protected virtual void OnStatusModifiersChanged(StatusModifiers m) { }
     #endregion
 
     protected int entityId;
@@ -61,6 +64,14 @@ public class Entity : MonoBehaviour, IWorldObj, IDamageable
     {
         CurrentHp = so.GetHp();
         isDie = CurrentHp <= 0;
+
+        statusEffectController.OnModifiersChanged += HandleModifiersChanged;
+        HandleModifiersChanged(statusEffectController.Modifiers); // 현재 값으로 한 번 맞춘다
+    }
+
+    protected virtual void OnDisable()
+    {
+        statusEffectController.OnModifiersChanged -= HandleModifiersChanged;
     }
 
     public virtual void TakeDamage(int damage)

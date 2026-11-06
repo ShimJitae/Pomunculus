@@ -28,7 +28,7 @@ public sealed class BurnBehavior : IStatusBehavior
             return;
         }
 
-        // Entity에서는 아직 처리하지 않으므로 이 화상 피해에 한해 무적과 배율을 반영한다.
+        // 무적은 여기서 확인하고, 받는 피해 배율은 대상의 TakeDamage가 반영한다.
         target.TakeDamage(damage);
     }
 
@@ -43,7 +43,7 @@ public sealed class BurnBehavior : IStatusBehavior
     }
 
     /// <summary>화상은 상태이상 수치를 바꾸지 않는다.</summary>
-    public void ApplyModifier(StatusEffect effect)
+    public void ApplyModifier(StatusEffect effect, ref StatusModifiers modifiers)
     {
     }
 }
