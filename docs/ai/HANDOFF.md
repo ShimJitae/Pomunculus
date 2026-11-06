@@ -11,6 +11,17 @@
 <!-- harness:status:end -->
 - Claude Code 겸용 레이어를 이 프로젝트에만 추가했다(UnityHarness 원본 미반영). `CLAUDE.md`, `.claude/`, `scripts/ai/sync-claude.ps1`이 해당하며 Codex 파일은 바꾸지 않았다. 스킬·역할은 Codex 원본을 고친 뒤 `sync-claude.ps1`로 다시 생성한다.
 
+## 상태이상 Feel 연동 — 2026-11-05
+
+- 후속 범용화 요청에 따라 몸 색·Renderer·머티리얼 처리와 최근 색 정책을 공통 코드에서 제거했다. Visualizer는 이벤트와 프리팹 수명, StatusEffectFeedback은 대상 연결과 다섯 Feel Player 실행만 담당한다. [현재 구조](PROJECT.md#상태-효과-feel-연출)와 [작업 계획](plans/2026-11-05-status-effect-feel.md)을 따른다.
+- 템플릿은 Registered·Reapplied·Tick·Removed·WhileActive 다섯 Player의 Feedback 목록이 모두 비어 있다. 상태 시작 시 Registered+WhileActive, 재부여·틱은 각 Player, 종료 시 유지 연출 정지 후 Removed를 재생한다.
+- 사용할 때 Label이 Target인 MMF Reference Holder를 필요한 Player에 추가하고 개별 Feedback의 대상 선택을 구성한다. Initialize(target)가 대상을 주입하며, 다른 Label은 건드리지 않는다. feedbackTarget이 비어 있으면 대상 자신의 GameObject를 전달한다.
+- modelRoot와 bodyColorFeedbacks 필드는 FormerlySerializedAs로 이전한다. 템플릿 GUID와 기존 Player fileID는 보존했다.
+- 값 복원·상태 간 연출 충돌 처리는 외부 연출 구성의 책임이다. 종료 Player는 유한하게 구성하고 비활성화·파괴 정리가 필요하면 외부 컴포넌트에서 처리한다.
+- 템플릿 복제 후 상태 데이터의 feedbackPrefab과 대상 Visualizer를 연결하는 작업은 남아 있다. 기존 씬 배치와 상태 데이터 연결은 변경하지 않았다.
+- PlayMode와 실제 효과 관찰은 미검증이다. 편집 모드 임시 인스턴스 두 개에서 Target Holder 10개의 개별 대상 연결, Other Holder 유지, 원본 템플릿의 빈 목록을 확인했다.
+- 최종 Unity 재컴파일·프리팹 로드·필드 이전 검사와 독립 재리뷰를 완료했다. 코드·자산 해시와 사용자 Controller·씬·설정 변경을 보존했다. 종료 콜백의 비활성화 재진입 정리도 보완했다.
+
 ## 상태이상 작업 인수인계 — 2026-11-03
 
 ### 반드시 유지할 사용자 확정 사항
@@ -31,7 +42,7 @@
 - 무적은 화상 행동에서만 확인한다(받는 피해 배율은 아직 어디서도 곱하지 않는다). 다른 공격에는 자동 반영되지 않는다. 나중에 Entity의 공통 피해 처리가 바뀌면 화상에서 배율을 중복 적용하지 않도록 확인해야 한다.
 - Controller는 같은 종류를 찾아 중첩을 갱신하고 전체 지속 시간을 다시 설정한다. 현재 재부여는 Tick 타이머를 유지하며 최대 중첩에서도 시간을 갱신한다. 만료 및 Controller 파괴 시 상태를 해제하고 풀에 반납한다.
 - `StatusEffectData.tickDamagePerStack`을 추가했다. 기본값 0은 피해 없음이며 실제 값은 미정이다. 최대 중첩은 1 이상이어야 하고 초기화 시 검증한다. 무제한 중첩은 사용하지 않는다.
-- 작업 중 화상 SO의 저장된 종류가 `Burn`에서 `None`으로 달라지는 등 사용자 편집이 확인됐다. 에셋은 수정하지 않았다. 마지막 확인의 `StatusEffectData.asset`은 `None`, `maxStackCount = -1`이므로 실제 사용 전 `Burn`, 최대 중첩 1 이상, 양수 Tick 피해량을 설정해야 한다. Manager의 Database 참조와 대상의 Entity 연결도 확인한다.
+- 과거 작업 중 화상 SO가 `None`, `maxStackCount = -1`인 상태를 확인했으나, 2026-11-05의 실제 파일은 `StatusEffects/StatusEffect_Burn.asset`이며 Burn, 최대 중첩 5, 지속 5초, Tick 1초, 중첩당 피해 5다. 에셋 수치는 이번 Feel 연동에서 변경하지 않았다. Manager의 Database 참조와 대상의 Entity 연결도 확인한다.
 - Database는 데이터와 행동을 조회한다. 현재 `None` 항목은 진단 후 건너뛰며 빈 참조·중복 종류는 전체 초기화를 실패시킨다. 행동 누락 검사는 주석 상태다.
 - Entity 값 변경형 11종을 구현했다(2026-11-04): 냉기·독·점액·젖음·기절·빙결·구속·취약·헤이스트·석화·무적. 값 적용 방식은 아래 겹침 처리로 대체됐다. 수치는 새 `StatusEffectData.valuePerStack`(v): 냉기 이속 1−v×스택, 독 회복 1−v×스택, 점액 이속 1−v·구르기 불가, 젖음 이속 1−v, 기절 이동·공격·구르기 불가, 빙결 기절+이속 0, 구속 이동·구르기 불가+이속 0(공격 허용), 취약 받는 피해 1+v×스택, 헤이스트 이속 1+v×스택, 석화 빙결+무적, 무적. 감소값은 0 미만이면 0으로 맞춘다. `StatusEffectType`은 명시 정수값(None=0 … Invincible=24, 기존 주석 순서)을 쓴다.
 - 겹침 처리(사용자 승인 2026-11-04): 위 값 적용을 `IStatusBehavior.ApplyModifier`로 옮겼다. Controller의 `RecalculateModifiers`가 걸림·중첩·만료 때마다 Entity 값 7개를 기본값으로 되돌린 뒤 활성 상태 전체의 `ApplyModifier`를 호출한다. 행동은 배율을 곱하고(`*=`, 빙결·구속·석화의 이속은 `= 0`), 제한은 막기만(`= false`), 무적은 켜기만(`= true`) 하며 `OnRemove`에서 값을 되돌리지 않는다. 그래서 같은 값을 쓰는 상태가 겹쳐도 먼저 끝난 쪽이 남은 효과를 풀지 않는다(예: 냉기 x2 + 헤이스트 x1 → 이속 0.8×1.2). 기본값 복원은 `Entity.ResetStatusModifiers()`(사용자 추가)를 Controller가 호출한다. 이 7개 값은 Controller가 관리하므로 다른 시스템이 직접 쓰면 다음 재계산에서 덮인다. 기존 4개 콜백은 1회성 이벤트 용도로 남겨 두었다.

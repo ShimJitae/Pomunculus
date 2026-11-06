@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "StatusEffectData", menuName = "Scriptable Objects/StatusEffectData")]
@@ -38,8 +37,11 @@ public class StatusEffectData : ScriptableObject
     [SerializeField] private float valuePerStack;
 
     [Header("연출")]
-    [Tooltip("이 상태에서 재생할 연출 파츠 목록. 비어 있으면 연출 없이 로직만 동작")]
-    [SerializeField] private List<StatusVisualPart> visualParts = new List<StatusVisualPart>();
+    [Tooltip("이 상태의 공용 Feel 연출 프리팹. 비우면 상태 로직만 실행")]
+    [SerializeField] private StatusEffectFeedback feedbackPrefab;
+
+    [Tooltip("HUD 상태이상 패널에 표시할 아이콘")]
+    [SerializeField] private Sprite icon;
 
     public int StatusId => statusId;
     public StatusEffectType StatusEffectType => statusEffectType;
@@ -59,6 +61,9 @@ public class StatusEffectData : ScriptableObject
     /// <summary>상태별 수치를 반환한다. 의미는 상태 종류마다 다르다.</summary>
     public float ValuePerStack => valuePerStack;
 
-    /// <summary>이 상태에서 재생할 연출 파츠 목록을 반환한다. 읽기 전용</summary>
-    public IReadOnlyList<StatusVisualPart> VisualParts => visualParts;
+    /// <summary>상태별로 대상 아래에 생성할 공용 Feel 연출 프리팹을 반환한다.</summary>
+    public StatusEffectFeedback FeedbackPrefab => feedbackPrefab;
+
+    /// <summary>상태별로 띄울 아이콘 이미지를 반환한다.</summary>
+    public Sprite Icon => icon;
 }

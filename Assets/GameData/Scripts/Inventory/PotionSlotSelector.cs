@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -18,19 +19,18 @@ namespace Pomunculus.Items
         [Header("등록된 포션")]
         [SerializeField] private PotionData[] registeredPotions = new PotionData[3];
 
+
         private PotionData selectedPotion;
 
         public bool IsSelecting => selectedPotion != null;
 
-        private void Start()
+        private void OnEnable()
         {
-            CancelSelection();
+            if (inventory != null)
+                inventory.Changed += RefreshSlots;
 
-            for (int i = 0; i < registeredPotions.Length; i++)
-            {
-                PotionData potion = registeredPotions[i];
-                slotView.SetSlotIcon(i, potion != null ? potion.Icon : null);
-            }
+            CancelSelection();
+            RefreshSlots();
         }
 
         private void Update()
@@ -66,7 +66,7 @@ namespace Pomunculus.Items
             if (!IsSelecting)
             {
                 registeredPotions[slotIndex] = null;
-                slotView.SetSlotIcon(slotIndex, null);
+                RefreshSlots();
                 return;
             }
 
@@ -77,8 +77,8 @@ namespace Pomunculus.Items
             }
 
             registeredPotions[slotIndex] = selectedPotion;
-            slotView.SetSlotIcon(slotIndex, selectedPotion.Icon);
 
+            RefreshSlots();
             CancelSelection();
         }
 
@@ -100,7 +100,27 @@ namespace Pomunculus.Items
 
         private void OnDisable()
         {
+            if (inventory != null)
+                inventory.Changed -= RefreshSlots;
+
             CancelSelection();
+        }
+        private void RefreshSlots()
+        {
+            if (slotView == null)
+                return;
+
+            for (int i = 0; i < registeredPotions.Length; i++)
+            {
+                PotionData potion = registeredPotions[i];
+
+                int amount = potion != null && inventory != null
+                    ? inventory.GetItemCount(potion.Id)
+                    : 0;
+
+                slotView.SetSlotIcon(i, potion != null ? potion.Icon : null);
+                slotView.SetSlotCount(i, amount, potion != null);
+            }
         }
     }
 }
