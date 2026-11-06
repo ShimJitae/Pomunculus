@@ -120,7 +120,7 @@ MonoBehaviour:
   player: {fileID: 0}
   statPanelView: {fileID: 4508850144810268707}
   statusPanelView: {fileID: 2982118643345771969}
-  potionSlotView: {fileID: 3524717633731122080}
+  potionSlotView: {fileID: 0}
 --- !u!1001 &614084695359262730
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -244,47 +244,47 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 329948906831383795, guid: 30037b68480e771409b79a2389efb40a, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 329948906831383795, guid: 30037b68480e771409b79a2389efb40a, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 329948906831383795, guid: 30037b68480e771409b79a2389efb40a, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 0
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 329948906831383795, guid: 30037b68480e771409b79a2389efb40a, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 0
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 329948906831383795, guid: 30037b68480e771409b79a2389efb40a, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -100
       objectReference: {fileID: 0}
     - target: {fileID: 4836010153334574858, guid: 30037b68480e771409b79a2389efb40a, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4836010153334574858, guid: 30037b68480e771409b79a2389efb40a, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4836010153334574858, guid: 30037b68480e771409b79a2389efb40a, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 0
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 4836010153334574858, guid: 30037b68480e771409b79a2389efb40a, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 0
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 4836010153334574858, guid: 30037b68480e771409b79a2389efb40a, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 240
       objectReference: {fileID: 0}
     - target: {fileID: 4836010153334574858, guid: 30037b68480e771409b79a2389efb40a, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -100
       objectReference: {fileID: 0}
     - target: {fileID: 5639119676668364842, guid: 30037b68480e771409b79a2389efb40a, type: 3}
       propertyPath: m_Pivot.x
@@ -368,48 +368,41 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6102234246212618406, guid: 30037b68480e771409b79a2389efb40a, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6102234246212618406, guid: 30037b68480e771409b79a2389efb40a, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6102234246212618406, guid: 30037b68480e771409b79a2389efb40a, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 0
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 6102234246212618406, guid: 30037b68480e771409b79a2389efb40a, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 0
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 6102234246212618406, guid: 30037b68480e771409b79a2389efb40a, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 120
       objectReference: {fileID: 0}
     - target: {fileID: 6102234246212618406, guid: 30037b68480e771409b79a2389efb40a, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -100
       objectReference: {fileID: 0}
     - target: {fileID: 6525289841172271648, guid: 30037b68480e771409b79a2389efb40a, type: 3}
       propertyPath: m_Name
       value: PotionSlot
+      objectReference: {fileID: 0}
+    - target: {fileID: 6525289841172271648, guid: 30037b68480e771409b79a2389efb40a, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 30037b68480e771409b79a2389efb40a, type: 3}
---- !u!114 &3524717633731122080 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 1819749677458960108, guid: 30037b68480e771409b79a2389efb40a, type: 3}
-  m_PrefabInstance: {fileID: 3002595504418454860}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ca2b00c6a37f24c429503f1107a78300, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PotionSlotView
 --- !u!224 &7487640942521890150 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 5639119676668364842, guid: 30037b68480e771409b79a2389efb40a, type: 3}
@@ -427,6 +420,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: StatusPanel
       objectReference: {fileID: 0}
+    - target: {fileID: 6974775850590587317, guid: f8d252a0a5074ee4bb73bb81af63da68, type: 3}
+      propertyPath: statusIconPrefab
+      value: 
+      objectReference: {fileID: 1961642261401806995, guid: 8340068f949f92f4483192cd553bd337, type: 3}
     - target: {fileID: 9029394873787274239, guid: f8d252a0a5074ee4bb73bb81af63da68, type: 3}
       propertyPath: m_Pivot.x
       value: 0
