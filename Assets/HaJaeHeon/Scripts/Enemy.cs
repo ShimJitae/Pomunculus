@@ -1,10 +1,11 @@
+using Photon.Pun;
 using System;
 using Unity.Behavior;
 using UnityEngine;
 using UnityEngine.AI;
 
 [RequireComponent(typeof(BehaviorGraphAgent)), RequireComponent(typeof(NavMeshAgent))]
-public class Enemy : Entity
+public class Enemy : Entity, IWorldRPC
 {
     public BehaviorGraphAgent BehaviorGraphAgent => behaviorGraphAgent;
     public GameObject Target => target;
@@ -79,11 +80,15 @@ public class Enemy : Entity
 
     public override void TakeDamage(int damage)
     {
+        if (!IsMaster)
+            return;
+
         if (IsDamageBlock || damage <= 0)
             return;
 
         CurrentHp -=  Mathf.CeilToInt(damage * DamageTakenRatio);
         OnHpChanged?.Invoke(CurrentHp, MaxHp);
+        SendHpSync();
 
         if (CurrentHp <= 0)
         {
@@ -112,7 +117,7 @@ public class Enemy : Entity
     //
     //    OnHpChanged?.Invoke(currentHp, MaxHp);
 
-    //    transform.position += (transform.position - sourcePosition) * knockbackDistance;
+    //    transform.position += (transform.position - sourcePosition).norm * knockbackDistance;
     //}
 
     protected override void OnStatusModifiersChanged(StatusModifiers modifiers)
@@ -132,8 +137,9 @@ public class Enemy : Entity
         behaviorGraphAgent.SetVariableValue<bool>("IsDie", true);
 
         DataDBManager.Instance.SpawnDropItem(GetId(), transform.position);
-
-        Destroy(gameObject, 1f);
+        
+        if(!IsMaster)
+            WorldManager.Instance.Despawn(ID);
     }
 
     public void SetTarget(GameObject player)
@@ -172,10 +178,51 @@ public class Enemy : Entity
         if (!_data.Child.TryGetValue("enemyHp", out SaveData enemyHpData))
             return;
 
-        CurrentHp = enemyHpData.GetData<int>();
+        ApplyHp(enemyHpData.GetData<int>());
+    }
+
+    #region 네트워크
+    private bool IsMaster => !PhotonNetwork.InRoom || PhotonNetwork.IsMasterClient;
+
+    private enum EnemyRPCType : byte
+    {
+        SyncHp, // 방장 > 다른 플레이어 : 확정된 HP
+    }
+
+
+    // 방장이 확정한 HP를 다른 플레이어에게 전송
+    private void SendHpSync()
+    {
+        if (!IsMaster)
+            return;
+
+        PacketData packet = new();
+        packet.Write((byte)EnemyRPCType.SyncHp);
+        packet.Write(CurrentHp);
+        this.SendRPC(packet, WorldRPCTarget.Others);   // 확장 메서드라 this. 필요. 방장은 이미 적용했으므로 나머지에게만
+    }
+
+    // WorldManager가 ID로 찾아서 호출
+    public void ReceiveRPC(PacketData packet)
+    {
+        EnemyRPCType rpcType = (EnemyRPCType)packet.ReadByte();
+
+        switch (rpcType)
+        {
+            case EnemyRPCType.SyncHp:
+                ApplyHp(packet.ReadInt());
+                break;
+        }
+    }
+
+    // 방장이 확정한 HP나 저장된 HP를 적용 (드롭·파괴는 하지 않음)
+    private void ApplyHp(int hp)
+    {
+        CurrentHp = hp;
         isDie = CurrentHp <= 0;
 
         behaviorGraphAgent.SetVariableValue("IsDie", isDie);
         OnHpChanged?.Invoke(CurrentHp, MaxHp);
     }
+    #endregion
 }
