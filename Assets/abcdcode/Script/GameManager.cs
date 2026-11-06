@@ -4,6 +4,7 @@ using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Pomunculus.Items;
 public class GameManager : SingletonBehavior<GameManager>
 {
     public override void Awake()
@@ -26,7 +27,7 @@ public class GameManager : SingletonBehavior<GameManager>
     // 온라인 : 방에 들어와 월드 씬 로딩이 끝나면 자기 소유의 플레이어를 하나 생성 (생성 자체는 방장이 처리)
     // 플레이어가 방을 나가면 방장이 그 플레이어 소유의 오브젝트를 제거
     public const string TitleSceneName = "abcdcode_TitleTestScene";
-    public const string TestSceneName = "abcdcode_TestScene";
+    public const string TestSceneName = "IntegrationTestScene";
 
     private void PlayerSpawnRegister()
     {
@@ -92,6 +93,10 @@ public class GameManager : SingletonBehavior<GameManager>
                 if (p.Owner == myActor) hasMine = true;
             }
             if (!hasMine) SpawnPlayer(myActor);
+
+
+            //테스트 코드. 월드가 온라인 될때 잡몹 하나 소환
+            
         }
         else
         {

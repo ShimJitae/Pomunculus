@@ -11,6 +11,9 @@ public enum WorldEventID : int
 
     AnimatorSync = 14,      // WorldAnimatorSync
     TransformSync = 15,     // WorldTransformSync
+    AnimatorState = 17,     // WorldAnimatorSync (상태 재생)
 
     PlayerSpawnRequest = 16, // GameManager
+
+    WorldRPC = 18,          // RPCHelper (IWorldRPC)
 }

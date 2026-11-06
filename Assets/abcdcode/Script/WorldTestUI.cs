@@ -82,6 +82,10 @@ public class WorldTestUI : MonoBehaviour
 
         GUILayout.EndArea();
     }
+    private void SpawnMob()
+    {
+        WorldManager.Instance.Spawn("EvilMagePADefault",new Vector3(5,1,5),Quaternion.identity,null);
+    }
     private void DrawOffline()
     {
         var network = NetworkManager.Instance;
@@ -110,6 +114,7 @@ public class WorldTestUI : MonoBehaviour
 
         GUI.enabled = network.State == NetworkState.InRoom;
         if (GUILayout.Button("방 나가기 (타이틀로)")) network.LeaveRoom();
+        if (GUILayout.Button("몹 소환")) SpawnMob();
         GUI.enabled = true;
     }
 
