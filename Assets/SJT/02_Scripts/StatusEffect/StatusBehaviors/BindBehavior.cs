@@ -17,16 +17,10 @@ public sealed class BindBehavior : IStatusBehavior
     {
     }
 
-    public void ApplyModifier(StatusEffect effect)
+    public void ApplyModifier(StatusEffect effect, ref StatusModifiers modifiers)
     {
-        Entity target = effect.Target;
-        if (target == null)
-        {
-            return;
-        }
-
-        target.CanMove = false;
-        target.CanDodge = false;
-        target.MoveSpeedRatio = 0f;
+        modifiers.CanMove = false;
+        modifiers.CanDodge = false;
+        modifiers.MoveSpeedRatio = 0f;
     }
 }

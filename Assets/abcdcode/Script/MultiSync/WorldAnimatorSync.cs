@@ -8,6 +8,7 @@ using UnityEngine;
 // PhotonAnimatorView 동작을 따라한 Animator 동기화. PhotonView의 ViewID 대신 IWorldObj.ID로 대상을 찾는다
 // Continuous : 송신자가 매 샘플마다 값을 기록해 묶어 보내고, 수신자가 같은 간격으로 재생 (부드러움, 데이터 많음)
 // Discrete : 송신 시점의 값만 보냄 (데이터 적음, 트리거는 이 방식 권장)
+// State : 파라미터가 아니라 Animator.Play/CrossFade로 직접 재생한 상태도 동기화. 소유자 쪽 Animator의 현재/다음 상태를 관찰해서 보냄
 // 같은 프리팹끼리만 주고받는다고 가정하므로 레이어/파라미터 목록 순서가 송수신 양쪽에서 같아야 함
 [RequireComponent(typeof(Animator))]
 public class WorldAnimatorSync : MonoBehaviour
@@ -48,6 +49,7 @@ public class WorldAnimatorSync : MonoBehaviour
         if (m_owner == null) Debug.LogError("[WorldAnimatorSync] 같은 오브젝트에 IWorldObj가 없음", this);
         foreach (var p in m_parameters) p.Hash = Animator.StringToHash(p.Name);
         BuildSyncList();
+        m_stateTracks = new StateTrack[m_stateLayers.Count];
     }
     // ID는 WorldManager가 Instantiate 직후 InitWorldObj로 넣어주므로 Awake/OnEnable이 아니라 Start에서 등록
     private void Start()
@@ -56,6 +58,7 @@ public class WorldAnimatorSync : MonoBehaviour
         m_registeredId = m_owner.ID;
         s_syncs[m_registeredId] = this;
         RaiseEventManager.Instance.RegisterEvent((int)WorldEventID.AnimatorSync, OnReceive); // 중복 등록돼도 덮어씀
+        RaiseEventManager.Instance.RegisterEvent((int)WorldEventID.AnimatorState, OnReceiveState);
     }
     private void OnDestroy()
     {
@@ -85,6 +88,12 @@ public class WorldAnimatorSync : MonoBehaviour
         {
             PlayReceivedSamples();
         }
+    }
+    // Update에서 호출한 Play/CrossFade는 Animator 갱신(Update와 LateUpdate 사이) 뒤에 상태 정보에 반영되므로 LateUpdate에서 관찰
+    private void LateUpdate()
+    {
+        if (m_owner == null || m_stateTracks.Length == 0 || !IsOwner()) return;
+        TrySendState();
     }
     #endregion
 
@@ -189,6 +198,77 @@ public class WorldAnimatorSync : MonoBehaviour
         RaiseEventManager.Instance.SendPacket(d, new() { Receivers = ReceiverGroup.Others },
             hasTrigger || isFinal ? SendOptions.SendReliable : SendOptions.SendUnreliable);
     }
+    // 레이어별로 재생 중(트랜지션 중이면 다음) 상태가 바뀌었거나 같은 상태를 처음부터 다시 재생했으면 reliable로 전송
+    // 변화가 없어도 m_keyframeInterval마다 현재 상태를 unreliable로 보내서 늦게 들어온 플레이어/어긋난 상태를 맞춤
+    private void TrySendState()
+    {
+        m_changedStates.Clear();
+        for (int i = 0; i < m_stateTracks.Length; i++)
+        {
+            int layer = m_stateLayers[i];
+            if (layer < 0 || layer >= m_animator.layerCount) continue;
+            bool inTransition = m_animator.IsInTransition(layer);
+            var info = inTransition ? m_animator.GetNextAnimatorStateInfo(layer) : m_animator.GetCurrentAnimatorStateInfo(layer);
+            ref var track = ref m_stateTracks[i];
+            bool changed = info.fullPathHash != track.Hash;
+            // normalizedTime은 루프해도 계속 증가하므로, 같은 상태에서 줄어들었다면 Play(hash, layer, 0)로 다시 재생한 것
+            bool restarted = !changed && info.normalizedTime + RestartThreshold < track.NormalizedTime;
+            track.Hash = info.fullPathHash;
+            track.NormalizedTime = info.normalizedTime;
+            if (!changed && !restarted) continue;
+
+            var entry = new StateEntry { Layer = layer, Hash = info.fullPathHash, NormalizedTime = info.normalizedTime };
+            if (restarted) entry.Mode = StateMode.Restart;
+            else if (inTransition)
+            {
+                entry.Mode = StateMode.CrossFade;
+                var transition = m_animator.GetAnimatorTransitionInfo(layer);
+                // 수신 측은 CrossFadeInFixedTime으로 재생하므로 초 단위로 맞춤
+                entry.Duration = transition.durationUnit == DurationUnit.Fixed
+                    ? transition.duration
+                    : transition.duration * m_animator.GetCurrentAnimatorStateInfo(layer).length;
+            }
+            else entry.Mode = StateMode.Play;
+            m_changedStates.Add(entry);
+        }
+
+        if (!PhotonNetwork.InRoom || PhotonNetwork.CurrentRoom.PlayerCount <= 1)
+        {
+            m_stateKeyframeTimer = 0;
+            return;
+        }
+        m_stateKeyframeTimer += Time.deltaTime;
+        if (m_changedStates.Count > 0)
+        {
+            SendState(m_changedStates, false);
+            m_stateKeyframeTimer = 0;
+        }
+        else if (m_keyframeInterval > 0 && m_stateKeyframeTimer >= m_keyframeInterval)
+        {
+            m_stateKeyframeTimer = 0;
+            for (int i = 0; i < m_stateTracks.Length; i++)
+                m_changedStates.Add(new StateEntry { Layer = m_stateLayers[i], Hash = m_stateTracks[i].Hash, NormalizedTime = m_stateTracks[i].NormalizedTime, Mode = StateMode.Play });
+            SendState(m_changedStates, true);
+        }
+    }
+    private void SendState(List<StateEntry> entries, bool isKeyframe)
+    {
+        PacketData d = new();
+        d.Write((int)WorldEventID.AnimatorState);
+        d.Write(m_owner.ID);
+        d.Write(isKeyframe);
+        d.Write(entries.Count);
+        foreach (var e in entries)
+        {
+            d.Write(e.Layer);
+            d.Write(e.Hash);
+            d.Write((byte)e.Mode);
+            d.Write(e.Duration);
+            d.Write(e.NormalizedTime);
+        }
+        RaiseEventManager.Instance.SendPacket(d, new() { Receivers = ReceiverGroup.Others },
+            isKeyframe ? SendOptions.SendUnreliable : SendOptions.SendReliable);
+    }
     private bool IsChanged(float[] a, float[] b)
     {
         if (b == null || a.Length != b.Length) return true;
@@ -233,6 +313,41 @@ public class WorldAnimatorSync : MonoBehaviour
                     break;
             }
         }
+    }
+    private static void OnReceiveState(EventData e, PacketData p)
+    {
+        int id = p;
+        if (s_syncs.TryGetValue(id, out var sync)) sync.DeserializeState(p);
+    }
+    private void DeserializeState(PacketData d)
+    {
+        if (IsOwner()) return;
+        bool isKeyframe = d;
+        int count = d;
+        for (int i = 0; i < count; i++)
+        {
+            int layer = d;
+            int hash = d;
+            var mode = (StateMode)d.ReadByte();
+            float duration = d;
+            float normalizedTime = d;
+            if (layer < 0 || layer >= m_animator.layerCount || hash == 0) continue;
+            // 이미 그 상태이거나 그 상태로 가는 중이면 무시. 종료 시간 트랜지션처럼 원격에서도 알아서 넘어간 경우
+            if (mode != StateMode.Restart && IsPlayingOrEntering(layer, hash)) continue;
+            switch (mode)
+            {
+                case StateMode.CrossFade: m_animator.CrossFadeInFixedTime(hash, duration, layer); break;
+                case StateMode.Restart: m_animator.Play(hash, layer, 0f); break;
+                // 키프레임은 송신 시점 진행도로 맞추고, 상태가 바뀐 직후의 Play는 처음부터
+                default: m_animator.Play(hash, layer, isKeyframe ? normalizedTime : 0f); break;
+            }
+        }
+    }
+    private bool IsPlayingOrEntering(int layer, int hash)
+    {
+        return m_animator.IsInTransition(layer)
+            ? m_animator.GetNextAnimatorStateInfo(layer).fullPathHash == hash
+            : m_animator.GetCurrentAnimatorStateInfo(layer).fullPathHash == hash;
     }
     private void PlayReceivedSamples()
     {
@@ -311,6 +426,7 @@ public class WorldAnimatorSync : MonoBehaviour
     [SerializeField, Min(1)] private float m_sampleRate = 30f; // Continuous 기록/재생 간격
     [SerializeField, Min(0)] private float m_changeThreshold = 0.001f; // 이 값 이하로 바뀌면 변화 없음으로 봄
     [SerializeField, Min(0)] private float m_keyframeInterval = 1f; // 변화가 없어도 이 간격마다 전송. 0이면 끔
+    [SerializeField] private List<int> m_stateLayers = new() { 0 }; // 재생 상태를 동기화할 레이어. 비우면 상태 동기화 안 함
 
     private Animator m_animator;
     private IWorldObj m_owner;
@@ -331,4 +447,28 @@ public class WorldAnimatorSync : MonoBehaviour
     private float[] m_lastSample; // 마지막으로 보낸 Continuous 값
     private float[] m_lastDiscrete; // 마지막으로 보낸 Discrete 값
     private bool m_wasChanged;
+
+    private enum StateMode : byte
+    {
+        Play,       // 트랜지션 없이 바로 전환
+        CrossFade,  // 트랜지션으로 전환 (Duration초)
+        Restart,    // 같은 상태를 처음부터 다시 재생
+    }
+    private struct StateTrack
+    {
+        public int Hash;
+        public float NormalizedTime;
+    }
+    private struct StateEntry
+    {
+        public int Layer;
+        public int Hash;
+        public StateMode Mode;
+        public float Duration;
+        public float NormalizedTime;
+    }
+    private const float RestartThreshold = 0.01f;
+    private StateTrack[] m_stateTracks;
+    private readonly List<StateEntry> m_changedStates = new();
+    private float m_stateKeyframeTimer;
 }

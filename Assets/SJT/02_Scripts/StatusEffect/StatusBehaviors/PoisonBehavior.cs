@@ -20,14 +20,8 @@ public sealed class PoisonBehavior : IStatusBehavior
     }
 
     // 회복량 배율 × (1 − 감소율 × 중첩). 0 미만은 0으로 맞춘다.
-    public void ApplyModifier(StatusEffect effect)
+    public void ApplyModifier(StatusEffect effect, ref StatusModifiers modifiers)
     {
-        Entity target = effect.Target;
-        if (target == null)
-        {
-            return;
-        }
-
-        target.HealReceivedRatio *= Mathf.Max(0f, 1f - effect.ValuePerStack * effect.StackCount);
+        modifiers.HealReceivedRatio *= Mathf.Max(0f, 1f - effect.ValuePerStack * effect.StackCount);
     }
 }

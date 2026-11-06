@@ -18,14 +18,8 @@ public sealed class HasteBehavior : IStatusBehavior
     }
 
     // 이동속도 배율 × (1 + 증가율 × 중첩).
-    public void ApplyModifier(StatusEffect effect)
+    public void ApplyModifier(StatusEffect effect, ref StatusModifiers modifiers)
     {
-        Entity target = effect.Target;
-        if (target == null)
-        {
-            return;
-        }
-
-        target.MoveSpeedRatio *= 1f + effect.ValuePerStack * effect.StackCount;
+        modifiers.MoveSpeedRatio *= 1f + effect.ValuePerStack * effect.StackCount;
     }
 }
