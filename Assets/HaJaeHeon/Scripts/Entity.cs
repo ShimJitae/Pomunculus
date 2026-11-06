@@ -156,7 +156,7 @@ public class Entity : MonoBehaviour, IWorldObj, IDamageable
         statusEffectController.LoadData(sd);
     }
 
-    public void TakeDamage(int damage, Vector3 sourcePosition)
+    public virtual void TakeDamage(int damage, Vector3 sourcePosition)
     {
         Debug.Log($"{damage}만큼 피격!");
         TakeDamage(damage);
