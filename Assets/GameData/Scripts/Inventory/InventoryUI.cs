@@ -21,8 +21,7 @@ namespace Pomunculus.Items
             public Sprite Icon;
             public int Amount;
         }
-        [Header("플레이어 인벤토리")]
-        [SerializeField] private Inventory inventory;
+        public Inventory inventory;
         [Header("아이템 툴팁")]
         [SerializeField] private ItemTooltipUI tooltip;
 
@@ -178,7 +177,6 @@ namespace Pomunculus.Items
             Canvas.ForceUpdateCanvases();
             scrollRect.verticalNormalizedPosition = 1f;
         }
-
         public void Close()
         {
             gameObject.SetActive(false);

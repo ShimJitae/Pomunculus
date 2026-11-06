@@ -15,10 +15,7 @@ namespace Pomunculus.Items
             public Image Icon;
             public TMP_Text AmountText;
         }
-
-        [Header("플레이어 인벤토리")]
-        [SerializeField] private Inventory inventory;
-
+        public Inventory inventory;
         [Header("포션 제작")]
         [SerializeField] private PotionCrafting crafting;
 

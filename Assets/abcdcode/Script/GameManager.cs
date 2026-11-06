@@ -4,6 +4,7 @@ using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Pomunculus.Items;
 public class GameManager : SingletonBehavior<GameManager>
 {
     public override void Awake()
@@ -118,6 +119,43 @@ public class GameManager : SingletonBehavior<GameManager>
         if (obj is not IPlayerObj p || p.Owner != PhotonNetwork.LocalPlayer.ActorNumber) return;
         var cam = PlayerCameraController.Instance;
         if (cam != null) cam.SetPlayer(obj);
+        //인벤토리 및 UI추가 
+        var inventory = obj.gameObject.GetComponent<Pomunculus.Items.Inventory>();
+        //플레이어에게 인벤토리가 있는지 확인
+        if (inventory == null)
+            return;
+        //각 UI찾기
+        InventoryUI inventoryUI = FindFirstObjectByType<InventoryUI>(FindObjectsInactive.Include);
+        CraftingMaterialListUI materialListUI = FindFirstObjectByType<CraftingMaterialListUI>(FindObjectsInactive.Include);
+        PotionCrafting potionCrafting = FindFirstObjectByType<PotionCrafting>(FindObjectsInactive.Include);
+        PotionSlotSelector potionSlotSelector = FindFirstObjectByType<PotionSlotSelector>(FindObjectsInactive.Include);
+        // 인벤토리 창 연결
+        if (inventoryUI != null)
+        {
+            bool wasEnabled = inventoryUI.enabled;
+            inventoryUI.enabled = false;
+            inventoryUI.inventory = inventory;
+            inventoryUI.enabled = wasEnabled;
+        }
+        // 제작 재료 목록 연결
+        if (materialListUI != null)
+        {
+            bool wasEnabled = materialListUI.enabled;
+            materialListUI.enabled = false;
+            materialListUI.inventory = inventory;
+            materialListUI.enabled = wasEnabled;
+        }
+        // 포션 제작 연결
+        if (potionCrafting != null)
+            potionCrafting.inventory = inventory;
+        // 포션 단축 슬롯 연결
+        if (potionSlotSelector != null)
+        {
+            bool wasEnabled = potionSlotSelector.enabled;
+            potionSlotSelector.enabled = false;
+            potionSlotSelector.inventory = inventory;
+            potionSlotSelector.enabled = wasEnabled;
+        }
     }
     // 다른 플레이어가 나가면 방장이 그 플레이어 소유의 오브젝트를 제거
     private void OnPlayerLeftRoom(Player player)
