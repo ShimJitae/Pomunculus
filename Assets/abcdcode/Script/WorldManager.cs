@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using ExitGames.Client.Photon;
-using Newtonsoft.Json;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
@@ -104,7 +103,7 @@ public class WorldManager : Singleton<WorldManager>
 
         PacketData p = new();
         p.Write((int)WorldEventID.SpawnObj);
-        p.Write(JsonConvert.SerializeObject(WorldObjSaveData.Create(obj)));
+        WorldObjSaveData.Create(obj).Write(p);
         RaiseEventManager.Instance.SendPacket(p, new() { Receivers = ReceiverGroup.Others }, SendOptions.SendReliable);
         return obj;
     }
@@ -155,14 +154,13 @@ public class WorldManager : Singleton<WorldManager>
 
         PacketData r = new();
         r.Write((int)WorldEventID.WorldSnapshot);
-        r.Write(JsonConvert.SerializeObject(snapshot));
+        snapshot.Write(r);
         RaiseEventManager.Instance.SendPacket(r, new() { TargetActors = new[] { e.Sender } }, SendOptions.SendReliable);
     }
     private void OnReceiveSnapshot(EventData e, PacketData p)
     {
         if (IsMaster) return;
-        string json = p;
-        var snapshot = JsonConvert.DeserializeObject<WorldSnapshot>(json);
+        var snapshot = WorldSnapshot.Read(p);
 
         ClearWorld();
         CurWorldData = new WorldData() { Day = snapshot.Day, Time = snapshot.Time };
@@ -179,8 +177,7 @@ public class WorldManager : Singleton<WorldManager>
     private void OnReceiveSpawn(EventData e, PacketData p)
     {
         if (IsMaster) return;
-        string json = p;
-        var d = JsonConvert.DeserializeObject<WorldObjSaveData>(json);
+        var d = WorldObjSaveData.Read(p);
         RunOrQueue(() => SpawnLocal(d));
     }
     private void OnReceiveDespawn(EventData e, PacketData p)
