@@ -67,7 +67,7 @@ public class WorldManager : Singleton<WorldManager>
 
     #region 플레이어
     // 플레이어 오브젝트 생성 후 등록. 방장 쪽에서 저장 대상이 됨
-    public void RegisterPlayer(string uid, ISavable player)
+    public void RegisterPlayer(string uid, IWorldObj player)
     {
         m_players[uid] = player;
         if (IsMaster) CurWorldData?.LoadPlayer(uid, player);
@@ -82,6 +82,14 @@ public class WorldManager : Singleton<WorldManager>
         if (!m_players.TryGetValue(uid, out var player)) return;
         if (IsMaster) CurWorldData?.SavePlayer(uid, player); // 나간 플레이어 데이터 보존
         m_players.Remove(uid);
+    }
+    public PlayerFSM GetLocalPlayer()
+    {
+        return GetPlayer(GameManager.Instance.LocalUserProfile.UID);
+    }
+    public PlayerFSM GetPlayer(string uid)
+    {
+        return (PlayerFSM)m_players[uid];
     }
     #endregion
 
@@ -247,7 +255,7 @@ public class WorldManager : Singleton<WorldManager>
 
     private NetworkPrefabCatalog m_catalog;
     private Dictionary<string, GameObject> m_prefabs;
-    private readonly Dictionary<string, ISavable> m_players = new();
+    private readonly Dictionary<string, IWorldObj> m_players = new();
     private readonly Queue<Action> m_pendingEvents = new();
     private SaveData m_pendingPlayerData;
     private bool m_initialized;
