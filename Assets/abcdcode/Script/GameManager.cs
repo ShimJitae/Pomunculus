@@ -4,6 +4,7 @@ using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Pomunculus.Items;
 public class GameManager : SingletonBehavior<GameManager>
 {
     public override void Awake()

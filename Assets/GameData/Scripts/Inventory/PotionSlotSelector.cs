@@ -6,9 +6,7 @@ namespace Pomunculus.Items
 {
     public class PotionSlotSelector : MonoBehaviour
     {
-        [Header("플레이어 인벤토리")]
-        [SerializeField] private Inventory inventory;
-
+        public Inventory inventory;
         [Header("선택 화면")]
         [SerializeField] private GameObject selectPotion;
         [SerializeField] private ItemTooltipUI tooltip;
