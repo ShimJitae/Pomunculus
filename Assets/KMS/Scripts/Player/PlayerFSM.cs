@@ -191,7 +191,7 @@ public class PlayerFSM : Entity, IPlayerObj
     }
 
     // 투사체·공격 피해. 맞은 위치로 넉백 + 경직
-    public void TakeDamage(int damage, Vector3 sourcePosition)
+    public override void TakeDamage(int damage, Vector3 sourcePosition)
     {
         int hpBefore = CurrentHp;
         TakeDamage(damage);
