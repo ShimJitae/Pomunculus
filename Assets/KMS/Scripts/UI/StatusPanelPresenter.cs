@@ -23,14 +23,12 @@ public class StatusPanelPresenter : IDisposable
         view.ClearStatusIcons();
         foreach (StatusEffect effect in SEModel.ActiveStatusEffects)
             HandleEffectRegistered(effect);
-
-        view.ClearStatusIcons();
     }
 
     // 새 상태이상 → 아이콘 추가
     private void HandleEffectRegistered(StatusEffect effect)
-        => view.AddStatusIcon(effect.Type, GetIcon(effect), effect.StackCount, effect.RemainingDuration, effect.Data.Duration);
-
+        => view.AddStatusIcon(effect.Type, GetIcon(effect), effect.Category, effect.StackCount, effect.RemainingDuration, effect.Data.Duration);
+    
     // 중첩 → 스택·남은 시간 갱신
     private void HandleEffectReapplied(StatusEffect effect)
         => view.UpdateStatusIcon(effect.Type, effect.StackCount, effect.RemainingDuration, effect.Data.Duration);
