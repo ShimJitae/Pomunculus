@@ -53,8 +53,13 @@ public class Enemy : Entity
 
     private void Start()
     {
+        float attackRange = enemySO.GetAttackRange();
+        float bodyRadius = GetComponent<NavMeshAgent>().radius;   // Navigate가 더하는 몸 반지름
+        float chaseMargin = 0.2f;                                  // 경계 오차 여유
+
         behaviorGraphAgent.SetVariableValue("MoveSpeed", enemySO.GetSpeed() * MoveSpeedRatio);
-        behaviorGraphAgent.SetVariableValue("AttackRange", enemySO.GetAttackRange());
+        behaviorGraphAgent.SetVariableValue("AttackRange", attackRange);
+        behaviorGraphAgent.SetVariableValue("ChaseDistance", Mathf.Max(0.1f, attackRange - bodyRadius - chaseMargin));
     }
 
     protected override void OnDie()
