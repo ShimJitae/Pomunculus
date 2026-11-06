@@ -1,3 +1,4 @@
+using Pomunculus.Items;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.InputSystem;
@@ -28,6 +29,7 @@ public class PlayerInputReader : MonoBehaviour
     private float dodgePressedAt = float.NegativeInfinity;
     private float interactPressedAt = float.NegativeInfinity;
     private float nextHoldRepathAt = float.NegativeInfinity;
+    private int pendingPotionSlot = -1;                   // 처리 대기 중인 포션 슬롯 선택 (-1이면 없음)
 
     private InputActionMap playerMap;
     private InputAction moveAction;
@@ -35,6 +37,7 @@ public class PlayerInputReader : MonoBehaviour
     private InputAction dodgeAction;
     private InputAction interactAction;
     private InputAction pointAction;
+    private InputAction[] potionSlotActions;              // 1/2/3 키. 인덱스 = 슬롯 번호
 #if UNITY_EDITOR
     private InputActionMap debugMap;
     private InputAction debugDamageAction;
@@ -52,6 +55,11 @@ public class PlayerInputReader : MonoBehaviour
         dodgeAction = playerMap.FindAction("Dodge", throwIfNotFound: true);
         interactAction = playerMap.FindAction("Interact", throwIfNotFound: true);
         pointAction = playerMap.FindAction("Point", throwIfNotFound: true);
+        potionSlotActions = new InputAction[PotionLoadout.SlotCount];
+        for (int i = 0; i < PotionLoadout.SlotCount; i++)
+        {
+            potionSlotActions[i] = playerMap.FindAction("PotionSlot" + (i + 1), throwIfNotFound: true);
+        }
 #if UNITY_EDITOR
         debugMap = controls.FindActionMap("Debug", throwIfNotFound: true);
         debugDamageAction = debugMap.FindAction("DebugDamage", throwIfNotFound: true);
@@ -102,6 +110,12 @@ public class PlayerInputReader : MonoBehaviour
 
         if (dodgeAction.WasPressedThisFrame()) dodgePressedAt = Time.time;
         if (interactAction.WasPressedThisFrame()) interactPressedAt = Time.time;
+
+        // 1/2/3: 포션 슬롯 선택. 같은 프레임에 여러 개를 누르면 뒤 번호가 우선
+        for (int i = 0; i < potionSlotActions.Length; i++)
+        {
+            if (potionSlotActions[i].WasPressedThisFrame()) pendingPotionSlot = i;
+        }
     }
 
     /// <summary>
@@ -140,6 +154,15 @@ public class PlayerInputReader : MonoBehaviour
     {
         if (Time.time - interactPressedAt > InputBufferTime) return false;
         interactPressedAt = float.NegativeInfinity;
+        return true;
+    }
+
+    // 처리 대기 중인 포션 슬롯 선택을 꺼낸다. slotIndex는 0부터 시작 (1키 = 0)
+    public bool ConsumePotionSlotSelect(out int slotIndex)
+    {
+        slotIndex = pendingPotionSlot;
+        if (pendingPotionSlot < 0) return false;
+        pendingPotionSlot = -1;
         return true;
     }
 

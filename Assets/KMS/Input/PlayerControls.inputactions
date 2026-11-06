@@ -50,6 +50,33 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
+                },
+                {
+                    "name": "PotionSlot1",
+                    "type": "Button",
+                    "id": "3f6c2a1e-8b4d-4e7a-9c15-6d2e8f0a1b31",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "PotionSlot2",
+                    "type": "Button",
+                    "id": "a7d94b52-1c3e-4f86-b2a0-9e5f7c3d4b62",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "PotionSlot3",
+                    "type": "Button",
+                    "id": "c2e8f163-5a9b-4d07-8e4c-1b6a3d9f7e93",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -105,6 +132,39 @@
                     "processors": "",
                     "groups": "",
                     "action": "Point",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "5b1e7d24-9f3a-4c68-a0d2-7e4b9c1f2a14",
+                    "path": "<Keyboard>/1",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "PotionSlot1",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "8d3f2a65-4e7b-4b19-9c81-2a6d5e0f3b25",
+                    "path": "<Keyboard>/2",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "PotionSlot2",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "e6a0c4b7-2d5f-4a3e-8b96-4f1c7a2d5e36",
+                    "path": "<Keyboard>/3",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "PotionSlot3",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

@@ -1,4 +1,5 @@
 using Photon.Pun;
+using Pomunculus.Items;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -11,6 +12,7 @@ using UnityEngine.AI;
 /// </summary>
 [RequireComponent(typeof(NavMeshAgent))]
 [RequireComponent(typeof(PlayerInputReader), typeof(PlayerMotor), typeof(PlayerThrower))]
+[RequireComponent(typeof(PotionLoadout), typeof(Inventory))]
 public class PlayerFSM : Entity, IPlayerObj
 {
     [SerializeField] private PlayerTuningSO tuning;
@@ -43,6 +45,8 @@ public class PlayerFSM : Entity, IPlayerObj
     public PlayerMotor Motor { get; private set; }
     public PlayerThrower Thrower { get; private set; }
     public PlayerInteractor Interactor { get; private set; }   // 없을 수 있음 (null 허용)
+    public Inventory Inventory { get; private set; }
+    public PotionLoadout Loadout { get; private set; }
 
     // ───── 상태들이 읽어 가는 데이터 ─────
     public PlayerStateType CurrentStateType => fsm.CurrentStateType;
@@ -50,6 +54,7 @@ public class PlayerFSM : Entity, IPlayerObj
     public bool IsDead => CheckDie();
     public Vector3 LastHitSourcePosition { get; private set; }
     public Vector3 AttackTarget { get; private set; }   // ConsumeAttack 성공 시 설정
+    public PotionData AttackPotion { get; private set; }
 
     private float lastDodgeAt = float.NegativeInfinity;
 
@@ -75,6 +80,8 @@ public class PlayerFSM : Entity, IPlayerObj
         Motor = GetComponent<PlayerMotor>();
         Thrower = GetComponent<PlayerThrower>();
         Interactor = GetComponent<PlayerInteractor>();
+        Inventory = GetComponentInChildren<Inventory>();
+        Loadout = GetComponent<PotionLoadout>();
 
         Motor.Initialize(Tuning, Data.GetSpeed());
         Stats = new PlayerStats(this, Data);
@@ -157,11 +164,13 @@ public class PlayerFSM : Entity, IPlayerObj
         if (!IsMine) return;
 
         Input.ReadInput();
+        if (Input.ConsumePotionSlotSelect(out int slot)) Loadout.SelectSlot(slot);
 #if UNITY_EDITOR
         ReadDebugKeys();
 #endif
         fsm.Update();
         Stats.Tick(Time.deltaTime);
+
         Motor.SetMoveSpeed(Stats.MoveSpeed);
         currentStateView = fsm.CurrentStateType;
     }
@@ -209,6 +218,10 @@ public class PlayerFSM : Entity, IPlayerObj
         if (!CanAttack || !Stats.CanUseStamina) return false;
         if (!Input.ConsumeAttack(out Vector3 target)) return false;
 
+        PotionData potion = Loadout.SelectedPotion;
+        bool hasPotion = potion != null && Inventory.GetItemCount(potion.Id) > 0;
+
+        AttackPotion = hasPotion ? potion : null;   // null이면 빈 병
         AttackTarget = Thrower.ClampToThrowRange(target);
         Stats.SpendStamina(Data.ThrowStaminaCost);
         return true;

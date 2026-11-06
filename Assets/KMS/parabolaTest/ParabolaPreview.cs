@@ -1,3 +1,4 @@
+using Pomunculus.Items;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -15,10 +16,12 @@ public class ParabolaPreview : MonoBehaviour
     [SerializeField] private bool applyThrowRange = true;   // 게임과 같이 최대 사거리로 목표를 제한
     [SerializeField] private bool followMouse = true;       // 끄면 Scene 뷰에서 Target을 직접 옮긴다
     [SerializeField] private LayerMask groundLayer;
+    [SerializeField] private PotionData potion;
 
     private LineRenderer lineRenderer;
     private Camera mainCamera;
     private Vector3 goal;
+    
 
     void Awake()
     {
@@ -39,7 +42,7 @@ public class ParabolaPreview : MonoBehaviour
         DrawTrajectory();
 
         if (Keyboard.current != null && Keyboard.current.spaceKey.wasPressedThisFrame)
-            thrower.ThrowProjectile(goal);
+            thrower.ThrowProjectile(goal, potion);
     }
 
     // 마우스 아래 지면 위치. 지면이 없으면 현재 Target 높이의 평면으로 대체
