@@ -99,6 +99,7 @@ public class WorldManager : Singleton<WorldManager>
         if (obj == null) return null;
         onInit?.Invoke(obj);
         Objects.Add(obj);
+        OnSpawnedEvent?.Invoke(obj);
         if (!PhotonNetwork.InRoom) return obj; // 오프라인이면 전파할 대상 없음
 
         PacketData p = new();
@@ -119,6 +120,8 @@ public class WorldManager : Singleton<WorldManager>
         RaiseEventManager.Instance.SendPacket(p, new() { Receivers = ReceiverGroup.Others }, SendOptions.SendReliable);
     }
     public IWorldObj Find(int id) => Objects.GetList().Find(x => x.ID == id);
+    // 로컬에 오브젝트가 생성되고 초기 상태(소유자 등)까지 적용된 뒤 호출. 방장/수신 쪽 모두 호출됨
+    public event Action<IWorldObj> OnSpawnedEvent;
     #endregion
 
     #region 입장 동기화
@@ -204,6 +207,7 @@ public class WorldManager : Singleton<WorldManager>
         // Instantiate 시점에 OnEnable이 먼저 돌기 때문에 그 뒤에 상태를 덮어씀
         obj.LoadData(d.State);
         Objects.Add(obj);
+        OnSpawnedEvent?.Invoke(obj);
     }
     private void DespawnLocal(int id)
     {
@@ -227,6 +231,8 @@ public class WorldManager : Singleton<WorldManager>
             Object.Destroy(go);
             return null;
         }
+        obj.ID = id;
+        obj.PrefabId = prefabId;
         obj.InitWorldObj(id, prefabId);
         return obj;
     }

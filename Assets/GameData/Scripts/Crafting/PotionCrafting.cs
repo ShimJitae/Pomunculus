@@ -33,6 +33,10 @@ namespace Pomunculus.Items
         [SerializeField] private int insertedMaterialCount;
         private const int ResultAmount = 3;
         private const int EmptyBottleId = 10001;
+        private const int MaxMaterialCount = 3;
+        [Header("투입한 재료 아이콘")]
+        [SerializeField] private Image[] insertedMaterialIcons = new Image[3];
+        private readonly List<MaterialData> insertedMaterials = new List<MaterialData>();
         private void OnEnable()
         {
             RefreshUI();
@@ -43,6 +47,10 @@ namespace Pomunculus.Items
             if (inventory == null || material == null)
                 return;
 
+            // 최대 3개까지만 투입
+            if (insertedMaterials.Count >= MaxMaterialCount)
+                return;
+
             if (!inventory.RemoveItem(material.Id, 1))
                 return;
 
@@ -51,7 +59,8 @@ namespace Pomunculus.Items
             coldElement += material.ColdElement;
             windElement += material.WindElement;
 
-            insertedMaterialCount++;
+            insertedMaterials.Add(material);
+            insertedMaterialCount = insertedMaterials.Count;
 
             RefreshUI();
         }
@@ -72,11 +81,14 @@ namespace Pomunculus.Items
                 return;
             }
             inventory.AddItem(resultPotion.Id, ResultAmount);
+
             physicsElement = 0;
             fireElement = 0;
             coldElement = 0;
             windElement = 0;
             insertedMaterialCount = 0;
+
+            insertedMaterials.Clear();
 
             RefreshUI();
             if (succeeded && recipeBook != null)
@@ -106,15 +118,12 @@ namespace Pomunculus.Items
 
                 return potion;
             }
-
             return null;
         }
-
         private bool SameElement(float current, float required)
         {
             return Mathf.Abs(current - required) < 0.0001f;
         }
-
         private void RefreshUI()
         {
             physicsText.text = $"× {physicsElement:0.##}";
@@ -123,7 +132,21 @@ namespace Pomunculus.Items
             windText.text = $"× {windElement:0.##}";
 
             craftButton.interactable = inventory != null && insertedMaterialCount > 0;
-            exitButton.interactable = !HasRemainingElements();
+            exitButton.interactable = true;
+
+            for (int i = 0; i < insertedMaterialIcons.Length && i < MaxMaterialCount; i++)
+            {
+                Image icon = insertedMaterialIcons[i];
+
+                if (icon == null)
+                    continue;
+
+                bool hasMaterial = i < insertedMaterials.Count;
+
+                icon.sprite = hasMaterial ? insertedMaterials[i].Icon : null;
+                icon.preserveAspect = true;
+                icon.enabled = hasMaterial && icon.sprite != null;
+            }
         }
         private bool HasRemainingElements()
         {
@@ -134,10 +157,47 @@ namespace Pomunculus.Items
         }
         public void Close()
         {
-            if (HasRemainingElements())
+            if (insertedMaterials.Count > 0 && inventory == null)
+            {
+                Debug.LogWarning("재료를 반환할 인벤토리가 연결되지 않았습니다.", this);
                 return;
-
+            }
+            List<MaterialData> materialsToReturn = new List<MaterialData>(insertedMaterials);
+            insertedMaterials.Clear();
+            insertedMaterialCount = 0;
+            physicsElement = 0;
+            fireElement = 0;
+            coldElement = 0;
+            windElement = 0;
+            foreach (MaterialData material in materialsToReturn)
+            {
+                inventory.AddItem(material.Id, 1);
+            }
+            RefreshUI();
             gameObject.SetActive(false);
+        }
+        public void CancelMaterial(int index)
+        {
+            if (inventory == null)
+                return;
+            if (index < 0 || index >= insertedMaterials.Count)
+                return;
+            MaterialData material = insertedMaterials[index];
+            physicsElement -= material.PhysicsElement;
+            fireElement -= material.FireElement;
+            coldElement -= material.ColdElement;
+            windElement -= material.WindElement;
+            insertedMaterials.RemoveAt(index);
+            insertedMaterialCount = insertedMaterials.Count;
+            if (insertedMaterialCount == 0)
+            {
+                physicsElement = 0;
+                fireElement = 0;
+                coldElement = 0;
+                windElement = 0;
+            }
+            inventory.AddItem(material.Id, 1);
+            RefreshUI();
         }
     }
 }

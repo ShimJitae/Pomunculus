@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Unity.Behavior;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "EnemyDatabase", menuName = "Scriptable Objects/EnemyDatabase")]
@@ -30,7 +29,6 @@ public class EnemyDatabase : ScriptableObject
             if (enemyId <= 0 || !enemy.TryAdd(enemyId, so))
                 continue;
 
-            //Debug.Log($"키 : {enemyId} / 밸류 : {enemy.Values}");
         }
 
         //foreach (EnemyDataSO m in data)
@@ -81,19 +79,16 @@ public class EnemyDatabase : ScriptableObject
         }
     }
 
-    public void SpawnEnemy(Transform spawnTransform)
+    public void SpawnEnemy(Vector3 spawnPositon)
     {
         int value = Random.Range(0, data.Count);
 
         GameObject prefab = data[value].GetEnemyPrefab();
 
-        GameObject enemyObject = GameObject.Instantiate(prefab, spawnTransform.position, spawnTransform.rotation);
-
-        GameObject target = PoolEnemy.Instance.player;
-        enemyObject.GetComponent<Enemy>().SetTarget(target);
+        GameObject enemyObject = GameObject.Instantiate(prefab, spawnPositon, Quaternion.identity);
     }
 
-    public void SpawnWitch(Transform spawnTransform)
+    public void SpawnWitch(Vector3 spawnPositon)
     {
         GameObject prefab;
 
@@ -101,10 +96,7 @@ public class EnemyDatabase : ScriptableObject
         {
             prefab = so.GetEnemyPrefab();
 
-            GameObject enemyObject = GameObject.Instantiate(prefab, spawnTransform.position, spawnTransform.rotation);
-
-            GameObject target = PoolEnemy.Instance.player;
-            enemyObject.GetComponent<Enemy>().SetTarget(target);
+            GameObject enemyObject = GameObject.Instantiate(prefab, spawnPositon, Quaternion.identity);
         }
     }
 }

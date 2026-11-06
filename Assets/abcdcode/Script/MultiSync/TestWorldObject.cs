@@ -2,25 +2,26 @@ using Photon.Pun;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class TestWorldObject : MonoBehaviour, IWorldObj
+public class TestWorldObject : MonoBehaviour, IPlayerObj 
 {
     public string PrefabId {get;set;}
 
     public int ID {get;set;}
 
-    // 이 큐브를 조종하는 플레이어의 ActorNumber
-    public int OwnerActor {get; private set;} = -1;
-    public bool IsMine => PhotonNetwork.LocalPlayer != null && PhotonNetwork.LocalPlayer.ActorNumber == OwnerActor;
+    public bool IsMine => PhotonNetwork.LocalPlayer != null && PhotonNetwork.LocalPlayer.ActorNumber == Owner;
+
+    public int Owner { get; set; }
 
     public void InitWorldObj(int id, string prefabId)
     {
         ID = id;
         PrefabId = prefabId;
+        SetOwner(Owner);
     }
-
+    
     public void SetOwner(int actor)
     {
-        OwnerActor = actor;
+        Owner = actor;
         if (TryGetComponent(out WorldTransformSync sync)) sync.IsOwner = () => IsMine;
         // 내 큐브는 초록, 남의 큐브는 빨강
         if (TryGetComponent(out Renderer r)) r.material.color = IsMine ? Color.green : Color.red;
@@ -35,7 +36,7 @@ public class TestWorldObject : MonoBehaviour, IWorldObj
 
     public void SaveData(SaveData _data)
     {
-        _data.SetData(OwnerActor);
+        _data.SetData(Owner);
     }
 
     private void Update()

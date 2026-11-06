@@ -4,8 +4,8 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 // TestScene 테스트 UI (IMGUI)
-// 오프라인 : 큐브 추가, 멀티로 전환(접속 -> 로비 -> 방 생성. 월드는 그대로 유지), 타이틀로
-// 온라인 : 방 정보, 플레이어 목록, 큐브 추가, 방 나가기(-> 타이틀)
+// 오프라인 : 멀티로 전환(접속 -> 로비 -> 방 생성. 월드는 그대로 유지), 타이틀로
+// 온라인 : 방 정보, 플레이어 목록, 방 나가기(-> 타이틀)
 public class WorldTestUI : MonoBehaviour
 {
     private void Awake()
@@ -20,7 +20,7 @@ public class WorldTestUI : MonoBehaviour
         network.OnCreateRoomFailedEvent += OnRoomFailed;
         network.OnDisconnectedEvent += OnDisconnected;
         // 방을 통해 들어온 경우는 GameManager가 방 입장 흐름으로 처리
-        if (!PhotonNetwork.InRoom) GameManager.Instance.TestStartOffline();
+        if (!PhotonNetwork.InRoom) GameManager.Instance.StartWorldOffline();
     }
     private void OnDestroy()
     {
@@ -57,7 +57,7 @@ public class WorldTestUI : MonoBehaviour
     }
     #endregion
 
-    // 월드 정리는 GameManager.TestOnLeftRoom에서 처리
+    // 월드 정리는 GameManager.OnLeftRoom에서 처리
     private void OnLeftRoom() => SceneManager.LoadScene(GameManager.TitleSceneName);
     private void GoTitle()
     {
@@ -74,7 +74,6 @@ public class WorldTestUI : MonoBehaviour
         var network = NetworkManager.Instance;
         GUILayout.Label($"상태 : {network.State}{(network.IsBusy ? "  (로딩 중...)" : "")}");
         GUILayout.Label($"월드 오브젝트 : {WorldManager.Instance.Objects.GetList().Count}개  (준비 : {WorldManager.Instance.IsReady})");
-        GUILayout.Label("WASD : 내 큐브(초록) 이동");
         if (!string.IsNullOrEmpty(m_message)) GUILayout.Label(m_message);
         GUILayout.Space(10f);
 
@@ -89,9 +88,6 @@ public class WorldTestUI : MonoBehaviour
         bool busy = m_pendingCreateRoom || network.IsBusy;
 
         GUI.enabled = !busy;
-        if (GUILayout.Button("큐브 추가")) GameManager.Instance.TestRequestSpawn();
-        GUILayout.Space(10f);
-
         GUILayout.Label("── 멀티로 전환 ──");
         GUILayout.BeginHorizontal();
         GUILayout.Label("방 이름", GUILayout.Width(60f));
@@ -112,8 +108,6 @@ public class WorldTestUI : MonoBehaviour
             GUILayout.Label($"#{player.ActorNumber}  {player.NickName}{(player.IsMasterClient ? "  [방장]" : "")}{(player.IsLocal ? "  (나)" : "")}");
         GUILayout.Space(10f);
 
-        GUI.enabled = network.State == NetworkState.InRoom && WorldManager.Instance.IsReady;
-        if (GUILayout.Button("큐브 추가")) GameManager.Instance.TestRequestSpawn();
         GUI.enabled = network.State == NetworkState.InRoom;
         if (GUILayout.Button("방 나가기 (타이틀로)")) network.LeaveRoom();
         GUI.enabled = true;

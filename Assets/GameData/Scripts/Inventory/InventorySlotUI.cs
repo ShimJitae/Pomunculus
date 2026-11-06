@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 namespace Pomunculus.Items
 {
-    public class InventorySlotUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+    public class InventorySlotUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
     {
         [SerializeField] private Image icon;
         [SerializeField] private TMP_Text amountText;
@@ -18,6 +18,9 @@ namespace Pomunculus.Items
         private bool hasItem;
         private bool isHovered;
         private Vector2 pointerPosition;
+
+        private PotionData potionData;
+        private PotionSlotSelector potionSlotSelector;
 
         public void ShowItem(Sprite sprite, int amount, string name, string desc, ItemTooltipUI itemTooltip)
         {
@@ -40,6 +43,7 @@ namespace Pomunculus.Items
 
         public void ShowEmpty()
         {
+            potionData = null;
             if (tooltip != null)
                 tooltip.HideFor(this);
 
@@ -72,6 +76,8 @@ namespace Pomunculus.Items
         {
             if (!hasItem || tooltip == null)
                 return;
+            if (potionSlotSelector != null && potionSlotSelector.IsSelecting)
+                return;
 
             tooltip.Show(this, itemName, description, icon.sprite, itemAmount, pointerPosition);
         }
@@ -82,6 +88,22 @@ namespace Pomunculus.Items
 
             if (tooltip != null)
                 tooltip.HideFor(this);
+        }
+        public void SetPotionSelection(PotionData potion, PotionSlotSelector selector)
+        {
+            potionData = potion;
+            potionSlotSelector = selector;
+        }
+
+        public void OnPointerClick(PointerEventData eventData)
+        {
+            if (eventData.button != PointerEventData.InputButton.Left)
+                return;
+
+            if (!hasItem || potionData == null || potionSlotSelector == null)
+                return;
+
+            potionSlotSelector.BeginSelection(potionData);
         }
     }
 }
