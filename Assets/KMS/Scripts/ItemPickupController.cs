@@ -19,7 +19,6 @@ public class ItemPickupController : MonoBehaviour
 
     readonly Collider[] buffer = new Collider[16];
     private PlayerFSM owner;
-    private Inventory inventory;
     private float nextScanAt;
     private readonly HashSet<Component> detectedThisScan = new HashSet<Component>();
 
@@ -28,7 +27,6 @@ public class ItemPickupController : MonoBehaviour
     private void Awake()
     {
         owner = GetComponent<PlayerFSM>();
-        inventory = GetComponent<Inventory>();
     }
 
     void Update()
@@ -83,7 +81,7 @@ public class ItemPickupController : MonoBehaviour
         }
         if (!CanRemoveFromField(material.ID)) return;   // 먼저 확인하고 나서 추가 (추가만 되고 삭제 안 되는 경우 방지)
 
-        inventory.AddItem(material.Material.Id, material.Amount);
+        owner.Inventory.AddItem(material.Material.Id, material.Amount);
         RemoveFromField(material.gameObject, material.ID);
         OnMaterialPickedUp?.Invoke(material);
     }
@@ -93,7 +91,7 @@ public class ItemPickupController : MonoBehaviour
     {
         if (potion.Data == null) { Debug.LogWarning("PotionData가 비어 있는 포션", potion); return; }
 
-        inventory.AddItem(potion.Data.Id, 1);
+        owner.Inventory.AddItem(potion.Data.Id, 1);
         RemoveFromField(potion.gameObject, LocalOnlyId);
         OnPotionPickedUp?.Invoke(potion);
     }
