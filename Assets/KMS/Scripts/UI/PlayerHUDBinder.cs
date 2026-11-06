@@ -25,7 +25,7 @@ public class PlayerHUDBinder : MonoBehaviour
         UnbindAll();
 
         presenters.Add(new StatPanelPresenter(localPlayer.Stats, statPanelView));
-        presenters.Add(new StatusPanelPresenter(statusPanelView));
+        presenters.Add(new StatusPanelPresenter(localPlayer.GetComponent<StatusEffectController>(), statusPanelView));
         presenters.Add(new PotionSlotPresenter(potionSlotView));
     }
 

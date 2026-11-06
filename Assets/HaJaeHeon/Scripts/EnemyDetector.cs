@@ -2,18 +2,25 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent (typeof(SphereCollider))]
+[RequireComponent (typeof(SphereCollider)), RequireComponent(typeof(Rigidbody))]
 public class EnemyDetector : MonoBehaviour
 {
     public event Action OnPlayersChanged;
 
-    private SphereCollider detectCollider;
     private readonly List<GameObject> playersInRange = new();
+    
+    [SerializeField] private SphereCollider detectCollider;
+    [SerializeField] private Rigidbody rb;
 
-    private void Awake()
+
+    private void OnEnable()
     {
         detectCollider = GetComponent<SphereCollider>();
         detectCollider.isTrigger = true;
+
+        rb = GetComponent<Rigidbody>();
+        rb.isKinematic = true;
+        rb.useGravity = false;
     }
 
     private void OnDisable()
@@ -23,6 +30,9 @@ public class EnemyDetector : MonoBehaviour
 
     public void SetRadius(float radius)
     {
+        if(detectCollider == null)
+            detectCollider = GetComponent<SphereCollider>();
+
         detectCollider.radius = radius;
     }
 
@@ -38,7 +48,7 @@ public class EnemyDetector : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        if (playersInRange.Remove(other.gameObject) || playersInRange.Contains(other.gameObject))
+        if (!playersInRange.Remove(other.gameObject))
             return;
 
         OnPlayersChanged?.Invoke();

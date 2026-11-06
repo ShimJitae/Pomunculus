@@ -5,10 +5,14 @@ using UnityEngine.AI;
 [RequireComponent(typeof(BehaviorGraphAgent)), RequireComponent(typeof(NavMeshAgent))]
 public class Enemy : Entity
 {
+    public BehaviorGraphAgent BehaviorGraphAgent => behaviorGraphAgent;
+    public GameObject Target => target;
+    public bool CanDoAttack => !isDie && CanAttack;
+    public EnemyDataSO Data => enemySO;
+
     [SerializeField] private BehaviorGraphAgent behaviorGraphAgent;
     [SerializeField] private GameObject target;
     [SerializeField] private EnemyDetector detector;
-
 
     protected EnemyDataSO enemySO
     {
@@ -33,8 +37,10 @@ public class Enemy : Entity
         }
 
         behaviorGraphAgent.Graph = enemySO.GetBehaviorGraph();
+        
         CurrentHp = enemySO.GetHp();
         moveSpeed = enemySO.GetSpeed();
+        
         isDie = CurrentHp <= 0;
         detector.SetRadius(enemySO.GetDetectRange());
         detector.OnPlayersChanged += RefreshTarget;
@@ -45,11 +51,22 @@ public class Enemy : Entity
         detector.OnPlayersChanged -= RefreshTarget;
     }
 
+    private void Start()
+    {
+        float attackRange = enemySO.GetAttackRange();
+        float bodyRadius = GetComponent<NavMeshAgent>().radius;   // Navigate가 더하는 몸 반지름
+        float chaseMargin = 0.2f;                                  // 경계 오차 여유
+
+        behaviorGraphAgent.SetVariableValue("MoveSpeed", enemySO.GetSpeed() * MoveSpeedRatio);
+        behaviorGraphAgent.SetVariableValue("AttackRange", attackRange);
+        behaviorGraphAgent.SetVariableValue("ChaseDistance", Mathf.Max(0.1f, attackRange - bodyRadius - chaseMargin));
+    }
+
     protected override void OnDie()
     {
         behaviorGraphAgent.SetVariableValue<bool>("IsDie", true);
 
-        DropItemManager.Instance.SpawnDropItem(GetId(), transform.position);
+        DataDBManager.Instance.SpawnDropItem(GetId(), transform.position);
 
         Destroy(gameObject, 1f);
     }
@@ -67,5 +84,10 @@ public class Enemy : Entity
             return;
 
         SetTarget(detector.GetNearestPlayer());
+    }
+
+    protected override int GetId()
+    {
+        return enemySO.GetEnemyId();
     }
 }
