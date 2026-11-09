@@ -19,7 +19,7 @@ public class StatusEffectController : MonoBehaviour, ISavable
     /// <summary>Tick이 실행된 직후 발생한다. 걸린 직후의 즉시 틱에도 발생하며, 한 프레임에 밀린 틱이 여러 번 실행돼도 한 번만 발생한다.</summary>
     public event Action<StatusEffect> OnEffectTicked;
 
-    /// <summary>상태가 만료되어 해제된 직후, 풀에 반납되기 전에 발생한다. 대상 파괴로 인한 정리에서는 발생하지 않는다.</summary>
+    /// <summary>시간 만료나 중첩 소진으로 상태가 해제된 직후, 풀에 반납되기 전에 발생한다. 대상 파괴로 인한 정리에서는 발생하지 않는다.</summary>
     public event Action<StatusEffect> OnEffectRemoved;
 
     private StatusModifiers modifiers = StatusModifiers.Default;
@@ -85,15 +85,9 @@ public class StatusEffectController : MonoBehaviour, ISavable
                 LogStatus("틱", effect);
             }
 
-            bool isExpired = effect.AdvanceTime(Time.deltaTime);
-            if (isExpired)
+            if (effect.AdvanceTime(Time.deltaTime))
             {
-                activeStatusEffects.RemoveAt(i);
-                effect.Remove();
-                RecalculateModifiers(); // 목록에서 뺀 뒤 계산해야 남은 상태의 효과만 반영된다.
-                OnEffectRemoved?.Invoke(effect); // 풀 반납(Reset) 전에 알려야 구독자가 데이터를 읽을 수 있다.
-                LogStatus("종료", effect); // 풀 반납(Reset) 전에 기록해야 데이터를 읽을 수 있다.
-                StatusEffectPool.Return(effect);
+                RemoveEffectAt(i);
             }
         }
     }
@@ -101,6 +95,11 @@ public class StatusEffectController : MonoBehaviour, ISavable
     public StatusEffect RegisterStatusEffect(StatusEffectType seType)
     {
         if (entity == null || seType == StatusEffectType.None)
+        {
+            return null;
+        }
+
+        if (TryBlockStatusEffect(seType))
         {
             return null;
         }
@@ -140,10 +139,50 @@ public class StatusEffectController : MonoBehaviour, ISavable
         return statusEffect;
     }
 
+    private bool TryBlockStatusEffect(StatusEffectType incomingType)
+    {
+        for (int i = 0; i < activeStatusEffects.Count; i++)
+        {
+            StatusEffect resistance = activeStatusEffects[i];
+            StatusEffectData blocked = resistance.Data.BlockedStatusEffect;
+            if (blocked == null || blocked.StatusEffectType != incomingType ||
+                resistance.StackCount <= 0 || resistance.RemainingDuration <= 0f)
+            {
+                continue;
+            }
+
+            resistance.StackCount--;
+            if (resistance.StackCount == 0)
+            {
+                RemoveEffectAt(i);
+            }
+            else
+            {
+                RecalculateModifiers();
+            }
+
+            return true;
+        }
+
+        return false;
+    }
+
+    private void RemoveEffectAt(int index)
+    {
+        StatusEffect effect = activeStatusEffects[index];
+        activeStatusEffects.RemoveAt(index);
+        effect.Remove();
+        RecalculateModifiers();
+        // 상태 데이터는 풀에 반납하기 전에 구독자와 로그에 전달한다.
+        OnEffectRemoved?.Invoke(effect);
+        LogStatus("종료", effect);
+        StatusEffectPool.Return(effect);
+    }
+
     /// <summary>
     /// 기본값에서 시작해 활성 상태 전체의 몫을 다시 반영한다.
     /// 같은 수치를 쓰는 상태가 겹쳐도 먼저 끝난 쪽이 남은 쪽의 효과를 풀지 않게 한다.
-    /// 상태가 걸리거나·중첩되거나·끝날 때만 호출하며, 값이 달라졌을 때만 OnModifiersChanged를 발생시킨다.
+    /// 상태 등록·중첩 변경·해제·복원 때 호출하며, 값이 달라졌을 때만 OnModifiersChanged를 발생시킨다.
     /// </summary>
     private void RecalculateModifiers()
     {

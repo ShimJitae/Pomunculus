@@ -35,9 +35,9 @@ public enum StatusEffectType
     Haste = 18,             // 헤이스트
     // Boost = 19,          // 부스트
 
-    // ResistHeat = 20,     // 저항 - 열기
-    // ResistCold = 21,     // 저항 - 혹한
-    // ResistDisease = 22,  // 저항 - 질병
+    ResistHeat = 20,        // 저항 - 열기
+    ResistCold = 21,        // 저항 - 혹한
+    ResistDisease = 22,     // 저항 - 질병
 
     Petrify = 23,           // 석화
     Invincible = 24,        // 무적

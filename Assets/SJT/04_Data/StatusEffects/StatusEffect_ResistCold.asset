@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f369f5ba453315b469543197edf9508a, type: 3}
+  m_Name: StatusEffect_ResistCold
+  m_EditorClassIdentifier: Assembly-CSharp::StatusEffectData
+  statusId: 70021
+  statusEffectType: 21
+  effectCategory: 1
+  stateName: "\uC800\uD56D - \uD639\uD55C"
+  maxStackCount: 5
+  duration: 30
+  tickSec: 30
+  tickDamagePerStack: 0
+  valuePerStack: 0
+  blockedStatusEffect: {fileID: 11400000, guid: 1924ae14a9a347958618a813f40d4e51, type: 2}
+  feedbackPrefab: {fileID: 0}
+  icon: {fileID: 0}
