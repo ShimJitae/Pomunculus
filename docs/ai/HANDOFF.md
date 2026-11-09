@@ -11,13 +11,17 @@
 <!-- harness:status:end -->
 - Claude Code 겸용 레이어를 이 프로젝트에만 추가했다(UnityHarness 원본 미반영). `CLAUDE.md`, `.claude/`, `scripts/ai/sync-claude.ps1`이 해당하며 Codex 파일은 바꾸지 않았다. 스킬·역할은 Codex 원본을 고친 뒤 `sync-claude.ps1`로 다시 생성한다.
 
+## 상태이상 8종 추가 연출 — 2026-11-09
+
+- 독·점액·젖음·기절·구속·취약·헤이스트·석화 프리팹을 공용 상태 데이터에 연결했다. 무적은 캐릭터 보호막 에셋 확보 후 이어서 진행한다. 구성과 확인 항목은 [추가 연출 계획](plans/2026-11-09-상태이상-추가-연출.md)에 있다.
+
 ## 상태이상 틱 규칙 변경 — 2026-11-09
 
 - 사용자 확정 규칙(즉시 첫 틱, 횟수 보장, 렉 시 몰아서 실행, 재부여 시 틱 타이머 유지)으로 `Tick`을 바꿨다. 기준은 [상태 효과 틱 규칙](PROJECT.md#상태-효과-틱-규칙)이다. 화상 에셋(5초·1초·중첩당 5)의 1중첩 총 피해가 20(4회)에서 25(5회)로 늘었고, 수치 조정은 기획 판단으로 남겼다.
 - `dotnet build Assembly-CSharp.csproj`는 오류 0개였고 SJT 경고는 없었다. 독립 정적 리뷰에서 확정 문제는 없었다. PlayMode·실제 틱 로그는 미검증이다.
 - 사용자가 `StatusEffectController.OnDisable` 끝에 `modifiers = StatusModifiers.Default;`를 추가했다(비활성 후 재활성 시 이전 수치가 남는 문제).
 - 남은 SJT 작업 순서: 복원 시 걸림 연출 재생 억제(Controller의 `IsRestoring` 값을 Visualizer만 확인하는 방식 제안) → `ActiveStatusEffects` 읽기 전용 노출, Behavior 베이스 클래스, Database의 빈 검증 루프 정리. LoadData 중복 방지와 틱 중 비활성화 방어는 현재 호출 경로에서 발생하지 않아 보류했다. 네트워크 전파(입장 후 걸린 상태이상의 동기화, 클라이언트별 화상 피해)는 네트워크 담당 팀원의 결정 사항이다.
-- 화상·냉기·빙결 연출 프리팹은 tickFeedbacks가 연결돼 있어 걸리는 프레임에 Registered·WhileActive·Tick 연출이 함께 재생된다. 겹침 여부는 PlayMode에서 확인한다.
+- 화상·냉기·빙결의 Tick Player는 연결돼 있고 Feedback 목록은 비어 있다. 최초 등록 시 Tick 재생 요청이 들어오며, 화면에 추가 입자가 나오는 슬롯은 Registered와 WhileActive다.
 
 ## 상태이상 파티클 연출 — 2026-11-06
 
