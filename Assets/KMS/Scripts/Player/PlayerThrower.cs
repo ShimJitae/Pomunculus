@@ -1,4 +1,5 @@
 using Pomunculus.Items;
+using System.Collections.Generic;
 using UnityEngine;
 
 // 목표 지점에 포물선으로 떨어지는 투사체를 던진다
@@ -12,7 +13,7 @@ public class PlayerThrower : MonoBehaviour
     [SerializeField] private float minFlightTime = 0.35f;            // 가까이 던질 때 최소 체공 시간. 발밑에 던질 때 떨어지는 느낌
     [SerializeField, Min(0.01f)] private float flightSpeedMultiplier = 1f;       // 궤적은 그대로, 날아가는 빠르기만 배율로 조절
     [SerializeField] private int attackDamage = 1;
-    [SerializeField] private LayerMask enemyLayer;
+    [SerializeField] private LayerMask hitLayers;
 
     // 목표 지점이 최대 사거리 밖이면 같은 방향의 사거리 끝으로 당긴다 (높이는 유지)
     public Vector3 ClampToThrowRange(Vector3 target)
@@ -57,17 +58,21 @@ public class PlayerThrower : MonoBehaviour
     // 목표 지점에 정확히 떨어지는 포물선 속도로 투사체 발사
     public void ThrowProjectile(Vector3 target, PotionData potion)
     {
-        if (emptyBottlePrefab == null)
-        {
-            Debug.LogWarning("[PlayerThrower] emptyBottlePrefab가 지정되지 않았습니다.");
-            return;
-        }
-
         Vector3 origin = GetThrowOrigin();
         Vector3 velocity = CalculateLaunchVelocity(origin, target, out _, out Vector3 gravity);
 
-        ThrownProjectile projectile = Instantiate(emptyBottlePrefab, origin, Quaternion.identity);
-        projectile.Launch(velocity, gravity, attackDamage, enemyLayer, gameObject, potion);
+        ThrownProjectile prefab = potion != null && potion.ProjectilePrefab != null
+                    ? potion.ProjectilePrefab
+                    : emptyBottlePrefab;
+
+        if (prefab == null)
+        {
+            Debug.LogWarning("[PlayerThrower] 던질 프리팹이 없습니다.");
+            return;
+        }
+
+        ThrownProjectile projectile = Instantiate(prefab, origin, Quaternion.identity);
+        projectile.Launch(velocity, gravity, hitLayers, gameObject, potion, attackDamage);
     }
 
     void OnDrawGizmosSelected()

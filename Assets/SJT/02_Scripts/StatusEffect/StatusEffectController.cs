@@ -16,7 +16,7 @@ public class StatusEffectController : MonoBehaviour, ISavable
     /// <summary>이미 걸린 상태가 다시 걸려 중첩된 직후 발생한다.</summary>
     public event Action<StatusEffect> OnEffectReapplied;
 
-    /// <summary>상태의 발동 주기가 돌아 Tick이 실행된 직후 발생한다.</summary>
+    /// <summary>Tick이 실행된 직후 발생한다. 걸린 직후의 즉시 틱에도 발생하며, 한 프레임에 밀린 틱이 여러 번 실행돼도 한 번만 발생한다.</summary>
     public event Action<StatusEffect> OnEffectTicked;
 
     /// <summary>상태가 만료되어 해제된 직후, 풀에 반납되기 전에 발생한다. 대상 파괴로 인한 정리에서는 발생하지 않는다.</summary>
@@ -69,6 +69,7 @@ public class StatusEffectController : MonoBehaviour, ISavable
             effect.Remove();
             StatusEffectPool.Return(effect);
         }
+        modifiers = StatusModifiers.Default;
     }
 
     private void Update()
@@ -76,6 +77,13 @@ public class StatusEffectController : MonoBehaviour, ISavable
         for (int i = activeStatusEffects.Count - 1; i >= 0; i--)
         {
             StatusEffect effect = activeStatusEffects[i];
+
+            // 틱을 만료보다 먼저 처리해야 마지막 틱이 만료에 묻히지 않는다.
+            if (effect.Tick(Time.deltaTime))
+            {
+                OnEffectTicked?.Invoke(effect);
+                LogStatus("틱", effect);
+            }
 
             bool isExpired = effect.AdvanceTime(Time.deltaTime);
             if (isExpired)
@@ -86,13 +94,6 @@ public class StatusEffectController : MonoBehaviour, ISavable
                 OnEffectRemoved?.Invoke(effect); // 풀 반납(Reset) 전에 알려야 구독자가 데이터를 읽을 수 있다.
                 LogStatus("종료", effect); // 풀 반납(Reset) 전에 기록해야 데이터를 읽을 수 있다.
                 StatusEffectPool.Return(effect);
-                continue;
-            }
-
-            if (effect.Tick(Time.deltaTime))
-            {
-                OnEffectTicked?.Invoke(effect);
-                LogStatus("틱", effect);
             }
         }
     }
@@ -129,6 +130,13 @@ public class StatusEffectController : MonoBehaviour, ISavable
         RecalculateModifiers();
         OnEffectRegistered?.Invoke(statusEffect);
         LogStatus("걸림", statusEffect);
+
+        // 첫 틱은 걸리자마자 실행한다. 복원은 진행 중이던 틱 타이머를 이어받으므로 실행하지 않는다.
+        if (statusEffect.Tick(0f))
+        {
+            OnEffectTicked?.Invoke(statusEffect);
+            LogStatus("틱", statusEffect);
+        }
         return statusEffect;
     }
 

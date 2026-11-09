@@ -208,7 +208,7 @@ MonoBehaviour:
   NavSampleRadius: 2
   GroundLayer:
     serializedVersion: 2
-    m_Bits: 64
+    m_Bits: 65
   MoveMarker: {fileID: 0}
   InputBufferTime: 0.15
 --- !u!114 &1399261892888549604
@@ -235,16 +235,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8139520814af5324a89556d40b62a630, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerThrower
-  emptyBottlePrefab: {fileID: -4413370916858422293, guid: 80d7319d140098f44b4c8c6bd809c118, type: 3}
+  emptyBottlePrefab: {fileID: -8461069969775478643, guid: cf8181d87ceb11a4b8964fcbbe4dbae5, type: 3}
   throwOrigin: {fileID: 6633543304050246393}
   maxThrowRange: 10
   throwHorizontalSpeed: 6
   minFlightTime: 0.1
   flightSpeedMultiplier: 1.5
   attackDamage: 10
-  enemyLayer:
+  hitLayers:
     serializedVersion: 2
-    m_Bits: 128
+    m_Bits: 136
 --- !u!114 &8441542970358718260
 MonoBehaviour:
   m_ObjectHideFlags: 0

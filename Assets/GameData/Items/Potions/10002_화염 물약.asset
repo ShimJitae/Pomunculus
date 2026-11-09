@@ -20,3 +20,20 @@ MonoBehaviour:
   FireElement: 4
   ColdElement: 0
   WindElement: 0
+  projectilePrefab: {fileID: 6398676829056186882, guid: cff4350c347ee7142a6a5918ff9a1bd8, type: 3}
+  effects:
+  - rid: 3760826951661256785
+  - rid: 3760826951661256786
+  references:
+    version: 2
+    RefIds:
+    - rid: 3760826951661256785
+      type: {class: StatusPotionEffect, ns: , asm: Assembly-CSharp}
+      data:
+        affectedTargets: 2
+        statusType: 1
+    - rid: 3760826951661256786
+      type: {class: DamagePotionEffect, ns: , asm: Assembly-CSharp}
+      data:
+        affectedTargets: 2
+        amount: 5
