@@ -1,5 +1,6 @@
 using Photon.Pun;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using Unity.Behavior;
 using UnityEngine;
@@ -58,20 +59,25 @@ public class Enemy : Entity, IWorldRPC
         movement.InitSpawnCenter(transform.position);
         
         behaviorGraphAgent.Graph = enemySO.GetBehaviorGraph();
-        behaviorGraphAgent.SetVariableValue("SpawnPosition", transform.position);
+        behaviorGraphAgent.SetVariableValue("SpawnPosition", movement.SpawnCenter);
 
         base.OnEnable();
-        
+        OnHpChanged?.Invoke(CurrentHp, MaxHp);
+
+        ApplyAuthority(IsMaster);
+
+        // 방장만 범위 감지를 함, 공격 패턴 로드
+        if (!IsMaster)
+            return;
+
         detector.SetRadius(enemySO.GetDetectRange());
         detector.OnPlayersChanged += RefreshTarget;
 
-        OnHpChanged?.Invoke(CurrentHp, MaxHp);
 
         IReadOnlyList<EnemyPatternDataSO> enemyPatterns = DataDBManager.Instance.PatternDatabase
             .GetPatternsByEnemyId(enemySO.GetEnemyId());
 
         skillPattern.LoadPatternList(enemyPatterns, enemySO.GetNormalAttackPattern());
-
     }
 
     protected override void OnDisable()
@@ -148,13 +154,20 @@ public class Enemy : Entity, IWorldRPC
     protected override void OnDie()
     {
         behaviorGraphAgent.SetVariableValue<bool>("IsDie", true);
-
+        // 동기화 시 이 부분 삭제 필요
         DataDBManager.Instance.SpawnDropItem(GetId(), transform.position);
 
         if (IsMaster)
         {
-            WorldManager.Instance.Despawn(ID);
+            StartCoroutine(WaitDieAnimation());
         }
+    }
+
+    IEnumerator WaitDieAnimation()
+    {
+        yield return new WaitForSeconds(1f);
+
+        WorldManager.Instance.Despawn(ID);
     }
 
     public void SetTarget(GameObject player)
@@ -204,6 +217,13 @@ public class Enemy : Entity, IWorldRPC
         EnemyPatternDataSO currentPattern = skillPattern.UseSkill();
 
         return currentPattern;
+    }
+
+    private void ApplyAuthority(bool isAuthority)
+    {
+        behaviorGraphAgent.enabled = isAuthority;
+        agent.enabled = isAuthority;
+        detector.gameObject.SetActive(isAuthority);
     }
 
     #region 네트워크
