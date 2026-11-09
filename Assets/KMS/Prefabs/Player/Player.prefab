@@ -143,6 +143,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f4f75312eb965614dab993c80e2de8f6, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7792248187517395002}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f4f75312eb965614dab993c80e2de8f6, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5817456889939787549}
   m_SourcePrefab: {fileID: 100100000, guid: f4f75312eb965614dab993c80e2de8f6, type: 3}
 --- !u!1 &4072954961796356756 stripped
 GameObject:
@@ -205,7 +208,7 @@ MonoBehaviour:
   NavSampleRadius: 2
   GroundLayer:
     serializedVersion: 2
-    m_Bits: 64
+    m_Bits: 65
   MoveMarker: {fileID: 0}
   InputBufferTime: 0.15
 --- !u!114 &1399261892888549604
@@ -232,16 +235,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8139520814af5324a89556d40b62a630, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerThrower
-  emptyBottlePrefab: {fileID: -4413370916858422293, guid: 80d7319d140098f44b4c8c6bd809c118, type: 3}
+  emptyBottlePrefab: {fileID: -8461069969775478643, guid: cf8181d87ceb11a4b8964fcbbe4dbae5, type: 3}
   throwOrigin: {fileID: 6633543304050246393}
   maxThrowRange: 10
   throwHorizontalSpeed: 6
   minFlightTime: 0.1
   flightSpeedMultiplier: 1.5
   attackDamage: 10
-  enemyLayer:
+  hitLayers:
     serializedVersion: 2
-    m_Bits: 128
+    m_Bits: 136
 --- !u!114 &8441542970358718260
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -452,6 +455,19 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 768
   scanInterval: 0.1
+--- !u!114 &5817456889939787549
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4072954961796356756}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3edd9e4d61c8f114bb64399953c48778, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LocalPlayerHUD
+  hudPrefab: {fileID: -218180276998670255, guid: d8ff4cc8f8924ae449b0f94718bfba0b, type: 3}
 --- !u!4 &6633543304050246393 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7514387204552156476, guid: f4f75312eb965614dab993c80e2de8f6, type: 3}

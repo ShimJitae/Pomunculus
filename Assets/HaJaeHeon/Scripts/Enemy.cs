@@ -1,10 +1,12 @@
+using Photon.Pun;
 using System;
+using System.Collections;
 using Unity.Behavior;
 using UnityEngine;
 using UnityEngine.AI;
 
 [RequireComponent(typeof(BehaviorGraphAgent)), RequireComponent(typeof(NavMeshAgent))]
-public class Enemy : Entity
+public class Enemy : Entity, IWorldRPC
 {
     public BehaviorGraphAgent BehaviorGraphAgent => behaviorGraphAgent;
     public GameObject Target => target;
@@ -23,6 +25,11 @@ public class Enemy : Entity
     private bool IsDamageBlock => IsInvincible || CheckDie();
     private NavMeshAgent agent;
     private Animator animator;
+    private EnemyMovement movement;
+    private EnemySkill enemySkill;
+
+    private float groggyHpRatio = 0.5f;
+    private bool hasGroggyTriggered;
 
     protected EnemyDataSO enemySO
     {
@@ -38,6 +45,8 @@ public class Enemy : Entity
         detector = GetComponentInChildren<EnemyDetector>();
         agent = GetComponent<NavMeshAgent>();
         animator = GetComponent<Animator>();
+        movement = GetComponent<EnemyMovement>();
+        enemySkill = GetComponentInChildren<EnemySkill>();
     }
 
 
@@ -49,15 +58,27 @@ public class Enemy : Entity
             gameObject.SetActive(false);
             return;
         }
+        movement.InitSpawnCenter(transform.position);
         
         behaviorGraphAgent.Graph = enemySO.GetBehaviorGraph();
+        behaviorGraphAgent.SetVariableValue("SpawnPosition", movement.SpawnCenter);
 
         base.OnEnable();
-        
+        OnHpChanged?.Invoke(CurrentHp, MaxHp);
+
+        ApplyAuthority(IsMaster);
+
+        hasGroggyTriggered = false;
+        behaviorGraphAgent.SetVariableValue("IsGroggy", false);
+
+        // 방장만 범위 감지를 함, 공격 패턴 로드
+        if (!IsMaster)
+            return;
+
         detector.SetRadius(enemySO.GetDetectRange());
         detector.OnPlayersChanged += RefreshTarget;
 
-        OnHpChanged?.Invoke(CurrentHp, MaxHp);
+        enemySkill.Initialize();
     }
 
     protected override void OnDisable()
@@ -67,23 +88,27 @@ public class Enemy : Entity
         detector.OnPlayersChanged -= RefreshTarget;
     }
 
-    private void Start()
-    {
-        float attackRange = enemySO.GetAttackRange();
-        float bodyRadius = agent.radius;   // Navigate가 더하는 몸 반지름
-        float chaseMargin = 0.2f;                                  // 경계 오차 여유
+    //private void Start()
+    //{
+    //    float attackRange = enemySO.GetAttackRange();
+    //    float bodyRadius = agent.radius;   // Navigate가 더하는 몸 반지름
+    //    float chaseMargin = 0.2f;                                  // 경계 오차 여유
 
-        behaviorGraphAgent.SetVariableValue("AttackRange", attackRange);
-        behaviorGraphAgent.SetVariableValue("ChaseDistance", Mathf.Max(0.1f, attackRange - bodyRadius - chaseMargin));
-    }
+    //    behaviorGraphAgent.SetVariableValue("AttackRange", attackRange);
+    //    behaviorGraphAgent.SetVariableValue("ChaseDistance", Mathf.Max(0.1f, attackRange - bodyRadius - chaseMargin));
+    //}
 
     public override void TakeDamage(int damage)
     {
+        if (!IsMaster)
+            return;
+
         if (IsDamageBlock || damage <= 0)
             return;
 
         CurrentHp -=  Mathf.CeilToInt(damage * DamageTakenRatio);
         OnHpChanged?.Invoke(CurrentHp, MaxHp);
+        SendHpSync();
 
         if (CurrentHp <= 0)
         {
@@ -91,6 +116,20 @@ public class Enemy : Entity
 
             OnDie();
         }
+        else
+        {
+            TryEnterGroggy();
+        }
+    }
+
+    private void TryEnterGroggy()
+    {
+        if (hasGroggyTriggered || CurrentHp > MaxHp * groggyHpRatio)
+            return;
+
+        hasGroggyTriggered = true;
+        behaviorGraphAgent.SetVariableValue("IsGroggy", true);
+        CancelCurrentAttack();
     }
 
     //public override void TakeDamage(int damage, Vector3 sourcePosition)
@@ -112,7 +151,7 @@ public class Enemy : Entity
     //
     //    OnHpChanged?.Invoke(currentHp, MaxHp);
 
-    //    transform.position += (transform.position - sourcePosition) * knockbackDistance;
+    //    transform.position += (transform.position - sourcePosition).norm * knockbackDistance;
     //}
 
     protected override void OnStatusModifiersChanged(StatusModifiers modifiers)
@@ -130,10 +169,22 @@ public class Enemy : Entity
     protected override void OnDie()
     {
         behaviorGraphAgent.SetVariableValue<bool>("IsDie", true);
+        CancelCurrentAttack();
 
+        // 동기화 시 이 부분 삭제 필요
         DataDBManager.Instance.SpawnDropItem(GetId(), transform.position);
 
-        Destroy(gameObject, 1f);
+        if (IsMaster)
+        {
+            StartCoroutine(WaitDieAnimation());
+        }
+    }
+
+    IEnumerator WaitDieAnimation()
+    {
+        yield return new WaitForSeconds(1f);
+
+        WorldManager.Instance.Despawn(ID);
     }
 
     public void SetTarget(GameObject player)
@@ -172,10 +223,115 @@ public class Enemy : Entity
         if (!_data.Child.TryGetValue("enemyHp", out SaveData enemyHpData))
             return;
 
-        CurrentHp = enemyHpData.GetData<int>();
+        ApplyHp(enemyHpData.GetData<int>());
+    }
+
+    private void ApplyAuthority(bool isAuthority)
+    {
+        behaviorGraphAgent.enabled = isAuthority;
+        agent.enabled = isAuthority;
+        detector.gameObject.SetActive(isAuthority);
+    }
+
+    #region 네트워크
+    private bool IsMaster => !PhotonNetwork.InRoom || PhotonNetwork.IsMasterClient;
+
+    private enum EnemyRPCType : byte
+    {
+        SyncHp,           // 방장 > 다른 플레이어 : 확정된 HP
+        ShowTelegraph,    // 방장 > 다른 플레이어 : 공격 범위 표시
+        CancelTelegraph,  // 방장 > 다른 플레이어 : 공격 취소 (그로기, 사망)
+    }
+
+
+    // 방장이 확정한 HP를 다른 플레이어에게 전송
+    private void SendHpSync()
+    {
+        if (!IsMaster)
+            return;
+
+        PacketData packet = new();
+        packet.Write((byte)EnemyRPCType.SyncHp);
+        packet.Write(CurrentHp);
+        this.SendRPC(packet, WorldRPCTarget.Others);   // 확장 메서드라 this. 필요. 방장은 이미 적용했으므로 나머지에게만
+    }
+
+    // EnemySkill.BeginAttack에서 호출 (방장만)
+    public void SendShowTelegraph(int patternId, Vector3 origin, float yaw)
+    {
+        if (!IsMaster)
+            return;
+
+        PacketData packet = new();
+        packet.Write((byte)EnemyRPCType.ShowTelegraph);
+        packet.Write(patternId);
+        packet.Write(origin);
+        packet.Write(yaw);
+        this.SendRPC(packet, WorldRPCTarget.Others);
+    }
+
+    // 그로기·사망 시 진행 중인 공격 취소. 방장이면 다른 플레이어에게도 전달
+    private void CancelCurrentAttack()
+    {
+        enemySkill.CancelAttack();
+
+        if (!IsMaster)
+            return;
+
+        PacketData packet = new();
+        packet.Write((byte)EnemyRPCType.CancelTelegraph);
+        this.SendRPC(packet, WorldRPCTarget.Others);
+    }
+
+    // WorldManager가 ID로 찾아서 호출
+    public void ReceiveRPC(PacketData packet)
+    {
+        EnemyRPCType rpcType = (EnemyRPCType)packet.ReadByte();
+
+        switch (rpcType)
+        {
+            case EnemyRPCType.SyncHp:
+                ApplyHp(packet.ReadInt());
+                break;
+            case EnemyRPCType.ShowTelegraph:
+                ReceiveShowTelegraph(packet);
+                break;
+
+            case EnemyRPCType.CancelTelegraph:
+                enemySkill.CancelAttack();
+                break;
+        }
+    }
+
+    private void ReceiveShowTelegraph(PacketData packet)
+    {
+        int patternId = packet.ReadInt();
+        Vector3 origin = packet.ReadVector3();
+        float yaw = packet.ReadFloat();
+
+        EnemyPatternDataSO patternData = DataDBManager.Instance.PatternDatabase.TryGetDataSO(patternId);
+
+        if (patternData == null)
+            return;
+
+        enemySkill.ShowRemoteTelegraph(patternData, origin, Quaternion.Euler(0f, yaw, 0f));
+    }
+
+    // 방장이 확정한 HP나 저장된 HP를 적용 (드롭·파괴는 하지 않음)
+    private void ApplyHp(int hp)
+    {
+        CurrentHp = hp;
         isDie = CurrentHp <= 0;
 
+        if (CurrentHp <= MaxHp * groggyHpRatio)
+            hasGroggyTriggered = true;
+
         behaviorGraphAgent.SetVariableValue("IsDie", isDie);
+
+        if (isDie)
+            enemySkill.CancelAttack();   // 추가: 다른 클라이언트에서 사망 시 표시 숨김
+
         OnHpChanged?.Invoke(CurrentHp, MaxHp);
     }
+    #endregion
 }

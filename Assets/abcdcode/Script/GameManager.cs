@@ -120,7 +120,12 @@ public class GameManager : SingletonBehavior<GameManager>
     // 내 소유의 플레이어가 생성되면 카메라가 따라가도록 지정
     private void OnWorldObjSpawned(IWorldObj obj)
     {
-        if (obj is not IPlayerObj p || p.Owner != PhotonNetwork.LocalPlayer.ActorNumber) return;
+        if (obj is not IPlayerObj p) return;
+        // TODO 테스트용. Player 프리팹에 PlayerRegionTracker가 추가되면 제거
+        // 풀에서 재사용되는 경우 이미 붙어 있으므로 없을 때만 추가
+        if (!obj.gameObject.TryGetComponent(out PlayerRegionTracker _)) obj.gameObject.AddComponent<PlayerRegionTracker>();
+
+        if (p.Owner != PhotonNetwork.LocalPlayer.ActorNumber) return;
         var cam = PlayerCameraController.Instance;
         if (cam != null) cam.SetPlayer(obj);
     }

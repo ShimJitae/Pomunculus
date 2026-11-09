@@ -66,6 +66,7 @@ namespace Pomunculus.Items
 
                 inventoryUI.enabled = false;
                 inventoryUI.inventory = inventory;
+                inventoryUI.SetPotionSlotSelector(potionSlotSelector);
                 inventoryUI.enabled = wasEnabled;
             }
             // 제작 재료 목록 연결
@@ -76,7 +77,7 @@ namespace Pomunculus.Items
                 materialListUI.inventory = inventory;
                 materialListUI.enabled = wasEnabled;
             }
-            // 포션 단축 슬롯 연결
+            // 포션 슬롯 목록 연결
             if (potionSlotSelector != null)
             {
                 bool wasEnabled = potionSlotSelector.enabled;
@@ -85,5 +86,8 @@ namespace Pomunculus.Items
                 potionSlotSelector.enabled = wasEnabled;
             }
         }
+        
     }
+
 }
+    

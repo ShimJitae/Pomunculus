@@ -20,6 +20,10 @@ namespace Pomunculus.Items
             public string Description;
             public Sprite Icon;
             public int Amount;
+            public float Physics;
+            public float Fire;
+            public float Cold;
+            public float Wind;
         }
         public Inventory inventory;
         [Header("아이템 툴팁")]
@@ -39,6 +43,7 @@ namespace Pomunculus.Items
         private readonly List<InventorySlotUI> slotViews = new List<InventorySlotUI>();
         [Header("포션 슬롯 등록")]
         [SerializeField] private PotionSlotSelector potionSlotSelector;
+
 
         private InventoryTab currentTab = InventoryTab.All;
 
@@ -90,7 +95,8 @@ namespace Pomunculus.Items
 
                 if (i < items.Count)
                 {
-                    view.ShowItem(items[i].Icon, items[i].Amount, items[i].Name, items[i].Description, tooltip);
+                    view.ShowItem(items[i].Icon, items[i].Amount, items[i].Name, items[i].Description, tooltip, 
+                        items[i].Physics, items[i].Fire, items[i].Cold, items[i].Wind);
                     view.SetPotionSelection(items[i].Potion, potionSlotSelector);
                 }
                 else
@@ -122,6 +128,10 @@ namespace Pomunculus.Items
                         Amount = amount,
                         Name = material.ItemName,
                         Description = material.Description,
+                        Physics = material.PhysicsElement,
+                        Fire = material.FireElement,
+                        Cold = material.ColdElement,
+                        Wind = material.WindElement
                     });
                 }
             }
@@ -144,7 +154,11 @@ namespace Pomunculus.Items
                         Description = potion.Description,
                         Icon = potion.Icon,
                         Amount = amount,
-                        Potion = potion
+                        Potion = potion,
+                        Physics = potion.PhysicsElement,
+                        Fire = potion.FireElement,
+                        Cold = potion.ColdElement,
+                        Wind = potion.WindElement
                     });
                 }
             }
@@ -180,6 +194,10 @@ namespace Pomunculus.Items
         public void Close()
         {
             gameObject.SetActive(false);
+        }
+        public void SetPotionSlotSelector(PotionSlotSelector selector)
+        {
+            potionSlotSelector = selector;
         }
     }
 }
