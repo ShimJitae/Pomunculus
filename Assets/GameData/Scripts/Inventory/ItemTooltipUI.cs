@@ -13,6 +13,11 @@ namespace Pomunculus.Items
         [SerializeField] private Image icon;
         [SerializeField] private TMP_Text descriptionText;
         [SerializeField] private TMP_Text amountText;
+        [Header("원소 수치")]
+        [SerializeField] private TMP_Text physicsText;
+        [SerializeField] private TMP_Text fireText;
+        [SerializeField] private TMP_Text coldText;
+        [SerializeField] private TMP_Text windText;
 
         [Header("위치")]
         [SerializeField] private Vector2 mouseOffset = new Vector2(20, 20);
@@ -23,7 +28,8 @@ namespace Pomunculus.Items
         private Canvas rootCanvas;
         private InventorySlotUI owner;
 
-        public void Show(InventorySlotUI slot, string itemName, string description, Sprite sprite, int amount, Vector2 screenPosition)
+        public void Show(InventorySlotUI slot, string itemName, string description, Sprite sprite, int amount, Vector2 screenPosition,
+            float physics, float fire, float cold, float wind)
         {
             tooltipRect = GetComponent<RectTransform>();
             rootCanvas = GetComponentInParent<Canvas>().rootCanvas;
@@ -38,6 +44,10 @@ namespace Pomunculus.Items
             nameText.text = itemName;
             descriptionText.text = description;
             amountText.text = $"보유 수량: {amount}개";
+            physicsText.text = $"×{physics:0.##}";
+            fireText.text = $"×{fire:0.##}";
+            coldText.text = $"×{cold:0.##}";
+            windText.text = $"×{wind:0.##}";
 
             icon.sprite = sprite;
             icon.preserveAspect = true;
