@@ -15,10 +15,10 @@ public partial class SelectAttackPatternAction : Action
 
     protected override Status OnStart()
     {
-        if (Self.Value == null || !Self.Value.TryGetComponent(out Enemy enemy))
+        if (Self.Value == null || !Self.Value.TryGetComponent(out EnemySkill enemySkill))
             return Status.Failure;
 
-        EnemyPatternDataSO currentPattern = enemy.UseNextPattern();
+        EnemyPatternDataSO currentPattern = enemySkill.BeginAttack();
 
         if (currentPattern == null)
             return Status.Failure;
