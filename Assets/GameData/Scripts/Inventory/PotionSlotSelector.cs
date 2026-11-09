@@ -11,7 +11,7 @@ namespace Pomunculus.Items
         [SerializeField] private GameObject selectPotion;
         [SerializeField] private ItemTooltipUI tooltip;
 
-        [Header("왼쪽 포션 슬롯")]
+        [Header("포션 슬롯")]
         [SerializeField] private PotionSlotView slotView;
 
         [Header("등록된 포션")]
