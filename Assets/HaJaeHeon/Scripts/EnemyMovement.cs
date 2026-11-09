@@ -3,6 +3,8 @@ using UnityEngine.AI;
 
 public class EnemyMovement : MonoBehaviour
 {
+    public Vector3 SpawnCenter => spawnCenter;
+
     [SerializeField] private float patrolRadius = 8f;
     [SerializeField] private float minAngleStep = 60f;
     [SerializeField] private float maxAngleStep = 150f;
@@ -12,8 +14,12 @@ public class EnemyMovement : MonoBehaviour
 
     private void OnEnable()
     {
-        spawnCenter = transform.position;
         currentAngle = Random.Range(0f, 360f);
+    }
+
+    public void InitSpawnCenter(Vector3 position)
+    {
+        spawnCenter = position;
     }
 
     public Vector3 GetNextPatrolPoint()
