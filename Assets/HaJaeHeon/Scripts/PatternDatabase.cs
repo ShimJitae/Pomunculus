@@ -8,6 +8,7 @@ public class PatternDatabase : ScriptableObject
 
     private Dictionary<int, EnemyPatternDataSO> pattern = new();
     private Dictionary<int, List<EnemyPatternDataSO>> combinePattern = new();
+    private static readonly List<EnemyPatternDataSO> emptyPatternList = new();
 
     private void OnEnable()
     {
@@ -38,13 +39,9 @@ public class PatternDatabase : ScriptableObject
         combinePattern.Clear();
 
         List<int> checkList = new List<int>();
-        List<EnemyPatternDataSO> patternSOList = new List<EnemyPatternDataSO>();
-        List<EnemyPatternDataSO> storeList = new List<EnemyPatternDataSO>();
 
         for(int i = 0;i < data.Count;i++)
         {
-            storeList.Clear();
-
             EnemyPatternDataSO so = data[i];
 
             if (so == null)
@@ -69,37 +66,22 @@ public class PatternDatabase : ScriptableObject
         }
     }
 
-    public EnemyPatternDataSO TryGetDataSO(int monsterId)
+    public EnemyPatternDataSO TryGetDataSO(int patternId)
     {
-        if (pattern.TryGetValue(monsterId, out EnemyPatternDataSO so))
-        {
-            return so;
-        }
+        if (pattern.TryGetValue(patternId, out EnemyPatternDataSO patternData))
+            return patternData;
 
-        Debug.Log($"{monsterId}에 해당하는 데이터 없음");
+        Debug.Log($"{patternId}에 해당하는 패턴 없음");
         return null;
     }
 
-    public int TryGetPatternID(int patternId)
+    public IReadOnlyList<EnemyPatternDataSO> GetPatternsByEnemyId(int monsterId)
     {
-        if (pattern.TryGetValue(patternId, out EnemyPatternDataSO so))
-        {
-            return so.GetPatternId();
-        }
+        if (combinePattern.TryGetValue(monsterId, out List<EnemyPatternDataSO> monsterPatterns))
+            return monsterPatterns;
 
-        Debug.Log($"{patternId}에 해당하는 데이터 없음");
-        return -1;
-    }
-
-    public string TryGetPatternName(int patternId)
-    {
-        if (pattern.TryGetValue(patternId, out EnemyPatternDataSO so))
-        {
-            return so.GetPatternName();
-        }
-
-        Debug.Log($"{patternId}에 해당하는 데이터 없음");
-        return null;
+        Debug.Log($"{monsterId}에 해당하는 패턴 없음");
+        return emptyPatternList;
     }
 
     public void ShowDB()

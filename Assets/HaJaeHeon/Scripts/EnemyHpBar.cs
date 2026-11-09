@@ -19,6 +19,7 @@ public class EnemyHpBar : MonoBehaviour
     private void OnEnable()
     {
         owner.OnHpChanged += RefreshBar;
+        RefreshBar(owner.CurrentHp, owner.MaxHp);
     }
 
     private void OnDisable()
