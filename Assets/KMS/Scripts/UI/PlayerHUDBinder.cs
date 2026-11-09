@@ -5,19 +5,12 @@ using UnityEngine;
 // 로컬 플레이어의 Model과 HUD 각 패널 View를 Presenter로 묶고 수명을 관리한다.
 public class PlayerHUDBinder : MonoBehaviour
 {
-    [SerializeField] private PlayerFSM player;
-
     [Header("View")]
     [SerializeField] private StatPanelView statPanelView;
     [SerializeField] private StatusPanelView statusPanelView;
     [SerializeField] private PotionSlotView potionSlotView;
 
     private readonly List<IDisposable> presenters = new();
-
-    private void Start()
-    {
-        if (player != null) Bind(player);
-    }
 
     // 플레이어와 HUD를 연결. 다시 호출하면 이전 연결을 해제하고 새로 묶는다 (부활·재접속 대비)
     public void Bind(PlayerFSM localPlayer)
