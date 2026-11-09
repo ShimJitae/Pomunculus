@@ -250,7 +250,15 @@ public class WorldManager : Singleton<WorldManager>
     private void ClearWorld()
     {
         foreach (var obj in Objects.GetList())
+        {
+            try{
             if (obj.gameObject != null) Object.Destroy(obj.gameObject);
+            }catch(Exception e)
+            {
+                Debug.Log("ClearWorld Error");
+            }
+        }
+            
         Objects.Clear();
         m_pendingEvents.Clear();
         IsReady = false;
