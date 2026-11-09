@@ -67,7 +67,6 @@ namespace Pomunculus.Items
             return new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical")).normalized;
 #endif
         }
-
         private bool GetJumpPressed()
         {
 #if ENABLE_INPUT_SYSTEM
