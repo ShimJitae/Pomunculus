@@ -30,6 +30,9 @@ public class Enemy : Entity, IWorldRPC
     private Animator animator;
     private EnemyMovement movement;
 
+    private float groggyHpRatio = 0.5f;
+    private bool hasGroggyTriggered;
+
     protected EnemyDataSO enemySO
     {
         get { return so as EnemyDataSO; }
@@ -66,6 +69,9 @@ public class Enemy : Entity, IWorldRPC
 
         ApplyAuthority(IsMaster);
 
+        hasGroggyTriggered = false;
+        behaviorGraphAgent.SetVariableValue("IsGroggy", false);
+
         // 방장만 범위 감지를 함, 공격 패턴 로드
         if (!IsMaster)
             return;
@@ -78,6 +84,7 @@ public class Enemy : Entity, IWorldRPC
             .GetPatternsByEnemyId(enemySO.GetEnemyId());
 
         skillPattern.LoadPatternList(enemyPatterns, enemySO.GetNormalAttackPattern());
+
     }
 
     protected override void OnDisable()
@@ -115,6 +122,19 @@ public class Enemy : Entity, IWorldRPC
 
             OnDie();
         }
+        else
+        {
+            TryEnterGroggy();
+        }
+    }
+
+    private void TryEnterGroggy()
+    {
+        if (hasGroggyTriggered || CurrentHp > MaxHp * groggyHpRatio)
+            return;
+
+        hasGroggyTriggered = true;
+        behaviorGraphAgent.SetVariableValue("IsGroggy", true);
     }
 
     //public override void TakeDamage(int damage, Vector3 sourcePosition)
@@ -265,6 +285,9 @@ public class Enemy : Entity, IWorldRPC
     {
         CurrentHp = hp;
         isDie = CurrentHp <= 0;
+
+        if (CurrentHp <= MaxHp * groggyHpRatio)
+            hasGroggyTriggered = true;
 
         behaviorGraphAgent.SetVariableValue("IsDie", isDie);
         OnHpChanged?.Invoke(CurrentHp, MaxHp);
