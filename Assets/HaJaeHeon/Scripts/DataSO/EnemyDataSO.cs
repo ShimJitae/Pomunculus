@@ -37,6 +37,8 @@ public class EnemyDataSO : EntityDataSO
     [SerializeField] private float attackRange;
     [SerializeField] private BehaviorGraph behaviourGraph;
     [SerializeField] private GameObject enemyPrefab;
+    [SerializeField] private EnemyPatternDataSO normalAttackPattern;
+    
 
     public int GetEnemyId()
     {
@@ -76,5 +78,10 @@ public class EnemyDataSO : EntityDataSO
     public int GetAtk()
     {
         return atk;
+    }
+
+    public EnemyPatternDataSO GetNormalAttackPattern()
+    {
+        return normalAttackPattern;
     }
 }

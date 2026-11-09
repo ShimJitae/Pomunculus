@@ -7,8 +7,7 @@ namespace Pomunculus.Items
 {
     public class PotionCrafting : MonoBehaviour
     {
-        [Header("플레이어 인벤토리")]
-        [SerializeField] private Inventory inventory;
+        public Inventory inventory;
         [Header("전체 포션 데이터")]
         [SerializeField] private List<PotionData> potions = new List<PotionData>();
         [Header("실패했을 때 지급할 포션")]
@@ -175,6 +174,26 @@ namespace Pomunculus.Items
             }
             RefreshUI();
             gameObject.SetActive(false);
+        }
+        public void ResetUi()
+        {
+            if (insertedMaterials.Count > 0 && inventory == null)
+            {
+                Debug.LogWarning("재료를 반환할 인벤토리가 연결되지 않았습니다.", this);
+                return;
+            }
+            List<MaterialData> materialsToReturn = new List<MaterialData>(insertedMaterials);
+            insertedMaterials.Clear();
+            insertedMaterialCount = 0;
+            physicsElement = 0;
+            fireElement = 0;
+            coldElement = 0;
+            windElement = 0;
+            foreach (MaterialData material in materialsToReturn)
+            {
+                inventory.AddItem(material.Id, 1);
+            }
+            RefreshUI();
         }
         public void CancelMaterial(int index)
         {

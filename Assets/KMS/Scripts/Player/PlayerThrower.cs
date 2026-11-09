@@ -1,16 +1,17 @@
+using Pomunculus.Items;
 using UnityEngine;
 
 // 목표 지점에 포물선으로 떨어지는 투사체를 던진다
 public class PlayerThrower : MonoBehaviour
 {
     // FormerlySerializedAs: 프리팹·씬에 대문자 이름으로 저장된 기존 값을 그대로 불러오기 위함
-    [SerializeField] private ThrownProjectile projectilePrefab;
+    [SerializeField] private ThrownProjectile emptyBottlePrefab;
     [SerializeField] private Transform throwOrigin;                  // 손 위치. 비우면 머리 높이에서 던짐
     [SerializeField] private float maxThrowRange = 10f;
     [SerializeField] private float throwHorizontalSpeed = 12f;       // 기준 수평 속도. 궤적 모양을 정함 (배율 1일 때의 실제 속도)
     [SerializeField] private float minFlightTime = 0.35f;            // 가까이 던질 때 최소 체공 시간. 발밑에 던질 때 떨어지는 느낌
     [SerializeField, Min(0.01f)] private float flightSpeedMultiplier = 1f;       // 궤적은 그대로, 날아가는 빠르기만 배율로 조절
-    [SerializeField] private int attackDamage = 10;
+    [SerializeField] private int attackDamage = 1;
     [SerializeField] private LayerMask enemyLayer;
 
     // 목표 지점이 최대 사거리 밖이면 같은 방향의 사거리 끝으로 당긴다 (높이는 유지)
@@ -54,19 +55,19 @@ public class PlayerThrower : MonoBehaviour
     }
 
     // 목표 지점에 정확히 떨어지는 포물선 속도로 투사체 발사
-    public void ThrowProjectile(Vector3 target)
+    public void ThrowProjectile(Vector3 target, PotionData potion)
     {
-        if (projectilePrefab == null)
+        if (emptyBottlePrefab == null)
         {
-            Debug.LogWarning("[PlayerThrower] projectilePrefab이 지정되지 않았습니다.");
+            Debug.LogWarning("[PlayerThrower] emptyBottlePrefab가 지정되지 않았습니다.");
             return;
         }
 
         Vector3 origin = GetThrowOrigin();
         Vector3 velocity = CalculateLaunchVelocity(origin, target, out _, out Vector3 gravity);
 
-        ThrownProjectile projectile = Instantiate(projectilePrefab, origin, Quaternion.identity);
-        projectile.Launch(velocity, gravity, attackDamage, enemyLayer, gameObject);
+        ThrownProjectile projectile = Instantiate(emptyBottlePrefab, origin, Quaternion.identity);
+        projectile.Launch(velocity, gravity, attackDamage, enemyLayer, gameObject, potion);
     }
 
     void OnDrawGizmosSelected()

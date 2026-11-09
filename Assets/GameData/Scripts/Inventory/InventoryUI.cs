@@ -21,8 +21,7 @@ namespace Pomunculus.Items
             public Sprite Icon;
             public int Amount;
         }
-        [Header("플레이어 인벤토리")]
-        [SerializeField] private Inventory inventory;
+        public Inventory inventory;
         [Header("아이템 툴팁")]
         [SerializeField] private ItemTooltipUI tooltip;
 
@@ -40,6 +39,7 @@ namespace Pomunculus.Items
         private readonly List<InventorySlotUI> slotViews = new List<InventorySlotUI>();
         [Header("포션 슬롯 등록")]
         [SerializeField] private PotionSlotSelector potionSlotSelector;
+
 
         private InventoryTab currentTab = InventoryTab.All;
 
@@ -178,10 +178,13 @@ namespace Pomunculus.Items
             Canvas.ForceUpdateCanvases();
             scrollRect.verticalNormalizedPosition = 1f;
         }
-
         public void Close()
         {
             gameObject.SetActive(false);
+        }
+        public void SetPotionSlotSelector(PotionSlotSelector selector)
+        {
+            potionSlotSelector = selector;
         }
     }
 }

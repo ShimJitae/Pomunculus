@@ -14,20 +14,24 @@ public class WorldManager : Singleton<WorldManager>
     public void Init()
     {
         if (m_initialized) return;
+        Debug.Log($"WorldManager Init");
         m_catalog = Resources.Load<NetworkPrefabCatalog>("NetworkPrefabCatalog");
         m_prefabs = m_catalog.Entries.ToDictionary(x => x.name);
         RaiseEventManager.Instance.RegisterEvent((int)WorldEventID.RequestSnapshot, OnRequestSnapshot);
         RaiseEventManager.Instance.RegisterEvent((int)WorldEventID.WorldSnapshot, OnReceiveSnapshot);
         RaiseEventManager.Instance.RegisterEvent((int)WorldEventID.SpawnObj, OnReceiveSpawn);
         RaiseEventManager.Instance.RegisterEvent((int)WorldEventID.DespawnObj, OnReceiveDespawn);
+        RaiseEventManager.Instance.RegisterEvent((int)WorldEventID.WorldRPC, RPCHelper.OnReceive);
         m_initialized = true;
     }
     public void Release()
     {
+        Debug.Log($"WorldManager Release");
         RaiseEventManager.Instance.UnRegisterEvent((int)WorldEventID.RequestSnapshot);
         RaiseEventManager.Instance.UnRegisterEvent((int)WorldEventID.WorldSnapshot);
         RaiseEventManager.Instance.UnRegisterEvent((int)WorldEventID.SpawnObj);
         RaiseEventManager.Instance.UnRegisterEvent((int)WorldEventID.DespawnObj);
+        RaiseEventManager.Instance.UnRegisterEvent((int)WorldEventID.WorldRPC);
         ClearWorld();
         m_initialized = false;
     }
@@ -67,7 +71,7 @@ public class WorldManager : Singleton<WorldManager>
 
     #region 플레이어
     // 플레이어 오브젝트 생성 후 등록. 방장 쪽에서 저장 대상이 됨
-    public void RegisterPlayer(string uid, ISavable player)
+    public void RegisterPlayer(string uid, IWorldObj player)
     {
         m_players[uid] = player;
         if (IsMaster) CurWorldData?.LoadPlayer(uid, player);
@@ -82,6 +86,14 @@ public class WorldManager : Singleton<WorldManager>
         if (!m_players.TryGetValue(uid, out var player)) return;
         if (IsMaster) CurWorldData?.SavePlayer(uid, player); // 나간 플레이어 데이터 보존
         m_players.Remove(uid);
+    }
+    public PlayerFSM GetLocalPlayer()
+    {
+        return GetPlayer(GameManager.Instance.LocalUserProfile.UID);
+    }
+    public PlayerFSM GetPlayer(string uid)
+    {
+        return (PlayerFSM)m_players[uid];
     }
     #endregion
 
@@ -105,6 +117,7 @@ public class WorldManager : Singleton<WorldManager>
         p.Write((int)WorldEventID.SpawnObj);
         WorldObjSaveData.Create(obj).Write(p);
         RaiseEventManager.Instance.SendPacket(p, new() { Receivers = ReceiverGroup.Others }, SendOptions.SendReliable);
+        Debug.Log($"방장 소환 명령 : {prefabId}");
         return obj;
     }
     public void Despawn(int id)
@@ -178,6 +191,7 @@ public class WorldManager : Singleton<WorldManager>
     {
         if (IsMaster) return;
         var d = WorldObjSaveData.Read(p);
+        Debug.Log($"소환 명령 : {d.PrefabId}");
         RunOrQueue(() => SpawnLocal(d));
     }
     private void OnReceiveDespawn(EventData e, PacketData p)
@@ -187,7 +201,7 @@ public class WorldManager : Singleton<WorldManager>
         RunOrQueue(() => DespawnLocal(id));
     }
     // 스냅샷 적용 전이면 쌓아뒀다가 적용 후 실행
-    private void RunOrQueue(Action action)
+    public void RunOrQueue(Action action)
     {
         if (IsReady) action();
         else m_pendingEvents.Enqueue(action);
@@ -247,7 +261,7 @@ public class WorldManager : Singleton<WorldManager>
 
     private NetworkPrefabCatalog m_catalog;
     private Dictionary<string, GameObject> m_prefabs;
-    private readonly Dictionary<string, ISavable> m_players = new();
+    private readonly Dictionary<string, IWorldObj> m_players = new();
     private readonly Queue<Action> m_pendingEvents = new();
     private SaveData m_pendingPlayerData;
     private bool m_initialized;

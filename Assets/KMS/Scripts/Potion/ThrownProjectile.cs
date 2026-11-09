@@ -1,3 +1,4 @@
+using Pomunculus.Items;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -39,8 +40,9 @@ public class ThrownProjectile : MonoBehaviour
     }
 
     // 초기 속도와 이 투사체에만 적용할 중력을 받아 발사
-    public void Launch(Vector3 velocity, Vector3 gravity, int damage, LayerMask damageLayer, GameObject thrower)
+    public void Launch(Vector3 velocity, Vector3 gravity, int damage, LayerMask damageLayer, GameObject thrower, PotionData potion)
     {
+        //TODO 포션 데이터 값으로 변경하기
         this.damage = damage;
         this.damageLayer = damageLayer;
         this.gravity = gravity;

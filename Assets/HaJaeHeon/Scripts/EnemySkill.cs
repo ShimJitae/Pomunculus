@@ -1,3 +1,4 @@
+using Photon.Pun;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -24,6 +25,9 @@ public class EnemySkill : MonoBehaviour
     // Int 파라미터로 패턴별 배율 등을 넘길 수 있음 (Attack1=100, Attack3=150 처럼 %)
     public void OnAttackHit(float damagePercent)
     {
+        if (PhotonNetwork.InRoom && !PhotonNetwork.IsMasterClient)
+            return;
+
         if (!enemy.CanDoAttack) return;
 
         int hitCount = Physics.OverlapSphereNonAlloc(

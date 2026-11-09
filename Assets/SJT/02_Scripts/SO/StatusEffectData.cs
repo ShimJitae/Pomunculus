@@ -3,6 +3,8 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "StatusEffectData", menuName = "Scriptable Objects/StatusEffectData")]
 public class StatusEffectData : ScriptableObject
 {
+    private const float c_minTickSec = 0.05f; // 0이면 틱 반복문이 끝나지 않는다
+
     [Tooltip("상태를 구분하는 고유 ID")]
     [SerializeField] private int statusId;
 
@@ -23,7 +25,7 @@ public class StatusEffectData : ScriptableObject
     [Tooltip("상태 효과의 총 지속 시간. 단위는 초")]
     [SerializeField] private float duration = 1f;
 
-    [Min(0f)]
+    [Min(c_minTickSec)]
     [Tooltip("상태 효과의 발동 간격. 단위는 초")]
     [SerializeField] private float tickSec = 0.2f;
 
@@ -53,7 +55,7 @@ public class StatusEffectData : ScriptableObject
 
     public float Duration => duration;
 
-    public float TickSec => tickSec;
+    public float TickSec => Mathf.Max(tickSec, c_minTickSec);
 
     /// <summary>중첩 하나당 한 번의 주기 발동에 적용할 피해량을 반환한다.</summary>
     public int TickDamagePerStack => tickDamagePerStack;

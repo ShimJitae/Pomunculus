@@ -23,33 +23,41 @@ namespace Pomunculus.Items
 
             if (keyboard == null)
                 return;
-
             if (recipeBookKey != Key.None && keyboard[recipeBookKey].wasPressedThisFrame)
-                OpenRecipeBook();
+                ToggleRecipeBook();
 
             if (craftingKey != Key.None && keyboard[craftingKey].wasPressedThisFrame)
-                OpenCraftingUI();
+                ToggleCraftingUI();
 
             if (inventoryKey != Key.None && keyboard[inventoryKey].wasPressedThisFrame)
-                OpenInventoryUI();
+                ToggleInventoryUI();
         }
 
-        public void OpenRecipeBook()
+        public void ToggleRecipeBook()
         {
             if (recipeBook != null)
-                recipeBook.SetActive(true);
+                recipeBook.SetActive(!recipeBook.activeSelf);
         }
 
-        public void OpenCraftingUI()
+        public void ToggleCraftingUI()
         {
-            if (craftingUI != null)
+            if (craftingUI == null)
+                return;
+            if (!craftingUI.activeSelf)
+            {
                 craftingUI.SetActive(true);
+                return;
+            }
+            if (craftingUI.TryGetComponent<PotionCrafting>(out var crafting))
+                crafting.Close();
         }
 
-        public void OpenInventoryUI()
+        public void ToggleInventoryUI()
         {
             if (inventoryUI != null)
-                inventoryUI.SetActive(true);
+                inventoryUI.SetActive(!inventoryUI.activeSelf);
         }
+
+
     }
 }

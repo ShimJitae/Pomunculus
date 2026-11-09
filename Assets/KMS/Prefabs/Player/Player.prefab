@@ -34,7 +34,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: f4f75312eb965614dab993c80e2de8f6, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -14
+      value: -5.12
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: f4f75312eb965614dab993c80e2de8f6, type: 3}
       propertyPath: m_LocalPosition.y
@@ -42,7 +42,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: f4f75312eb965614dab993c80e2de8f6, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -14
+      value: -11.08
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: f4f75312eb965614dab993c80e2de8f6, type: 3}
       propertyPath: m_LocalRotation.w
@@ -128,6 +128,24 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f4f75312eb965614dab993c80e2de8f6, type: 3}
       insertIndex: -1
       addedObject: {fileID: 8045316640126951250}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f4f75312eb965614dab993c80e2de8f6, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1344962481701826794}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f4f75312eb965614dab993c80e2de8f6, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6398455313700555120}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f4f75312eb965614dab993c80e2de8f6, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 9132846027103135592}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f4f75312eb965614dab993c80e2de8f6, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3525920267614878113}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f4f75312eb965614dab993c80e2de8f6, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7792248187517395002}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f4f75312eb965614dab993c80e2de8f6, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5817456889939787549}
   m_SourcePrefab: {fileID: 100100000, guid: f4f75312eb965614dab993c80e2de8f6, type: 3}
 --- !u!1 &4072954961796356756 stripped
 GameObject:
@@ -217,7 +235,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8139520814af5324a89556d40b62a630, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerThrower
-  projectilePrefab: {fileID: -4413370916858422293, guid: 80d7319d140098f44b4c8c6bd809c118, type: 3}
+  emptyBottlePrefab: {fileID: -4413370916858422293, guid: 80d7319d140098f44b4c8c6bd809c118, type: 3}
   throwOrigin: {fileID: 6633543304050246393}
   maxThrowRange: 10
   throwHorizontalSpeed: 6
@@ -353,14 +371,103 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::WorldAnimatorSync
   m_layers: []
-  m_parameters:
-  - Type: 1
-    SynchronizeType: 2
-    Name: Speed
+  m_parameters: []
   m_sendRate: 10
   m_sampleRate: 30
   m_changeThreshold: 0.001
   m_keyframeInterval: 1
+  m_stateLayers: 00000000
+--- !u!114 &1344962481701826794
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4072954961796356756}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 221a0025dd238ba4f9f44405e9cad2c3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Pomunculus.Items.PotionLoadout
+  slots:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+--- !u!114 &6398455313700555120
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4072954961796356756}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 488ac097f44c47848b3b10f5728ead3e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Pomunculus.Items.Inventory
+  slots: []
+--- !u!114 &9132846027103135592
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4072954961796356756}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e09c2646252aee45b31becd04816984, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Pomunculus.Items.TestItemGiver
+  itemId: 10001
+  amount: 1
+--- !u!114 &3525920267614878113
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4072954961796356756}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 927aa3c15c212704494ea32a744d6bdf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Pomunculus.Items.OpenUI
+  recipeBook: {fileID: 0}
+  recipeBookKey: 32
+  craftingUI: {fileID: 0}
+  craftingKey: 17
+  inventoryUI: {fileID: 0}
+  inventoryKey: 23
+--- !u!114 &7792248187517395002
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4072954961796356756}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 799768e62b48772458c4a942fcb711d5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ItemPickupController
+  radius: 1.5
+  pickupLayer:
+    serializedVersion: 2
+    m_Bits: 768
+  scanInterval: 0.1
+--- !u!114 &5817456889939787549
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4072954961796356756}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3edd9e4d61c8f114bb64399953c48778, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LocalPlayerHUD
+  hudPrefab: {fileID: -218180276998670255, guid: d8ff4cc8f8924ae449b0f94718bfba0b, type: 3}
 --- !u!4 &6633543304050246393 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7514387204552156476, guid: f4f75312eb965614dab993c80e2de8f6, type: 3}
