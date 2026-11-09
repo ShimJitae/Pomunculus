@@ -5,8 +5,8 @@ using Unity.Behavior;
 using UnityEngine;
 using UnityEngine.AI;
 
-[RequireComponent(typeof(BehaviorGraphAgent)), RequireComponent(typeof(NavMeshAgent))]
-public class Enemy : Entity, IWorldRPC
+[RequireComponent(typeof(BehaviorGraphAgent)), RequireComponent(typeof(NavMeshAgent)), RequireComponent(typeof(EnemySkill)), RequireComponent(typeof(EnemyMovement))]
+public class Enemy : Entity, IWorldRPC, IHealable
 {
     public BehaviorGraphAgent BehaviorGraphAgent => behaviorGraphAgent;
     public GameObject Target => target;
@@ -86,6 +86,8 @@ public class Enemy : Entity, IWorldRPC
         base.OnDisable();
 
         detector.OnPlayersChanged -= RefreshTarget;
+
+        enemySkill.CancelAttack();
     }
 
     //private void Start()
@@ -122,6 +124,23 @@ public class Enemy : Entity, IWorldRPC
         }
     }
 
+    public void Heal(int amount)
+    {
+        if (!IsMaster || amount <= 0)
+            return;
+
+        CurrentHp += amount;
+        OnHpChanged?.Invoke(CurrentHp, MaxHp);
+        SendHpSync();
+    }
+
+    [ContextMenu("HP 회복")]
+    public void Heal10()
+    {
+        Heal(10);
+    }
+
+    // HP가 groggyHpRatio 이하로 내려가면 공격이 끊기고 피격 모션 재생 
     private void TryEnterGroggy()
     {
         if (hasGroggyTriggered || CurrentHp > MaxHp * groggyHpRatio)
@@ -132,6 +151,7 @@ public class Enemy : Entity, IWorldRPC
         CancelCurrentAttack();
     }
 
+    // 넉백을 포함한 takeDamage
     //public override void TakeDamage(int damage, Vector3 sourcePosition)
     //{
     //    if (isDamageBlock || damage <= 0)
@@ -154,6 +174,7 @@ public class Enemy : Entity, IWorldRPC
     //    transform.position += (transform.position - sourcePosition).norm * knockbackDistance;
     //}
 
+    // 상태 이상에 변화가 생기면 호출됨
     protected override void OnStatusModifiersChanged(StatusModifiers modifiers)
     {
         base.OnStatusModifiersChanged(modifiers);
@@ -166,6 +187,7 @@ public class Enemy : Entity, IWorldRPC
         animator.SetFloat("MoveAnimSpeed", CanMove ? MoveSpeedRatio : 0f);
     }
 
+    // 죽었을 시 아이템 스폰 and 적 사라지기 (하던 행동 끊김)
     protected override void OnDie()
     {
         behaviorGraphAgent.SetVariableValue<bool>("IsDie", true);
@@ -180,6 +202,7 @@ public class Enemy : Entity, IWorldRPC
         }
     }
 
+    // 몬스터 죽고 1초 대기
     IEnumerator WaitDieAnimation()
     {
         yield return new WaitForSeconds(1f);
@@ -216,6 +239,7 @@ public class Enemy : Entity, IWorldRPC
         base.SaveData(_data);
     }
 
+    // 데이터 로드
     public override void LoadData(SaveData _data)
     {
         base.LoadData(_data);
@@ -226,6 +250,7 @@ public class Enemy : Entity, IWorldRPC
         ApplyHp(enemyHpData.GetData<int>());
     }
 
+    // 마스터가 넘어갔을 시 그 마스터에게만 동작 권한 넘기기
     private void ApplyAuthority(bool isAuthority)
     {
         behaviorGraphAgent.enabled = isAuthority;
@@ -303,6 +328,7 @@ public class Enemy : Entity, IWorldRPC
         }
     }
 
+    // 피격 장판 생성 RPC Receive
     private void ReceiveShowTelegraph(PacketData packet)
     {
         int patternId = packet.ReadInt();
@@ -329,7 +355,7 @@ public class Enemy : Entity, IWorldRPC
         behaviorGraphAgent.SetVariableValue("IsDie", isDie);
 
         if (isDie)
-            enemySkill.CancelAttack();   // 추가: 다른 클라이언트에서 사망 시 표시 숨김
+            enemySkill.CancelAttack();
 
         OnHpChanged?.Invoke(CurrentHp, MaxHp);
     }
