@@ -14,6 +14,10 @@ namespace Pomunculus.Items
         private string itemName;
         private string description;
         private int itemAmount;
+        private float physicsElement;
+        private float fireElement;
+        private float coldElement;
+        private float windElement;
 
         private bool hasItem;
         private bool isHovered;
@@ -22,13 +26,18 @@ namespace Pomunculus.Items
         private PotionData potionData;
         private PotionSlotSelector potionSlotSelector;
 
-        public void ShowItem(Sprite sprite, int amount, string name, string desc, ItemTooltipUI itemTooltip)
+        public void ShowItem(Sprite sprite, int amount, string name, string desc, ItemTooltipUI itemTooltip, 
+            float physics, float fire, float cold, float wind)
         {
             tooltip = itemTooltip;
             itemName = name;
             description = desc;
             itemAmount = amount;
             hasItem = true;
+            physicsElement = physics;
+            fireElement = fire;
+            coldElement = cold;
+            windElement = wind;
 
             icon.sprite = sprite;
             icon.preserveAspect = true;
@@ -79,7 +88,8 @@ namespace Pomunculus.Items
             if (potionSlotSelector != null && potionSlotSelector.IsSelecting)
                 return;
 
-            tooltip.Show(this, itemName, description, icon.sprite, itemAmount, pointerPosition);
+            tooltip.Show(this, itemName, description, icon.sprite, itemAmount, pointerPosition,
+                physicsElement, fireElement, coldElement, windElement);
         }
 
         private void OnDisable()

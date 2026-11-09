@@ -1,15 +1,17 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
-// 타이틀 테스트 UI (IMGUI)
+// 타이틀 테스트 UI (Canvas)
 // 게임 시작 : 접속 없이 TestScene으로 이동 (오프라인)
-// 멀티 플레이 시작 : 같은 오브젝트의 NetTestMono를 켜서 로비 접속. 방 생성은 NetTestMono에서 막아둠
+// 멀티 플레이 시작 : 로비 패널을 띄우고 로비 접속. 타이틀에서는 방 생성 없이 참가만 가능
 public class TitleTestUI : MonoBehaviour
 {
     private void Awake()
     {
-        m_netTest = GetComponent<NetTestMono>();
-        if (m_netTest != null) m_netTest.enabled = false;
+        m_lobbyPanel.gameObject.SetActive(false);
+        m_startGameButton.onClick.AddListener(OnClickStartGame);
+        m_findRoomButton.onClick.AddListener(OnClickFindRoom);
     }
     private void Start()
     {
@@ -20,6 +22,15 @@ public class TitleTestUI : MonoBehaviour
         NetworkManager.Instance.OnJoinedRoomEvent -= OnJoinedRoom;
     }
 
+    private void OnClickStartGame()
+    {
+        SceneManager.LoadScene(GameManager.TestSceneName);
+    }
+    private void OnClickFindRoom()
+    {
+        m_lobbyPanel.Open(); // 오프라인이면 여기서 접속 시작
+    }
+
     // 보통은 방장이 방을 만들 때 씬이 방 속성에 기록되어 PUN이 TestScene으로 자동 이동시킴
     // 기록이 없는 방이면 직접 이동
     private void OnJoinedRoom()
@@ -28,29 +39,7 @@ public class TitleTestUI : MonoBehaviour
             SceneManager.LoadScene(GameManager.TestSceneName);
     }
 
-    private void OnGUI()
-    {
-        if (m_netTest != null && m_netTest.enabled) return; // 멀티 시작 후에는 NetTestMono UI만 표시
-
-        float scale = Screen.height / ReferenceHeight;
-        GUI.matrix = Matrix4x4.Scale(new Vector3(scale, scale, 1f));
-        float width = Screen.width / scale;
-        GUILayout.BeginArea(new Rect((width - PanelWidth) * 0.5f, 250f, PanelWidth, 200f), GUI.skin.box);
-        GUILayout.Label("── 타이틀 ──");
-        if (GUILayout.Button("게임 시작 (싱글)", GUILayout.Height(50f)))
-        {
-            SceneManager.LoadScene(GameManager.TestSceneName);
-        }
-        GUI.enabled = m_netTest != null;
-        if (GUILayout.Button("멀티 플레이 시작", GUILayout.Height(50f)))
-        {
-            m_netTest.enabled = true; // NetTestMono.Start에서 접속 시작
-        }
-        GUI.enabled = true;
-        GUILayout.EndArea();
-    }
-
-    private const float ReferenceHeight = 720f;
-    private const float PanelWidth = 300f;
-    private NetTestMono m_netTest;
+    [SerializeField] private Button m_startGameButton;
+    [SerializeField] private Button m_findRoomButton;
+    [SerializeField] private TitleLobbyPanel m_lobbyPanel;
 }

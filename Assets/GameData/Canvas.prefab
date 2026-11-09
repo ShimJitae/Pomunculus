@@ -3396,6 +3396,10 @@ MonoBehaviour:
   icon: {fileID: 7123982963208936817}
   descriptionText: {fileID: 2626128301088304644}
   amountText: {fileID: 5314298166382835050}
+  physicsText: {fileID: 5838648512705646369}
+  fireText: {fileID: 3138848677492010918}
+  coldText: {fileID: 449399253643397585}
+  windText: {fileID: 3338452460843718391}
   mouseOffset: {x: 20, y: 20}
   edgePadding: 15
 --- !u!1 &2365021738900852398
@@ -5150,6 +5154,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2056107464641190062}
   - component: {fileID: 7955030555015785913}
+  - component: {fileID: 4890648087368975270}
   m_Layer: 5
   m_Name: PotionSlot
   m_TagString: Untagged
@@ -5198,6 +5203,20 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
+--- !u!114 &4890648087368975270
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4145495591888969977}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 99cab9b9ea172ef4e82e086e96816fdc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Pomunculus.Items.PotionLoadoutSync
+  potionSlotSelector: {fileID: 7955030555015785913}
+  fallbackPlayer: {fileID: 0}
 --- !u!1 &4158994877533164411
 GameObject:
   m_ObjectHideFlags: 0
