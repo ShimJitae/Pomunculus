@@ -3,7 +3,7 @@ using UnityEngine;
 /// <summary>발동 주기마다 대상에게 현재 중첩에 비례한 화상 피해를 적용한다.</summary>
 public sealed class BurnBehavior : IStatusBehavior
 {
-    /// <summary>첫 주기 전에는 즉시 피해를 적용하지 않는다.</summary>
+    /// <summary>첫 피해는 걸린 직후의 즉시 틱에서 들어가므로 여기서는 주지 않는다.</summary>
     public void OnRegistered(StatusEffect effect)
     {
     }

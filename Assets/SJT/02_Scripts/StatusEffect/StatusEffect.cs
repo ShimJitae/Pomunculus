@@ -2,6 +2,8 @@ using UnityEngine;
 
 public sealed class StatusEffect
 {
+    private const float c_timeEpsilon = 0.001f; // 틱과 만료가 float 오차로 엇갈리는 것을 막는다
+
     private StatusEffectData statusEffectData;
     private IStatusBehavior statusBehavior;
     private Entity target;
@@ -52,7 +54,7 @@ public sealed class StatusEffect
         this.target = target;
         stackCount = 1;
         remainingDuration = statusEffectData.Duration;
-        tickTimer = 0f;
+        tickTimer = statusEffectData.TickSec; // 첫 틱이 바로 돌아오도록 한 주기가 찬 상태로 시작한다
         return true;
     }
 
@@ -100,29 +102,34 @@ public sealed class StatusEffect
     }
 
     /// <summary>
-    /// 상태 효과의 Tick 주기를 계산. 
+    /// 이번 프레임에 돌아온 틱을 모두 실행한다. 넘친 시간은 다음 주기로 넘기고, 만료와 같은 시각의 틱은 세지 않는다.
+    /// AdvanceTime보다 먼저 호출해야 한다.
     /// </summary>
     /// <param name="deltaTime">경과 시간</param>
-    /// <returns>Tick 진행 여부</returns>
+    /// <returns>틱이 한 번 이상 실행됐는지 여부</returns>
     public bool Tick(float deltaTime)
     {
         if (statusEffectData == null)
         {
 #if UNITY_EDITOR
-            Debug.LogError("[StatusEffect] 초기화 되어 있지 않은 상태에서 중첩을 호출했습니다.");
+            Debug.LogError("[StatusEffect] 초기화 되어 있지 않은 상태에서 틱을 호출했습니다.");
 #endif
             return false;
         }
 
-        tickTimer += deltaTime;
-        if (tickTimer >= statusEffectData.TickSec)
+        float tickSec = statusEffectData.TickSec;
+        float nextTickAt = tickSec - tickTimer; // 이번 프레임 시작 기준 다음 틱 시각
+        bool ticked = false;
+
+        while (nextTickAt <= deltaTime && nextTickAt < remainingDuration - c_timeEpsilon)
         {
-            tickTimer = 0f;
             statusBehavior.OnTick(this);
-            return true;
+            ticked = true;
+            nextTickAt += tickSec;
         }
 
-        return false;
+        tickTimer = deltaTime - (nextTickAt - tickSec); // 마지막 틱 이후 흐른 시간
+        return ticked;
     }
 
 
@@ -169,7 +176,7 @@ public sealed class StatusEffect
     public int StackCount { get => stackCount; set => stackCount = Mathf.Clamp(value, 0, statusEffectData.MaxStackCount); } // 현재 중첩 수. 0~MaxStackCount 사이로 제한된다.
     /// <summary>남은 지속 시간을 반환한다. 단위는 초</summary>
     public float RemainingDuration { get => remainingDuration; set => remainingDuration = Mathf.Max(0f, value); } // 남은 지속 시간. 0 이상으로 제한된다.
-    public float TickTimer { get => tickTimer; set => tickTimer = value; }
+    public float TickTimer { get => tickTimer; set => tickTimer = Mathf.Clamp(value, 0f, statusEffectData.TickSec); } // 마지막 틱 이후 흐른 시간. 손상된 복원 값이 틱을 대량으로 돌리지 않도록 0~TickSec로 제한된다.
     #endregion
 
     /// <summary>현재 상태의 SO 데이터를 반환한다. 풀에 반납된 뒤에는 null이다.</summary>
