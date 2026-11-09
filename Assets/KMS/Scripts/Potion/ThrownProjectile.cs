@@ -9,11 +9,17 @@ public class ThrownProjectile : MonoBehaviour
     [Tooltip("착탄 지점 주변 피해 반경. 0이면 직접 맞은 대상에게만 피해")]
     public float ImpactRadius = 1.5f;
     public float MaxLifeTime = 5f;
-    public GameObject ImpactEffectPrefab;
+    [Tooltip("착탄 지점에 생성할 이펙트")]
+    [SerializeField] private GameObject impactEffectPrefab;
+
+    [Tooltip("생성한 착탄 이펙트 유지시간")]
+    [SerializeField] private float impactEffectLifeTime = 2f;
 
     private Rigidbody rb;
-    private int damage;
-    private LayerMask damageLayer;
+    private int fallbackDamage;          // 효과가 없는 포션(빈 병)의 기본 피해
+    private LayerMask hitLayers;
+    private GameObject thrower;
+    private PotionData potion;
     private Vector3 gravity;
     private bool hasImpacted;
 
@@ -40,12 +46,13 @@ public class ThrownProjectile : MonoBehaviour
     }
 
     // 초기 속도와 이 투사체에만 적용할 중력을 받아 발사
-    public void Launch(Vector3 velocity, Vector3 gravity, int damage, LayerMask damageLayer, GameObject thrower, PotionData potion)
+    public void Launch(Vector3 velocity, Vector3 gravity, LayerMask hitLayers, GameObject thrower, PotionData potion, int fallbackDamage)
     {
-        //TODO 포션 데이터 값으로 변경하기
-        this.damage = damage;
-        this.damageLayer = damageLayer;
+        this.hitLayers = hitLayers;
         this.gravity = gravity;
+        this.thrower = thrower;
+        this.potion = potion;
+        this.fallbackDamage = fallbackDamage;
 
         // 던진 사람 몸에 바로 부딪히지 않도록 충돌 무시
         Collider[] myColliders = GetComponentsInChildren<Collider>();
@@ -88,36 +95,68 @@ public class ThrownProjectile : MonoBehaviour
 
     void Impact(Vector3 point, Collider directHit)
     {
-        hitTargets.Clear();
+        CollectTargets(point, directHit);
 
-        // 직접 맞은 대상
-        if (IsInDamageLayer(directHit.gameObject))
+        foreach (IDamageable damageable in hitTargets)
+            ApplyEffects(damageable, point);
+
+        // 착탄 이펙트 생성 후 재생이 끝날 시간에 맞춰 삭제 (기존 그대로)
+        if (impactEffectPrefab != null)
         {
-            var direct = directHit.GetComponentInParent<IDamageable>();
-            if (direct != null) hitTargets.Add(direct);
+            GameObject impactEffect = Instantiate(impactEffectPrefab, point, Quaternion.identity);
+            Destroy(impactEffect, impactEffectLifeTime);
         }
-
-        // 범위 피해
-        if (ImpactRadius > 0f)
-        {
-            int count = Physics.OverlapSphereNonAlloc(point, ImpactRadius, hitBuffer, damageLayer);
-            for (int i = 0; i < count; i++)
-            {
-                var target = hitBuffer[i].GetComponentInParent<IDamageable>();
-                if (target != null) hitTargets.Add(target);
-            }
-        }
-
-        foreach (IDamageable target in hitTargets)
-            target.TakeDamage(damage, point);   // 넉백 방향은 착탄 지점 기준
-
-        if (ImpactEffectPrefab != null)
-            Instantiate(ImpactEffectPrefab, point, Quaternion.identity);
 
         Destroy(gameObject);
     }
 
-    bool IsInDamageLayer(GameObject go) => (damageLayer.value & (1 << go.layer)) != 0;
+    // 직접 맞은 대상과 착탄 반경 안의 대상을 중복 없이 모은다
+    void CollectTargets(Vector3 point, Collider directHit)
+    {
+        hitTargets.Clear();
+
+        if (IsInHitLayer(directHit.gameObject))
+        {
+            IDamageable direct = directHit.GetComponentInParent<IDamageable>();
+            if (direct != null) hitTargets.Add(direct);
+        }
+
+        if (ImpactRadius <= 0f) return;
+
+        int count = Physics.OverlapSphereNonAlloc(point, ImpactRadius, hitBuffer, hitLayers);
+        for (int i = 0; i < count; i++)
+        {
+            IDamageable target = hitBuffer[i].GetComponentInParent<IDamageable>();
+            if (target != null) hitTargets.Add(target);
+        }
+    }
+
+    // 대상과의 관계에 맞는 효과만 순서대로 적용한다. 효과가 없으면 적에게 기본 피해
+    void ApplyEffects(IDamageable damageable, Vector3 point)
+    {
+        Entity entity = damageable as Entity;
+        PotionTargetFlags relation = GetRelation(entity);
+
+        if (potion == null || potion.Effects.Count == 0)
+        {
+            if (relation == PotionTargetFlags.Enemy)
+                damageable.TakeDamage(fallbackDamage, point);
+            return;
+        }
+
+        PotionHitContext context = new PotionHitContext(entity, damageable, point, thrower);
+        foreach (PotionEffect effect in potion.Effects)
+        {
+            if (effect != null && effect.CanAffect(relation))
+                effect.Apply(context);
+        }
+    }
+
+    // 플레이어(던진 사람 포함)는 아군, 그 외는 적으로 본다
+    PotionTargetFlags GetRelation(Entity entity)
+        => entity is PlayerFSM ? PotionTargetFlags.Ally : PotionTargetFlags.Enemy;
+
+    bool IsInHitLayer(GameObject go) => (hitLayers.value & (1 << go.layer)) != 0;
 
     void OnDrawGizmosSelected()
     {
