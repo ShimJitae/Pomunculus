@@ -15,7 +15,7 @@ public sealed class CurseHeatBehavior : IStatusBehavior
 
         if (target.TryGetComponent(out StatusEffectController controller))
         {
-            controller.RegisterStatusEffect(StatusEffectType.Burn);
+            controller.ApplyStatusEffectLocal(StatusEffectType.Burn); // 틱은 모든 컴퓨터가 각자 실행하므로 전송하지 않는다
         }
     }
 

@@ -15,7 +15,7 @@ public sealed class CurseDiseaseBehavior : IStatusBehavior
 
         if (target.TryGetComponent(out StatusEffectController controller))
         {
-            controller.RegisterStatusEffect(StatusEffectType.Poison);
+            controller.ApplyStatusEffectLocal(StatusEffectType.Poison); // 틱은 모든 컴퓨터가 각자 실행하므로 전송하지 않는다
         }
     }
 

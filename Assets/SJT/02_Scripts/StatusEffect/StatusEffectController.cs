@@ -19,7 +19,10 @@ public class StatusEffectController : MonoBehaviour, ISavable
     /// <summary>Tick이 실행된 직후 발생한다. 걸린 직후의 즉시 틱에도 발생하며, 한 프레임에 밀린 틱이 여러 번 실행돼도 한 번만 발생한다.</summary>
     public event Action<StatusEffect> OnEffectTicked;
 
-    /// <summary>시간 만료나 중첩 소진으로 상태가 해제된 직후, 풀에 반납되기 전에 발생한다. 대상 파괴로 인한 정리에서는 발생하지 않는다.</summary>
+    /// <summary>
+    /// 시간 만료, 중첩 소진, 저항 부여로 상태가 해제된 직후, 풀에 반납하기 전에 발생한다.
+    /// 대상 파괴로 인한 정리에서는 발생하지 않는다.
+    /// </summary>
     public event Action<StatusEffect> OnEffectRemoved;
 
     private StatusModifiers modifiers = StatusModifiers.Default;
@@ -92,7 +95,26 @@ public class StatusEffectController : MonoBehaviour, ISavable
         }
     }
 
-    public StatusEffect RegisterStatusEffect(StatusEffectType seType)
+    /// <summary>
+    /// 상태이상 바깥(포션·지형·디버그 등)에서 상태를 걸 때 호출한다.
+    /// 이 호출은 한 컴퓨터에서만 일어나므로, 멀티에서는 모든 컴퓨터에 알려 각자 ApplyStatusEffectLocal을 실행하게 한다.
+    /// IStatusBehavior 안(틱 등)은 모든 컴퓨터에서 똑같이 실행되므로 이 함수 대신 ApplyStatusEffectLocal을 쓴다.
+    /// </summary>
+    public void RegisterStatusEffect(StatusEffectType seType)
+    {
+        if (entity == null || seType == StatusEffectType.None)
+        {
+            return;
+        }
+
+        // TODO: Entity에 SendRegisterStatusEffect가 추가되면 entity.SendRegisterStatusEffect(seType)로 교체
+        ApplyStatusEffectLocal(seType);
+    }
+
+    /// <summary>
+    /// 이 컴퓨터에만 상태를 건다. 네트워크 수신과 IStatusBehavior 안의 파생 등록에서 호출한다.
+    /// </summary>
+    public StatusEffect ApplyStatusEffectLocal(StatusEffectType seType)
     {
         if (entity == null || seType == StatusEffectType.None)
         {
@@ -126,6 +148,7 @@ public class StatusEffectController : MonoBehaviour, ISavable
 
         statusEffect.Register();
         activeStatusEffects.Add(statusEffect);
+        RemoveBlockedEffects(statusEffect);
         RecalculateModifiers();
         OnEffectRegistered?.Invoke(statusEffect);
         LogStatus("걸림", statusEffect);
@@ -137,6 +160,24 @@ public class StatusEffectController : MonoBehaviour, ISavable
             LogStatus("틱", statusEffect);
         }
         return statusEffect;
+    }
+
+    private void RemoveBlockedEffects(StatusEffect resistance)
+    {
+        StatusEffectData blocked = resistance.Data.BlockedStatusEffect;
+        if (blocked == null || resistance.RemainingDuration <= 0f)
+        {
+            return;
+        }
+
+        for (int i = activeStatusEffects.Count - 1; i >= 0; i--)
+        {
+            StatusEffect active = activeStatusEffects[i];
+            if (active != resistance && active.Type == blocked.StatusEffectType)
+            {
+                RemoveEffectAt(i);
+            }
+        }
     }
 
     private bool TryBlockStatusEffect(StatusEffectType incomingType)
