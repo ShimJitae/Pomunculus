@@ -13,7 +13,7 @@ using UnityEngine.AI;
 [RequireComponent(typeof(NavMeshAgent))]
 [RequireComponent(typeof(PlayerInputReader), typeof(PlayerMotor), typeof(PlayerThrower))]
 [RequireComponent(typeof(PotionLoadout), typeof(Inventory))]
-public class PlayerFSM : Entity, IPlayerObj
+public class PlayerFSM : Entity, IPlayerObj, IHealable
 {
     [SerializeField] private PlayerTuningSO tuning;
     public PlayerTuningSO Tuning => tuning;
@@ -195,7 +195,7 @@ public class PlayerFSM : Entity, IPlayerObj
         if (IsDamageBlocked) return;
 
         int hpBefore = CurrentHp;
-        base.TakeDamage(Mathf.RoundToInt(damage * DamageTakenRatio));
+        base.TakeDamage(Mathf.CeilToInt(damage * DamageTakenRatio));
         if (CurrentHp != hpBefore) Stats.NotifyHpChanged();
     }
 
@@ -209,6 +209,16 @@ public class PlayerFSM : Entity, IPlayerObj
             LastHitSourcePosition = sourcePosition;
             SetState(PlayerStateType.Hit, allowReenter: true);
         }
+    }
+
+    // 받는 회복 비율(독 등)을 적용해 회복하고, HP가 바뀌었으면 알린다
+    public void Heal(int amount)
+    {
+        if (IsDead || amount <= 0) return;
+
+        int hpBefore = CurrentHp;
+        CurrentHp += Mathf.CeilToInt(amount * HealReceivedRatio);   // setter가 최대 HP로 제한
+        if (CurrentHp != hpBefore) Stats.NotifyHpChanged();
     }
 
     protected override void OnDie() => SetState(PlayerStateType.Dead);
