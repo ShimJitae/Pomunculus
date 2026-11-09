@@ -16,12 +16,11 @@ namespace Pomunculus.Items
 
         [Header("등록된 포션")]
         [SerializeField] private PotionData[] registeredPotions = new PotionData[3];
-
-
+        public int ActiveSlotIndex { get; private set; } = -1;
         private PotionData selectedPotion;
+        public PotionData selectedPotionData => GetRegisteredPotion(ActiveSlotIndex);
 
         public bool IsSelecting => selectedPotion != null;
-
         private void OnEnable()
         {
             if (inventory != null)
@@ -29,17 +28,38 @@ namespace Pomunculus.Items
 
             CancelSelection();
             RefreshSlots();
+            SelectActiveSlot(ActiveSlotIndex);
         }
-
         private void Update()
         {
-            if (!IsSelecting || Keyboard.current == null)
+            Keyboard keyboard = Keyboard.current;
+            if (keyboard == null)
                 return;
-
-            if (Keyboard.current.escapeKey.wasPressedThisFrame)
-                CancelSelection();
+            if (IsSelecting)
+            {
+                if (keyboard.escapeKey.wasPressedThisFrame)
+                    CancelSelection();
+                return;
+            }
+            if (keyboard.digit1Key.wasPressedThisFrame)
+            {
+                SelectActiveSlot(0);
+            }
+            else if (keyboard.digit2Key.wasPressedThisFrame)
+            {
+                SelectActiveSlot(1);
+            }
+            else if (keyboard.digit3Key.wasPressedThisFrame)
+            {
+                SelectActiveSlot(2);
+            }
         }
-
+        private void SelectActiveSlot(int slotIndex)
+        {
+            ActiveSlotIndex = slotIndex;
+            if (slotView != null)
+                slotView.SetSelectedSlot(slotIndex);
+        }
         public void BeginSelection(PotionData potion)
         {
             if (potion == null || inventory == null)
