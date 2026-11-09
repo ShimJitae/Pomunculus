@@ -26,9 +26,9 @@ public enum StatusEffectType
     // Fear = 11,           // 공포
 
     // CurseGreed = 12,     // 저주 - 탐욕
-    // CurseHeat = 13,      // 저주 - 열기
-    // CurseCold = 14,      // 저주 - 혹한
-    // CurseDisease = 15,   // 저주 - 질병
+    CurseHeat = 13,         // 저주 - 열기
+    CurseCold = 14,         // 저주 - 혹한
+    CurseDisease = 15,      // 저주 - 질병
     // CurseErosion = 16,   // 저주 - 침식
 
     // Explosion = 17,      // 폭파
