@@ -9,6 +9,7 @@ namespace Pomunculus.Items
         [SerializeField] private InventoryUI inventoryUI;
         [SerializeField] private CraftingMaterialListUI materialListUI;
         [SerializeField] private PotionCrafting potionCrafting;
+        [SerializeField] private PotionSlotSelector potionSlotSelector;
         private WorldManager world;
         private void OnEnable()
         {
@@ -50,11 +51,10 @@ namespace Pomunculus.Items
                 Debug.LogWarning("내 플레이어에 Inventory가 없습니다.", obj.gameObject);
                 return false;
             }
-            PotionSlotSelector selector = obj.gameObject.GetComponentInChildren<PotionSlotSelector>(true);
-            BindInventory(inventory, selector);
+            BindInventory(inventory);
             return true;
         }
-        private void BindInventory(Inventory inventory, PotionSlotSelector selector)
+        private void BindInventory(Inventory inventory)
         {
             // 제작 기능에서 사용할 인벤토리 연결
             if (potionCrafting != null)
@@ -66,7 +66,7 @@ namespace Pomunculus.Items
 
                 inventoryUI.enabled = false;
                 inventoryUI.inventory = inventory;
-                inventoryUI.SetPotionSlotSelector(selector);
+                inventoryUI.SetPotionSlotSelector(potionSlotSelector);
                 inventoryUI.enabled = wasEnabled;
             }
             // 제작 재료 목록 연결
@@ -76,6 +76,14 @@ namespace Pomunculus.Items
                 materialListUI.enabled = false;
                 materialListUI.inventory = inventory;
                 materialListUI.enabled = wasEnabled;
+            }
+            // 포션 슬롯 목록 연결
+            if (potionSlotSelector != null)
+            {
+                bool wasEnabled = potionSlotSelector.enabled;
+                potionSlotSelector.enabled = false;
+                potionSlotSelector.inventory = inventory;
+                potionSlotSelector.enabled = wasEnabled;
             }
         }
         
