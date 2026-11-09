@@ -1,5 +1,6 @@
 using Photon.Pun;
 using System;
+using System.Collections.Generic;
 using Unity.Behavior;
 using UnityEngine;
 using UnityEngine.AI;
@@ -21,9 +22,12 @@ public class Enemy : Entity, IWorldRPC
     [SerializeField] private EnemyDetector detector;
     [SerializeField] private float knockbackDistance;
 
+    [SerializeField] private EnemySkillPattern skillPattern = new();
+
     private bool IsDamageBlock => IsInvincible || CheckDie();
     private NavMeshAgent agent;
     private Animator animator;
+    private EnemyMovement movement;
 
     protected EnemyDataSO enemySO
     {
@@ -39,6 +43,7 @@ public class Enemy : Entity, IWorldRPC
         detector = GetComponentInChildren<EnemyDetector>();
         agent = GetComponent<NavMeshAgent>();
         animator = GetComponent<Animator>();
+        movement = GetComponent<EnemyMovement>();
     }
 
 
@@ -50,8 +55,10 @@ public class Enemy : Entity, IWorldRPC
             gameObject.SetActive(false);
             return;
         }
+        movement.InitSpawnCenter(transform.position);
         
         behaviorGraphAgent.Graph = enemySO.GetBehaviorGraph();
+        behaviorGraphAgent.SetVariableValue("SpawnPosition", transform.position);
 
         base.OnEnable();
         
@@ -59,6 +66,12 @@ public class Enemy : Entity, IWorldRPC
         detector.OnPlayersChanged += RefreshTarget;
 
         OnHpChanged?.Invoke(CurrentHp, MaxHp);
+
+        IReadOnlyList<EnemyPatternDataSO> enemyPatterns = DataDBManager.Instance.PatternDatabase
+            .GetPatternsByEnemyId(enemySO.GetEnemyId());
+
+        skillPattern.LoadPatternList(enemyPatterns, enemySO.GetNormalAttackPattern());
+
     }
 
     protected override void OnDisable()
@@ -137,9 +150,11 @@ public class Enemy : Entity, IWorldRPC
         behaviorGraphAgent.SetVariableValue<bool>("IsDie", true);
 
         DataDBManager.Instance.SpawnDropItem(GetId(), transform.position);
-        
-        if(!IsMaster)
+
+        if (IsMaster)
+        {
             WorldManager.Instance.Despawn(ID);
+        }
     }
 
     public void SetTarget(GameObject player)
@@ -179,6 +194,16 @@ public class Enemy : Entity, IWorldRPC
             return;
 
         ApplyHp(enemyHpData.GetData<int>());
+    }
+
+    public EnemyPatternDataSO UseNextPattern()
+    {
+        if (!CanDoAttack)
+            return null;
+
+        EnemyPatternDataSO currentPattern = skillPattern.UseSkill();
+
+        return currentPattern;
     }
 
     #region 네트워크
