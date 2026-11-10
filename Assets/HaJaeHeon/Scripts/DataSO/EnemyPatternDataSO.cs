@@ -63,9 +63,6 @@ public class EnemyPatternDataSO : ScriptableObject
     [Header("설명")]
     [SerializeField, TextArea(3, 8)] private string note;
 
-    [Header("파티클 연출")]
-    [SerializeField] private EnemyAttackFeedback feedbackPrefab;
-
     public int PatternId => patternId;
     public string MonsterName => monsterName;
     public int MonsterId => monsterId;
@@ -79,7 +76,6 @@ public class EnemyPatternDataSO : ScriptableObject
     public AttackAreaData AttackArea => attackArea;
     public string AnimatorTrigger => animatorTrigger.ToString();
     public string Note => note;
-    public EnemyAttackFeedback FeedbackPrefab => feedbackPrefab;
 
     public string GetPatternName()
     {
