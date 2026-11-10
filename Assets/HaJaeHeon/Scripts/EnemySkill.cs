@@ -10,6 +10,8 @@ public class EnemySkill : MonoBehaviour
     public EnemyPatternDataSO CurrentAttackPattern { get; private set; }
     public Vector3 AttackOrigin { get; private set; }
     public Quaternion AttackRotation { get; private set; }
+    public bool IsAttackActive => isAttackActive;
+
 
     [SerializeField] private LayerMask hitLayers;      // Player 레이어만 체크
     [SerializeField] private float hitHeight = 2f;     // Rectangle 판정 높이 (공통)
@@ -17,6 +19,8 @@ public class EnemySkill : MonoBehaviour
 
     private readonly Collider[] hitColliders = new Collider[16];
     private readonly HashSet<IDamageable> alreadyHitTargets = new();
+    private bool isAttackActive;
+    private float hitAcceptStartTime; // 이 시각 전의 판정 이벤트는 이전 공격 모션의 잔여 이벤트로 보고 무시
 
     private Enemy enemy;
     private NavMeshAgent agent;
@@ -38,6 +42,8 @@ public class EnemySkill : MonoBehaviour
 
         skillPattern.LoadPatternList(enemyPatterns, enemy.Data.GetNormalAttackPattern());
         CurrentAttackPattern = null;
+
+        SetAttackActive(false);
 
         ApplyNextPatternRange();
     }
@@ -67,9 +73,16 @@ public class EnemySkill : MonoBehaviour
 
         ApplyNextPatternRange();   // 미리 뽑힌 다음 패턴 기준으로 사거리 갱신
 
-        // 표시와 판정이 함께 쓸 기준값 고정 (LookAt 1회 직후라 방향이 확정된 상태)
+        // 표시와 판정이 함께 쓸 기준값 고정 (회전 노드 직후라 방향이 확정된 상태)
         GameObject attackTarget = enemy.Target;
         bool isTargetAnchor = currentPattern.AttackArea.anchor == AttackAreaAnchor.Target && attackTarget != null;
+
+        if (isAttackActive)
+            Debug.Log($"{name} >> 이전 공격의 OnAttackHit 이벤트 없음, 애니메이션 이벤트 확인 필요");
+
+        SetAttackActive(true);
+
+        hitAcceptStartTime = Time.time + currentPattern.Telegraph;
 
         CurrentAttackPattern = currentPattern;
         AttackOrigin = isTargetAnchor ? attackTarget.transform.position : transform.position;
@@ -86,6 +99,9 @@ public class EnemySkill : MonoBehaviour
     {
         CurrentAttackPattern = null;
 
+        if (isAttackActive)
+            SetAttackActive(false);
+
         if (attackIndicator != null)
             attackIndicator.Hide();
     }
@@ -96,6 +112,8 @@ public class EnemySkill : MonoBehaviour
         CurrentAttackPattern = patternData;
         AttackOrigin = origin;
         AttackRotation = rotation;
+
+        hitAcceptStartTime = Time.time + patternData.Telegraph;
 
         ShowTelegraph();
     }
@@ -125,15 +143,30 @@ public class EnemySkill : MonoBehaviour
         enemy.BehaviorGraphAgent.SetVariableValue("ChaseDistance", Mathf.Max(0.1f, attackRange - agent.radius - chaseMargin));
     }
 
+    private void SetAttackActive(bool isActive)
+    {
+        isAttackActive = isActive;
+        enemy.BehaviorGraphAgent.SetVariableValue("IsAttackActive", isActive);
+    }
+
     // 애니메이션 이벤트에서 호출 (Function: OnAttackHit, Float: 피해 배율 %)
     public void OnAttackHit(float damagePercent)
     {
+        // 예고 중에 들어온 이벤트 = 기절로 멈췄다가 다시 재생된 이전 공격 모션의 것 → 표시·판정 모두 건드리지 않음
+        if (Time.time < hitAcceptStartTime)
+            return;
+
         // Animator는 모든 클라이언트에서 재생되므로, 표시 숨김은 판정 권한과 상관없이 모두 처리
         if (attackIndicator != null)
             attackIndicator.Hide();
 
         if (PhotonNetwork.InRoom && !PhotonNetwork.IsMasterClient)
             return;
+
+        if (!isAttackActive)
+            return;
+
+        SetAttackActive(false);
 
         if (!enemy.CanDoAttack)
             return;

@@ -183,8 +183,16 @@ public class Enemy : Entity, IWorldRPC, IHealable
         float currentMoveSpeed = CanMove ? enemySO.GetSpeed() * MoveSpeedRatio : 0f;
 
         behaviorGraphAgent.SetVariableValue("MoveSpeed", currentMoveSpeed);
-        agent.speed = currentMoveSpeed;
-        animator.SetFloat("MoveAnimSpeed", CanMove ? MoveSpeedRatio : 0f);
+        agent.speed = currentMoveSpeed; 
+        // 기절 0 / 구속 1 / 그외 >> 이동 배율대로
+        float animationSpeedRatio = !CanAttack ? 0f : (CanMove ? MoveSpeedRatio : 1f);
+        animator.SetFloat("MoveAnimSpeed", animationSpeedRatio);
+
+        bool isStunned = !CanAttack;
+        behaviorGraphAgent.SetVariableValue("IsStunned", isStunned);
+
+        if (isStunned && IsMaster && enemySkill.IsAttackActive)
+            CancelCurrentAttack();
     }
 
     // 죽었을 시 아이템 스폰 and 적 사라지기 (하던 행동 끊김)
