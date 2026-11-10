@@ -16,12 +16,21 @@ MonoBehaviour:
   monsterName: "\uC11C\uB9AC \uB291\uB300"
   monsterId: 40001
   patternName: "\uC11C\uB9AC \uB291\uB300_\uB3CC\uC9C4"
-  telegraph: 0.5
+  telegraph: 0.8
   value: 13
-  recovery: 0.5
+  recovery: 1.5
   interval: 6
   patternWeight: 1
   animatorTrigger: 1
+  useRange: 0
+  attackArea:
+    shape: 0
+    anchor: 0
+    radius: 0
+    angle: 0
+    width: 0
+    length: 0
+    offset: {x: 0, y: 0, z: 0}
   note: "\uD50C\uB808\uC774\uC5B4\uB97C \uD5A5\uD574 \uBE60\uB974\uAC8C \uB3CC\uC9C4.
     \uB3CC\uC9C4 \uC911 \uB2FF\uC740 \uD50C\uB808\uC774\uC5B4\uB97C \uBB3C\uC5B4\uB72F\uC5B4
     \uACF5\uACA9"
