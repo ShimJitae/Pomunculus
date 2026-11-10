@@ -99,6 +99,10 @@ public class WorldManager : Singleton<WorldManager>
     public const int NoSlot = -1;
     private static string WorldFileName(int slotindex) => $"WorldDat{slotindex}";
 
+    public bool HasWorld(int slotindex) => SaveManager.Instance.Exists(WorldFileName(slotindex));
+    // 새 게임 시작 전에 호출. 이후 LoadWorld에서 파일이 없으므로 새 월드로 시작됨
+    public void DeleteWorld(int slotindex) => SaveManager.Instance.Delete(WorldFileName(slotindex));
+
     // 방장이 게임 시작 시 한 번 호출. 파일이 없으면 새 월드
     public void LoadWorld(int slotindex)
     {

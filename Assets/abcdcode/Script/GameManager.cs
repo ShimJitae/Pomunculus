@@ -190,7 +190,7 @@ public class GameManager : SingletonBehavior<GameManager>
 
     private const string PlayerPrefabId = "Player";
     private static readonly Vector3 PlayerSpawnPosition = new(0f, 1f, 0f);
-    private const int TempWorldSlot = 0; // TODO 월드 선택 전까지 사용하는 고정 슬롯
+    public const int TempWorldSlot = 0; // TODO 월드 선택 전까지 사용하는 고정 슬롯
     private const int OfflineActor = -1; // 방 밖에서의 PhotonNetwork.LocalPlayer.ActorNumber
     private bool m_worldPending;
     private bool m_worldClosing; // 방장이 나가 방을 나가는 중
