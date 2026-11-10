@@ -1,6 +1,7 @@
 using Pomunculus.Items;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
 /// <summary>
@@ -16,6 +17,7 @@ public class PlayerInputReader : MonoBehaviour
     public float HoldRepathInterval = 0.1f;   // 우클릭 홀드 시 목적지 갱신 간격
     public float NavSampleRadius = 2f;        // 클릭 지점을 NavMesh 위로 보정하는 범위
     public LayerMask GroundLayer;
+    public LayerMask UILayer;
     [Tooltip("클릭 위치에 표시할 오브젝트")]
     public GameObject MoveMarker;
     public float InputBufferTime = 0.15f;
@@ -84,9 +86,17 @@ public class PlayerInputReader : MonoBehaviour
 #endif
     }
 
+    // 마우스 커서가 UI 위에 있는지 확인한다
+    bool IsPointerOverUI()
+    {
+        return EventSystem.current != null && EventSystem.current.IsPointerOverGameObject();
+    }
+
     // 이번 프레임의 입력을 읽어 버퍼에 기록한다
     public void ReadInput()
     {
+        bool pointerOverUI = IsPointerOverUI();
+
         // 우클릭: 이동 명령. 누르고 있으면 일정 간격으로 목적지 갱신
         bool rightDown = moveAction.WasPressedThisFrame();
         bool rightHeld = moveAction.IsPressed();
@@ -102,7 +112,7 @@ public class PlayerInputReader : MonoBehaviour
         }
 
         // 좌클릭: 던지기. 클릭한 순간의 마우스 위치를 목표로 저장
-        if (attackAction.WasPressedThisFrame() && TryGetMouseWorldPoint(out Vector3 target))
+        if (!pointerOverUI && attackAction.WasPressedThisFrame() && TryGetMouseWorldPoint(out Vector3 target))
         {
             attackPressedAt = Time.time;
             bufferedAttackTarget = target;
