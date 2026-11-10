@@ -139,9 +139,6 @@ PrefabInstance:
       addedObject: {fileID: 9132846027103135592}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f4f75312eb965614dab993c80e2de8f6, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 3525920267614878113}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f4f75312eb965614dab993c80e2de8f6, type: 3}
-      insertIndex: -1
       addedObject: {fileID: 7792248187517395002}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f4f75312eb965614dab993c80e2de8f6, type: 3}
       insertIndex: -1
@@ -209,6 +206,9 @@ MonoBehaviour:
   GroundLayer:
     serializedVersion: 2
     m_Bits: 65
+  UILayer:
+    serializedVersion: 2
+    m_Bits: 32
   MoveMarker: {fileID: 0}
   InputBufferTime: 0.15
 --- !u!114 &1399261892888549604
@@ -420,24 +420,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Pomunculus.Items.TestItemGiver
   itemId: 10001
   amount: 1
---- !u!114 &3525920267614878113
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4072954961796356756}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 927aa3c15c212704494ea32a744d6bdf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Pomunculus.Items.OpenUI
-  recipeBook: {fileID: 0}
-  recipeBookKey: 32
-  craftingUI: {fileID: 0}
-  craftingKey: 17
-  inventoryUI: {fileID: 0}
-  inventoryKey: 23
 --- !u!114 &7792248187517395002
 MonoBehaviour:
   m_ObjectHideFlags: 0
