@@ -4,13 +4,15 @@ using UnityEngine;
 [RequireComponent(typeof(SphereCollider))]
 public sealed class SESourceProximity : SESource
 {
+    [SerializeField] private SESourceProximityData data;
+
+    protected override SESourceData Data => data;
+
     protected override void Awake()
     {
         base.Awake();
         if (data != null) GetComponent<SphereCollider>().radius = data.Radius; // 스케일 1 기준
     }
-
-    protected override bool CanTarget(Entity entity) => entity is PlayerFSM;
 
     protected override float GetInterval(Entity target)
     {
