@@ -89,7 +89,13 @@ public class StatusEffectDatabase : ScriptableObject
             [StatusEffectType.Freeze] = new FreezeBehavior(),
             [StatusEffectType.Bind] = new BindBehavior(),
             [StatusEffectType.Vulnerable] = new VulnerableBehavior(),
+            [StatusEffectType.CurseHeat] = new CurseHeatBehavior(),
+            [StatusEffectType.CurseCold] = new CurseColdBehavior(),
+            [StatusEffectType.CurseDisease] = new CurseDiseaseBehavior(),
             [StatusEffectType.Haste] = new HasteBehavior(),
+            [StatusEffectType.ResistHeat] = new CurseResistanceBehavior(),
+            [StatusEffectType.ResistCold] = new CurseResistanceBehavior(),
+            [StatusEffectType.ResistDisease] = new CurseResistanceBehavior(),
             [StatusEffectType.Petrify] = new PetrifyBehavior(),
             [StatusEffectType.Invincible] = new InvincibleBehavior()
         };

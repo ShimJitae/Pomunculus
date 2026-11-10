@@ -22,6 +22,7 @@ public class WorldManager : Singleton<WorldManager>
         RaiseEventManager.Instance.RegisterEvent((int)WorldEventID.SpawnObj, OnReceiveSpawn);
         RaiseEventManager.Instance.RegisterEvent((int)WorldEventID.DespawnObj, OnReceiveDespawn);
         RaiseEventManager.Instance.RegisterEvent((int)WorldEventID.WorldRPC, RPCHelper.OnReceive);
+        RaiseEventManager.Instance.RegisterEvent((int)WorldEventID.SpawnRequest, OnReceiveSpawnRequest);
         m_initialized = true;
     }
     public void Release()
@@ -32,6 +33,7 @@ public class WorldManager : Singleton<WorldManager>
         RaiseEventManager.Instance.UnRegisterEvent((int)WorldEventID.SpawnObj);
         RaiseEventManager.Instance.UnRegisterEvent((int)WorldEventID.DespawnObj);
         RaiseEventManager.Instance.UnRegisterEvent((int)WorldEventID.WorldRPC);
+        RaiseEventManager.Instance.UnRegisterEvent((int)WorldEventID.SpawnRequest);
         ClearWorld();
         m_initialized = false;
     }
@@ -64,28 +66,42 @@ public class WorldManager : Singleton<WorldManager>
     {
         CurWorldData ??= new WorldData();
         CurWorldData.NextId = IdManager.Instance.Current;
-        CurWorldData.SaveEntities(Objects.GetList());
+        // 플레이어는 UID 기준으로 따로 저장하고, 휘발성 오브젝트(ITMPWorldObj)는 저장하지 않음
+        CurWorldData.SaveEntities(Objects.GetList().Where(x => x is not IPlayerObj and not ITMPWorldObj));
         foreach (var pair in m_players) CurWorldData.SavePlayer(pair.Key, pair.Value);
     }
     #endregion
 
     #region 플레이어
-    // 플레이어 오브젝트 생성 후 등록. 방장 쪽에서 저장 대상이 됨
-    public void RegisterPlayer(string uid, IWorldObj player)
+    // 플레이어 오브젝트가 생성되면 Owner(ActorNumber)로 UID를 찾아 등록. 방장/수신 쪽 모두 호출됨
+    // 방장은 전파 전에 해당 UID의 저장 데이터를 적용하므로, 다른 플레이어에게는 불러온 상태로 전송됨
+    private void RegisterPlayer(IPlayerObj player)
     {
-        m_players[uid] = player;
-        if (IsMaster) CurWorldData?.LoadPlayer(uid, player);
-        else if (m_pendingPlayerData != null)
+        string uid = GetUid(player.Owner);
+        if (uid == null)
         {
-            player.LoadData(m_pendingPlayerData);
-            m_pendingPlayerData = null;
+            Debug.LogWarning($"[WorldManager] UID를 찾을 수 없는 플레이어 : Owner {player.Owner}");
+            return;
         }
+        m_players[uid] = player;
+        if (!IsMaster) return;
+        // 저장된 Owner는 이전 세션의 ActorNumber이므로 불러온 뒤 현재 값으로 되돌림
+        int owner = player.Owner;
+        if (CurWorldData?.LoadPlayer(uid, player) == true) player.Owner = owner;
     }
-    public void UnregisterPlayer(string uid)
+    private void UnregisterPlayer(IWorldObj player)
     {
-        if (!m_players.TryGetValue(uid, out var player)) return;
+        // 나간 플레이어는 Room에서 이미 빠져 UID를 못 찾을 수 있으므로 등록된 값으로 찾음
+        string uid = m_players.FirstOrDefault(x => x.Value == player).Key;
+        if (uid == null) return;
         if (IsMaster) CurWorldData?.SavePlayer(uid, player); // 나간 플레이어 데이터 보존
         m_players.Remove(uid);
+    }
+    // 오프라인이면 본인뿐이므로 로컬 UID
+    private static string GetUid(int actor)
+    {
+        if (!PhotonNetwork.InRoom) return GameManager.Instance.LocalUserProfile.UID;
+        return PhotonNetwork.CurrentRoom.GetPlayer(actor)?.CustomProperties[NetworkManager.UidProperty] as string;
     }
     public PlayerFSM GetLocalPlayer()
     {
@@ -109,6 +125,7 @@ public class WorldManager : Singleton<WorldManager>
         var obj = Instantiate(IdManager.Instance.Next, prefabId, position, rotation);
         if (obj == null) return null;
         onInit?.Invoke(obj);
+        if (obj is IPlayerObj player) RegisterPlayer(player);
         Objects.Add(obj);
         OnSpawnedEvent?.Invoke(obj);
         if (!PhotonNetwork.InRoom) return obj; // 오프라인이면 전파할 대상 없음
@@ -119,6 +136,24 @@ public class WorldManager : Singleton<WorldManager>
         RaiseEventManager.Instance.SendPacket(p, new() { Receivers = ReceiverGroup.Others }, SendOptions.SendReliable);
         Debug.Log($"방장 소환 명령 : {prefabId}");
         return obj;
+    }
+    // 방장이 아닌 플레이어도 호출 가능한 생성 요청. 방장이 대신 Spawn하므로 결과는 OnSpawnedEvent로 받는다
+    // 람다는 전송할 수 없으므로 초기 상태는 state(SaveData)로 넘기고, 방장 쪽에서 LoadData로 적용됨
+    // 방장이 호출하면 바로 Spawn
+    public void RequestSpawn(string prefabId, Vector3 position, Quaternion rotation, SaveData state = null)
+    {
+        if (IsMaster)
+        {
+            Spawn(prefabId, position, rotation, state != null ? obj => obj.LoadData(state) : null);
+            return;
+        }
+        PacketData p = new();
+        p.Write((int)WorldEventID.SpawnRequest);
+        p.Write(prefabId);
+        p.Write(position);
+        p.Write(rotation.eulerAngles);
+        p.WriteSaveData(state);
+        RaiseEventManager.Instance.SendPacket(p, new() { Receivers = ReceiverGroup.MasterClient }, SendOptions.SendReliable);
     }
     public void Despawn(int id)
     {
@@ -149,20 +184,19 @@ public class WorldManager : Singleton<WorldManager>
         ClearWorld();
         PacketData p = new();
         p.Write((int)WorldEventID.RequestSnapshot);
-        p.Write(GameManager.Instance.LocalUserProfile.UID);
         RaiseEventManager.Instance.SendPacket(p, new() { Receivers = ReceiverGroup.MasterClient }, SendOptions.SendReliable);
     }
     private void OnRequestSnapshot(EventData e, PacketData p)
     {
         if (!IsMaster) return;
-        string uid = p;
-        CaptureWorldData();
+        CurWorldData ??= new WorldData();
+        // 저장과 달리 플레이어/휘발성 오브젝트까지 현재 월드의 모든 오브젝트를 보냄
+        // 입장한 플레이어 본인의 저장 데이터는 방장이 그 플레이어를 생성할 때 적용됨
         var snapshot = new WorldSnapshot()
         {
             Day = CurWorldData.Day,
             Time = CurWorldData.Time,
-            Entities = CurWorldData.Entities,
-            Player = CurWorldData.Players.GetValueOrDefault(uid)
+            Entities = Objects.GetList().Select(WorldObjSaveData.Create).ToList()
         };
 
         PacketData r = new();
@@ -178,7 +212,6 @@ public class WorldManager : Singleton<WorldManager>
         ClearWorld();
         CurWorldData = new WorldData() { Day = snapshot.Day, Time = snapshot.Time };
         foreach (var d in snapshot.Entities) SpawnLocal(d);
-        m_pendingPlayerData = snapshot.Player; // 로컬 플레이어가 RegisterPlayer 할 때 적용
 
         IsReady = true;
         // 스냅샷 전에 도착한 이벤트 처리
@@ -193,6 +226,15 @@ public class WorldManager : Singleton<WorldManager>
         var d = WorldObjSaveData.Read(p);
         Debug.Log($"소환 명령 : {d.PrefabId}");
         RunOrQueue(() => SpawnLocal(d));
+    }
+    private void OnReceiveSpawnRequest(EventData e, PacketData p)
+    {
+        if (!IsMaster) return;
+        string prefabId = p;
+        Vector3 position = p;
+        Vector3 rotation = p;
+        var state = p.ReadSaveData();
+        RequestSpawn(prefabId, position, Quaternion.Euler(rotation), state);
     }
     private void OnReceiveDespawn(EventData e, PacketData p)
     {
@@ -217,6 +259,7 @@ public class WorldManager : Singleton<WorldManager>
         if (obj == null) return;
         // Instantiate 시점에 OnEnable이 먼저 돌기 때문에 그 뒤에 상태를 덮어씀
         obj.LoadData(d.State);
+        if (obj is IPlayerObj player) RegisterPlayer(player);
         Objects.Add(obj);
         OnSpawnedEvent?.Invoke(obj);
     }
@@ -224,6 +267,7 @@ public class WorldManager : Singleton<WorldManager>
     {
         var obj = Find(id);
         if (obj == null) return;
+        if (obj is IPlayerObj) UnregisterPlayer(obj);
         Objects.Remove(obj);
         Object.Destroy(obj.gameObject);
     }
@@ -260,6 +304,7 @@ public class WorldManager : Singleton<WorldManager>
         }
             
         Objects.Clear();
+        m_players.Clear();
         m_pendingEvents.Clear();
         IsReady = false;
     }
@@ -271,6 +316,5 @@ public class WorldManager : Singleton<WorldManager>
     private Dictionary<string, GameObject> m_prefabs;
     private readonly Dictionary<string, IWorldObj> m_players = new();
     private readonly Queue<Action> m_pendingEvents = new();
-    private SaveData m_pendingPlayerData;
     private bool m_initialized;
 }

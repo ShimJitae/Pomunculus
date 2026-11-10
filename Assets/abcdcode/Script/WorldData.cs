@@ -31,13 +31,12 @@ public class WorldData
     }
 }
 
-// 입장한 플레이어에게 보내는 데이터. 다른 플레이어의 저장 정보는 보내지 않는다
+// 입장한 플레이어에게 보내는 현재 월드 상태. 플레이어별 저장 정보(WorldData.Players)는 보내지 않는다
 public class WorldSnapshot
 {
     public int Day{get;set;}
     public float Time{get;set;}
     public List<WorldObjSaveData> Entities{get;set;} = new();
-    public SaveData Player{get;set;} // 입장한 플레이어 본인의 저장 데이터, 없으면 null
 
     // 네트워크 전송용 바이너리
     public void Write(PacketData p)
@@ -46,14 +45,12 @@ public class WorldSnapshot
         p.Write(Time);
         p.Write(Entities.Count);
         foreach(var e in Entities) e.Write(p);
-        p.WriteSaveData(Player);
     }
     public static WorldSnapshot Read(PacketData p)
     {
         var s = new WorldSnapshot { Day = p, Time = p };
         int count = p;
         for(int i = 0; i < count; i++) s.Entities.Add(WorldObjSaveData.Read(p));
-        s.Player = p.ReadSaveData();
         return s;
     }
 }
