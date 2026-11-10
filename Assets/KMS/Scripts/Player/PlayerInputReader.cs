@@ -17,12 +17,12 @@ public class PlayerInputReader : MonoBehaviour
     public float HoldRepathInterval = 0.1f;   // 우클릭 홀드 시 목적지 갱신 간격
     public float NavSampleRadius = 2f;        // 클릭 지점을 NavMesh 위로 보정하는 범위
     public LayerMask GroundLayer;
-    public LayerMask UILayer;
     [Tooltip("클릭 위치에 표시할 오브젝트")]
     public GameObject MoveMarker;
     public float InputBufferTime = 0.15f;
 
     public bool HasPendingMove { get; private set; }     // 아직 처리되지 않은 우클릭 이동 명령
+    public bool IsAimHeld => aimAction.IsPressed();
 
     private Camera cam;
     private Vector3 pendingDestination;
@@ -39,7 +39,9 @@ public class PlayerInputReader : MonoBehaviour
     private InputAction dodgeAction;
     private InputAction interactAction;
     private InputAction pointAction;
+    private InputAction aimAction;
     private InputAction[] potionSlotActions;              // 1/2/3 키. 인덱스 = 슬롯 번호
+    
 #if UNITY_EDITOR
     private InputActionMap debugMap;
     private InputAction debugDamageAction;
@@ -57,7 +59,9 @@ public class PlayerInputReader : MonoBehaviour
         dodgeAction = playerMap.FindAction("Dodge", throwIfNotFound: true);
         interactAction = playerMap.FindAction("Interact", throwIfNotFound: true);
         pointAction = playerMap.FindAction("Point", throwIfNotFound: true);
+        aimAction = playerMap.FindAction("Aim", throwIfNotFound: true);
         potionSlotActions = new InputAction[PotionLoadout.SlotCount];
+        
         for (int i = 0; i < PotionLoadout.SlotCount; i++)
         {
             potionSlotActions[i] = playerMap.FindAction("PotionSlot" + (i + 1), throwIfNotFound: true);

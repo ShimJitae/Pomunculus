@@ -238,12 +238,19 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IWorldRPC
 
     protected override void OnDie() => SetState(PlayerStateType.Dead);
 
+    // 지금 던지면 나갈 포션. 선택한 포션이 인벤토리에 없으면 null(빈 병)
+    public PotionData GetThrowablePotion()
+    {
+        PotionData potion = Loadout.SelectedPotion;
+        return potion != null && Inventory.GetItemCount(potion.Id) > 0 ? potion : null;
+    }
+
     public bool ConsumeAttack()
     {
         if (!CanAttack || !Stats.CanUseStamina) return false;
         if (!Input.ConsumeAttack(out Vector3 target)) return false;
 
-        PotionData potion = Loadout.SelectedPotion;
+        PotionData potion = GetThrowablePotion();
         bool hasPotion = potion != null && Inventory.GetItemCount(potion.Id) > 0;
 
         AttackPotion = hasPotion ? potion : null;   // null이면 빈 병
