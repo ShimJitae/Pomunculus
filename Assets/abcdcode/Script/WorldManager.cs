@@ -23,6 +23,7 @@ public class WorldManager : Singleton<WorldManager>
         RaiseEventManager.Instance.RegisterEvent((int)WorldEventID.DespawnObj, OnReceiveDespawn);
         RaiseEventManager.Instance.RegisterEvent((int)WorldEventID.WorldRPC, RPCHelper.OnReceive);
         RaiseEventManager.Instance.RegisterEvent((int)WorldEventID.SpawnRequest, OnReceiveSpawnRequest);
+        RaiseEventManager.Instance.RegisterEvent((int)WorldEventID.DayChanged, OnReceiveDayChanged);
         m_initialized = true;
     }
     public void Release()
@@ -34,6 +35,7 @@ public class WorldManager : Singleton<WorldManager>
         RaiseEventManager.Instance.UnRegisterEvent((int)WorldEventID.DespawnObj);
         RaiseEventManager.Instance.UnRegisterEvent((int)WorldEventID.WorldRPC);
         RaiseEventManager.Instance.UnRegisterEvent((int)WorldEventID.SpawnRequest);
+        RaiseEventManager.Instance.UnRegisterEvent((int)WorldEventID.DayChanged);
         ClearWorld();
         CurSlot = NoSlot;
         m_initialized = false;
@@ -42,6 +44,54 @@ public class WorldManager : Singleton<WorldManager>
     public ObjContainer<IWorldObj> Objects{get;} = new();
     // 스냅샷 적용 전에는 false. 방장은 항상 true
     public bool IsReady{get;private set;}
+
+    #region 시간/날짜
+    public const float DayLength = 60f; // 하루 길이(초)
+    // 바뀐 Day. 방장/수신 쪽 모두 호출됨
+    public event Action<int> OnDayChangedEvent;
+
+    // GameManager.Update에서 매 프레임 호출
+    // 시간은 모두가 로컬로 흘려보내고, 날짜가 넘어가는 건 방장만 결정해서 전파한다
+    // 방장이 아니면 하루 끝에서 멈춰 방장의 DayChanged를 기다림
+    public void Update(float deltaTime)
+    {
+        if (!IsReady || CurWorldData == null) return;
+        CurWorldData.Time += deltaTime;
+        if (!IsMaster)
+        {
+            CurWorldData.Time = Mathf.Min(CurWorldData.Time, DayLength);
+            return;
+        }
+        if (CurWorldData.Time < DayLength) return;
+        
+        while (CurWorldData.Time >= DayLength)
+        {
+            CurWorldData.Time -= DayLength;
+            CurWorldData.Day++;
+        }
+        OnDayChangedEvent?.Invoke(CurWorldData.Day);
+        if (!PhotonNetwork.InRoom) return;
+
+        // 남은 Time도 같이 보내서 다른 플레이어의 오차를 날짜마다 맞춤
+        PacketData p = new();
+        p.Write((int)WorldEventID.DayChanged);
+        p.Write(CurWorldData.Day);
+        p.Write(CurWorldData.Time);
+        RaiseEventManager.Instance.SendPacket(p, new() { Receivers = ReceiverGroup.Others }, SendOptions.SendReliable);
+    }
+    private void OnReceiveDayChanged(EventData e, PacketData p)
+    {
+        if (IsMaster) return;
+        int day = p;
+        float time = p;
+        // 스냅샷 전에 보낸 날짜는 스냅샷에 이미 반영되어 오므로 무시
+        if (!IsReady || CurWorldData == null || day < CurWorldData.Day) return;
+        bool changed = day != CurWorldData.Day;
+        CurWorldData.Day = day;
+        CurWorldData.Time = time;
+        if (changed) OnDayChangedEvent?.Invoke(day);
+    }
+    #endregion
 
     #region 저장/불러오기 (방장 전용)
     // 불러온 월드의 슬롯. 멀티로 참여한 월드는 NoSlot이라 저장하지 않음

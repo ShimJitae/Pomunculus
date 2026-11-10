@@ -18,4 +18,5 @@ public enum WorldEventID : int
     WorldRPC = 18,          // RPCHelper (IWorldRPC)
 
     SpawnRequest = 19,      // WorldManager (방장이 아닌 플레이어의 생성 요청)
+    DayChanged = 20,        // WorldManager (방장이 결정한 날짜 경과)
 }
