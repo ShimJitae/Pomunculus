@@ -22,7 +22,7 @@ public class ESCPanel : MonoBehaviour
     }
     public void GoToTitle()
     {
-        NetworkManager.Instance.LeaveRoom();
+        GameManager.Instance.GoToTitle();
     }
     [SerializeField]private Transform Root;
 }

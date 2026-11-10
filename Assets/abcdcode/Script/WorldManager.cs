@@ -35,20 +35,26 @@ public class WorldManager : Singleton<WorldManager>
         RaiseEventManager.Instance.UnRegisterEvent((int)WorldEventID.WorldRPC);
         RaiseEventManager.Instance.UnRegisterEvent((int)WorldEventID.SpawnRequest);
         ClearWorld();
+        CurSlot = NoSlot;
         m_initialized = false;
     }
-
     public WorldData CurWorldData{get;set;}
     public ObjContainer<IWorldObj> Objects{get;} = new();
     // 스냅샷 적용 전에는 false. 방장은 항상 true
     public bool IsReady{get;private set;}
 
     #region 저장/불러오기 (방장 전용)
+    // 불러온 월드의 슬롯. 멀티로 참여한 월드는 NoSlot이라 저장하지 않음
+    public int CurSlot{get;private set;} = NoSlot;
+    public const int NoSlot = -1;
+    private static string WorldFileName(int slotindex) => $"WorldDat{slotindex}";
+
     // 방장이 게임 시작 시 한 번 호출. 파일이 없으면 새 월드
-    public void LoadWorld(string fileName)
+    public void LoadWorld(int slotindex)
     {
         ClearWorld();
-        CurWorldData = SaveManager.Instance.Load(fileName)?.GetData<WorldData>() ?? new WorldData();
+        CurSlot = slotindex;
+        CurWorldData = SaveManager.Instance.Load(WorldFileName(slotindex))?.GetData<WorldData>() ?? new WorldData();
         foreach (var d in CurWorldData.Entities) SpawnLocal(d);
         // NextId가 없던 이전 세이브도 있으므로, 불러온 오브젝트 ID와 겹치지 않게 최대 ID + 1 이상으로 맞춤
         int maxId = CurWorldData.Entities.Count > 0 ? CurWorldData.Entities.Max(x => x.ID) : -1;
@@ -56,11 +62,13 @@ public class WorldManager : Singleton<WorldManager>
         IsReady = true;
     }
     // 주기적으로 / 종료 시 방장이 호출
-    public void SaveWorld(string fileName)
+    // 방을 나간 직후엔 IsMaster가 항상 true이므로 참여한 월드인지는 CurSlot으로 거름
+    public void SaveWorld(int slotindex)
     {
-        if (!IsMaster) return;
+        if (CurSlot == NoSlot || !IsMaster) return;
         CaptureWorldData();
-        SaveManager.Instance.Save(fileName, SaveData.CreateSaveData(CurWorldData));
+        SaveManager.Instance.Save(WorldFileName(slotindex), SaveData.CreateSaveData(CurWorldData));
+        Debug.Log($"[WorldManager] 월드 저장 : {WorldFileName(slotindex)}");
     }
     public void CaptureWorldData()
     {
@@ -182,6 +190,7 @@ public class WorldManager : Singleton<WorldManager>
         }
         IsReady = false;
         ClearWorld();
+        CurSlot = NoSlot; // 남의 월드에 참여했으므로 저장 대상 아님
         PacketData p = new();
         p.Write((int)WorldEventID.RequestSnapshot);
         RaiseEventManager.Instance.SendPacket(p, new() { Receivers = ReceiverGroup.MasterClient }, SendOptions.SendReliable);

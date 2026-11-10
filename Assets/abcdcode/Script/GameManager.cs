@@ -78,9 +78,23 @@ public class GameManager : SingletonBehavior<GameManager>
         Debug.Log("StartWorldOffline");
         if (PhotonNetwork.InRoom) return;
         WorldManager.Instance.Init();
-        WorldManager.Instance.RequestSnapshot(); // 방장이면 바로 준비 완료
+        // TODO 임시로 항상 0번 슬롯. 월드 선택 UI가 생기면 선택한 슬롯으로
+        WorldManager.Instance.LoadWorld(TempWorldSlot); // 불러온 뒤 바로 준비 완료
         Debug.Log("[GameManager] 오프라인 월드 시작");
+        // 플레이어는 월드 엔티티로 저장되지 않으므로 항상 새로 생성. 저장된 상태는 RegisterPlayer에서 UID로 적용됨
         SpawnPlayer(PhotonNetwork.LocalPlayer.ActorNumber);
+    }
+    // 타이틀로 돌아갈 때 호출. 방 안이면 방을 나가고, 저장/정리는 OnLeftRoom에서 처리
+    public void GoToTitle()
+    {
+        if (PhotonNetwork.InRoom)
+        {
+            NetworkManager.Instance.LeaveRoom();
+            return;
+        }
+        WorldManager.Instance.SaveWorld(TempWorldSlot);
+        WorldManager.Instance.Release();
+        SceneManager.LoadScene(TitleSceneName);
     }
     private void StartWorldOnline()
     {
@@ -152,12 +166,14 @@ public class GameManager : SingletonBehavior<GameManager>
     private void OnLeftRoom()
     {
         m_worldPending = false;
+        WorldManager.Instance.SaveWorld(TempWorldSlot); // 참여한 월드면 WorldManager에서 무시됨
         RaiseEventManager.Instance.UnRegisterEvent((int)WorldEventID.PlayerSpawnRequest);
         WorldManager.Instance.Release();
     }
 
     private const string PlayerPrefabId = "Player";
     private static readonly Vector3 PlayerSpawnPosition = new(0f, 1f, 0f);
+    private const int TempWorldSlot = 0; // TODO 월드 선택 전까지 사용하는 고정 슬롯
     private const int OfflineActor = -1; // 방 밖에서의 PhotonNetwork.LocalPlayer.ActorNumber
     private bool m_worldPending;
     private bool m_playerSpawnRegistered;

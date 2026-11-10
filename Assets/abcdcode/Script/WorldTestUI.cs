@@ -58,11 +58,7 @@ public class WorldTestUI : MonoBehaviour
 
     // 월드 정리는 GameManager.OnLeftRoom에서 처리
     private void OnLeftRoom() => SceneManager.LoadScene(GameManager.TitleSceneName);
-    private void GoTitle()
-    {
-        WorldManager.Instance.Release();
-        SceneManager.LoadScene(GameManager.TitleSceneName);
-    }
+    private void GoTitle() => GameManager.Instance.GoToTitle();
 
     private void OnGUI()
     {
