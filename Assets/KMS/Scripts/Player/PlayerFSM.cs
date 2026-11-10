@@ -13,7 +13,7 @@ using UnityEngine.AI;
 [RequireComponent(typeof(NavMeshAgent))]
 [RequireComponent(typeof(PlayerInputReader), typeof(PlayerMotor), typeof(PlayerThrower))]
 [RequireComponent(typeof(PotionLoadout), typeof(Inventory))]
-public class PlayerFSM : Entity, IPlayerObj, IHealable
+public class PlayerFSM : Entity, IPlayerObj, IHealable, IWorldRPC
 {
     [SerializeField] private PlayerTuningSO tuning;
     public PlayerTuningSO Tuning => tuning;
@@ -65,6 +65,7 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable
     public int Owner { get; set; }
     public bool IsMine => !PhotonNetwork.InRoom ||
                       (PhotonNetwork.LocalPlayer != null && PhotonNetwork.LocalPlayer.ActorNumber == Owner);
+
     protected override void Awake()
     {
         base.Awake();
@@ -192,16 +193,23 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable
     // 받는 피해 비율을 적용해 피해를 입고, HP가 바뀌었으면 알린다.
     public override void TakeDamage(int damage)
     {
-        if (IsDamageBlocked) return;
+        if (!IsMine || IsDamageBlocked) return;
 
         int hpBefore = CurrentHp;
         base.TakeDamage(Mathf.CeilToInt(damage * DamageTakenRatio));
-        if (CurrentHp != hpBefore) Stats.NotifyHpChanged();
+        if (CurrentHp != hpBefore)
+        {
+            SendHpSync();
+            Stats.NotifyHpChanged();
+        }
+            
     }
 
     // 투사체·공격 피해. 맞은 위치로 넉백 + 경직
     public override void TakeDamage(int damage, Vector3 sourcePosition)
     {
+        if (!IsMine) { SendDamageRequest(damage, sourcePosition); return; }
+
         int hpBefore = CurrentHp;
         TakeDamage(damage);
         if (CurrentHp < hpBefore && !CheckDie())
@@ -214,11 +222,18 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable
     // 받는 회복 비율(독 등)을 적용해 회복하고, HP가 바뀌었으면 알린다
     public void Heal(int amount)
     {
-        if (IsDead || amount <= 0) return;
+        if (amount <= 0) return;
+        if (!IsMine) { SendHealRequest(amount); return; }
+        if (IsDead) return;   // 사망 여부는 소유자 화면에서만 판단한다 (복사본 상태는 늦을 수 있음)
 
         int hpBefore = CurrentHp;
         CurrentHp += Mathf.CeilToInt(amount * HealReceivedRatio);   // setter가 최대 HP로 제한
-        if (CurrentHp != hpBefore) Stats.NotifyHpChanged();
+        if (CurrentHp != hpBefore)
+        {
+            SendHpSync();
+            Stats.NotifyHpChanged();
+        }
+            
     }
 
     protected override void OnDie() => SetState(PlayerStateType.Dead);
@@ -262,6 +277,7 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable
         else
             transform.position = spawnPos.position;
         SetState(PlayerStateType.Idle);
+        SendHpSync();
     }
 
     // ═══════════════════════ 애니메이션 ═══════════════════════
@@ -280,5 +296,92 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable
     public void SetAnimSpeed(float value)
     {
         if (anim != null) anim.SetFloat(SpeedParam, value, 0.1f, Time.deltaTime);
+    }
+
+    private enum PlayerRPCType : byte
+    {
+        SyncHp,
+        Throw,
+        RequestDamage,
+        RequestHeal
+    }
+
+    // 소유자가 확정한 HP를 다른 플레이어에게 전송
+    private void SendHpSync()
+    {
+        if (!IsMine) return;
+
+        PacketData packet = new();
+        packet.Write((byte)PlayerRPCType.SyncHp);
+        packet.Write(CurrentHp);
+        this.SendRPC(packet, WorldRPCTarget.Others);   // 확장 메서드라 this. 필요. 소유자는 이미 적용했으므로 나머지에게만
+    }
+
+    // 던지기 정보를 모든 클라이언트에 보낸다 (내 화면은 즉시 실행)
+    public void SendThrow(Vector3 origin, Vector3 velocity, Vector3 gravity, int potionId)
+    {
+        PacketData packet = new();
+        packet.Write((byte)PlayerRPCType.Throw);
+        packet.Write(origin);
+        packet.Write(velocity);
+        packet.Write(gravity);
+        packet.Write(potionId);
+        this.SendRPC(packet, WorldRPCTarget.All);   // 확장 메서드라 this. 필요
+    }
+
+    // 소유자가 아닌 화면에서 받은 피해를 소유자에게만 요청한다
+    public void SendDamageRequest(int damage, Vector3 sourcePosition)
+    {
+        PacketData packet = new();
+        packet.Write((byte)PlayerRPCType.RequestDamage);
+        packet.Write(damage);
+        packet.Write(sourcePosition);
+        this.SendRPC(packet, Owner);
+    }
+
+    // 소유자가 아닌 화면에서 받은 회복을 소유자에게만 요청한다
+    public void SendHealRequest(int amount)
+    {
+        PacketData packet = new();
+        packet.Write((byte)PlayerRPCType.RequestHeal);
+        packet.Write(amount);
+        this.SendRPC(packet, Owner);
+    }
+
+    // RPCHelper가 ID로 찾아서 호출한다. 보낸 순서 그대로 읽는다
+    public void ReceiveRPC(PacketData packet)
+    {
+        PlayerRPCType rpcType = (PlayerRPCType)packet.ReadByte();
+
+        switch (rpcType)
+        {
+            case PlayerRPCType.Throw:
+                Vector3 origin = packet.ReadVector3();
+                Vector3 velocity = packet.ReadVector3();
+                Vector3 gravity = packet.ReadVector3();
+                int potionId = packet.ReadInt();
+                Thrower.SpawnProjectile(origin, velocity, gravity, potionId);
+                break;
+            case PlayerRPCType.SyncHp:
+                ApplyHp(packet.ReadInt());
+                break;
+            case PlayerRPCType.RequestDamage:
+                int damage = packet.ReadInt();
+                Vector3 sourcePosition = packet.ReadVector3();
+                if(IsMine) TakeDamage(damage, sourcePosition);
+                break;
+            case PlayerRPCType.RequestHeal:
+                int heal = packet.ReadInt();
+                if (IsMine) Heal(heal);
+                break;
+        }
+    }
+
+    // 소유자가 확정한 HP를 적용한다
+    private void ApplyHp(int hp)
+    {
+        CurrentHp = hp;
+        isDie = CurrentHp <= 0;
+        Stats.NotifyHpChanged();
     }
 }

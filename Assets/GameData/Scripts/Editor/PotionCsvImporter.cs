@@ -12,6 +12,7 @@ namespace Pomunculus.Items.Editor
     {
         private const string CsvPath = "Assets/GameData/CSV/Potions.csv";
         private const string OutputFolder = "Assets/GameData/Items/Potions";
+        private const string DatabasePath = "Assets/Resources/PotionDatabase.asset";
 
         private class PotionRow
         {
@@ -91,6 +92,7 @@ namespace Pomunculus.Items.Editor
                 }
 
                 AssetDatabase.SaveAssets();
+                UpdatePotionDatabase();
                 AssetDatabase.Refresh();
 
                 string message = $"새로 생성: {created}개\n기존 수정: {updated}개\n\n저장 위치: {OutputFolder}";
@@ -101,6 +103,54 @@ namespace Pomunculus.Items.Editor
                 Debug.LogException(exception);
                 EditorUtility.DisplayDialog("포션 CSV 가져오기 실패", exception.Message, "확인");
             }
+        }
+
+        // 프로젝트의 모든 PotionData를 찾아 PotionDatabase 목록을 다시 채운다
+        [MenuItem("Tools/GameData/포션 DB 갱신")]
+        public static void UpdatePotionDatabase()
+        {
+            PotionDatabase database = AssetDatabase.LoadAssetAtPath<PotionDatabase>(DatabasePath);
+
+            if (database == null)
+            {
+                EnsureFolder(Path.GetDirectoryName(DatabasePath).Replace('\\', '/'));
+                database = ScriptableObject.CreateInstance<PotionDatabase>();
+                AssetDatabase.CreateAsset(database, DatabasePath);
+            }
+
+            List<PotionData> potions = new List<PotionData>();
+            HashSet<int> ids = new HashSet<int>();
+
+            foreach (string guid in AssetDatabase.FindAssets("t:PotionData"))
+            {
+                PotionData potion = AssetDatabase.LoadAssetAtPath<PotionData>(AssetDatabase.GUIDToAssetPath(guid));
+
+                if (potion == null)
+                    continue;
+
+                // 중복 Id는 예외 대신 오류 로그만 남기고 DB에서 뺀다 (CSV 가져오기 전체가 실패하지 않게)
+                if (!ids.Add(potion.Id))
+                {
+                    Debug.LogError($"같은 ID의 포션이 여러 개 있어 DB에서 제외합니다: {potion.Id} ({AssetDatabase.GetAssetPath(potion)})", potion);
+                    continue;
+                }
+
+                potions.Add(potion);
+            }
+
+            potions.Sort((a, b) => a.Id.CompareTo(b.Id));
+
+            // potions가 private 필드라 SerializedObject로 채운다
+            SerializedObject serializedDatabase = new SerializedObject(database);
+            SerializedProperty list = serializedDatabase.FindProperty("potions");
+            list.arraySize = potions.Count;
+
+            for (int i = 0; i < potions.Count; i++)
+                list.GetArrayElementAtIndex(i).objectReferenceValue = potions[i];
+
+            serializedDatabase.ApplyModifiedProperties();
+            EditorUtility.SetDirty(database);
+            AssetDatabase.SaveAssets();
         }
 
         private static List<PotionRow> ReadPotions(List<List<string>> table)

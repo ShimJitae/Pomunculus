@@ -12,6 +12,8 @@ public class TitleTestUI : MonoBehaviour
         m_lobbyPanel.gameObject.SetActive(false);
         m_startGameButton.onClick.AddListener(OnClickStartGame);
         m_findRoomButton.onClick.AddListener(OnClickFindRoom);
+
+        
     }
     private void Start()
     {
@@ -20,12 +22,15 @@ public class TitleTestUI : MonoBehaviour
     private void OnDestroy()
     {
         NetworkManager.Instance.OnJoinedRoomEvent -= OnJoinedRoom;
+
+        //SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
     private void OnClickStartGame()
     {
         SceneManager.LoadScene(GameManager.TestSceneName);
     }
+    
     private void OnClickFindRoom()
     {
         m_lobbyPanel.Open(); // 오프라인이면 여기서 접속 시작
