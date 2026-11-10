@@ -18,6 +18,8 @@ public sealed class StatusEffectFeedback : MonoBehaviour
     [Tooltip("상태 시작 시 한 번 재생하고 종료 시 정지. 반복과 연출 내용은 Feel에서 구성")]
     [SerializeField] private MMF_Player whileActiveFeedbacks;
 
+    [SerializeField] private StatusEffectPetrifySurface petrifySurface;
+
     private bool initialized;
     private bool whileActiveStarted;
 
@@ -29,6 +31,11 @@ public sealed class StatusEffectFeedback : MonoBehaviour
         if (initialized)
         {
             return;
+        }
+
+        if (petrifySurface != null)
+        {
+            petrifySurface.Initialize(target);
         }
 
         InitializePlayer(registeredFeedbacks, target);

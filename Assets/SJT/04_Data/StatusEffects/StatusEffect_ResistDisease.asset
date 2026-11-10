@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f369f5ba453315b469543197edf9508a, type: 3}
+  m_Name: StatusEffect_ResistDisease
+  m_EditorClassIdentifier: Assembly-CSharp::StatusEffectData
+  statusId: 70022
+  statusEffectType: 22
+  effectCategory: 1
+  stateName: "\uC800\uD56D - \uC9C8\uBCD1"
+  maxStackCount: 5
+  duration: 30
+  tickSec: 30
+  tickDamagePerStack: 0
+  valuePerStack: 0
+  blockedStatusEffect: {fileID: 11400000, guid: 405bf953820f48669492c4f7aa24a615, type: 2}
+  feedbackPrefab: {fileID: 2529819539747094230, guid: 0815be42b078a994c88cfd5e692412af, type: 3}
+  icon: {fileID: 0}
