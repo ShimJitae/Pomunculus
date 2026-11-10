@@ -46,6 +46,7 @@ public class EnemyPatternDataSO : ScriptableObject
     [SerializeField] private int monsterId;
     [SerializeField] private string patternName;
 
+
     [Header("행동 수치")]
     [SerializeField, Min(0f)] private float telegraph;
     [SerializeField, Min(0), FormerlySerializedAs("damage")] private int value;   // 피해·중첩 수·회복량 등 패턴별 수치
@@ -59,7 +60,10 @@ public class EnemyPatternDataSO : ScriptableObject
 
     [Header("공격 범위 (실제로 맞는 영역)")]
     [SerializeField] private AttackAreaData attackArea;
-    
+
+    [Header("스킬 파티클")]
+    [SerializeField] private GameObject skillParticle;
+
     [Header("설명")]
     [SerializeField, TextArea(3, 8)] private string note;
 
@@ -75,7 +79,10 @@ public class EnemyPatternDataSO : ScriptableObject
     public float UseRange => useRange;
     public AttackAreaData AttackArea => attackArea;
     public string AnimatorTrigger => animatorTrigger.ToString();
+    public GameObject SkillParticle => skillParticle;
     public string Note => note;
+
+
 
     public string GetPatternName()
     {
