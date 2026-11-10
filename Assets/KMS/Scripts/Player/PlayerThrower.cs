@@ -73,14 +73,16 @@ public class PlayerThrower : MonoBehaviour
         owner.SendThrow(origin, velocity, gravity, potionId);
     }
 
+    // 포션에 맞는 투사체 프리팹. 포션이 없거나 프리팹이 비어 있으면 빈 병
+    public ThrownProjectile GetProjectilePrefab(PotionData potion)
+        => potion != null && potion.ProjectilePrefab != null ? potion.ProjectilePrefab : emptyBottlePrefab;
+
     // RPC로 받은 값 그대로 투사체를 만든다 (모든 클라이언트에서 실행)
     public void SpawnProjectile(Vector3 origin, Vector3 velocity, Vector3 gravity, int potionId)
     {
         PotionData potion = FindPotion(potionId);
 
-        ThrownProjectile prefab = potion != null && potion.ProjectilePrefab != null
-                    ? potion.ProjectilePrefab
-                    : emptyBottlePrefab;
+        ThrownProjectile prefab = GetProjectilePrefab(potion);
 
         if (prefab == null)
         {
