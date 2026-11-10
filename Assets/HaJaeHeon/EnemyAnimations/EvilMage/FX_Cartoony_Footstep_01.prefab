@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 7129992936511034391}
   - component: {fileID: 1027239602198863283}
   - component: {fileID: 3482992550264897844}
+  - component: {fileID: 8331337846487039772}
   m_Layer: 0
   m_Name: FX_Cartoony_Footstep_01
   m_TagString: Untagged
@@ -50,7 +51,7 @@ ParticleSystem:
   emitterVelocityMode: 1
   looping: 0
   prewarm: 0
-  playOnAwake: 1
+  playOnAwake: 0
   useUnscaledTime: 0
   autoRandomSeed: 1
   startDelay:
@@ -4915,3 +4916,17 @@ ParticleSystemRenderer:
   m_MeshWeighting1: 1
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
+--- !u!114 &8331337846487039772
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1082205915419121135}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c9ab6142cca87994a91b659ab9f22f02, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyAttackFeedback
+  telegraphFeedbacks: {fileID: 0}
+  hitFeedbacks: {fileID: 0}
