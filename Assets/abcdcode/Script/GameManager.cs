@@ -17,6 +17,12 @@ public class GameManager : SingletonBehavior<GameManager>
         PhotonNetwork.PrefabPool = new NetworkPrefabPool(Resources.Load<NetworkPrefabCatalog>("NetworkPrefabCatalog"));
         PlayerSpawnRegister();
     }
+    private void Update()
+    {
+        if (Instance != this) return; // 파괴 대기 중인 중복 GameManager가 시간을 두 번 흘리지 않도록
+        if (m_worldClosing) return; // 방장이 나가 퇴장 중. 새 방장 취급되어 날짜를 넘기지 않도록
+        WorldManager.Instance.Update(Time.deltaTime);
+    }
     private void OnDestroy()
     {
         if (m_playerSpawnRegistered) PlayerSpawnUnregister();
@@ -34,6 +40,7 @@ public class GameManager : SingletonBehavior<GameManager>
         NetworkManager.Instance.OnJoinedRoomEvent += OnJoinedRoom;
         NetworkManager.Instance.OnLeftRoomEvent += OnLeftRoom;
         NetworkManager.Instance.OnPlayerLeftRoomEvent += OnPlayerLeftRoom;
+        NetworkManager.Instance.OnMasterClientSwitchedEvent += OnMasterClientSwitched;
         NetworkManager.Instance.OnStateChangedEvent += OnNetworkStateChanged;
         SceneManager.sceneLoaded += OnSceneLoaded;
         WorldManager.Instance.OnSpawnedEvent += OnWorldObjSpawned;
@@ -44,6 +51,7 @@ public class GameManager : SingletonBehavior<GameManager>
         NetworkManager.Instance.OnJoinedRoomEvent -= OnJoinedRoom;
         NetworkManager.Instance.OnLeftRoomEvent -= OnLeftRoom;
         NetworkManager.Instance.OnPlayerLeftRoomEvent -= OnPlayerLeftRoom;
+        NetworkManager.Instance.OnMasterClientSwitchedEvent -= OnMasterClientSwitched;
         NetworkManager.Instance.OnStateChangedEvent -= OnNetworkStateChanged;
         SceneManager.sceneLoaded -= OnSceneLoaded;
         WorldManager.Instance.OnSpawnedEvent -= OnWorldObjSpawned;
@@ -157,15 +165,24 @@ public class GameManager : SingletonBehavior<GameManager>
     // 다른 플레이어가 나가면 방장이 그 플레이어 소유의 오브젝트를 제거
     private void OnPlayerLeftRoom(Player player)
     {
-        if (!PhotonNetwork.IsMasterClient) return;
+        if (m_worldClosing || !PhotonNetwork.IsMasterClient) return;
         var leftObjs = WorldManager.Instance.Objects.GetList()
             .FindAll(o => o is IPlayerObj p && p.Owner == player.ActorNumber);
         foreach (var obj in leftObjs) WorldManager.Instance.Despawn(obj.ID);
+    }
+    // 월드는 방장의 것이므로 방장이 나가면 계승하지 않고 남은 플레이어도 모두 퇴장 (OnLeftRoom을 거쳐 타이틀로)
+    private void OnMasterClientSwitched(Player newMaster)
+    {
+        if (!PhotonNetwork.InRoom) return;
+        Debug.Log("[GameManager] 방장이 나가 월드 종료");
+        m_worldClosing = true;
+        NetworkManager.Instance.LeaveRoom();
     }
     // 내가 나가면 월드 전체 정리
     private void OnLeftRoom()
     {
         m_worldPending = false;
+        m_worldClosing = false;
         WorldManager.Instance.SaveWorld(TempWorldSlot); // 참여한 월드면 WorldManager에서 무시됨
         RaiseEventManager.Instance.UnRegisterEvent((int)WorldEventID.PlayerSpawnRequest);
         WorldManager.Instance.Release();
@@ -173,9 +190,10 @@ public class GameManager : SingletonBehavior<GameManager>
 
     private const string PlayerPrefabId = "Player";
     private static readonly Vector3 PlayerSpawnPosition = new(0f, 1f, 0f);
-    private const int TempWorldSlot = 0; // TODO 월드 선택 전까지 사용하는 고정 슬롯
+    public const int TempWorldSlot = 0; // TODO 월드 선택 전까지 사용하는 고정 슬롯
     private const int OfflineActor = -1; // 방 밖에서의 PhotonNetwork.LocalPlayer.ActorNumber
     private bool m_worldPending;
+    private bool m_worldClosing; // 방장이 나가 방을 나가는 중
     private bool m_playerSpawnRegistered;
     #endregion
     public void UserProfileInit()

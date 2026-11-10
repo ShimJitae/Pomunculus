@@ -304,7 +304,12 @@ public class NetworkManager : Singleton<NetworkManager>, IConnectionCallbacks, I
         if (propertiesThatChanged.ContainsKey(CurrentSceneProperty) && NeedsSceneSync()) State = NetworkState.LoadingScene;
     }
     public void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps) { }
-    public void OnMasterClientSwitched(Player newMasterClient) { }
+    // 방장이 나가서 다른 플레이어가 방장이 됨
+    public void OnMasterClientSwitched(Player newMasterClient)
+    {
+        Debug.Log($"[Network] 방장 변경 : #{newMasterClient?.ActorNumber}");
+        OnMasterClientSwitchedEvent?.Invoke(newMasterClient);
+    }
     #endregion
 
     public event Action<NetworkState> OnStateChangedEvent;
@@ -317,6 +322,7 @@ public class NetworkManager : Singleton<NetworkManager>, IConnectionCallbacks, I
     public event Action<short, string> OnJoinRoomFailedEvent;
     public event Action OnLeftRoomEvent;
     public event Action<Player> OnPlayerLeftRoomEvent;
+    public event Action<Player> OnMasterClientSwitchedEvent;
 
     // PhotonNetwork.CurrentSceneProperty(internal)와 같은 키
     private const string CurrentSceneProperty = "curScn";

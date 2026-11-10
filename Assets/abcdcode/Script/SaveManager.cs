@@ -18,6 +18,11 @@ public class SaveManager : Singleton<SaveManager>
         var data = JsonConvert.DeserializeObject<SaveData>(json);
         return data;
     }
+    public bool Exists(string fileName) => File.Exists(SavePath(fileName));
+    public void Delete(string fileName)
+    {
+        if(Exists(fileName)) File.Delete(SavePath(fileName));
+    }
     public string SavePath(string fileName)
     {
         return $"{Application.persistentDataPath}/{fileName}";
