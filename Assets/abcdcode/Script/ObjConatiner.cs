@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 public class ObjContainer<T> where T : IdOwner
 {
@@ -8,12 +9,14 @@ public class ObjContainer<T> where T : IdOwner
     {
         m_items.Add(item);
         onAddItem?.Invoke(item);
+        Debug.Log($"Item Add : {item.ID}");
     }
     public virtual void Remove(T item)
     {
         if(m_items.Remove(item))
         {
             onRemoveItem?.Invoke(item);
+            Debug.Log($"Item Remove : {item.ID}");
         }
     }
     public virtual void Remove(int id)

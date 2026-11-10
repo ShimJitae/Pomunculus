@@ -23,7 +23,7 @@ public class GameManager : SingletonBehavior<GameManager>
     }
 
     #region 플레이어 생성
-    // 오프라인 : 월드 씬에 들어오면 WorldTestUI가 StartWorldOffline 호출 -> 내 플레이어 생성
+    // 오프라인 : 방 밖에서 월드 씬 로딩이 끝나면 StartWorldOffline 호출 -> 내 플레이어 생성
     // 온라인 : 방에 들어와 월드 씬 로딩이 끝나면 자기 소유의 플레이어를 하나 생성 (생성 자체는 방장이 처리)
     // 플레이어가 방을 나가면 방장이 그 플레이어 소유의 오브젝트를 제거
     public const string TitleSceneName = "abcdcode_TitleTestScene";
@@ -56,15 +56,26 @@ public class GameManager : SingletonBehavior<GameManager>
         TryStartWorld(SceneManager.GetActiveScene().name);
     }
     private void OnNetworkStateChanged(NetworkState state) => TryStartWorld(SceneManager.GetActiveScene().name);
-    private void OnSceneLoaded(Scene scene, LoadSceneMode mode) => TryStartWorld(scene.name);
+    // 오프라인 시작은 씬 로드 시점에만 판단. 상태 변경 이벤트로는 접속 중간 상태마다 불려 월드가 중복 생성됨
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        if (PhotonNetwork.InRoom) TryStartWorld(scene.name);
+        else TryStartWorldOffline(scene.name);
+    }
     private void TryStartWorld(string sceneName)
     {
         if (!m_worldPending || NetworkManager.Instance.State != NetworkState.InRoom || sceneName != TestSceneName) return;
         StartWorldOnline();
     }
+    private void TryStartWorldOffline(string sceneName)
+    {
+        if (sceneName != TestSceneName) return;
+        StartWorldOffline();
+    }
     // 월드 씬에 오프라인으로 들어왔을 때 호출. 오프라인은 방장 취급
     public void StartWorldOffline()
     {
+        Debug.Log("StartWorldOffline");
         if (PhotonNetwork.InRoom) return;
         WorldManager.Instance.Init();
         WorldManager.Instance.RequestSnapshot(); // 방장이면 바로 준비 완료
