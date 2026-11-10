@@ -63,6 +63,12 @@ public class EnemyPatternDataSO : ScriptableObject
 
     [Header("스킬 파티클")]
     [SerializeField] private GameObject skillParticle;
+    [SerializeField] private GameObject hitParticle;
+
+    [Header("스킬 파티클 보정 (공격 방향 기준)")]
+    [SerializeField] private Vector3 skillParticleOffset;                 // 위치 보정: x 옆, y 높이, z 앞
+    [SerializeField] private Vector3 skillParticleRotation;               // 회전 보정 (Vefects 이펙트는 Y -90부터 시작)
+    [SerializeField] private bool scaleSkillParticleWithArea = true;      // 범위 크기에 맞춰 스케일 조절
 
     [Header("설명")]
     [SerializeField, TextArea(3, 8)] private string note;
@@ -80,6 +86,10 @@ public class EnemyPatternDataSO : ScriptableObject
     public AttackAreaData AttackArea => attackArea;
     public string AnimatorTrigger => animatorTrigger.ToString();
     public GameObject SkillParticle => skillParticle;
+    public GameObject HitParticle => hitParticle;
+    public Vector3 SkillParticleOffset => skillParticleOffset;
+    public Vector3 SkillParticleRotation => skillParticleRotation;
+    public bool ScaleSkillParticleWithArea => scaleSkillParticleWithArea;
     public string Note => note;
 
 

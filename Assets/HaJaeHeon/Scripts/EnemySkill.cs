@@ -21,6 +21,7 @@ public class EnemySkill : MonoBehaviour
     private readonly HashSet<IDamageable> alreadyHitTargets = new();
     private bool isAttackActive;
     private float hitAcceptStartTime; // 이 시각 전의 판정 이벤트는 이전 공격 모션의 잔여 이벤트로 보고 무시
+    private readonly Dictionary<GameObject, List<GameObject>> spawnPools = new();   // 프리팹별 소환 인스턴스 (꺼진 것을 재사용)
 
     private Enemy enemy;
     private NavMeshAgent agent;
@@ -149,6 +150,86 @@ public class EnemySkill : MonoBehaviour
         enemy.BehaviorGraphAgent.SetVariableValue("IsAttackActive", isActive);
     }
 
+    // 범위 표시와 같은 중심 위치 (바닥 높이)
+    private Vector3 GetAttackAreaCenter()
+    {
+        Vector3 areaOffset = CurrentAttackPattern.AttackArea.offset;
+        Vector3 flatOffset = new Vector3(areaOffset.x, 0f, areaOffset.z);
+
+        return AttackOrigin + AttackRotation * flatOffset;
+    }
+
+    // 범위 크기에 맞춘 소환 스케일. 소환 프리팹은 반지름 1(직사각형은 폭 1·길이 1, +Z 방향) 기준으로 만든다
+    private Vector3 GetAttackAreaScale()
+    {
+        AttackAreaData area = CurrentAttackPattern.AttackArea;
+
+        switch (area.shape)
+        {
+            case AttackAreaShape.Circle:
+            case AttackAreaShape.Sector:
+                return area.radius > 0f ? Vector3.one * area.radius : Vector3.one;
+
+            case AttackAreaShape.Rectangle:
+                return new Vector3(Mathf.Max(area.width, 0.01f), 1f, Mathf.Max(area.length, 0.01f));
+
+            default:
+                return CurrentAttackPattern.SkillParticle.transform.localScale;   // 범위 없음: 프리팹 원래 크기
+        }
+    }
+
+    // 스킬 파티클 소환: 범위 중심에 패턴별 위치·회전 보정을 더함 (보정은 공격 방향 기준)
+    private void SpawnSkillParticle()
+    {
+        EnemyPatternDataSO attackPattern = CurrentAttackPattern;
+
+        Vector3 spawnPosition = GetAttackAreaCenter() + AttackRotation * attackPattern.SkillParticleOffset;
+        Quaternion spawnRotation = AttackRotation * Quaternion.Euler(attackPattern.SkillParticleRotation);
+        Vector3 spawnScale = attackPattern.ScaleSkillParticleWithArea
+            ? GetAttackAreaScale()
+            : attackPattern.SkillParticle.transform.localScale;
+
+        SpawnFromPool(attackPattern.SkillParticle, spawnPosition, spawnRotation, spawnScale);
+    }
+
+    // 꺼진 인스턴스를 재사용하고 없으면 새로 생성. 파티클 Stop Action = Disable이라 끝나면 스스로 꺼짐
+    private void SpawnFromPool(GameObject spawnPrefab, Vector3 spawnPosition, Quaternion spawnRotation, Vector3 spawnScale)
+    {
+        if (!spawnPools.TryGetValue(spawnPrefab, out List<GameObject> spawnedInstances))
+        {
+            spawnedInstances = new List<GameObject>();
+            spawnPools.Add(spawnPrefab, spawnedInstances);
+        }
+
+        foreach (GameObject pooledInstance in spawnedInstances)
+        {
+            if (pooledInstance != null && !pooledInstance.activeSelf)
+            {
+                pooledInstance.transform.SetPositionAndRotation(spawnPosition, spawnRotation);
+                pooledInstance.transform.localScale = spawnScale;   // 같은 프리팹을 다른 크기의 패턴이 쓸 수 있으므로 매번 설정
+                pooledInstance.SetActive(true);   // 켜질 때 Play On Awake로 다시 재생
+                return;
+            }
+        }
+
+        GameObject newInstance = Instantiate(spawnPrefab, spawnPosition, spawnRotation);
+        newInstance.transform.localScale = spawnScale;
+        spawnedInstances.Add(newInstance);
+    }
+
+    // 적이 파괴되면 남은 소환물도 정리
+    private void OnDestroy()
+    {
+        foreach (List<GameObject> spawnedInstances in spawnPools.Values)
+        {
+            foreach (GameObject spawnInstance in spawnedInstances)
+            {
+                if (spawnInstance != null)
+                    Destroy(spawnInstance);
+            }
+        }
+    }
+
     // 애니메이션 이벤트에서 호출 (Function: OnAttackHit, Float: 피해 배율 %)
     public void OnAttackHit(float damagePercent)
     {
@@ -159,6 +240,9 @@ public class EnemySkill : MonoBehaviour
         // Animator는 모든 클라이언트에서 재생되므로, 표시 숨김은 판정 권한과 상관없이 모두 처리
         if (attackIndicator != null)
             attackIndicator.Hide();
+
+        if (CurrentAttackPattern != null && CurrentAttackPattern.SkillParticle != null)
+            SpawnSkillParticle();
 
         if (PhotonNetwork.InRoom && !PhotonNetwork.IsMasterClient)
             return;
@@ -199,6 +283,10 @@ public class EnemySkill : MonoBehaviour
             }
 
             damageTarget.TakeDamage(damage, AttackOrigin);
+
+            // 맞은 대상 위치에 피격 파티클 (판정이 방장에서만 일어나므로 현재는 방장 화면에만 보임)
+            if (CurrentAttackPattern.HitParticle != null)
+                SpawnFromPool(CurrentAttackPattern.HitParticle, targetComponent.transform.position, AttackRotation, CurrentAttackPattern.HitParticle.transform.localScale);
         }
     }
 
