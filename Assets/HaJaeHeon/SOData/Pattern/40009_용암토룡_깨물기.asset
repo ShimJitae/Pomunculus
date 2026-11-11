@@ -10,16 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2622a819b824cf64292e2f07625f2fa7, type: 3}
-  m_Name: "40007_\uC2A4\uCF08\uB808\uD1A4_\uD65C \uC3D8\uAE30"
+  m_Name: "40009_\uC6A9\uC554\uD1A0\uB8E1_\uAE68\uBB3C\uAE30"
   m_EditorClassIdentifier: Assembly-CSharp::EnemyPatternDataSO
-  patternId: 45062
-  monsterName: "\uC2A4\uCF08\uB808\uD1A4 \uD65C"
-  monsterId: 40007
-  patternName: "\uC2A4\uCF08\uB808\uD1A4_\uD65C \uC3D8\uAE30"
-  telegraph: 0.9
-  value: 11
-  recovery: 1.4
-  interval: 2
+  patternId: 45082
+  monsterName: "\uC6A9\uC554\uD1A0\uB8E1"
+  monsterId: 40009
+  patternName: "\uC6A9\uC554\uD1A0\uB8E1_\uAE68\uBB3C\uAE30"
+  telegraph: 0.3
+  value: 0
+  recovery: 1
+  interval: 0
   patternWeight: 1
   animatorTrigger: 2
   useRange: 0
@@ -31,4 +31,9 @@ MonoBehaviour:
     width: 0
     length: 0
     offset: {x: 0, y: 0, z: 0}
-  note: "\uD65C\uC744 \uB4E0 \uC2A4\uCF08\uB808\uD1A4\uC758 \uC6D0\uAC70\uB9AC \uACF5\uACA9"
+  skillParticle: {fileID: 0}
+  hitParticle: {fileID: 0}
+  skillParticleOffset: {x: 0, y: 0, z: 0}
+  skillParticleRotation: {x: 0, y: 0, z: 0}
+  scaleSkillParticleWithArea: 1
+  note: "\uAC15\uB825\uD55C \uC774\uBE68\uB85C \uD0C0\uAC9F\uC744 \uAE68\uBB38\uB2E4"

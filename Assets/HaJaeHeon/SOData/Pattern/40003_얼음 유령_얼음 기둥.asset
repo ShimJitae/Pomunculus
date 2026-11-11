@@ -10,16 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2622a819b824cf64292e2f07625f2fa7, type: 3}
-  m_Name: "40005_\uC2DD\uC778\uC2DD\uBB3C_\uB3C5 \uD22C\uC0AC\uCCB4"
+  m_Name: "40003_\uC5BC\uC74C \uC720\uB839_\uC5BC\uC74C \uAE30\uB465"
   m_EditorClassIdentifier: Assembly-CSharp::EnemyPatternDataSO
-  patternId: 45042
-  monsterName: "\uC2DD\uC778\uC2DD\uBB3C"
-  monsterId: 40005
-  patternName: "\uC2DD\uC778\uC2DD\uBB3C_\uB3C5 \uD22C\uC0AC\uCCB4"
-  telegraph: 0.8
+  patternId: 45021
+  monsterName: "\uC5BC\uC74C \uC720\uB839"
+  monsterId: 40003
+  patternName: "\uC5BC\uC74C \uC720\uB839_\uC5BC\uC74C \uAE30\uB465"
+  telegraph: 0.5
   value: 15
-  recovery: 1.2
-  interval: 2.5
+  recovery: 0.7
+  interval: 4
   patternWeight: 1
   animatorTrigger: 2
   useRange: 0
@@ -31,5 +31,10 @@ MonoBehaviour:
     width: 0
     length: 0
     offset: {x: 0, y: 0, z: 0}
-  note: "\uD65C\uC131\uD654 \uD6C4 \uC81C\uC790\uB9AC\uC5D0\uC11C \uB3C5 \uC911\uCCA9\uC744
-    \uC313\uB294 \uC6D0\uAC70\uB9AC \uACF5\uACA9"
+  skillParticle: {fileID: 0}
+  hitParticle: {fileID: 0}
+  skillParticleOffset: {x: 0, y: 0, z: 0}
+  skillParticleRotation: {x: 0, y: 0, z: 0}
+  scaleSkillParticleWithArea: 1
+  note: "\uD50C\uB808\uC774\uC5B4\uC5D0\uAC8C \uC5BC\uC74C \uAE30\uB465 \uACF5\uACA9\uC744
+    \uAC00\uD568"
