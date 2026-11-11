@@ -112,6 +112,8 @@ public class RegionChecker : MonoBehaviour
     {
         RegionType.Forest => "숲",
         RegionType.Volcano => "화산",
+        RegionType.SnowyMountain => "설산",
+        RegionType.Swamp => "독늪",
         _ => region.ToString(),
     };
 
