@@ -108,4 +108,9 @@ public class EnemyPatternDataSO : ScriptableObject
     {
         return monsterId;
     }
+
+    public int GetDamageValue()
+    {
+        return value;
+    }
 }

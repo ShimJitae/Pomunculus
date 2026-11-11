@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-[RequireComponent (typeof(Enemy))]
+[RequireComponent(typeof(Enemy))]
 public class EnemySkill : MonoBehaviour
 {
     // 패턴 선택 순간에 고정한 공격 기준값 (범위 표시와 판정이 함께 사용)
@@ -244,18 +244,12 @@ public class EnemySkill : MonoBehaviour
         if (CurrentAttackPattern != null && CurrentAttackPattern.SkillParticle != null)
             SpawnSkillParticle();
 
-        if (PhotonNetwork.InRoom && !PhotonNetwork.IsMasterClient)
-            return;
-
-        if (!isAttackActive)
+        if (PhotonNetwork.InRoom && !PhotonNetwork.IsMasterClient || !isAttackActive)
             return;
 
         SetAttackActive(false);
 
-        if (!enemy.CanDoAttack)
-            return;
-
-        if (CurrentAttackPattern == null || CurrentAttackPattern.AttackArea.shape == AttackAreaShape.None)
+        if (!enemy.CanDoAttack || CurrentAttackPattern == null || CurrentAttackPattern.AttackArea.shape == AttackAreaShape.None)
             return;
 
         AttackAreaData area = CurrentAttackPattern.AttackArea;
@@ -263,7 +257,7 @@ public class EnemySkill : MonoBehaviour
         Vector3 areaCenter = AttackOrigin + AttackRotation * area.offset;
 
         int hitCount = OverlapArea(area, areaCenter, attackForward);
-        int damage = Mathf.RoundToInt(enemy.Data.GetAtk() * damagePercent / 100f);
+        int damage = Mathf.RoundToInt( CurrentAttackPattern.GetDamageValue() * damagePercent / 100f);
         alreadyHitTargets.Clear();
 
         for (int index = 0; index < hitCount; index++)
