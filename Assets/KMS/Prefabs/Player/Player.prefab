@@ -705,7 +705,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::WorldAnimatorSync
   m_layers: []
-  m_parameters: []
+  m_parameters:
+  - Type: 1
+    SynchronizeType: 2
+    Name: Speed
   m_sendRate: 10
   m_sampleRate: 30
   m_changeThreshold: 0.001
