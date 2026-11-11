@@ -397,6 +397,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::StatusEffectVisualizer
   anchor: {fileID: 0}
   feedbackTarget: {fileID: 0}
+  fitToModelBounds: 0
 --- !u!4 &125320350590131815
 Transform:
   m_ObjectHideFlags: 0
@@ -2343,6 +2344,8 @@ GameObject:
   - component: {fileID: 1872276634}
   - component: {fileID: 1293915793430041634}
   - component: {fileID: 8045316640655995850}
+  - component: {fileID: 9007856693166345137}
+  - component: {fileID: 9007856693166345136}
   m_Layer: 3
   m_Name: Player
   m_TagString: Player
@@ -4247,6 +4250,7 @@ MonoBehaviour:
   m_sampleRate: 30
   m_changeThreshold: 0.001
   m_keyframeInterval: 1
+  m_stateLayers: 00000000
 --- !u!4 &8050209803201820308
 Transform:
   m_ObjectHideFlags: 0
@@ -4446,16 +4450,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8139520814af5324a89556d40b62a630, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerThrower
-  projectilePrefab: {fileID: -4413370916858422293, guid: 80d7319d140098f44b4c8c6bd809c118, type: 3}
+  emptyBottlePrefab: {fileID: 0}
   throwOrigin: {fileID: 6633543304846683745}
   maxThrowRange: 10
   throwHorizontalSpeed: 6
   minFlightTime: 0.1
   flightSpeedMultiplier: 1.5
   attackDamage: 10
-  enemyLayer:
+  hitLayers:
     serializedVersion: 2
-    m_Bits: 128
+    m_Bits: 0
 --- !u!114 &8441542970887762860
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4813,6 +4817,35 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &9007856693166345136
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4072954961385879052}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 488ac097f44c47848b3b10f5728ead3e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Pomunculus.Items.Inventory
+  slots: []
+--- !u!114 &9007856693166345137
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4072954961385879052}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 221a0025dd238ba4f9f44405e9cad2c3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Pomunculus.Items.PotionLoadout
+  slots:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
 --- !u!1 &9060112128366404763
 GameObject:
   m_ObjectHideFlags: 0
