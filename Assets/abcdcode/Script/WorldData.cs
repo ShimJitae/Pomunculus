@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -34,7 +36,16 @@ public class WorldData
     public void SaveEntities(IEnumerable<IWorldObj> objs)
     {
         Entities.Clear();
-        foreach(var obj in objs) Entities.Add(WorldObjSaveData.Create(obj));
+        foreach(var obj in objs) 
+        {
+            try{
+            if(obj.gameObject.IsDestroyed()) continue;
+            }catch(Exception e)
+            {
+                continue;
+            }
+            Entities.Add(WorldObjSaveData.Create(obj));
+        }
     }
 }
 

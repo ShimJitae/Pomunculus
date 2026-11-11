@@ -7,3 +7,10 @@ public interface IWorldObj : IdOwner,ISavable
     public string PrefabId{get;set;} // NetworkPrefabCatalog 이름
     public void InitWorldObj(int id, string prefabId); // WorldManager가 생성 직후 호출
 }
+public static class IWOHelper
+{
+    public static void Despawn(this IWorldObj obj)
+    {
+        WorldManager.Instance.Despawn(obj.ID);
+    }
+}

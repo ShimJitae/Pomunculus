@@ -63,7 +63,7 @@ public class WorldManager : Singleton<WorldManager>
             return;
         }
         if (CurWorldData.Time < DayLength) return;
-        
+
         while (CurWorldData.Time >= DayLength)
         {
             CurWorldData.Time -= DayLength;
