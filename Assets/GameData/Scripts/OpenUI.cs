@@ -17,6 +17,9 @@ namespace Pomunculus.Items
         [SerializeField] private GameObject inventoryUI;
         [SerializeField] private Key inventoryKey = Key.I;
 
+        [SerializeField] private GameObject craftingInteractionText;
+        public GameObject CraftingInteractionText => craftingInteractionText;
+
         private void Update()
         {
             Keyboard keyboard = Keyboard.current;
@@ -38,7 +41,6 @@ namespace Pomunculus.Items
             if (recipeBook != null)
                 recipeBook.SetActive(!recipeBook.activeSelf);
         }
-
         public void ToggleCraftingUI()
         {
             if (craftingUI == null)
@@ -51,13 +53,19 @@ namespace Pomunculus.Items
             if (craftingUI.TryGetComponent<PotionCrafting>(out var crafting))
                 crafting.Close();
         }
-
         public void ToggleInventoryUI()
         {
             if (inventoryUI != null)
                 inventoryUI.SetActive(!inventoryUI.activeSelf);
         }
-
+        public void CloseCraftingUI()
+        {
+            if (craftingUI != null && craftingUI.activeSelf &&
+                craftingUI.TryGetComponent<PotionCrafting>(out var crafting))
+            {
+                crafting.Close();
+            }
+        }
 
     }
 }

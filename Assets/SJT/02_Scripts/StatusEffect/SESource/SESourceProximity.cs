@@ -17,8 +17,8 @@ public sealed class SESourceProximity : SESource
     protected override float GetInterval(Entity target)
     {
         float distance = Vector3.Distance(transform.position, target.transform.position);
-        float t = Mathf.Clamp01(data.Curve.Evaluate(Mathf.Clamp01(distance / data.Radius)));
-        return Mathf.Lerp(data.MinInterval, data.Interval, t);
+        float distanceRatio = Mathf.Clamp01(distance / data.Radius);
+        return Mathf.Lerp(data.MinInterval, data.Interval, distanceRatio);
     }
 
     // 선택하지 않아도 씬 뷰에 감지 범위를 항상 표시한다

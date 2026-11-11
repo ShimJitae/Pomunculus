@@ -26,9 +26,6 @@ public abstract class SESource : MonoBehaviour
         return data == null || (data.IgnoreLayers & (1 << entity.gameObject.layer)) == 0;
     }
 
-    /// <summary>대상을 범위 안에 처음 등록했을 때 호출한다.</summary>
-    protected virtual void OnTargetEntered(Entity entity) { }
-
     // 플레이어에게 Rigidbody가 없으므로 트리거 이벤트를 받으려면 이쪽에 kinematic Rigidbody가 필요하다
     protected virtual void Awake()
     {
@@ -50,7 +47,6 @@ public abstract class SESource : MonoBehaviour
 
         entries.Add(new ApplyEntry { entity = entity, lastTime = Time.time });
         Apply(entity); // 들어오자마자 1회
-        OnTargetEntered(entity);
     }
 
     private void OnTriggerExit(Collider other)
