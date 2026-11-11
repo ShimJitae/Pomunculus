@@ -22,15 +22,20 @@ MonoBehaviour:
   interval: 3
   patternWeight: 1
   animatorTrigger: 0
-  useRange: 0
+  useRange: 5
   attackArea:
-    shape: 0
+    shape: 2
     anchor: 0
-    radius: 0
-    angle: 0
+    radius: 5
+    angle: 120
     width: 0
     length: 0
     offset: {x: 0, y: 0, z: 0}
+  skillParticle: {fileID: 1778345465858944, guid: a1a78ab3c8eccb3489cc6a5f6f5524d0, type: 3}
+  hitParticle: {fileID: 0}
+  skillParticleOffset: {x: 0, y: 0, z: 0}
+  skillParticleRotation: {x: 0, y: 0, z: 180}
+  scaleSkillParticleWithArea: 1
   note: "\uB808\uB4DC \uB4DC\uB798\uACE4\uC758 \uC77C\uBC18 \uACF5\uACA9 \uAE30\uC900\uAC12.
     \uD654\uC5FC\uAD6C, \uBE44\uC0C1, \uD654\uC5FC\uC744 \uB0B4\uBFDC\uB294 \uACF5\uACA9\uACFC
     \uCC29\uC9C0\uB294 \uBCC4\uB3C4 \uD589\uB3D9 \uC790\uB8CC\uB97C \uC0AC\uC6A9\uD55C\uB2E4.
