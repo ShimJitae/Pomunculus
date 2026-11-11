@@ -40,6 +40,8 @@ public class RegionVolume : MonoBehaviour
         {
             RegionType.Forest => new Color(0.2f, 0.8f, 0.2f),
             RegionType.Volcano => new Color(1f, 0.35f, 0.1f),
+            RegionType.SnowyMountain => new Color(0.75f, 0.9f, 1f),
+            RegionType.Swamp => new Color(0.45f, 0.3f, 0.6f),
             _ => Color.gray,
         };
         Gizmos.matrix = transform.localToWorldMatrix;

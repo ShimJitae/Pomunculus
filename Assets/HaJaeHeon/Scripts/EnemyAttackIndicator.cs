@@ -9,7 +9,7 @@ public class EnemyAttackIndicator : MonoBehaviour
 
     [SerializeField] private MeshRenderer indicatorRenderer;
     [SerializeField] private float groundOffset = 0.05f;   // 바닥과 겹쳐 깜빡이는 것 방지
-    [SerializeField] private float extraShowTime = 1f;     // 피격 이벤트가 없는 패턴용 자동 숨김 여유
+    [SerializeField] private float extraShowTime = 1f;     // 판정 이벤트 누락 대비 안전 숨김
 
     private MaterialPropertyBlock propertyBlock;
     private float telegraphDuration;

@@ -38,6 +38,9 @@ public class StatusEffectData : ScriptableObject
              "취약: 스택당 받는 피해 증가율, 헤이스트: 스택당 이동속도 증가율. 기절·빙결·구속·석화·무적은 사용하지 않음")]
     [SerializeField] private float valuePerStack;
 
+    [Tooltip("활성 상태에서 1중첩을 소모해 부여를 막을 상태. 비우면 차단하지 않는다.")]
+    [SerializeField] private StatusEffectData blockedStatusEffect;
+
     [Header("연출")]
     [Tooltip("이 상태의 공용 Feel 연출 프리팹. 비우면 상태 로직만 실행")]
     [SerializeField] private StatusEffectFeedback feedbackPrefab;
@@ -62,6 +65,8 @@ public class StatusEffectData : ScriptableObject
 
     /// <summary>상태별 수치를 반환한다. 의미는 상태 종류마다 다르다.</summary>
     public float ValuePerStack => valuePerStack;
+
+    public StatusEffectData BlockedStatusEffect => blockedStatusEffect;
 
     /// <summary>상태별로 대상 아래에 생성할 공용 Feel 연출 프리팹을 반환한다.</summary>
     public StatusEffectFeedback FeedbackPrefab => feedbackPrefab;

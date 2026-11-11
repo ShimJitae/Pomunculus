@@ -19,8 +19,7 @@ public class WorldTestUI : MonoBehaviour
         network.OnLeftRoomEvent += OnLeftRoom;
         network.OnCreateRoomFailedEvent += OnRoomFailed;
         network.OnDisconnectedEvent += OnDisconnected;
-        // 방을 통해 들어온 경우는 GameManager가 방 입장 흐름으로 처리
-        if (!PhotonNetwork.InRoom) GameManager.Instance.StartWorldOffline();
+        // 월드 시작은 GameManager가 씬 로드 시점에 오프라인/방 입장 흐름으로 처리
     }
     private void OnDestroy()
     {
@@ -59,11 +58,7 @@ public class WorldTestUI : MonoBehaviour
 
     // 월드 정리는 GameManager.OnLeftRoom에서 처리
     private void OnLeftRoom() => SceneManager.LoadScene(GameManager.TitleSceneName);
-    private void GoTitle()
-    {
-        WorldManager.Instance.Release();
-        SceneManager.LoadScene(GameManager.TitleSceneName);
-    }
+    private void GoTitle() => GameManager.Instance.GoToTitle();
 
     private void OnGUI()
     {

@@ -31,6 +31,8 @@ public class NetworkManager : Singleton<NetworkManager>, IConnectionCallbacks, I
             SceneManager.sceneLoaded += OnSceneLoaded;
             m_initialized = true;
         }
+        // 방 밖에서 설정하면 입장할 때 같이 전송되므로, 다른 플레이어가 ActorNumber로 UID를 바로 찾을 수 있음
+        PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable { { UidProperty, GameManager.Instance.LocalUserProfile.UID } });
         if (PhotonNetwork.IsConnected) return;
         PhotonNetwork.GameVersion = $"v{GameManager.Instance.Version}";
         PhotonNetwork.NickName = GameManager.Instance.LocalUserProfile.UserName;
@@ -302,7 +304,12 @@ public class NetworkManager : Singleton<NetworkManager>, IConnectionCallbacks, I
         if (propertiesThatChanged.ContainsKey(CurrentSceneProperty) && NeedsSceneSync()) State = NetworkState.LoadingScene;
     }
     public void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps) { }
-    public void OnMasterClientSwitched(Player newMasterClient) { }
+    // 방장이 나가서 다른 플레이어가 방장이 됨
+    public void OnMasterClientSwitched(Player newMasterClient)
+    {
+        Debug.Log($"[Network] 방장 변경 : #{newMasterClient?.ActorNumber}");
+        OnMasterClientSwitchedEvent?.Invoke(newMasterClient);
+    }
     #endregion
 
     public event Action<NetworkState> OnStateChangedEvent;
@@ -315,9 +322,12 @@ public class NetworkManager : Singleton<NetworkManager>, IConnectionCallbacks, I
     public event Action<short, string> OnJoinRoomFailedEvent;
     public event Action OnLeftRoomEvent;
     public event Action<Player> OnPlayerLeftRoomEvent;
+    public event Action<Player> OnMasterClientSwitchedEvent;
 
     // PhotonNetwork.CurrentSceneProperty(internal)와 같은 키
     private const string CurrentSceneProperty = "curScn";
+    // 플레이어 커스텀 프로퍼티. UserProfile.UID
+    public const string UidProperty = "uid";
     private bool m_initialized;
     private NetworkState m_state = NetworkState.Offline;
     private readonly Dictionary<string, RoomInfo> m_roomList = new();

@@ -134,6 +134,17 @@ public class Entity : MonoBehaviour, IWorldObj, IDamageable
         Debug.Log("Entity 사망");
     }
 
+    public void RegisterStatusEffect(StatusEffectType seType)
+    {
+        if (statusEffectController == null || seType == StatusEffectType.None)
+        {
+            return;
+        }
+
+        // TODO: Entity에 SendRegisterStatusEffect가 추가되면 entity.SendRegisterStatusEffect(seType)로 교체
+        statusEffectController.ApplyStatusEffectLocal(seType);
+    }
+
     protected virtual int GetId()
     {
         return entityId;

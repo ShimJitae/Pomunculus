@@ -6,6 +6,7 @@ namespace Pomunculus.Items
     public class Inventory : MonoBehaviour
     {
         [SerializeField] private List<InventorySlot> slots = new List<InventorySlot>();
+        public List<InventorySlot> Slots => slots;
         public event System.Action Changed;
         public void AddItem(int itemId, int amount = 1)
         {
