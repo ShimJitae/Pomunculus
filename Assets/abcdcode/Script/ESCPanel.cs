@@ -24,5 +24,13 @@ public class ESCPanel : MonoBehaviour
     {
         GameManager.Instance.GoToTitle();
     }
+    public void SpawnMob()
+    {
+        WorldManager.Instance.Spawn("EvilMagePADefault",new Vector3(5,1,5),Quaternion.identity,null);
+    }
+    public void SpawnTree()
+    {
+         WorldManager.Instance.Spawn("GatherTree",new Vector3(-5,1,-5),Quaternion.identity,null);
+    }
     [SerializeField]private Transform Root;
 }
