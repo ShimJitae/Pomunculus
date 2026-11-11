@@ -19,19 +19,27 @@ public abstract class SESource : MonoBehaviour
     /// <summary>이 대상에게 지금 적용할 부여 간격(초)</summary>
     protected abstract float GetInterval(Entity target);
 
-    /// <summary>이 Entity에게 상태이상을 걸 수 있는지. 기본은 SO의 무시 레이어가 아닌 Entity</summary>
+    /// <summary>이 Entity에게 상태이상을 걸 수 있는지. 기본은 SO의 대상 레이어에 속한 Entity</summary>
     protected virtual bool CanTarget(Entity entity)
     {
         SESourceData data = Data;
-        return data == null || (data.IgnoreLayers & (1 << entity.gameObject.layer)) == 0;
+        return data != null && (data.TargetLayers & (1 << entity.gameObject.layer)) != 0;
     }
 
     // 플레이어에게 Rigidbody가 없으므로 트리거 이벤트를 받으려면 이쪽에 kinematic Rigidbody가 필요하다
     protected virtual void Awake()
     {
         GetComponent<Rigidbody>().isKinematic = true;
+
+        // 대상이 아닌 레이어와는 물리 쌍을 만들지 않는다. 범위 안의 지형·소품마다 들어오던
+        // OnTriggerEnter 호출과 GetComponentInParent 비용이 사라진다
+        SESourceData data = Data;
+        int exclude = data != null ? ~data.TargetLayers.value : ~0;
         foreach (Collider col in GetComponents<Collider>())
+        {
             col.isTrigger = true;
+            col.excludeLayers = exclude;
+        }
     }
 
     // 다시 켜지면 겹쳐 있는 대상의 OnTriggerEnter가 새로 들어온다
