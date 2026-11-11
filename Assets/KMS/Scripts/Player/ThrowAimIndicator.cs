@@ -30,14 +30,19 @@ public class ThrowAimIndicator : MonoBehaviour
         }
 
         Vector3 goal = player.Thrower.ClampToThrowRange(mousePoint);
-        Vector3 impactPoint = DrawTrajectory(goal);
-        DrawRangeCircle(impactPoint, GetImpactRadius());
+        ThrownProjectile prefab = player.Thrower.GetProjectilePrefab(player.GetThrowablePotion());
+        Vector3 impactPoint = DrawTrajectory(goal, prefab);
+        DrawRangeCircle(impactPoint, prefab != null ? prefab.ImpactRadius : 0f);
         SetVisible(true);
     }
 
-    // 포물선을 그리다가 장애물에 먼저 닿으면 거기서 끊는다. 실제 착탄 지점을 돌려준다
-    Vector3 DrawTrajectory(Vector3 goal)
+    // 투사체와 같은 크기의 구를 궤적을 따라 밀어 보며, 먼저 닿는 곳에서 끊는다. 실제 착탄 지점을 돌려준다
+    Vector3 DrawTrajectory(Vector3 goal, ThrownProjectile prefab)
     {
+        Vector3 centerOffset = Vector3.zero;
+        float radius = 0f;
+        if (prefab != null) prefab.TryGetCollisionSphere(out centerOffset, out radius);
+
         Vector3 origin = player.Thrower.GetThrowOrigin();
         Vector3 velocity = player.Thrower.CalculateLaunchVelocity(origin, goal, out float flightTime, out Vector3 gravity);
 
@@ -50,11 +55,19 @@ public class ThrowAimIndicator : MonoBehaviour
             float time = flightTime * i / trajectorySegmentCount;
             Vector3 next = origin + velocity * time + 0.5f * time * time * gravity;
 
-            if (Physics.Linecast(previous, next, out RaycastHit hit, obstacleLayers, QueryTriggerInteraction.Ignore))
+            Vector3 step = next - previous;
+            float distance = step.magnitude;
+            Vector3 direction = step / distance;
+
+            // 실제 충돌 구는 피벗에서 centerOffset만큼 떨어진 곳에 있다
+            if (Physics.SphereCast(previous + centerOffset, radius, direction, out RaycastHit hit,
+                                   distance, obstacleLayers, QueryTriggerInteraction.Ignore))
             {
-                trajectoryLine.SetPosition(i, hit.point);
+                trajectoryLine.SetPosition(i, previous + direction * hit.distance);   // 포션이 멈추는 위치
                 trajectoryLine.positionCount = i + 1;
-                return hit.point;
+
+                // 시작부터 겹쳐 있으면 hit.point가 (0,0,0)으로 나온다
+                return hit.distance > 0f ? hit.point : previous;
             }
 
             trajectoryLine.SetPosition(i, next);
