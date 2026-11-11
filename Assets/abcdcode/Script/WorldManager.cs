@@ -24,6 +24,7 @@ public class WorldManager : Singleton<WorldManager>
         RaiseEventManager.Instance.RegisterEvent((int)WorldEventID.WorldRPC, RPCHelper.OnReceive);
         RaiseEventManager.Instance.RegisterEvent((int)WorldEventID.SpawnRequest, OnReceiveSpawnRequest);
         RaiseEventManager.Instance.RegisterEvent((int)WorldEventID.DayChanged, OnReceiveDayChanged);
+        RegionSpawner.Instance.Init();
         m_initialized = true;
     }
     public void Release()
@@ -36,6 +37,7 @@ public class WorldManager : Singleton<WorldManager>
         RaiseEventManager.Instance.UnRegisterEvent((int)WorldEventID.WorldRPC);
         RaiseEventManager.Instance.UnRegisterEvent((int)WorldEventID.SpawnRequest);
         RaiseEventManager.Instance.UnRegisterEvent((int)WorldEventID.DayChanged);
+        RegionSpawner.Instance.Release();
         ClearWorld();
         CurSlot = NoSlot;
         m_initialized = false;

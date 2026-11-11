@@ -22,6 +22,7 @@ public class GameManager : SingletonBehavior<GameManager>
         if (Instance != this) return; // 파괴 대기 중인 중복 GameManager가 시간을 두 번 흘리지 않도록
         if (m_worldClosing) return; // 방장이 나가 퇴장 중. 새 방장 취급되어 날짜를 넘기지 않도록
         WorldManager.Instance.Update(Time.deltaTime);
+        RegionSpawner.Instance.Update(Time.deltaTime);
     }
     private void OnDestroy()
     {
