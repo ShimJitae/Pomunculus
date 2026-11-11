@@ -138,6 +138,8 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IWorldRPC
             Owner = Owner,
             CurrentHp = CurrentHp,
             CurrentStamina = Stats.CurrentStamina,
+
+            Item = Inventory.Slots
         };
         _data.SetData(state);
         _data.Child["b"] = s;
@@ -146,16 +148,21 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IWorldRPC
     // 저장 데이터에서 상태를 꺼내 적용한다.
     public override void LoadData(SaveData _data)
     {
-        base.LoadData(_data.Child["b"]); // Entity 내부 데이터(지금은 상태이상 값) 불러오기
-
         if (_data?.Data == null) return; // 처음 생성됐거나 예전 세이브라 데이터가 없을 때
-
+        if (_data.Child.TryGetValue("b", out SaveData entityData))
+            base.LoadData(entityData);
         var state = _data.GetData<PlayerWorldData>();
         SetOwner(state.Owner);
         CurrentHp = state.CurrentHp;
         isDie = CurrentHp <= 0;
         Stats.LoadStamina(state.CurrentStamina);
         Stats.NotifyHpChanged();
+        if (state.Item != null)
+        {
+            Inventory.Slots.Clear();
+            foreach (var item in state.Item)
+                Inventory.AddItem(item.ItemId, item.Amount);
+        }
     }
 
     void Start() => SetState(IsDead ? PlayerStateType.Dead : PlayerStateType.Idle);

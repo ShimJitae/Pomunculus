@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -11,6 +13,9 @@ public class WorldData
 
     public Dictionary<string, PlayerSaveData> Players{get;set;} = new(); // key : UID
     public List<WorldObjSaveData> Entities{get;set;} = new();
+    // RegionSpawner 소환 기록
+    public Dictionary<RegionType, RegionSpawnRecord> RegionGathers{get;set;} = new();
+    public Dictionary<RegionType, RegionSpawnRecord> RegionMobs{get;set;} = new();
 
     public void SavePlayer(string uid, IWorldObj player)
     {
@@ -34,7 +39,16 @@ public class WorldData
     public void SaveEntities(IEnumerable<IWorldObj> objs)
     {
         Entities.Clear();
-        foreach(var obj in objs) Entities.Add(WorldObjSaveData.Create(obj));
+        foreach(var obj in objs) 
+        {
+            try{
+            if(obj.gameObject.IsDestroyed()) continue;
+            }catch(Exception e)
+            {
+                continue;
+            }
+            Entities.Add(WorldObjSaveData.Create(obj));
+        }
     }
 }
 
@@ -44,6 +58,21 @@ public class PlayerSaveData
     public SerialVector3 Position{get;set;}
     public SerialVector3 Rotation{get;set;} // eulerAngles
     public SaveData State{get;set;} // Player가 ISavable.SaveData로 채운 상태
+}
+
+// 지역 하나의 채집물 또는 몬스터 소환 기록. 날짜가 바뀌기 전까지는 이 기록대로만 다시 소환한다
+public class RegionSpawnRecord
+{
+    public int Day{get;set;} // 소환한 날
+    public bool Active{get;set;} // 오브젝트가 월드에 나와 있는지
+    public List<SpawnPointRecord> Points{get;set;} = new(); // SpawnPointRegistry의 포인트 순서
+}
+public class SpawnPointRecord
+{
+    public string PrefabId{get;set;}
+    public int ObjectId{get;set;} = -1; // 나와 있는 오브젝트 ID. 없으면 -1
+    public bool Consumed{get;set;} // 오늘 이미 채집/처치되어 사라짐
+    public SaveData State{get;set;} // 디스폰할 때 보관한 상태. 다시 소환할 때 적용
 }
 
 // 입장한 플레이어에게 보내는 현재 월드 상태. 플레이어별 저장 정보(WorldData.Players)는 보내지 않는다

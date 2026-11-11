@@ -46,6 +46,23 @@ public class ThrownProjectile : MonoBehaviour
         rb.AddForce(gravity, ForceMode.Acceleration);
     }
 
+    // 미리보기용: 충돌 구의 반지름과, 피벗에서 구 중심까지의 오프셋(회전 없는 상태 기준)
+    public bool TryGetCollisionSphere(out Vector3 centerOffset, out float radius)
+    {
+        SphereCollider sphere = GetComponentInChildren<SphereCollider>();
+        if (sphere == null)
+        {
+            centerOffset = Vector3.zero;
+            radius = 0f;
+            return false;
+        }
+
+        Vector3 scale = sphere.transform.lossyScale;
+        radius = sphere.radius * Mathf.Max(Mathf.Abs(scale.x), Mathf.Abs(scale.y), Mathf.Abs(scale.z));
+        centerOffset = sphere.transform.TransformPoint(sphere.center) - transform.position;
+        return true;
+    }
+
     // 초기 속도와 이 투사체에만 적용할 중력을 받아 발사
     public void Launch(Vector3 velocity, Vector3 gravity, LayerMask hitLayers, GameObject thrower, PotionData potion, int fallbackDamage)
     {

@@ -19,10 +19,11 @@ public class SESourceData : ScriptableObject
     [Tooltip("부여 간격(초). Proximity에서는 가장자리 간격")]
     [SerializeField] private float interval = 2f;
 
-    [Tooltip("이 레이어의 Entity에게는 상태이상을 걸지 않는다")]
-    [SerializeField] private LayerMask ignoreLayers;
+    // SO 생성자에서는 LayerMask.GetMask를 쓸 수 없어 인덱스로 둔다. 3 = Player
+    [Tooltip("상태이상을 걸 Entity의 레이어. 이 밖의 레이어와는 트리거 이벤트도 생기지 않는다")]
+    [SerializeField] private LayerMask targetLayers = 1 << 3;
 
     public IReadOnlyList<SEApplyEntry> ApplyList => applyList;
     public float Interval => interval;
-    public LayerMask IgnoreLayers => ignoreLayers;
+    public LayerMask TargetLayers => targetLayers;
 }
