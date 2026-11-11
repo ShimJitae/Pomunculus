@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [RequireComponent(typeof(Entity))]
-public class ItemDropper : MonoBehaviour, IWorldObj
+public class ItemDropper : MonoBehaviour
 {
     [System.Serializable]
     private class StatusDropRule
@@ -18,8 +18,6 @@ public class ItemDropper : MonoBehaviour, IWorldObj
     [Header("아이템 사이 높이 간격")]
     [SerializeField, Min(0.01f)] private float heightGap = 0.5f;
     private bool hasDropped;
-    public int ID { get; set; } = -1;
-    public string PrefabId { get; set; }
     public void DropItems()
     {
         if (hasDropped)
@@ -36,12 +34,13 @@ public class ItemDropper : MonoBehaviour, IWorldObj
                     continue;
 
                 Vector3 position = transform.position + Vector3.up * height;
-                Instantiate(prefab, position, Quaternion.identity);
+                WorldManager.Instance.Spawn(prefab.name, position, Quaternion.identity);
 
                 height += heightGap;
             }
         }
-        Destroy(gameObject);
+        Entity entity = GetComponent<Entity>();
+        WorldManager.Instance.Despawn(entity.ID);
     }
     private GameObject[] GetDropPrefabs()
     {
@@ -69,19 +68,5 @@ public class ItemDropper : MonoBehaviour, IWorldObj
             }
         }
         return itemPrefabs;
-    }
-
-    public void InitWorldObj(int id, string prefabId)
-    {
-        ID = id;
-        PrefabId = prefabId;
-    }
-
-    public void SaveData(SaveData data)
-    {
-    }
-
-    public void LoadData(SaveData data)
-    {
     }
 }
