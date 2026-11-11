@@ -66,8 +66,10 @@ public class PlayerThrower : MonoBehaviour
     // 궤적을 계산해 모든 클라이언트에 발사를 알린다 (소유자만 호출)
     public void ThrowProjectile(Vector3 target, PotionData potion)
     {
+
         Vector3 origin = GetThrowOrigin();
         Vector3 velocity = CalculateLaunchVelocity(origin, target, out _, out Vector3 gravity);
+        velocity -= 0.5f * Time.fixedDeltaTime * gravity;
         int potionId = potion != null ? potion.Id : EmptyBottleId;
 
         owner.SendThrow(origin, velocity, gravity, potionId);
