@@ -71,7 +71,7 @@ public class EnemySkill : MonoBehaviour
 
         if (currentPattern == null)
             return null;
-
+        
         ApplyNextPatternRange();   // 미리 뽑힌 다음 패턴 기준으로 사거리 갱신
 
         // 표시와 판정이 함께 쓸 기준값 고정 (회전 노드 직후라 방향이 확정된 상태)
@@ -82,6 +82,12 @@ public class EnemySkill : MonoBehaviour
             Debug.Log($"{name} >> 이전 공격의 OnAttackHit 이벤트 없음, 애니메이션 이벤트 확인 필요");
 
         SetAttackActive(true);
+
+        if(agent.enabled && agent.isOnNavMesh)
+        {
+            agent.ResetPath();
+            agent.velocity = Vector3.zero;
+        }
 
         hitAcceptStartTime = Time.time + currentPattern.Telegraph;
 
@@ -189,46 +195,9 @@ public class EnemySkill : MonoBehaviour
             ? GetAttackAreaScale()
             : attackPattern.SkillParticle.transform.localScale;
 
-        SpawnFromPool(attackPattern.SkillParticle, spawnPosition, spawnRotation, spawnScale);
+        SkillParticlePool.Instance.Spawn(attackPattern.SkillParticle, spawnPosition, spawnRotation, spawnScale);
     }
 
-    // 꺼진 인스턴스를 재사용하고 없으면 새로 생성. 파티클 Stop Action = Disable이라 끝나면 스스로 꺼짐
-    private void SpawnFromPool(GameObject spawnPrefab, Vector3 spawnPosition, Quaternion spawnRotation, Vector3 spawnScale)
-    {
-        if (!spawnPools.TryGetValue(spawnPrefab, out List<GameObject> spawnedInstances))
-        {
-            spawnedInstances = new List<GameObject>();
-            spawnPools.Add(spawnPrefab, spawnedInstances);
-        }
-
-        foreach (GameObject pooledInstance in spawnedInstances)
-        {
-            if (pooledInstance != null && !pooledInstance.activeSelf)
-            {
-                pooledInstance.transform.SetPositionAndRotation(spawnPosition, spawnRotation);
-                pooledInstance.transform.localScale = spawnScale;   // 같은 프리팹을 다른 크기의 패턴이 쓸 수 있으므로 매번 설정
-                pooledInstance.SetActive(true);   // 켜질 때 Play On Awake로 다시 재생
-                return;
-            }
-        }
-
-        GameObject newInstance = Instantiate(spawnPrefab, spawnPosition, spawnRotation);
-        newInstance.transform.localScale = spawnScale;
-        spawnedInstances.Add(newInstance);
-    }
-
-    // 적이 파괴되면 남은 소환물도 정리
-    private void OnDestroy()
-    {
-        foreach (List<GameObject> spawnedInstances in spawnPools.Values)
-        {
-            foreach (GameObject spawnInstance in spawnedInstances)
-            {
-                if (spawnInstance != null)
-                    Destroy(spawnInstance);
-            }
-        }
-    }
 
     // 애니메이션 이벤트에서 호출 (Function: OnAttackHit, Float: 피해 배율 %)
     public void OnAttackHit(float damagePercent)
@@ -280,7 +249,7 @@ public class EnemySkill : MonoBehaviour
 
             // 맞은 대상 위치에 피격 파티클 (판정이 방장에서만 일어나므로 현재는 방장 화면에만 보임)
             if (CurrentAttackPattern.HitParticle != null)
-                SpawnFromPool(CurrentAttackPattern.HitParticle, targetComponent.transform.position, AttackRotation, CurrentAttackPattern.HitParticle.transform.localScale);
+                SkillParticlePool.Instance.Spawn(CurrentAttackPattern.HitParticle, targetComponent.transform.position, AttackRotation, CurrentAttackPattern.HitParticle.transform.localScale);
         }
     }
 
@@ -295,6 +264,29 @@ public class EnemySkill : MonoBehaviour
         }
 
         return Physics.OverlapSphereNonAlloc(areaCenter, area.radius, hitColliders, hitLayers, QueryTriggerInteraction.Ignore);
+    }
+
+    public void PrewarmParticles()
+    {
+        CacheComponents();
+
+        IReadOnlyList<EnemyPatternDataSO> enemyPatterns = DataDBManager.Instance.PatternDatabase.GetPatternsByEnemyId(enemy.Data.GetEnemyId());
+
+        foreach (EnemyPatternDataSO patternData in enemyPatterns)
+        {
+            PrewarmPattern(patternData);
+        }
+
+        PrewarmPattern(enemy.Data.GetNormalAttackPattern());
+    }
+
+    private void PrewarmPattern(EnemyPatternDataSO patternData)
+    {
+        if (patternData == null)
+            return;
+
+        SkillParticlePool.Instance.Prewarm(patternData.SkillParticle);
+        SkillParticlePool.Instance.Prewarm(patternData.HitParticle);
     }
 
 #if UNITY_EDITOR

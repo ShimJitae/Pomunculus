@@ -15,7 +15,7 @@ public enum Monster_Zone
     용암지대 = 3,
 }
 
-[CreateAssetMenu(fileName = "MonsterDataSO", menuName = "Scriptable Objects/MonsterDataSO")]
+[CreateAssetMenu(fileName = "EnemyDataSO", menuName = "Scriptable Objects/EnemyDataSO")]
 public class EnemyDataSO : EntityDataSO
 {
     //[SerializeField] private int hp;
