@@ -83,6 +83,12 @@ public class EnemySkill : MonoBehaviour
 
         SetAttackActive(true);
 
+        if(agent.enabled && agent.isOnNavMesh)
+        {
+            agent.ResetPath();
+            agent.velocity = Vector3.zero;
+        }
+
         hitAcceptStartTime = Time.time + currentPattern.Telegraph;
 
         CurrentAttackPattern = currentPattern;

@@ -16,6 +16,9 @@ public class EnemyAttackIndicator : MonoBehaviour
     private float elapsedTime;
     private bool isShowing;
 
+    private Vector3 fixedPosition;
+    private Quaternion fixedRotation;
+
     private void Awake()
     {
         propertyBlock = new MaterialPropertyBlock();
@@ -47,6 +50,9 @@ public class EnemyAttackIndicator : MonoBehaviour
         // Quad를 바닥에 눕힘: 면은 위쪽, UV 위쪽(v)은 공격 방향
         indicatorTransform.rotation = rotation * Quaternion.Euler(90f, 0f, 0f);
 
+        fixedPosition = indicatorTransform.position;
+        fixedRotation = indicatorTransform.rotation;
+
         propertyBlock.SetFloat(angleId, area.shape == AttackAreaShape.Sector ? area.angle : 360f);
         propertyBlock.SetFloat(isRectId, isRectangle ? 1f : 0f);
         propertyBlock.SetFloat(fillId, 0f);
@@ -66,10 +72,13 @@ public class EnemyAttackIndicator : MonoBehaviour
             indicatorRenderer.enabled = false;
     }
 
-    private void Update()
+    private void LateUpdate()
     {
         if (!isShowing)
             return;
+
+        // WorldTransformSync(Update)와 NavMeshAgent가 위치를 바꾼 뒤에 다시 덮어써야 하기 때문
+        indicatorRenderer.transform.SetPositionAndRotation(fixedPosition, fixedRotation);
 
         elapsedTime += Time.deltaTime;
 
