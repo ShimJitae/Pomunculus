@@ -24,7 +24,6 @@ public class PotionSlotView : MonoBehaviour, IPotionSlotView
             int index = i;
             equipButtons[i].onClick.AddListener(() => OnEquipButtonClicked?.Invoke(index));
         }
-        SetSelectedSlot(0);
     }
 
     public void SetSlotIcon(int slotIndex, PotionData data)
@@ -69,7 +68,7 @@ public class PotionSlotView : MonoBehaviour, IPotionSlotView
         frame.SetParent(icon.transform.parent, false);
         frame.anchorMin = frame.anchorMax = new Vector2(0.5f, 0.5f);
         frame.anchoredPosition = Vector2.zero;
-        frame.SetAsLastSibling(); // 아이콘 위에 그리기 (아이콘 아래가 좋으면 SetAsFirstSibling)
+        frame.SetAsFirstSibling(); // 아이콘 아래에 그리기
     }
 
     public void SetEquipButtonsVisible(bool visible)
