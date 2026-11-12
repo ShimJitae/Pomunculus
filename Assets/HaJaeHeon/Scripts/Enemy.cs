@@ -71,6 +71,8 @@ public class Enemy : Entity, IWorldRPC, IHealable
         hasGroggyTriggered = false;
         behaviorGraphAgent.SetVariableValue("IsGroggy", false);
 
+        enemySkill.PrewarmParticles();
+
         // 방장만 범위 감지를 함, 공격 패턴 로드
         if (!IsMaster)
             return;
