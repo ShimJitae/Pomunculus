@@ -61,8 +61,8 @@ public class DataDBManager : SingletonBehavior<DataDBManager>
 
         if (ItemDatabase != null && ItemDatabase.GetItemPrefab(dropId) != null)
         {
-            GameObject item = ItemDatabase.GetItemPrefab(dropId);
-            GameObject.Instantiate(item, spawnPosition + ItemDropOffset, Quaternion.identity);
+            GameObject itemPrefab = ItemDatabase.GetItemPrefab(dropId);
+            GameObject.Instantiate(itemPrefab, spawnPosition + ItemDropOffset, Quaternion.identity);
         }
 
         Debug.Log($"아이템 ID : {dropId} / 아이템 이름 : {dropName} >> 아이템 소환 /소환 로직 구현 추가되면 넣을 예정");

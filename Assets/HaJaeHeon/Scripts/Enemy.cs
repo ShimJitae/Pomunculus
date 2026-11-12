@@ -11,7 +11,7 @@ public class Enemy : Entity, IWorldRPC, IHealable
     public BehaviorGraphAgent BehaviorGraphAgent => behaviorGraphAgent;
     public GameObject Target => target;
     public bool CanDoAttack => !isDie && CanAttack;
-    public EnemyDataSO Data => enemySO;
+    public EnemyDataSO Data => EnemySo;
 
     public event Action<int, int> OnHpChanged; // (현재HP / 최대HP)
 
@@ -31,7 +31,7 @@ public class Enemy : Entity, IWorldRPC, IHealable
     private float groggyHpRatio = 0.5f;
     private bool hasGroggyTriggered;
 
-    protected EnemyDataSO enemySO
+    protected EnemyDataSO EnemySo
     {
         get { return so as EnemyDataSO; }
         private set { so = value; }
@@ -52,7 +52,7 @@ public class Enemy : Entity, IWorldRPC, IHealable
 
     protected override void OnEnable()
     {
-        if(enemySO == null)
+        if(EnemySo == null)
         {
             Debug.Log("SO 데이터가 연결되어있지 않습니다.");
             gameObject.SetActive(false);
@@ -60,7 +60,7 @@ public class Enemy : Entity, IWorldRPC, IHealable
         }
         movement.InitSpawnCenter(transform.position);
         
-        behaviorGraphAgent.Graph = enemySO.GetBehaviorGraph();
+        behaviorGraphAgent.Graph = EnemySo.GetBehaviorGraph();
         behaviorGraphAgent.SetVariableValue("SpawnPosition", movement.SpawnCenter);
 
         base.OnEnable();
@@ -75,7 +75,7 @@ public class Enemy : Entity, IWorldRPC, IHealable
         if (!IsMaster)
             return;
 
-        detector.SetRadius(enemySO.GetDetectRange());
+        detector.SetRadius(EnemySo.GetDetectRange());
         detector.OnPlayersChanged += RefreshTarget;
 
         enemySkill.Initialize();
@@ -180,7 +180,7 @@ public class Enemy : Entity, IWorldRPC, IHealable
         base.OnStatusModifiersChanged(modifiers);
 
 
-        float currentMoveSpeed = CanMove ? enemySO.GetSpeed() * MoveSpeedRatio : 0f;
+        float currentMoveSpeed = CanMove ? EnemySo.GetSpeed() * MoveSpeedRatio : 0f;
 
         behaviorGraphAgent.SetVariableValue("MoveSpeed", currentMoveSpeed);
         agent.speed = currentMoveSpeed; 
@@ -211,7 +211,7 @@ public class Enemy : Entity, IWorldRPC, IHealable
     }
 
     // 몬스터 죽고 1초 대기
-    IEnumerator WaitDieAnimation()
+    private IEnumerator WaitDieAnimation()
     {
         yield return new WaitForSeconds(1f);
 
@@ -235,16 +235,16 @@ public class Enemy : Entity, IWorldRPC, IHealable
 
     protected override int GetId()
     {
-        return enemySO.GetEnemyId();
+        return EnemySo.GetEnemyId();
     }
 
-    public override void SaveData(SaveData _data)
+    public override void SaveData(SaveData saveData)
     {
         SaveData enemyHpData = new SaveData();
         enemyHpData.SetData(CurrentHp);
-        _data.Child["enemyHp"] = enemyHpData;
+        saveData.Child["enemyHp"] = enemyHpData;
 
-        base.SaveData(_data);
+        base.SaveData(saveData);
     }
 
     // 데이터 로드

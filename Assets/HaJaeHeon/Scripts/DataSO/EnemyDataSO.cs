@@ -15,21 +15,21 @@ public enum Monster_Zone
     용암지대 = 3,
 }
 
-[CreateAssetMenu(fileName = "MonsterDataSO", menuName = "Scriptable Objects/MonsterDataSO")]
+[CreateAssetMenu(fileName = "EnemyDataSO", menuName = "Scriptable Objects/EnemyDataSO")]
 public class EnemyDataSO : EntityDataSO
 {
     //[SerializeField] private int hp;
 
     [Header("시트 정보")]
-    [SerializeField] private int monster_id;
-    [SerializeField] private string monster_name;
+    [SerializeField] private int monsterId;
+    [SerializeField] private string monsterName;
     [SerializeField] private Monster_Kind kind;
     [SerializeField] private int atk;
     [SerializeField] private float speed;
-    [SerializeField] private int zone_id;
-    [SerializeField] private string zone_name;
-    [SerializeField] private int drop_id;
-    [SerializeField] private string drop_name;
+    [SerializeField] private int zoneId;
+    [SerializeField] private string zoneName;
+    [SerializeField] private int dropId;
+    [SerializeField] private string dropName;
     [SerializeField] private string behaviour;
 
     [Header("추가로 등록할 내용")]
@@ -42,17 +42,17 @@ public class EnemyDataSO : EntityDataSO
 
     public int GetEnemyId()
     {
-        return monster_id;
+        return monsterId;
     }
 
     public int GetDropId()
     {
-        return drop_id;
+        return dropId;
     }
 
     public string GetDropName()
     {
-        return drop_name;
+        return dropName;
     }
 
     public GameObject GetEnemyPrefab()
