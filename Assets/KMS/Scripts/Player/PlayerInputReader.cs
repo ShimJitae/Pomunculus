@@ -31,7 +31,7 @@ public class PlayerInputReader : MonoBehaviour
     private float dodgePressedAt = float.NegativeInfinity;
     private float interactPressedAt = float.NegativeInfinity;
     private float nextHoldRepathAt = float.NegativeInfinity;
-    private int pendingPotionSlot = -1;                   // 처리 대기 중인 포션 슬롯 선택 (-1이면 없음)
+    private int pendingPotionSlot = 0;                   // 처리 대기 중인 포션 슬롯 선택 (-1이면 없음)
 
     private InputActionMap playerMap;
     private InputAction moveAction;
