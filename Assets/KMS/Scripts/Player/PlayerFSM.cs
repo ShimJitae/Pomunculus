@@ -317,7 +317,8 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IWorldRPC
         SyncHp,
         Throw,
         RequestDamage,
-        RequestHeal
+        RequestHeal,
+        GrantItem
     }
 
     // 소유자가 확정한 HP를 다른 플레이어에게 전송
@@ -362,6 +363,16 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IWorldRPC
         this.SendRPC(packet, Owner);
     }
 
+    // 방장이 확정한 아이템을 이 플레이어의 소유자에게만 지급한다
+    public void SendGrantItem(int itemId, int amount)
+    {
+        PacketData packet = new();
+        packet.Write((byte)PlayerRPCType.GrantItem);
+        packet.Write(itemId);
+        packet.Write(amount);
+        this.SendRPC(packet, Owner);
+    }
+
     // RPCHelper가 ID로 찾아서 호출한다. 보낸 순서 그대로 읽는다
     public void ReceiveRPC(PacketData packet)
     {
@@ -387,6 +398,11 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IWorldRPC
             case PlayerRPCType.RequestHeal:
                 int heal = packet.ReadInt();
                 if (IsMine) Heal(heal);
+                break;
+            case PlayerRPCType.GrantItem:
+                int itemId = packet.ReadInt();
+                int amount = packet.ReadInt();
+                if (IsMine) Inventory.AddItem(itemId, amount);
                 break;
         }
     }
