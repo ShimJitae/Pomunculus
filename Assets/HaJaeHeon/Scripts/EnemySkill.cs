@@ -128,6 +128,8 @@ public class EnemySkill : MonoBehaviour
 
     private void ShowTelegraph()
     {
+        PlayPatternSound(CurrentAttackPattern.TelegraphSound, transform.position); // 기 모으는 몬스터 위치에서 소리 재생
+
         if (attackIndicator == null || CurrentAttackPattern.AttackArea.shape == AttackAreaShape.None)
             return;
 
@@ -216,6 +218,9 @@ public class EnemySkill : MonoBehaviour
         if (CurrentAttackPattern != null && CurrentAttackPattern.SkillParticle != null)
             SpawnSkillParticle();
 
+        if (CurrentAttackPattern != null)
+            PlayPatternSound(CurrentAttackPattern.AttackSound, GetAttackAreaCenter()); // 타격,투사체는 공격 범위 위치에서 소리 재생
+
         if (PhotonNetwork.InRoom && !PhotonNetwork.IsMasterClient || !isAttackActive)
             return;
 
@@ -292,6 +297,14 @@ public class EnemySkill : MonoBehaviour
 
         SkillParticlePool.Instance.Prewarm(patternData.SkillParticle);
         SkillParticlePool.Instance.Prewarm(patternData.HitParticle);
+    }
+
+    private void PlayPatternSound(AudioSO patternSound, Vector3 soundPosition)
+    {
+        if (patternSound == null || AudioManager.Instance == null)
+            return;
+
+        AudioManager.Instance.PlaySound(patternSound, soundPosition);
     }
 
 #if UNITY_EDITOR
