@@ -17,8 +17,9 @@ public class EnemySkill : MonoBehaviour
     [SerializeField] private float hitHeight = 2f;     // Rectangle 판정 높이 (공통)
     [SerializeField] private EnemySkillPattern skillPattern = new();   // Enemy에서 이동
 
-    private readonly Collider[] hitColliders = new Collider[16];
-    private readonly HashSet<IDamageable> alreadyHitTargets = new();
+    
+    private readonly Collider[] hitColliders = new Collider[16]; // 범위 검색 결과를 재사용하는 버퍼이며 한 번에 최대 16개의 콜라이더를 받는다. 추후 변경 할 수 도 있음
+    private readonly HashSet<IDamageable> alreadyHitTargets = new(); // 하나의 대상에 여러 콜라이더가 있어도 한 번의 판정에서는 피해를 한 번만 적용한다.
     private bool isAttackActive;
     private float hitAcceptStartTime; // 이 시각 전의 판정 이벤트는 이전 공격 모션의 잔여 이벤트로 보고 무시
     private readonly Dictionary<GameObject, List<GameObject>> spawnPools = new();   // 프리팹별 소환 인스턴스 (꺼진 것을 재사용)
@@ -150,6 +151,7 @@ public class EnemySkill : MonoBehaviour
         enemy.BehaviorGraphAgent.SetVariableValue("ChaseDistance", Mathf.Max(0.1f, attackRange - agent.radius - chaseMargin));
     }
 
+    // 공격 진해 여부를 로컬 상태와 ㅎBG에 함께 반영한다.
     private void SetAttackActive(bool isActive)
     {
         isAttackActive = isActive;
@@ -210,6 +212,7 @@ public class EnemySkill : MonoBehaviour
         if (attackIndicator != null)
             attackIndicator.Hide();
 
+        // 연출 처리 이후 > 방 안에서는 마스터만 공격 판정을 진행한다.
         if (CurrentAttackPattern != null && CurrentAttackPattern.SkillParticle != null)
             SpawnSkillParticle();
 
@@ -253,6 +256,7 @@ public class EnemySkill : MonoBehaviour
         }
     }
 
+    // 사각형은 박스로, 원과 부채꼴은 구로 후보를 수집하며 부채꼴 각도는 호출부에서 추가 검사한다.
     private int OverlapArea(AttackAreaData area, Vector3 areaCenter, Vector3 attackForward)
     {
         if (area.shape == AttackAreaShape.Rectangle)
@@ -266,6 +270,7 @@ public class EnemySkill : MonoBehaviour
         return Physics.OverlapSphereNonAlloc(areaCenter, area.radius, hitColliders, hitLayers, QueryTriggerInteraction.Ignore);
     }
 
+    // 전용 패턴과 기본 공격에서 사용하는 공격, 피격 파티클을 풀에 미리 준비한다.
     public void PrewarmParticles()
     {
         CacheComponents();

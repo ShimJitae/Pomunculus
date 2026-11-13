@@ -49,7 +49,7 @@ public class Enemy : Entity, IWorldRPC, IHealable
         enemySkill = GetComponentInChildren<EnemySkill>();
     }
 
-
+    // 적의 행동 그래프와 전투 상태를 초기화하고 실행 권한에 따라 감지와 공격 준비를 수행
     protected override void OnEnable()
     {
         if(EnemySo == null)
@@ -102,6 +102,7 @@ public class Enemy : Entity, IWorldRPC, IHealable
     //    behaviorGraphAgent.SetVariableValue("ChaseDistance", Mathf.Max(0.1f, attackRange - bodyRadius - chaseMargin));
     //}
 
+    // 실행 권한이 있는 경우 피해 배율을 적용하고 HP 동기화 및ㅊ 사망, 그로기 판정을 수행
     public override void TakeDamage(int damage)
     {
         if (!IsMaster)
@@ -142,7 +143,7 @@ public class Enemy : Entity, IWorldRPC, IHealable
         Heal(10);
     }
 
-    // HP가 groggyHpRatio 이하로 내려가면 공격이 끊기고 피격 모션 재생 
+    // 활성화 후 최초로 체력 비율이 기준 이하가 되면 그로기 상태가 되어 공격이 끊기고 피격 모션 재생
     private void TryEnterGroggy()
     {
         if (hasGroggyTriggered || CurrentHp > MaxHp * groggyHpRatio)
@@ -220,6 +221,7 @@ public class Enemy : Entity, IWorldRPC, IHealable
         WorldManager.Instance.Despawn(ID);
     }
 
+    // 타겟 참조와 BG의 Target 및 HasTarget 값을 함께 갱신
     public void SetTarget(GameObject player)
     {
         target = player;
@@ -227,6 +229,8 @@ public class Enemy : Entity, IWorldRPC, IHealable
         behaviorGraphAgent.SetVariableValue("HasTarget", player != null);
     }
 
+    // 기존 타겟이 유효하면 유지, 유효하지 않을 때만 감지 범위의 가장 가까운 플레이어를 선택(A를 타겟으로 잡고 있다가 
+    //  >> 타겟이 멀어지거나 죽어서 사라지면 다시 범위 내의 플레이어를 타겟으로 설정
     public void RefreshTarget()
     {
         if (target != null && target.activeInHierarchy && detector.Contains(target))
@@ -260,7 +264,8 @@ public class Enemy : Entity, IWorldRPC, IHealable
         ApplyHp(enemyHpData.GetData<int>());
     }
 
-    // 마스터가 넘어갔을 시 그 마스터에게만 동작 권한 넘기기
+    // 마스터가 넘어갔을 시 그 마스터에게만 동작 권한 넘기기용 함수
+    // 실행 권한에 따라 BG, agent, detector 오브젝트를 켜거나 끈다.
     private void ApplyAuthority(bool isAuthority)
     {
         behaviorGraphAgent.enabled = isAuthority;
@@ -269,6 +274,7 @@ public class Enemy : Entity, IWorldRPC, IHealable
     }
 
     #region 네트워크
+    // 방 밖에서는 로컬 실행을 허용하고, 방 안에서는 마스터 클라이언트만 실행 권한을 가진다.
     private bool IsMaster => !PhotonNetwork.InRoom || PhotonNetwork.IsMasterClient;
 
     private enum EnemyRPCType : byte
@@ -305,7 +311,7 @@ public class Enemy : Entity, IWorldRPC, IHealable
         this.SendRPC(packet, WorldRPCTarget.Others);
     }
 
-    // 그로기·사망 시 진행 중인 공격 취소. 방장이면 다른 플레이어에게도 전달
+    // 그로기,사망 시 진행 중인 공격 취소. 방장이면 다른 플레이어에게도 전달
     private void CancelCurrentAttack()
     {
         enemySkill.CancelAttack();
