@@ -10,10 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3448945e6c1eacf46a71570d7118e484, type: 3}
-  m_Name: New Audio SO
+  m_Name: BGM_Swamp
   m_EditorClassIdentifier: Assembly-CSharp::AudioSO
-  clipList: []
-  audioMixerGroup: {fileID: 0}
+  clipList:
+  - {fileID: 8300000, guid: ccdc1026f90774226b4c0759093380b3, type: 3}
+  audioMixerGroup: {fileID: -5975323914557609101, guid: 6058d7a2104c32a4e8818dffa6b02dac, type: 2}
   volume: 1
   pitchMin: 1
   pitchMax: 1
