@@ -298,11 +298,6 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IWorldRPC
             SelectedPotionSlot = Loadout.SelectedIndex
         };
 
-        for (int i = 0; i < PotionLoadout.SlotCount; i++)
-        {
-            state.PotionSlotIds[i] = Loadout.GetSlotId(i);
-        }
-
         _data.SetData(state);
         _data.Child["b"] = s;
     }
@@ -326,7 +321,8 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IWorldRPC
                 Inventory.AddItem(item.ItemId, item.Amount);
         }
         isRestoringLoadout = true;
-        Loadout.Restore(state.PotionSlotIds, state.SelectedPotionSlot);
+        if (state.PotionSlotIds != null)
+            Loadout.Restore(state.PotionSlotIds, state.SelectedPotionSlot);
         isRestoringLoadout = false;
     }
 
