@@ -4,20 +4,13 @@ using UnityEngine;
 
 namespace Pomunculus.Items
 {
-    public enum EquipMode
-    {
-        PendingPotion,
-        IsEquipping
-    }
-
     public class PotionLoadout : MonoBehaviour
     {
         public const int SlotCount = 3;
+        public const int EmptySlotId = -1;
 
         [SerializeField] private PotionData[] slots = new PotionData[SlotCount];
         private int selectedIndex;
-
-        public EquipMode EquipMode;
 
         public event Action<int> OnSelectChanged; // 슬롯 선택 변경시
         public event Action<int, PotionData> OnEquipChanged; // 포션 장착 및 해제시
@@ -34,6 +27,33 @@ namespace Pomunculus.Items
         {
             if (slotIndex < 0 || slotIndex >= SlotCount) return null;
             return slots[slotIndex];
+        }
+
+        // 슬롯별 아이디를 가져온다.
+        public int GetSlotId(int slotIndex)
+        {
+            if (slotIndex < 0 || slotIndex >= SlotCount || slots[slotIndex] == null) 
+                return EmptySlotId;
+            return slots[slotIndex].Id;
+        }
+
+        public int[] GetSlotIds()
+        {
+            int[] ids = new int[SlotCount];
+            for (int i = 0; i < SlotCount; i++) ids[i] = GetSlotId(i);
+            return ids;
+        }
+
+        // 저장·동기화 데이터로 슬롯과 선택을 덮어쓴다
+        public void Restore(int[] potionIds, int selected)
+        {
+            CancelEquip();
+            for (int i = 0; i < SlotCount; i++)
+            {
+                int id = potionIds != null && i < potionIds.Length ? potionIds[i] : EmptySlotId;
+                SetSlot(i, id == EmptySlotId ? null : PotionDatabase.Instance.Find(id));
+            }
+            SelectSlot(selected);
         }
 
         // 슬롯에 포션을 등록한다. null이면 슬롯을 비운다
