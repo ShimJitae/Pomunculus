@@ -126,11 +126,7 @@ public class GameManager : SingletonBehavior<GameManager>
                 if (p.Owner == OfflineActor) p.Owner = myActor;
                 if (p.Owner == myActor) hasMine = true;
             }
-            if (!hasMine) SpawnPlayer(myActor);
-
-
-            //테스트 코드. 월드가 온라인 될때 잡몹 하나 소환
-            
+            if (!hasMine) SpawnPlayer(myActor);           
         }
         else
         {
@@ -197,6 +193,7 @@ public class GameManager : SingletonBehavior<GameManager>
     private bool m_worldClosing; // 방장이 나가 방을 나가는 중
     private bool m_playerSpawnRegistered;
     #endregion
+
     public void UserProfileInit()
     {
         if(SaveManager.Instance.Load(UserProfile) == null)

@@ -42,6 +42,10 @@ public class TitleTestUI : MonoBehaviour
     {
         m_lobbyPanel.Open(); // 오프라인이면 여기서 접속 시작
     }
+    public void OnClickExitGame()
+    {
+        Application.Quit();
+    }
 
     // 보통은 방장이 방을 만들 때 씬이 방 속성에 기록되어 PUN이 TestScene으로 자동 이동시킴
     // 기록이 없는 방이면 직접 이동
