@@ -10,8 +10,11 @@ public class TitleTestUI : MonoBehaviour
     private void Awake()
     {
         m_lobbyPanel.gameObject.SetActive(false);
-        m_startGameButton.onClick.AddListener(OnClickStartGame);
+        //m_startGameButton.onClick.AddListener(OnClickStartGame);
         m_findRoomButton.onClick.AddListener(OnClickFindRoom);
+
+        // 저장된 월드가 없으면 이어하기 숨김
+        m_continueGameButton.gameObject.SetActive(WorldManager.Instance.HasWorld(GameManager.TempWorldSlot));
     }
     private void Start()
     {
@@ -20,12 +23,21 @@ public class TitleTestUI : MonoBehaviour
     private void OnDestroy()
     {
         NetworkManager.Instance.OnJoinedRoomEvent -= OnJoinedRoom;
+
+        //SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
-    private void OnClickStartGame()
+    public void OnClickStartGame()
     {
         SceneManager.LoadScene(GameManager.TestSceneName);
     }
+    public void OnClickNewGame()
+    {
+        // 기존 월드를 지우면 StartWorldOffline -> LoadWorld에서 새 월드로 시작됨
+        WorldManager.Instance.DeleteWorld(GameManager.TempWorldSlot);
+        SceneManager.LoadScene(GameManager.TestSceneName);
+    }
+    
     private void OnClickFindRoom()
     {
         m_lobbyPanel.Open(); // 오프라인이면 여기서 접속 시작
@@ -40,6 +52,7 @@ public class TitleTestUI : MonoBehaviour
     }
 
     [SerializeField] private Button m_startGameButton;
+    [SerializeField] private Button m_continueGameButton;
     [SerializeField] private Button m_findRoomButton;
     [SerializeField] private TitleLobbyPanel m_lobbyPanel;
 }

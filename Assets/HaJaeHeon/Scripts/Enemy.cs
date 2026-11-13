@@ -5,13 +5,13 @@ using Unity.Behavior;
 using UnityEngine;
 using UnityEngine.AI;
 
-[RequireComponent(typeof(BehaviorGraphAgent)), RequireComponent(typeof(NavMeshAgent))]
-public class Enemy : Entity, IWorldRPC
+[RequireComponent(typeof(BehaviorGraphAgent)), RequireComponent(typeof(NavMeshAgent)), RequireComponent(typeof(EnemySkill)), RequireComponent(typeof(EnemyMovement))]
+public class Enemy : Entity, IWorldRPC, IHealable
 {
     public BehaviorGraphAgent BehaviorGraphAgent => behaviorGraphAgent;
     public GameObject Target => target;
     public bool CanDoAttack => !isDie && CanAttack;
-    public EnemyDataSO Data => enemySO;
+    public EnemyDataSO Data => EnemySo;
 
     public event Action<int, int> OnHpChanged; // (현재HP / 최대HP)
 
@@ -31,7 +31,7 @@ public class Enemy : Entity, IWorldRPC
     private float groggyHpRatio = 0.5f;
     private bool hasGroggyTriggered;
 
-    protected EnemyDataSO enemySO
+    protected EnemyDataSO EnemySo
     {
         get { return so as EnemyDataSO; }
         private set { so = value; }
@@ -52,7 +52,7 @@ public class Enemy : Entity, IWorldRPC
 
     protected override void OnEnable()
     {
-        if(enemySO == null)
+        if(EnemySo == null)
         {
             Debug.Log("SO 데이터가 연결되어있지 않습니다.");
             gameObject.SetActive(false);
@@ -60,7 +60,7 @@ public class Enemy : Entity, IWorldRPC
         }
         movement.InitSpawnCenter(transform.position);
         
-        behaviorGraphAgent.Graph = enemySO.GetBehaviorGraph();
+        behaviorGraphAgent.Graph = EnemySo.GetBehaviorGraph();
         behaviorGraphAgent.SetVariableValue("SpawnPosition", movement.SpawnCenter);
 
         base.OnEnable();
@@ -71,11 +71,13 @@ public class Enemy : Entity, IWorldRPC
         hasGroggyTriggered = false;
         behaviorGraphAgent.SetVariableValue("IsGroggy", false);
 
+        enemySkill.PrewarmParticles();
+
         // 방장만 범위 감지를 함, 공격 패턴 로드
         if (!IsMaster)
             return;
 
-        detector.SetRadius(enemySO.GetDetectRange());
+        detector.SetRadius(EnemySo.GetDetectRange());
         detector.OnPlayersChanged += RefreshTarget;
 
         enemySkill.Initialize();
@@ -86,6 +88,8 @@ public class Enemy : Entity, IWorldRPC
         base.OnDisable();
 
         detector.OnPlayersChanged -= RefreshTarget;
+
+        enemySkill.CancelAttack();
     }
 
     //private void Start()
@@ -122,6 +126,23 @@ public class Enemy : Entity, IWorldRPC
         }
     }
 
+    public void Heal(int amount)
+    {
+        if (!IsMaster || amount <= 0)
+            return;
+
+        CurrentHp += amount;
+        OnHpChanged?.Invoke(CurrentHp, MaxHp);
+        SendHpSync();
+    }
+
+    [ContextMenu("HP 회복")]
+    public void Heal10()
+    {
+        Heal(10);
+    }
+
+    // HP가 groggyHpRatio 이하로 내려가면 공격이 끊기고 피격 모션 재생 
     private void TryEnterGroggy()
     {
         if (hasGroggyTriggered || CurrentHp > MaxHp * groggyHpRatio)
@@ -132,6 +153,7 @@ public class Enemy : Entity, IWorldRPC
         CancelCurrentAttack();
     }
 
+    // 넉백을 포함한 takeDamage
     //public override void TakeDamage(int damage, Vector3 sourcePosition)
     //{
     //    if (isDamageBlock || damage <= 0)
@@ -154,18 +176,28 @@ public class Enemy : Entity, IWorldRPC
     //    transform.position += (transform.position - sourcePosition).norm * knockbackDistance;
     //}
 
+    // 상태 이상에 변화가 생기면 호출됨
     protected override void OnStatusModifiersChanged(StatusModifiers modifiers)
     {
         base.OnStatusModifiersChanged(modifiers);
 
 
-        float currentMoveSpeed = CanMove ? enemySO.GetSpeed() * MoveSpeedRatio : 0f;
+        float currentMoveSpeed = CanMove ? EnemySo.GetSpeed() * MoveSpeedRatio : 0f;
 
         behaviorGraphAgent.SetVariableValue("MoveSpeed", currentMoveSpeed);
-        agent.speed = currentMoveSpeed;
-        animator.SetFloat("MoveAnimSpeed", CanMove ? MoveSpeedRatio : 0f);
+        agent.speed = currentMoveSpeed; 
+        // 기절 0 / 구속 1 / 그외 >> 이동 배율대로
+        float animationSpeedRatio = !CanAttack ? 0f : (CanMove ? MoveSpeedRatio : 1f);
+        animator.SetFloat("MoveAnimSpeed", animationSpeedRatio);
+
+        bool isStunned = !CanAttack;
+        behaviorGraphAgent.SetVariableValue("IsStunned", isStunned);
+
+        if (isStunned && IsMaster && enemySkill.IsAttackActive)
+            CancelCurrentAttack();
     }
 
+    // 죽었을 시 아이템 스폰 and 적 사라지기 (하던 행동 끊김)
     protected override void OnDie()
     {
         behaviorGraphAgent.SetVariableValue<bool>("IsDie", true);
@@ -180,7 +212,8 @@ public class Enemy : Entity, IWorldRPC
         }
     }
 
-    IEnumerator WaitDieAnimation()
+    // 몬스터 죽고 1초 대기
+    private IEnumerator WaitDieAnimation()
     {
         yield return new WaitForSeconds(1f);
 
@@ -204,18 +237,19 @@ public class Enemy : Entity, IWorldRPC
 
     protected override int GetId()
     {
-        return enemySO.GetEnemyId();
+        return EnemySo.GetEnemyId();
     }
 
-    public override void SaveData(SaveData _data)
+    public override void SaveData(SaveData saveData)
     {
         SaveData enemyHpData = new SaveData();
         enemyHpData.SetData(CurrentHp);
-        _data.Child["enemyHp"] = enemyHpData;
+        saveData.Child["enemyHp"] = enemyHpData;
 
-        base.SaveData(_data);
+        base.SaveData(saveData);
     }
 
+    // 데이터 로드
     public override void LoadData(SaveData _data)
     {
         base.LoadData(_data);
@@ -226,6 +260,7 @@ public class Enemy : Entity, IWorldRPC
         ApplyHp(enemyHpData.GetData<int>());
     }
 
+    // 마스터가 넘어갔을 시 그 마스터에게만 동작 권한 넘기기
     private void ApplyAuthority(bool isAuthority)
     {
         behaviorGraphAgent.enabled = isAuthority;
@@ -303,6 +338,7 @@ public class Enemy : Entity, IWorldRPC
         }
     }
 
+    // 피격 장판 생성 RPC Receive
     private void ReceiveShowTelegraph(PacketData packet)
     {
         int patternId = packet.ReadInt();
@@ -329,7 +365,7 @@ public class Enemy : Entity, IWorldRPC
         behaviorGraphAgent.SetVariableValue("IsDie", isDie);
 
         if (isDie)
-            enemySkill.CancelAttack();   // 추가: 다른 클라이언트에서 사망 시 표시 숨김
+            enemySkill.CancelAttack();
 
         OnHpChanged?.Invoke(CurrentHp, MaxHp);
     }

@@ -15,6 +15,14 @@ public class PlayerThrower : MonoBehaviour
     [SerializeField] private int attackDamage = 1;
     [SerializeField] private LayerMask hitLayers;
 
+    private const int EmptyBottleId = -1;   // 포션 없이 던지는 빈 병
+    private PlayerFSM owner;
+
+    void Awake()
+    {
+        owner = GetComponent<PlayerFSM>();
+    }
+
     // 목표 지점이 최대 사거리 밖이면 같은 방향의 사거리 끝으로 당긴다 (높이는 유지)
     public Vector3 ClampToThrowRange(Vector3 target)
     {
@@ -55,15 +63,28 @@ public class PlayerThrower : MonoBehaviour
         return baseVelocity * multiplier;
     }
 
-    // 목표 지점에 정확히 떨어지는 포물선 속도로 투사체 발사
+    // 궤적을 계산해 모든 클라이언트에 발사를 알린다 (소유자만 호출)
     public void ThrowProjectile(Vector3 target, PotionData potion)
     {
+
         Vector3 origin = GetThrowOrigin();
         Vector3 velocity = CalculateLaunchVelocity(origin, target, out _, out Vector3 gravity);
+        velocity -= 0.5f * Time.fixedDeltaTime * gravity;
+        int potionId = potion != null ? potion.Id : EmptyBottleId;
 
-        ThrownProjectile prefab = potion != null && potion.ProjectilePrefab != null
-                    ? potion.ProjectilePrefab
-                    : emptyBottlePrefab;
+        owner.SendThrow(origin, velocity, gravity, potionId);
+    }
+
+    // 포션에 맞는 투사체 프리팹. 포션이 없거나 프리팹이 비어 있으면 빈 병
+    public ThrownProjectile GetProjectilePrefab(PotionData potion)
+        => potion != null && potion.ProjectilePrefab != null ? potion.ProjectilePrefab : emptyBottlePrefab;
+
+    // RPC로 받은 값 그대로 투사체를 만든다 (모든 클라이언트에서 실행)
+    public void SpawnProjectile(Vector3 origin, Vector3 velocity, Vector3 gravity, int potionId)
+    {
+        PotionData potion = FindPotion(potionId);
+
+        ThrownProjectile prefab = GetProjectilePrefab(potion);
 
         if (prefab == null)
         {
@@ -73,6 +94,25 @@ public class PlayerThrower : MonoBehaviour
 
         ThrownProjectile projectile = Instantiate(prefab, origin, Quaternion.identity);
         projectile.Launch(velocity, gravity, hitLayers, gameObject, potion, attackDamage);
+    }
+
+    // Id로 포션을 찾는다. 빈 병이거나 목록에 없으면 null
+    private PotionData FindPotion(int potionId)
+    {
+        if (potionId == EmptyBottleId) return null;
+
+        PotionDatabase database = PotionDatabase.Instance;
+        if (database == null)
+        {
+            Debug.LogError("[PlayerThrower] Resources/PotionDatabase 에셋을 찾을 수 없습니다. 빈 병으로 던집니다.");
+            return null;
+        }
+
+        PotionData potion = database.Find(potionId);
+        if (potion == null)
+            Debug.LogWarning($"[PlayerThrower] PotionDatabase에 없는 포션 Id : {potionId}. '포션 DB 갱신'이 필요합니다.");
+
+        return potion;
     }
 
     void OnDrawGizmosSelected()

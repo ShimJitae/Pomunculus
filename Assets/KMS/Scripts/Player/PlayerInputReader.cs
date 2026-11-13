@@ -1,6 +1,7 @@
 using Pomunculus.Items;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
 /// <summary>
@@ -21,6 +22,7 @@ public class PlayerInputReader : MonoBehaviour
     public float InputBufferTime = 0.15f;
 
     public bool HasPendingMove { get; private set; }     // 아직 처리되지 않은 우클릭 이동 명령
+    public bool IsAimHeld => aimAction.IsPressed();
 
     private Camera cam;
     private Vector3 pendingDestination;
@@ -37,7 +39,9 @@ public class PlayerInputReader : MonoBehaviour
     private InputAction dodgeAction;
     private InputAction interactAction;
     private InputAction pointAction;
+    private InputAction aimAction;
     private InputAction[] potionSlotActions;              // 1/2/3 키. 인덱스 = 슬롯 번호
+    
 #if UNITY_EDITOR
     private InputActionMap debugMap;
     private InputAction debugDamageAction;
@@ -49,13 +53,17 @@ public class PlayerInputReader : MonoBehaviour
     {
         cam = Camera.main;
 
+        controls = Instantiate(controls);
+
         playerMap = controls.FindActionMap("Player", throwIfNotFound: true);
         moveAction = playerMap.FindAction("Move", throwIfNotFound: true);
         attackAction = playerMap.FindAction("Attack", throwIfNotFound: true);
         dodgeAction = playerMap.FindAction("Dodge", throwIfNotFound: true);
         interactAction = playerMap.FindAction("Interact", throwIfNotFound: true);
         pointAction = playerMap.FindAction("Point", throwIfNotFound: true);
+        aimAction = playerMap.FindAction("Aim", throwIfNotFound: true);
         potionSlotActions = new InputAction[PotionLoadout.SlotCount];
+        
         for (int i = 0; i < PotionLoadout.SlotCount; i++)
         {
             potionSlotActions[i] = playerMap.FindAction("PotionSlot" + (i + 1), throwIfNotFound: true);
@@ -84,9 +92,23 @@ public class PlayerInputReader : MonoBehaviour
 #endif
     }
 
+    // 복제한 입력 에셋을 정리한다
+    void OnDestroy()
+    {
+        if (controls != null) Destroy(controls);
+    }
+
+    // 마우스 커서가 UI 위에 있는지 확인한다
+    bool IsPointerOverUI()
+    {
+        return EventSystem.current != null && EventSystem.current.IsPointerOverGameObject();
+    }
+
     // 이번 프레임의 입력을 읽어 버퍼에 기록한다
     public void ReadInput()
     {
+        bool pointerOverUI = IsPointerOverUI();
+
         // 우클릭: 이동 명령. 누르고 있으면 일정 간격으로 목적지 갱신
         bool rightDown = moveAction.WasPressedThisFrame();
         bool rightHeld = moveAction.IsPressed();
@@ -102,7 +124,7 @@ public class PlayerInputReader : MonoBehaviour
         }
 
         // 좌클릭: 던지기. 클릭한 순간의 마우스 위치를 목표로 저장
-        if (attackAction.WasPressedThisFrame() && TryGetMouseWorldPoint(out Vector3 target))
+        if (!pointerOverUI && attackAction.WasPressedThisFrame() && TryGetMouseWorldPoint(out Vector3 target))
         {
             attackPressedAt = Time.time;
             bufferedAttackTarget = target;

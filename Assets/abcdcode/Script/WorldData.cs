@@ -1,6 +1,9 @@
+using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class WorldData
 {
@@ -8,36 +11,76 @@ public class WorldData
     public float Time{get;set;}
     public int NextId{get;set;} // 다음에 발급할 IdManager id
 
-    public Dictionary<string, SaveData> Players{get;set;} = new(); // key : UID, value : Player가 ISavable.SaveData로 채운 상태
+    public Dictionary<string, PlayerSaveData> Players{get;set;} = new(); // key : UID
     public List<WorldObjSaveData> Entities{get;set;} = new();
+    // RegionSpawner 소환 기록
+    public Dictionary<RegionType, RegionSpawnRecord> RegionGathers{get;set;} = new();
+    public Dictionary<RegionType, RegionSpawnRecord> RegionMobs{get;set;} = new();
 
-    public void SavePlayer(string uid, ISavable player)
+    public void SavePlayer(string uid, IWorldObj player)
     {
-        var d = new SaveData();
-        player.SaveData(d);
-        Players[uid] = d;
+        var state = new SaveData();
+        player.SaveData(state);
+        var t = player.gameObject.transform;
+        Players[uid] = new PlayerSaveData { Position = t.position, Rotation = t.eulerAngles, State = state };
     }
-    public bool LoadPlayer(string uid, ISavable player)
+    public bool LoadPlayer(string uid, IWorldObj player)
     {
-        if(!Players.TryGetValue(uid, out var d)) return false; // 처음 입장한 플레이어
-        player.LoadData(d);
+        if(!Players.TryGetValue(uid, out var d) || d?.State == null) return false; // 처음 입장한 플레이어 or 위치 저장 전 세이브
+        // NavMeshAgent가 켜져 있으면 transform을 직접 옮겨도 에이전트가 되돌리므로 Warp로 이동
+        var go = player.gameObject;
+        if(go.TryGetComponent(out NavMeshAgent agent) && agent.enabled) agent.Warp(d.Position);
+        else go.transform.position = d.Position;
+        go.transform.eulerAngles = d.Rotation;
+        player.LoadData(d.State);
         return true;
     }
 
     public void SaveEntities(IEnumerable<IWorldObj> objs)
     {
         Entities.Clear();
-        foreach(var obj in objs) Entities.Add(WorldObjSaveData.Create(obj));
+        foreach(var obj in objs) 
+        {
+            try{
+            if(obj.gameObject.IsDestroyed()) continue;
+            }catch(Exception e)
+            {
+                continue;
+            }
+            Entities.Add(WorldObjSaveData.Create(obj));
+        }
     }
 }
 
-// 입장한 플레이어에게 보내는 데이터. 다른 플레이어의 저장 정보는 보내지 않는다
+// 플레이어는 UID 기준으로 월드 엔티티와 따로 저장하므로, 다시 들어왔을 때 놓을 위치도 같이 둔다
+public class PlayerSaveData
+{
+    public SerialVector3 Position{get;set;}
+    public SerialVector3 Rotation{get;set;} // eulerAngles
+    public SaveData State{get;set;} // Player가 ISavable.SaveData로 채운 상태
+}
+
+// 지역 하나의 채집물 또는 몬스터 소환 기록. 날짜가 바뀌기 전까지는 이 기록대로만 다시 소환한다
+public class RegionSpawnRecord
+{
+    public int Day{get;set;} // 소환한 날
+    public bool Active{get;set;} // 오브젝트가 월드에 나와 있는지
+    public List<SpawnPointRecord> Points{get;set;} = new(); // SpawnPointRegistry의 포인트 순서
+}
+public class SpawnPointRecord
+{
+    public string PrefabId{get;set;}
+    public int ObjectId{get;set;} = -1; // 나와 있는 오브젝트 ID. 없으면 -1
+    public bool Consumed{get;set;} // 오늘 이미 채집/처치되어 사라짐
+    public SaveData State{get;set;} // 디스폰할 때 보관한 상태. 다시 소환할 때 적용
+}
+
+// 입장한 플레이어에게 보내는 현재 월드 상태. 플레이어별 저장 정보(WorldData.Players)는 보내지 않는다
 public class WorldSnapshot
 {
     public int Day{get;set;}
     public float Time{get;set;}
     public List<WorldObjSaveData> Entities{get;set;} = new();
-    public SaveData Player{get;set;} // 입장한 플레이어 본인의 저장 데이터, 없으면 null
 
     // 네트워크 전송용 바이너리
     public void Write(PacketData p)
@@ -46,14 +89,12 @@ public class WorldSnapshot
         p.Write(Time);
         p.Write(Entities.Count);
         foreach(var e in Entities) e.Write(p);
-        p.WriteSaveData(Player);
     }
     public static WorldSnapshot Read(PacketData p)
     {
         var s = new WorldSnapshot { Day = p, Time = p };
         int count = p;
         for(int i = 0; i < count; i++) s.Entities.Add(WorldObjSaveData.Read(p));
-        s.Player = p.ReadSaveData();
         return s;
     }
 }

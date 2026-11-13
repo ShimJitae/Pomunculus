@@ -2,7 +2,7 @@ using Pomunculus.Items;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "MaterialDatabase", menuName = "Scriptable Objects/MaterialDatabase")]
+[CreateAssetMenu(fileName = "ItemDatabase", menuName = "Scriptable Objects/ItemDatabase")]
 public class ItemDatabase : ScriptableObject
 {
     [SerializeField] private List<MaterialData> data = new();
@@ -20,14 +20,14 @@ public class ItemDatabase : ScriptableObject
 
         for (int i = 0; i < data.Count; i++)
         {
-            MaterialData so = data[i];
+            MaterialData materialData = data[i];
 
-            if (so == null)
+            if (materialData == null)
                 continue;
 
-            int itemId = so.Id;
+            int itemId = materialData.Id;
 
-            if (itemId <= 0 || !material.TryAdd(itemId, so))
+            if (itemId <= 0 || !material.TryAdd(itemId, materialData))
                 continue;
 
             //Debug.Log($"키 : {itemId} / 밸류 : {material.Values}");

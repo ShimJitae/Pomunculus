@@ -3,13 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-[RequireComponent (typeof(Enemy))]
+[RequireComponent(typeof(Enemy))]
 public class EnemySkill : MonoBehaviour
 {
     // 패턴 선택 순간에 고정한 공격 기준값 (범위 표시와 판정이 함께 사용)
     public EnemyPatternDataSO CurrentAttackPattern { get; private set; }
     public Vector3 AttackOrigin { get; private set; }
     public Quaternion AttackRotation { get; private set; }
+    public bool IsAttackActive => isAttackActive;
+
 
     [SerializeField] private LayerMask hitLayers;      // Player 레이어만 체크
     [SerializeField] private float hitHeight = 2f;     // Rectangle 판정 높이 (공통)
@@ -17,6 +19,9 @@ public class EnemySkill : MonoBehaviour
 
     private readonly Collider[] hitColliders = new Collider[16];
     private readonly HashSet<IDamageable> alreadyHitTargets = new();
+    private bool isAttackActive;
+    private float hitAcceptStartTime; // 이 시각 전의 판정 이벤트는 이전 공격 모션의 잔여 이벤트로 보고 무시
+    private readonly Dictionary<GameObject, List<GameObject>> spawnPools = new();   // 프리팹별 소환 인스턴스 (꺼진 것을 재사용)
 
     private Enemy enemy;
     private NavMeshAgent agent;
@@ -38,6 +43,8 @@ public class EnemySkill : MonoBehaviour
 
         skillPattern.LoadPatternList(enemyPatterns, enemy.Data.GetNormalAttackPattern());
         CurrentAttackPattern = null;
+
+        SetAttackActive(false);
 
         ApplyNextPatternRange();
     }
@@ -64,12 +71,25 @@ public class EnemySkill : MonoBehaviour
 
         if (currentPattern == null)
             return null;
-
+        
         ApplyNextPatternRange();   // 미리 뽑힌 다음 패턴 기준으로 사거리 갱신
 
-        // 표시와 판정이 함께 쓸 기준값 고정 (LookAt 1회 직후라 방향이 확정된 상태)
+        // 표시와 판정이 함께 쓸 기준값 고정 (회전 노드 직후라 방향이 확정된 상태)
         GameObject attackTarget = enemy.Target;
         bool isTargetAnchor = currentPattern.AttackArea.anchor == AttackAreaAnchor.Target && attackTarget != null;
+
+        if (isAttackActive)
+            Debug.Log($"{name} >> 이전 공격의 OnAttackHit 이벤트 없음, 애니메이션 이벤트 확인 필요");
+
+        SetAttackActive(true);
+
+        if(agent.enabled && agent.isOnNavMesh)
+        {
+            agent.ResetPath();
+            agent.velocity = Vector3.zero;
+        }
+
+        hitAcceptStartTime = Time.time + currentPattern.Telegraph;
 
         CurrentAttackPattern = currentPattern;
         AttackOrigin = isTargetAnchor ? attackTarget.transform.position : transform.position;
@@ -86,6 +106,9 @@ public class EnemySkill : MonoBehaviour
     {
         CurrentAttackPattern = null;
 
+        if (isAttackActive)
+            SetAttackActive(false);
+
         if (attackIndicator != null)
             attackIndicator.Hide();
     }
@@ -96,6 +119,8 @@ public class EnemySkill : MonoBehaviour
         CurrentAttackPattern = patternData;
         AttackOrigin = origin;
         AttackRotation = rotation;
+
+        hitAcceptStartTime = Time.time + patternData.Telegraph;
 
         ShowTelegraph();
     }
@@ -125,20 +150,75 @@ public class EnemySkill : MonoBehaviour
         enemy.BehaviorGraphAgent.SetVariableValue("ChaseDistance", Mathf.Max(0.1f, attackRange - agent.radius - chaseMargin));
     }
 
+    private void SetAttackActive(bool isActive)
+    {
+        isAttackActive = isActive;
+        enemy.BehaviorGraphAgent.SetVariableValue("IsAttackActive", isActive);
+    }
+
+    // 범위 표시와 같은 중심 위치 (바닥 높이)
+    private Vector3 GetAttackAreaCenter()
+    {
+        Vector3 areaOffset = CurrentAttackPattern.AttackArea.offset;
+        Vector3 flatOffset = new Vector3(areaOffset.x, 0f, areaOffset.z);
+
+        return AttackOrigin + AttackRotation * flatOffset;
+    }
+
+    // 범위 크기에 맞춘 소환 스케일. 소환 프리팹은 반지름 1(직사각형은 폭 1·길이 1, +Z 방향) 기준으로 만든다
+    private Vector3 GetAttackAreaScale()
+    {
+        AttackAreaData area = CurrentAttackPattern.AttackArea;
+
+        switch (area.shape)
+        {
+            case AttackAreaShape.Circle:
+            case AttackAreaShape.Sector:
+                return area.radius > 0f ? Vector3.one * area.radius : Vector3.one;
+
+            case AttackAreaShape.Rectangle:
+                return new Vector3(Mathf.Max(area.width, 0.01f), 1f, Mathf.Max(area.length, 0.01f));
+
+            default:
+                return CurrentAttackPattern.SkillParticle.transform.localScale;   // 범위 없음: 프리팹 원래 크기
+        }
+    }
+
+    // 스킬 파티클 소환: 범위 중심에 패턴별 위치·회전 보정을 더함 (보정은 공격 방향 기준)
+    private void SpawnSkillParticle()
+    {
+        EnemyPatternDataSO attackPattern = CurrentAttackPattern;
+
+        Vector3 spawnPosition = GetAttackAreaCenter() + AttackRotation * attackPattern.SkillParticleOffset;
+        Quaternion spawnRotation = AttackRotation * Quaternion.Euler(attackPattern.SkillParticleRotation);
+        Vector3 spawnScale = attackPattern.ScaleSkillParticleWithArea
+            ? GetAttackAreaScale()
+            : attackPattern.SkillParticle.transform.localScale;
+
+        SkillParticlePool.Instance.Spawn(attackPattern.SkillParticle, spawnPosition, spawnRotation, spawnScale);
+    }
+
+
     // 애니메이션 이벤트에서 호출 (Function: OnAttackHit, Float: 피해 배율 %)
     public void OnAttackHit(float damagePercent)
     {
+        // 예고 중에 들어온 이벤트 = 기절로 멈췄다가 다시 재생된 이전 공격 모션의 것 → 표시·판정 모두 건드리지 않음
+        if (Time.time < hitAcceptStartTime)
+            return;
+
         // Animator는 모든 클라이언트에서 재생되므로, 표시 숨김은 판정 권한과 상관없이 모두 처리
         if (attackIndicator != null)
             attackIndicator.Hide();
 
-        if (PhotonNetwork.InRoom && !PhotonNetwork.IsMasterClient)
+        if (CurrentAttackPattern != null && CurrentAttackPattern.SkillParticle != null)
+            SpawnSkillParticle();
+
+        if (PhotonNetwork.InRoom && !PhotonNetwork.IsMasterClient || !isAttackActive)
             return;
 
-        if (!enemy.CanDoAttack)
-            return;
+        SetAttackActive(false);
 
-        if (CurrentAttackPattern == null || CurrentAttackPattern.AttackArea.shape == AttackAreaShape.None)
+        if (!enemy.CanDoAttack || CurrentAttackPattern == null || CurrentAttackPattern.AttackArea.shape == AttackAreaShape.None)
             return;
 
         AttackAreaData area = CurrentAttackPattern.AttackArea;
@@ -146,7 +226,7 @@ public class EnemySkill : MonoBehaviour
         Vector3 areaCenter = AttackOrigin + AttackRotation * area.offset;
 
         int hitCount = OverlapArea(area, areaCenter, attackForward);
-        int damage = Mathf.RoundToInt(enemy.Data.GetAtk() * damagePercent / 100f);
+        int damage = Mathf.RoundToInt( CurrentAttackPattern.GetDamageValue() * damagePercent / 100f);
         alreadyHitTargets.Clear();
 
         for (int index = 0; index < hitCount; index++)
@@ -166,6 +246,10 @@ public class EnemySkill : MonoBehaviour
             }
 
             damageTarget.TakeDamage(damage, AttackOrigin);
+
+            // 맞은 대상 위치에 피격 파티클 (판정이 방장에서만 일어나므로 현재는 방장 화면에만 보임)
+            if (CurrentAttackPattern.HitParticle != null)
+                SkillParticlePool.Instance.Spawn(CurrentAttackPattern.HitParticle, targetComponent.transform.position, AttackRotation, CurrentAttackPattern.HitParticle.transform.localScale);
         }
     }
 
@@ -180,6 +264,29 @@ public class EnemySkill : MonoBehaviour
         }
 
         return Physics.OverlapSphereNonAlloc(areaCenter, area.radius, hitColliders, hitLayers, QueryTriggerInteraction.Ignore);
+    }
+
+    public void PrewarmParticles()
+    {
+        CacheComponents();
+
+        IReadOnlyList<EnemyPatternDataSO> enemyPatterns = DataDBManager.Instance.PatternDatabase.GetPatternsByEnemyId(enemy.Data.GetEnemyId());
+
+        foreach (EnemyPatternDataSO patternData in enemyPatterns)
+        {
+            PrewarmPattern(patternData);
+        }
+
+        PrewarmPattern(enemy.Data.GetNormalAttackPattern());
+    }
+
+    private void PrewarmPattern(EnemyPatternDataSO patternData)
+    {
+        if (patternData == null)
+            return;
+
+        SkillParticlePool.Instance.Prewarm(patternData.SkillParticle);
+        SkillParticlePool.Instance.Prewarm(patternData.HitParticle);
     }
 
 #if UNITY_EDITOR

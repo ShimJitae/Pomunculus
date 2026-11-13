@@ -3,18 +3,21 @@ using UnityEngine;
 // 공격 범위 예고 표시. 바닥에 눕힌 Quad 하나를 켜고 끄기만 한다.
 public class EnemyAttackIndicator : MonoBehaviour
 {
-    private static readonly int FillId = Shader.PropertyToID("_Fill");
-    private static readonly int AngleId = Shader.PropertyToID("_Angle");
-    private static readonly int IsRectId = Shader.PropertyToID("_IsRect");
+    private static readonly int fillId = Shader.PropertyToID("_Fill");
+    private static readonly int angleId = Shader.PropertyToID("_Angle");
+    private static readonly int isRectId = Shader.PropertyToID("_IsRect");
 
     [SerializeField] private MeshRenderer indicatorRenderer;
     [SerializeField] private float groundOffset = 0.05f;   // 바닥과 겹쳐 깜빡이는 것 방지
-    [SerializeField] private float extraShowTime = 1f;     // 피격 이벤트가 없는 패턴용 자동 숨김 여유
+    [SerializeField] private float extraShowTime = 1f;     // 판정 이벤트 누락 대비 안전 숨김
 
     private MaterialPropertyBlock propertyBlock;
     private float telegraphDuration;
     private float elapsedTime;
     private bool isShowing;
+
+    private Vector3 fixedPosition;
+    private Quaternion fixedRotation;
 
     private void Awake()
     {
@@ -47,9 +50,12 @@ public class EnemyAttackIndicator : MonoBehaviour
         // Quad를 바닥에 눕힘: 면은 위쪽, UV 위쪽(v)은 공격 방향
         indicatorTransform.rotation = rotation * Quaternion.Euler(90f, 0f, 0f);
 
-        propertyBlock.SetFloat(AngleId, area.shape == AttackAreaShape.Sector ? area.angle : 360f);
-        propertyBlock.SetFloat(IsRectId, isRectangle ? 1f : 0f);
-        propertyBlock.SetFloat(FillId, 0f);
+        fixedPosition = indicatorTransform.position;
+        fixedRotation = indicatorTransform.rotation;
+
+        propertyBlock.SetFloat(angleId, area.shape == AttackAreaShape.Sector ? area.angle : 360f);
+        propertyBlock.SetFloat(isRectId, isRectangle ? 1f : 0f);
+        propertyBlock.SetFloat(fillId, 0f);
         indicatorRenderer.SetPropertyBlock(propertyBlock);
 
         telegraphDuration = Mathf.Max(duration, 0.01f);
@@ -66,14 +72,17 @@ public class EnemyAttackIndicator : MonoBehaviour
             indicatorRenderer.enabled = false;
     }
 
-    private void Update()
+    private void LateUpdate()
     {
         if (!isShowing)
             return;
 
+        // WorldTransformSync(Update)와 NavMeshAgent가 위치를 바꾼 뒤에 다시 덮어써야 하기 때문
+        indicatorRenderer.transform.SetPositionAndRotation(fixedPosition, fixedRotation);
+
         elapsedTime += Time.deltaTime;
 
-        propertyBlock.SetFloat(FillId, Mathf.Clamp01(elapsedTime / telegraphDuration));
+        propertyBlock.SetFloat(fillId, Mathf.Clamp01(elapsedTime / telegraphDuration));
         indicatorRenderer.SetPropertyBlock(propertyBlock);
 
         if (elapsedTime >= telegraphDuration + extraShowTime)

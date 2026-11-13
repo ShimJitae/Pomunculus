@@ -10,7 +10,7 @@
                     "name": "Move",
                     "type": "Button",
                     "id": "627a07c6-8222-47d9-baaf-39ae2d5dd5e9",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
@@ -19,7 +19,7 @@
                     "name": "Attack",
                     "type": "Button",
                     "id": "9946aafc-c483-4a30-8f85-aa361b73f199",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
@@ -73,7 +73,16 @@
                     "name": "PotionSlot3",
                     "type": "Button",
                     "id": "c2e8f163-5a9b-4d07-8e4c-1b6a3d9f7e93",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Aim",
+                    "type": "Button",
+                    "id": "a041cfa7-25de-4725-ad8d-f53dcebd682a",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
@@ -165,6 +174,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "PotionSlot3",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "d524ec47-f1d7-4699-806f-03e34e62c847",
+                    "path": "<Keyboard>/leftShift",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Aim",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

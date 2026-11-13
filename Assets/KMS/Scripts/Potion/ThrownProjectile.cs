@@ -1,3 +1,4 @@
+using Photon.Pun;
 using Pomunculus.Items;
 using System.Collections.Generic;
 using UnityEngine;
@@ -13,7 +14,7 @@ public class ThrownProjectile : MonoBehaviour
     [SerializeField] private GameObject impactEffectPrefab;
 
     [Tooltip("생성한 착탄 이펙트 유지시간")]
-    [SerializeField] private float impactEffectLifeTime = 2f;
+    [SerializeField] private float impactEffectLifeTime = 1f;
 
     private Rigidbody rb;
     private int fallbackDamage;          // 효과가 없는 포션(빈 병)의 기본 피해
@@ -43,6 +44,23 @@ public class ThrownProjectile : MonoBehaviour
     void FixedUpdate()
     {
         rb.AddForce(gravity, ForceMode.Acceleration);
+    }
+
+    // 미리보기용: 충돌 구의 반지름과, 피벗에서 구 중심까지의 오프셋(회전 없는 상태 기준)
+    public bool TryGetCollisionSphere(out Vector3 centerOffset, out float radius)
+    {
+        SphereCollider sphere = GetComponentInChildren<SphereCollider>();
+        if (sphere == null)
+        {
+            centerOffset = Vector3.zero;
+            radius = 0f;
+            return false;
+        }
+
+        Vector3 scale = sphere.transform.lossyScale;
+        radius = sphere.radius * Mathf.Max(Mathf.Abs(scale.x), Mathf.Abs(scale.y), Mathf.Abs(scale.z));
+        centerOffset = sphere.transform.TransformPoint(sphere.center) - transform.position;
+        return true;
     }
 
     // 초기 속도와 이 투사체에만 적용할 중력을 받아 발사
@@ -135,6 +153,7 @@ public class ThrownProjectile : MonoBehaviour
     void ApplyEffects(IDamageable damageable, Vector3 point)
     {
         Entity entity = damageable as Entity;
+        if (!HasAuthority(entity)) return;   // 결정권자가 아니면 연출만 하고 효과는 건너뛴다
         PotionTargetFlags relation = GetRelation(entity);
 
         if (potion == null || potion.Effects.Count == 0)
@@ -150,6 +169,14 @@ public class ThrownProjectile : MonoBehaviour
             if (effect != null && effect.CanAffect(relation))
                 effect.Apply(context);
         }
+    }
+
+    // 이 클라이언트가 대상의 결정권자인지 확인한다 (적 = 방장, 플레이어 = 본인)
+    bool HasAuthority(Entity entity)
+    {
+        if (!PhotonNetwork.InRoom) return true;
+        if (entity is PlayerFSM player) return player.IsMine;
+        return PhotonNetwork.IsMasterClient;
     }
 
     // 플레이어(던진 사람 포함)는 아군, 그 외는 적으로 본다

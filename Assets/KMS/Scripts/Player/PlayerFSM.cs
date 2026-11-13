@@ -13,7 +13,7 @@ using UnityEngine.AI;
 [RequireComponent(typeof(NavMeshAgent))]
 [RequireComponent(typeof(PlayerInputReader), typeof(PlayerMotor), typeof(PlayerThrower))]
 [RequireComponent(typeof(PotionLoadout), typeof(Inventory))]
-public class PlayerFSM : Entity, IPlayerObj, IHealable
+public class PlayerFSM : Entity, IPlayerObj, IHealable, IWorldRPC
 {
     [SerializeField] private PlayerTuningSO tuning;
     public PlayerTuningSO Tuning => tuning;
@@ -65,6 +65,7 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable
     public int Owner { get; set; }
     public bool IsMine => !PhotonNetwork.InRoom ||
                       (PhotonNetwork.LocalPlayer != null && PhotonNetwork.LocalPlayer.ActorNumber == Owner);
+
     protected override void Awake()
     {
         base.Awake();
@@ -82,6 +83,9 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable
         Interactor = GetComponent<PlayerInteractor>();
         Inventory = GetComponentInChildren<Inventory>();
         Loadout = GetComponent<PotionLoadout>();
+
+        Loadout.OnEquipChanged += HandleLoadoutEquipChanged;
+        Loadout.OnSelectChanged += HandleLoadoutSelectChanged;
 
         Motor.Initialize(Tuning, Data.GetSpeed());
         Stats = new PlayerStats(this, Data);
@@ -121,42 +125,6 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable
         //if (TryGetComponent(out Renderer r)) r.material.color = IsMine ? Color.green : Color.red;
     }
 
-
-    // 데이터 저장 및 불어오기 위치값은 굳이 안넣어도 됨 이미 알아하는중
-    // 데이터 저장
-    // 상시 저장 알아한다.
-    // 소유권? 인벤토리 데이터, 알아낸 레시피 기록 - 이외에도 필요한거 생각해보기
-
-    // 현재 상태를 묶어서 저장 데이터에 담는다.
-    public override void SaveData(SaveData _data)
-    {
-        var s = new SaveData();
-        base.SaveData(s); // Entity 내부 SaveData 불러오기 -> 상태이상 데이터와 플레이어의 데이터 구분
-        var state = new PlayerWorldData
-        {
-            Owner = Owner,
-            CurrentHp = CurrentHp,
-            CurrentStamina = Stats.CurrentStamina,
-        };
-        _data.SetData(state);
-        _data.Child["b"] = s;
-    }
-
-    // 저장 데이터에서 상태를 꺼내 적용한다.
-    public override void LoadData(SaveData _data)
-    {
-        base.LoadData(_data.Child["b"]); // Entity 내부 데이터(지금은 상태이상 값) 불러오기
-
-        if (_data?.Data == null) return; // 처음 생성됐거나 예전 세이브라 데이터가 없을 때
-
-        var state = _data.GetData<PlayerWorldData>();
-        SetOwner(state.Owner);
-        CurrentHp = state.CurrentHp;
-        isDie = CurrentHp <= 0;
-        Stats.LoadStamina(state.CurrentStamina);
-        Stats.NotifyHpChanged();
-    }
-
     void Start() => SetState(IsDead ? PlayerStateType.Dead : PlayerStateType.Idle);
 
     void Update()
@@ -192,16 +160,23 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable
     // 받는 피해 비율을 적용해 피해를 입고, HP가 바뀌었으면 알린다.
     public override void TakeDamage(int damage)
     {
-        if (IsDamageBlocked) return;
+        if (!IsMine || IsDamageBlocked) return;
 
         int hpBefore = CurrentHp;
         base.TakeDamage(Mathf.CeilToInt(damage * DamageTakenRatio));
-        if (CurrentHp != hpBefore) Stats.NotifyHpChanged();
+        if (CurrentHp != hpBefore)
+        {
+            SendHpSync();
+            Stats.NotifyHpChanged();
+        }
+
     }
 
     // 투사체·공격 피해. 맞은 위치로 넉백 + 경직
     public override void TakeDamage(int damage, Vector3 sourcePosition)
     {
+        if (!IsMine) { SendDamageRequest(damage, sourcePosition); return; }
+
         int hpBefore = CurrentHp;
         TakeDamage(damage);
         if (CurrentHp < hpBefore && !CheckDie())
@@ -214,21 +189,35 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable
     // 받는 회복 비율(독 등)을 적용해 회복하고, HP가 바뀌었으면 알린다
     public void Heal(int amount)
     {
-        if (IsDead || amount <= 0) return;
+        if (amount <= 0) return;
+        if (!IsMine) { SendHealRequest(amount); return; }
+        if (IsDead) return;   // 사망 여부는 소유자 화면에서만 판단한다 (복사본 상태는 늦을 수 있음)
 
         int hpBefore = CurrentHp;
         CurrentHp += Mathf.CeilToInt(amount * HealReceivedRatio);   // setter가 최대 HP로 제한
-        if (CurrentHp != hpBefore) Stats.NotifyHpChanged();
+        if (CurrentHp != hpBefore)
+        {
+            SendHpSync();
+            Stats.NotifyHpChanged();
+        }
+
     }
 
     protected override void OnDie() => SetState(PlayerStateType.Dead);
+
+    // 지금 던지면 나갈 포션. 선택한 포션이 인벤토리에 없으면 null(빈 병)
+    public PotionData GetThrowablePotion()
+    {
+        PotionData potion = Loadout.SelectedPotion;
+        return potion != null && Inventory.GetItemCount(potion.Id) > 0 ? potion : null;
+    }
 
     public bool ConsumeAttack()
     {
         if (!CanAttack || !Stats.CanUseStamina) return false;
         if (!Input.ConsumeAttack(out Vector3 target)) return false;
 
-        PotionData potion = Loadout.SelectedPotion;
+        PotionData potion = GetThrowablePotion();
         bool hasPotion = potion != null && Inventory.GetItemCount(potion.Id) > 0;
 
         AttackPotion = hasPotion ? potion : null;   // null이면 빈 병
@@ -262,6 +251,7 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable
         else
             transform.position = spawnPos.position;
         SetState(PlayerStateType.Idle);
+        SendHpSync();
     }
 
     // ═══════════════════════ 애니메이션 ═══════════════════════
@@ -280,5 +270,204 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable
     public void SetAnimSpeed(float value)
     {
         if (anim != null) anim.SetFloat(SpeedParam, value, 0.1f, Time.deltaTime);
+    }
+
+
+    // ═════════════════════ Save & Load ═══════════════════════
+
+    // 데이터 저장 및 불어오기 위치값은 굳이 안넣어도 됨 이미 알아하는중
+    // 데이터 저장
+    // 상시 저장 알아한다.
+    // 소유권? 인벤토리 데이터, 알아낸 레시피 기록 - 이외에도 필요한거 생각해보기
+
+    // 현재 상태를 묶어서 저장 데이터에 담는다.
+    private bool isRestoringLoadout;
+
+    public override void SaveData(SaveData _data)
+    {
+        var s = new SaveData();
+        base.SaveData(s); // Entity 내부 SaveData 불러오기 -> 상태이상 데이터와 플레이어의 데이터 구분
+        var state = new PlayerWorldData
+        {
+            Owner = Owner,
+            CurrentHp = CurrentHp,
+            CurrentStamina = Stats.CurrentStamina,
+
+            Item = Inventory.Slots,
+            PotionSlotIds = Loadout.GetSlotIds(),
+            SelectedPotionSlot = Loadout.SelectedIndex
+        };
+
+        for (int i = 0; i < PotionLoadout.SlotCount; i++)
+        {
+            state.PotionSlotIds[i] = Loadout.GetSlotId(i);
+        }
+
+        _data.SetData(state);
+        _data.Child["b"] = s;
+    }
+
+    // 저장 데이터에서 상태를 꺼내 적용한다.
+    public override void LoadData(SaveData _data)
+    {
+        if (_data?.Data == null) return; // 처음 생성됐거나 예전 세이브라 데이터가 없을 때
+        if (_data.Child.TryGetValue("b", out SaveData entityData))
+            base.LoadData(entityData);
+        var state = _data.GetData<PlayerWorldData>();
+        SetOwner(state.Owner);
+        CurrentHp = state.CurrentHp;
+        isDie = CurrentHp <= 0;
+        Stats.LoadStamina(state.CurrentStamina);
+        Stats.NotifyHpChanged();
+        if (state.Item != null)
+        {
+            Inventory.Slots.Clear();
+            foreach (var item in state.Item)
+                Inventory.AddItem(item.ItemId, item.Amount);
+        }
+        isRestoringLoadout = true;
+        Loadout.Restore(state.PotionSlotIds, state.SelectedPotionSlot);
+        isRestoringLoadout = false;
+    }
+
+    // ═════════════════════ RPC ═══════════════════════
+
+    private enum PlayerRPCType : byte
+    {
+        SyncHp,
+        Throw,
+        RequestDamage,
+        RequestHeal,
+        GrantItem,
+        SyncLoadout
+    }
+
+    // 소유자가 확정한 HP를 다른 플레이어에게 전송
+    private void SendHpSync()
+    {
+        if (!IsMine) return;
+
+        PacketData packet = new();
+        packet.Write((byte)PlayerRPCType.SyncHp);
+        packet.Write(CurrentHp);
+        this.SendRPC(packet, WorldRPCTarget.Others);   // 확장 메서드라 this. 필요. 소유자는 이미 적용했으므로 나머지에게만
+    }
+
+    // 장착이 바뀌면 전체 장착 상태를 다른 클라이언트에 보낸다
+    private void HandleLoadoutEquipChanged(int slotIndex, PotionData potion) => SendLoadoutSync();
+
+    // 선택 슬롯이 바뀌면 전체 장착 상태를 다른 클라이언트에 보낸다
+    private void HandleLoadoutSelectChanged(int slotIndex) => SendLoadoutSync();
+
+    private void SendLoadoutSync()
+    {
+        if (!IsMine || isRestoringLoadout) return;
+        PacketData packet = new();
+        packet.Write((byte)PlayerRPCType.SyncLoadout);
+        for (int i = 0; i < PotionLoadout.SlotCount; i++)
+        {
+            PotionData potion = Loadout.GetSlot(i);
+            packet.Write(potion != null ? potion.Id : -1);   // 빈 슬롯은 -1
+        }
+        packet.Write(Loadout.SelectedIndex);
+        this.SendRPC(packet, WorldRPCTarget.Others);
+    }
+
+    // 던지기 정보를 모든 클라이언트에 보낸다 (내 화면은 즉시 실행)
+    public void SendThrow(Vector3 origin, Vector3 velocity, Vector3 gravity, int potionId)
+    {
+        PacketData packet = new();
+        packet.Write((byte)PlayerRPCType.Throw);
+        packet.Write(origin);
+        packet.Write(velocity);
+        packet.Write(gravity);
+        packet.Write(potionId);
+        this.SendRPC(packet, WorldRPCTarget.All);   // 확장 메서드라 this. 필요
+    }
+
+    // 소유자가 아닌 화면에서 받은 피해를 소유자에게만 요청한다
+    public void SendDamageRequest(int damage, Vector3 sourcePosition)
+    {
+        PacketData packet = new();
+        packet.Write((byte)PlayerRPCType.RequestDamage);
+        packet.Write(damage);
+        packet.Write(sourcePosition);
+        this.SendRPC(packet, Owner);
+    }
+
+    // 소유자가 아닌 화면에서 받은 회복을 소유자에게만 요청한다
+    public void SendHealRequest(int amount)
+    {
+        PacketData packet = new();
+        packet.Write((byte)PlayerRPCType.RequestHeal);
+        packet.Write(amount);
+        this.SendRPC(packet, Owner);
+    }
+
+    // 방장이 확정한 아이템을 이 플레이어의 소유자에게만 지급한다
+    public void SendGrantItem(int itemId, int amount)
+    {
+        PacketData packet = new();
+        packet.Write((byte)PlayerRPCType.GrantItem);
+        packet.Write(itemId);
+        packet.Write(amount);
+        this.SendRPC(packet, Owner);
+    }
+
+    // RPCHelper가 ID로 찾아서 호출한다. 보낸 순서 그대로 읽는다
+    public void ReceiveRPC(PacketData packet)
+    {
+        PlayerRPCType rpcType = (PlayerRPCType)packet.ReadByte();
+
+        switch (rpcType)
+        {
+            case PlayerRPCType.Throw:
+                Vector3 origin = packet.ReadVector3();
+                Vector3 velocity = packet.ReadVector3();
+                Vector3 gravity = packet.ReadVector3();
+                int potionId = packet.ReadInt();
+                Thrower.SpawnProjectile(origin, velocity, gravity, potionId);
+                break;
+            case PlayerRPCType.SyncHp:
+                ApplyHp(packet.ReadInt());
+                break;
+            case PlayerRPCType.RequestDamage:
+                int damage = packet.ReadInt();
+                Vector3 sourcePosition = packet.ReadVector3();
+                if (IsMine) TakeDamage(damage, sourcePosition);
+                break;
+            case PlayerRPCType.RequestHeal:
+                int heal = packet.ReadInt();
+                if (IsMine) Heal(heal);
+                break;
+            case PlayerRPCType.GrantItem:
+                int itemId = packet.ReadInt();
+                int amount = packet.ReadInt();
+                if (IsMine) Inventory.AddItem(itemId, amount);
+                break;
+            case PlayerRPCType.SyncLoadout:
+                int[] ids = new int[PotionLoadout.SlotCount];
+                for (int i = 0; i < ids.Length; i++)
+                    ids[i] = packet.ReadInt();
+                int selected = packet.ReadInt();
+                if (!IsMine) Loadout.Restore(ids, selected);
+                break;
+        }
+    }
+
+    // 소유자가 확정한 HP를 적용한다
+    private void ApplyHp(int hp)
+    {
+        CurrentHp = hp;
+        isDie = CurrentHp <= 0;
+        Stats.NotifyHpChanged();
+    }
+
+    // 장착 변경 이벤트 구독을 해제한다
+    private void OnDestroy()
+    {
+        if (Loadout == null) return;
+        Loadout.OnEquipChanged -= HandleLoadoutEquipChanged;
+        Loadout.OnSelectChanged -= HandleLoadoutSelectChanged;
     }
 }

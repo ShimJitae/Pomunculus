@@ -16,9 +16,9 @@ MonoBehaviour:
   monsterName: "\uB9C8\uB140"
   monsterId: 40006
   patternName: "\uB9C8\uB140_\uBD88\uB369\uC774"
-  telegraph: 0.7
+  telegraph: 0.4
   value: 17
-  recovery: 0.6
+  recovery: 1.5
   interval: 3
   patternWeight: 1
   animatorTrigger: 2
@@ -31,5 +31,10 @@ MonoBehaviour:
     width: 1.5
     length: 6
     offset: {x: 0, y: 0, z: 0}
+  skillParticle: {fileID: 8115565106238142139, guid: b8c5fec75d3fda8419df1ebc6396b091, type: 3}
+  hitParticle: {fileID: 0}
+  skillParticleOffset: {x: 0, y: 1, z: 0}
+  skillParticleRotation: {x: 0, y: -90, z: 0}
+  scaleSkillParticleWithArea: 0
   note: "\uB3C5\uC548\uAC1C \uC18C\uD658 \uD6C4 \uBE60\uB978 \uBD88\uB369\uC774 \uD22C\uC0AC\uCCB4\uB85C
     \uC6D0\uAC70\uB9AC \uACF5\uACA9"

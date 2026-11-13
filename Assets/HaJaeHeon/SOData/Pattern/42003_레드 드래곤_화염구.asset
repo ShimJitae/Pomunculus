@@ -16,12 +16,26 @@ MonoBehaviour:
   monsterName: "\uB808\uB4DC \uB4DC\uB798\uACE4"
   monsterId: 42003
   patternName: "\uB808\uB4DC \uB4DC\uB798\uACE4_\uD654\uC5FC\uAD6C"
-  telegraph: 0.5
+  telegraph: 0.8
   value: 25
-  recovery: 0.1
+  recovery: 0.8
   interval: 1
   patternWeight: 1
-  animatorTrigger: 4
+  animatorTrigger: 3
+  useRange: 99
+  attackArea:
+    shape: 3
+    anchor: 0
+    radius: 3
+    angle: 360
+    width: 2
+    length: 10
+    offset: {x: 0, y: 0, z: 0}
+  skillParticle: {fileID: 1239156983776194, guid: 217ae6b798fd3cb468008ee61f0ef4d4, type: 3}
+  hitParticle: {fileID: 0}
+  skillParticleOffset: {x: 0, y: 2.5, z: 3}
+  skillParticleRotation: {x: 0, y: 0, z: 0}
+  scaleSkillParticleWithArea: 0
   note: "\uB4DC\uB798\uACE4 \uC790\uCCB4 \uBAA8\uC158 \uC5C6\uC774 \uB9C8\uBC95\uC9C4\uC73C\uB85C
     \uBD88\uB369\uC774\uB97C \uB9CC\uB4E4\uC5B4\uB0B4 \uC9C0\uC815\uD55C \uD50C\uB808\uC774\uC5B4
     \uC704\uCE58\uB85C \uBC1C\uC0AC"

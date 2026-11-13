@@ -65,7 +65,8 @@ public class RegionChecker : MonoBehaviour
     private void Update()
     {
         if (m_tracker == null || m_statusEffects == null) return;
-        if (m_tracker.CurrentRegion == RegionType.Volcano) KeepBurn();
+        //if (m_tracker.CurrentRegion == RegionType.Volcano) KeepBurn();
+
     }
 
     // 화산 안에 있는 동안 화상이 끊기지 않게 유지한다.
@@ -112,6 +113,8 @@ public class RegionChecker : MonoBehaviour
     {
         RegionType.Forest => "숲",
         RegionType.Volcano => "화산",
+        RegionType.SnowyMountain => "설산",
+        RegionType.Swamp => "독늪",
         _ => region.ToString(),
     };
 
