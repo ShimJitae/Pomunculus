@@ -61,6 +61,10 @@ public sealed class StatusEffectVisualizer : MonoBehaviour
             {
                 endingFeedbacks.RemoveAt(i);
                 Release(feedbacks);
+                if (i > endingFeedbacks.Count)
+                {
+                    return;
+                }
             }
         }
     }
@@ -75,25 +79,25 @@ public sealed class StatusEffectVisualizer : MonoBehaviour
             controller.OnEffectRemoved -= HandleRemoved;
         }
 
-        foreach (StatusEffectFeedback feedbacks in activeFeedbacks.Values)
-        {
-            Release(feedbacks);
-        }
-        foreach (StatusEffectFeedback feedbacks in endingFeedbacks)
-        {
-            Release(feedbacks);
-        }
+        var feedbacksToRelease = new List<StatusEffectFeedback>(activeFeedbacks.Values);
+        feedbacksToRelease.AddRange(endingFeedbacks);
         activeFeedbacks.Clear();
         endingFeedbacks.Clear();
+        foreach (StatusEffectFeedback feedbacks in feedbacksToRelease)
+        {
+            Release(feedbacks);
+        }
     }
 
     private StatusEffectFeedback CreateFeedbacks(StatusEffect effect)
     {
-        if (!isActiveAndEnabled || effect?.Data == null || effect.Data.FeedbackPrefab == null)
+        StatusEffectFeedback prefab = effect?.Data?.FeedbackPrefab;
+        StatusEffectFeedbackPool pool = StatusEffectFeedbackPool.Instance;
+        if (!isActiveAndEnabled || prefab == null)
         {
             return null;
         }
-        if (activeFeedbacks.TryGetValue(effect, out StatusEffectFeedback existing))
+        if (activeFeedbacks.TryGetValue(effect, out StatusEffectFeedback existing) && existing != null)
         {
             return existing;
         }
@@ -101,21 +105,30 @@ public sealed class StatusEffectVisualizer : MonoBehaviour
         Transform effectAnchor = Anchor;
         Bounds modelBounds = default;
         bool shouldFit = fitToModelBounds && TryGetModelBounds(effectAnchor, out modelBounds);
-        StatusEffectFeedback instance = Instantiate(effect.Data.FeedbackPrefab, effectAnchor, false);
-        if (shouldFit)
-        {
-            instance.transform.localPosition = modelBounds.center;
-            instance.transform.localScale = Vector3.Max(modelBounds.size, Vector3.one * 0.01f);
-        }
+        StatusEffectFeedback instance = pool != null
+            ? pool.Get(prefab)
+            : Instantiate(prefab, effectAnchor, false);
+        instance.Rental = (pool, prefab);
+        Transform instanceTransform = instance.transform;
+        Transform prefabTransform = prefab.transform;
+        instanceTransform.SetParent(effectAnchor, false);
+        instanceTransform.SetLocalPositionAndRotation(
+            shouldFit ? modelBounds.center : prefabTransform.localPosition,
+            prefabTransform.localRotation);
+        instanceTransform.localScale = shouldFit
+            ? Vector3.Max(modelBounds.size, Vector3.one * 0.01f)
+            : prefabTransform.localScale;
+
         GameObject target = feedbackTarget != null ? feedbackTarget.gameObject : gameObject;
-        instance.Initialize(target);
-        if (!isActiveAndEnabled)
+        activeFeedbacks[effect] = instance;
+        instance.gameObject.SetActive(prefab.gameObject.activeSelf);
+        if (!activeFeedbacks.TryGetValue(effect, out StatusEffectFeedback current) || current != instance)
         {
-            Release(instance);
             return null;
         }
-        activeFeedbacks.Add(effect, instance);
-        return instance;
+
+        instance.Initialize(target);
+        return activeFeedbacks.TryGetValue(effect, out current) && current == instance ? instance : null;
     }
 
     private bool TryGetModelBounds(Transform effectAnchor, out Bounds bounds)
@@ -165,7 +178,10 @@ public sealed class StatusEffectVisualizer : MonoBehaviour
         if (feedbacks != null)
         {
             feedbacks.PlayRegistered();
-            feedbacks.PlayWhileActive();
+            if (activeFeedbacks.TryGetValue(effect, out StatusEffectFeedback current) && current == feedbacks)
+            {
+                feedbacks.PlayWhileActive();
+            }
         }
     }
 
@@ -207,11 +223,24 @@ public sealed class StatusEffectVisualizer : MonoBehaviour
 
     private static void Release(StatusEffectFeedback feedbacks)
     {
-        if (feedbacks != null)
+        if (feedbacks == null)
         {
-            feedbacks.StopAndCleanup();
-            feedbacks.gameObject.SetActive(false);
-            Destroy(feedbacks.gameObject);
+            return;
         }
+
+        bool wasActive = feedbacks.gameObject.activeInHierarchy;
+        bool canReuse = feedbacks.PrepareForReturn();
+        var (pool, prefab) = feedbacks.Rental;
+        if (canReuse && wasActive && feedbacks.gameObject.activeInHierarchy && pool != null)
+        {
+            pool.Return(prefab, feedbacks);
+            return;
+        }
+
+        if (feedbacks.gameObject.activeInHierarchy)
+        {
+            feedbacks.gameObject.SetActive(false);
+        }
+        Destroy(feedbacks.gameObject);
     }
 }

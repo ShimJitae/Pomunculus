@@ -665,6 +665,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SESourceZone_Burn
       objectReference: {fileID: 0}
+    - target: {fileID: 1808801049609411646, guid: ad8342b2b2f928d479f10d2f7e67aa7c, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7177081846373509396, guid: ad8342b2b2f928d479f10d2f7e67aa7c, type: 3}
       propertyPath: m_LocalPosition.x
       value: -3.3210807
@@ -1525,7 +1529,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyDetector
   detectCollider: {fileID: 0}
-  rb: {fileID: 0}
+  detectRigidbody: {fileID: 0}
 --- !u!1 &1280067999879952136
 GameObject:
   m_ObjectHideFlags: 0
@@ -4765,6 +4769,8 @@ GameObject:
   - component: {fileID: 7088519359151574656}
   - component: {fileID: 7088519359151574655}
   - component: {fileID: 7088519359151574654}
+  - component: {fileID: 7088519359151574658}
+  - component: {fileID: 7088519359151574657}
   m_Layer: 7
   m_Name: BeholderPADefault
   m_TagString: Enemy
@@ -6277,9 +6283,6 @@ MonoBehaviour:
   GroundLayer:
     serializedVersion: 2
     m_Bits: 64
-  UILayer:
-    serializedVersion: 2
-    m_Bits: 0
   MoveMarker: {fileID: 0}
   InputBufferTime: 0.15
 --- !u!4 &6946137522465068083
@@ -6417,6 +6420,41 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 3
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &7088519359151574657
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5184484285413092790}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1763b034f7227b943a41c119c2830cac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StatusEffectVisualizer
+  anchor: {fileID: 0}
+  feedbackTarget: {fileID: 0}
+  fitToModelBounds: 0
+--- !u!114 &7088519359151574658
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5184484285413092790}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec38eb3594e3ab4438e04dd84377c03d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemySkill
+  hitLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  hitHeight: 2
+  skillPattern:
+    candidatePatterns: []
+    nextPattern: {fileID: 0}
+    lastPattern: {fileID: 0}
 --- !u!1 &7335739148799884978
 GameObject:
   m_ObjectHideFlags: 0
