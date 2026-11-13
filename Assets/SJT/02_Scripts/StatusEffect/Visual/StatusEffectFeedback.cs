@@ -22,16 +22,17 @@ public sealed class StatusEffectFeedback : MonoBehaviour
 
     private bool initialized;
     private bool whileActiveStarted;
+    private bool canReuse;
+    private bool preparedForReturn;
 
     public bool IsRemovalPlaying => removedFeedbacks != null && removedFeedbacks.IsPlaying;
+    internal (StatusEffectFeedbackPool pool, StatusEffectFeedback prefab) Rental { get; set; }
 
-    /// <summary>Target이라는 Label의 Reference Holder에 대상을 전달한 뒤 Player들을 초기화한다.</summary>
+    /// <summary>대여마다 대상을 연결하고 Feel Player는 처음 한 번만 초기화한다.</summary>
     public void Initialize(GameObject target)
     {
-        if (initialized)
-        {
-            return;
-        }
+        canReuse = true;
+        preparedForReturn = false;
 
         if (petrifySurface != null)
         {
@@ -86,50 +87,141 @@ public sealed class StatusEffectFeedback : MonoBehaviour
         }
     }
 
-    private void OnDisable() => StopAndCleanup();
+    internal bool PrepareForReturn()
+    {
+        preparedForReturn = true;
+        StopAndCleanup();
+
+        ResetPlayer(registeredFeedbacks);
+        ResetPlayer(reappliedFeedbacks);
+        ResetPlayer(tickFeedbacks);
+        ResetPlayer(removedFeedbacks);
+        ResetPlayer(whileActiveFeedbacks);
+
+        if (petrifySurface != null)
+        {
+            petrifySurface.Restore();
+            petrifySurface.Initialize(null);
+        }
+
+        foreach (ParticleSystem particles in GetComponentsInChildren<ParticleSystem>(true))
+        {
+            particles.Stop(false, ParticleSystemStopBehavior.StopEmittingAndClear);
+        }
+
+        return initialized && canReuse;
+    }
+
+    private void OnDisable()
+    {
+        if (!preparedForReturn)
+        {
+            StopAndCleanup();
+        }
+    }
 
     private void Play(MMF_Player player)
     {
-        if (initialized && isActiveAndEnabled && player != null)
+        if (initialized && !preparedForReturn && isActiveAndEnabled && player != null)
         {
             player.PlayFeedbacks(transform.position);
         }
     }
 
-    private static void Stop(MMF_Player player)
+    private void Stop(MMF_Player player)
     {
         if (player != null)
         {
+            // Feel은 StopFeedbacks에서 내부 완료 대기 플래그를 지우지 않는다.
+            if (player.IsPlaying && player.ElapsedTime >= player.TotalDuration && !RepeatsForever(player))
+            {
+                canReuse = false;
+            }
+
             player.StopFeedbacks();
             // Feel 5.9.1의 초기 지연 코루틴도 취소해 종료 후 뒤늦은 재생을 막는다.
             player.StopAllCoroutines();
         }
     }
 
-    private static void InitializePlayer(MMF_Player player, GameObject target)
+    private static bool RepeatsForever(MMF_Player player)
+    {
+        foreach (MMF_Feedback feedback in player.FeedbacksList)
+        {
+            if (feedback?.Active == true && feedback.Timing?.RepeatForever == true)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void InitializePlayer(MMF_Player player, GameObject target)
     {
         if (player == null)
         {
             return;
         }
 
-        player.InitializationMode = MMFeedbacks.InitializationModes.Script;
-        player.AutoInitialization = false;
-        player.AutoPlayOnEnable = false;
-        player.AutoPlayOnStart = false;
-        player.StopFeedbacksOnDisable = true;
-
-        if (player.FeedbacksList != null)
+        BindTarget(player, target);
+        if (!initialized)
         {
-            foreach (MMF_Feedback feedback in player.FeedbacksList)
-            {
-                if (feedback is MMF_ReferenceHolder holder && holder.Label == "Target")
-                {
-                    holder.GameObjectReference = target;
-                }
-            }
+            player.InitializationMode = MMFeedbacks.InitializationModes.Script;
+            player.AutoInitialization = false;
+            player.AutoPlayOnEnable = false;
+            player.AutoPlayOnStart = false;
+            player.StopFeedbacksOnDisable = true;
+            player.Initialization();
+            return;
         }
 
-        player.Initialization();
+        foreach (MMF_Feedback feedback in player.FeedbacksList)
+        {
+            if (feedback?.HasAutomatedTargetAcquisition == true &&
+                (feedback.ForcedReferenceHolder != null ||
+                 (feedback.AutomatedTargetAcquisition != null &&
+                  feedback.AutomatedTargetAcquisition.Mode != MMFeedbackTargetAcquisition.Modes.None)))
+            {
+                feedback.ForceAutomateTargetAcquisition();
+            }
+        }
+    }
+
+    private static void ResetPlayer(MMF_Player player)
+    {
+        if (player == null || player.FeedbacksList == null)
+        {
+            return;
+        }
+
+        BindTarget(player, null);
+        player.ResetAllCooldowns();
+        player.PlayCount = 0;
+        player.InScriptDrivenPause = false;
+        foreach (MMF_Feedback feedback in player.FeedbacksList)
+        {
+            if (feedback != null)
+            {
+                feedback.IsPlaying = false;
+                feedback.InInitialDelay = false;
+                feedback.ResetPlayCount();
+            }
+        }
+    }
+
+    private static void BindTarget(MMF_Player player, GameObject target)
+    {
+        if (player.FeedbacksList == null)
+        {
+            return;
+        }
+
+        foreach (MMF_Feedback feedback in player.FeedbacksList)
+        {
+            if (feedback is MMF_ReferenceHolder holder && holder.Label == "Target")
+            {
+                holder.GameObjectReference = target;
+            }
+        }
     }
 }
