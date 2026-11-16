@@ -19,7 +19,7 @@ public class PlayerHUDBinder : MonoBehaviour
 
         presenters.Add(new StatPanelPresenter(localPlayer.Stats, statPanelView));
         presenters.Add(new StatusPanelPresenter(localPlayer.GetComponent<StatusEffectController>(), statusPanelView));
-        presenters.Add(new PotionSlotPresenter(potionSlotView));
+        presenters.Add(new PotionSlotPresenter(localPlayer.Loadout, localPlayer.Inventory, potionSlotView));
     }
 
     // 모든 Presenter의 구독을 해제

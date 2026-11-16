@@ -22,14 +22,14 @@ public class PatternDatabase : ScriptableObject
 
         for (int i = 0; i < data.Count; i++)
         {
-            EnemyPatternDataSO so = data[i];
+            EnemyPatternDataSO patternSo = data[i];
 
-            if (so == null)
+            if (patternSo == null)
                 continue;
 
-            int patternId = so.GetPatternId();
+            int patternId = patternSo.PatternId;
 
-            if (patternId <= 0 || !pattern.TryAdd(patternId, so))
+            if (patternId <= 0 || !pattern.TryAdd(patternId, patternSo))
                 continue;
         }
     }
@@ -42,12 +42,12 @@ public class PatternDatabase : ScriptableObject
 
         for(int i = 0;i < data.Count;i++)
         {
-            EnemyPatternDataSO so = data[i];
+            EnemyPatternDataSO patternSo = data[i];
 
-            if (so == null)
+            if (patternSo == null)
                 continue;
 
-            int monsterId = so.GetMonsterId();
+            int monsterId = patternSo.GetMonsterId();
 
             if (!checkList.Contains(monsterId))
             {

@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 864150b1474b29c46b25acae04f4cdbc, type: 3}
+  m_Name: "\uC5BC\uC74C \uC720\uB839"
+  m_EditorClassIdentifier: Assembly-CSharp::MonsterDataSO
+  hp: 80
+  maxHp: 80
+  moveSpeed: 3
+  monster_id: 40003
+  monster_name: "\uC5BC\uC74C \uC720\uB839"
+  kind: 0
+  atk: 5
+  speed: 3
+  zone_id: 1
+  zone_name: "\uC124\uC0B0"
+  drop_id: 25033
+  drop_name: "\uC5BC\uC74C \uC815\uC218"
+  behaviour: "\uB9F4\uB3CC\uAE30, \uB0C9\uAE30 \uC624\uB77C"
+  detectRange: 4
+  attackRange: 2.5
+  behaviourGraph: {fileID: -8369483795943858381, guid: 548c8a7dfd53fe743900d6e6d4467ff2, type: 2}
+  enemyPrefab: {fileID: 4819749472615531902, guid: 6f9f00012c99fc24aab659a4649f3f9f, type: 3}
+  normalAttackPattern: {fileID: 11400000, guid: 214bb2c1ad666ac41b34bd0eae079cf4, type: 2}
