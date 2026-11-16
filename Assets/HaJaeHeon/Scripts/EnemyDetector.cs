@@ -59,11 +59,13 @@ public class EnemyDetector : MonoBehaviour
         return playersInRange.Contains(player);
     }
 
+    // 제거되거나 비활성화된 후보를 정리하면서 가장 가까운 플레이어를 찾는다.
     public GameObject GetNearestPlayer()
     {
         GameObject nearestPlayer = null;
         float minSqrDistance = float.MaxValue;
 
+        // 탐색 중 후보를 삭제해도 아직 검사하지 않은 항목을 건너뛰지 않도록 역순으로 순회
         for (int i = playersInRange.Count - 1; i >= 0; i--)
         {
             GameObject player = playersInRange[i];
