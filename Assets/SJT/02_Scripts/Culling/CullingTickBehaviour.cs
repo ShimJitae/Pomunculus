@@ -59,9 +59,9 @@ public abstract class CullingTickBehaviour : MonoBehaviour, ICullingTickable
     /// 플레이 중 씬 뷰에 화면 판정용 구를 그린다. 이번 프레임에 CullingTick을 받았으면 초록, 아니면 빨강.
     /// 자식이 기즈모를 추가로 그리려면 override하고 base를 호출한다
     /// </summary>
-#if UNITY_EDITOR
     protected virtual void OnDrawGizmos()
     {
+#if UNITY_EDITOR
         if (!Application.isPlaying)
         {
             return;
@@ -70,8 +70,8 @@ public abstract class CullingTickBehaviour : MonoBehaviour, ICullingTickable
         BoundingSphere sphere = GetCullingSphere();
         Gizmos.color = lastTickFrame >= Time.frameCount - 1 ? Color.green : Color.red;
         Gizmos.DrawWireSphere(sphere.position, sphere.radius);
-    }
 #endif
+    }
 
     /// <summary>씬의 CullingManager에 등록한다. 매니저가 없으면 에디터에서만 경고한다</summary>
     private void RegisterToManager()
