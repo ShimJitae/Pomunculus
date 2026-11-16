@@ -4,13 +4,19 @@ using UnityEngine;
 
 /// <summary>
 /// 등록된 ICullingTickable 중 메인 카메라 화면 안에 있는 대상에게만 매 프레임 CullingTick을 호출한다.
-/// 첫 Register 때 자동으로 생성되고 DontDestroyOnLoad로 앱이 끝날 때까지 유지된다.
+/// 사용하는 씬마다 미리 배치하며, 씬과 함께 생성·파괴된다. 한 씬에 둘 이상이면 먼저 깨어난 쪽만 남는다.
 /// </summary>
 public sealed class CullingManager : MonoBehaviour
 {
     private const int c_initialCapacity = 32;
 
+#if UNITY_EDITOR
+    [Tooltip("켜면 대상이 화면에 들어오거나 나갈 때 콘솔에 로그를 남긴다 (에디터 전용)")]
+    [SerializeField] private bool logVisibility;
+#endif
+
     private static CullingManager instance;
+    public static CullingManager Instance => instance;
 
     // targets[i]와 spheres[i]는 항상 같은 대상을 가리킨다
     private readonly List<ICullingTickable> targets = new();
@@ -23,23 +29,41 @@ public sealed class CullingManager : MonoBehaviour
 
     private void Awake()
     {
+        // 씬에 매니저가 둘 이상이면 먼저 깨어난 쪽만 쓴다
+        if (instance != null && instance != this)
+        {
+            // Destroy는 프레임 끝에 처리되므로, 그 전에 CullingGroup 없이 Update가 돌지 않도록 먼저 끈다
+            enabled = false;
+            Destroy(gameObject);
+            return;
+        }
+        instance = this;
+
         group = new CullingGroup();
         group.SetBoundingSpheres(spheres);
         group.SetBoundingSphereCount(0);
+#if UNITY_EDITOR
+        group.onStateChanged = LogVisibilityChanged;
+#endif
+    }
+
+    private void Start()
+    {
+        targetCamera = Camera.main;
+        if (targetCamera != null)
+        {
+            group.targetCamera = targetCamera;
+        }
+#if UNITY_EDITOR
+        else
+        {
+            Debug.LogWarning("[CullingManager] 메인 카메라가 씬에 없습니다. 화면 판정 없이 모든 대상을 갱신합니다", this);
+        }
+#endif
     }
 
     private void Update()
     {
-        // 씬 시작 직후·씬 전환으로 카메라가 사라졌거나 꺼졌으면 현재 메인 카메라를 다시 찾는다
-        if (targetCamera == null || !targetCamera.isActiveAndEnabled)
-        {
-            targetCamera = Camera.main;
-            if (targetCamera != null)
-            {
-                group.targetCamera = targetCamera;
-            }
-        }
-
         // 움직이는 대상만 구를 다시 계산한다. 고정 대상은 등록할 때 계산한 값을 그대로 쓴다
         for (int i = 0; i < targets.Count; i++)
         {
@@ -86,33 +110,26 @@ public sealed class CullingManager : MonoBehaviour
         group = null;
     }
 
-    /// <summary>대상을 등록한다. 매니저가 없으면 새로 만든다</summary>
-    public static void Register(ICullingTickable target)
+    /// <summary>대상을 등록한다. 이미 등록된 대상이면 무시한다</summary>
+    public void Register(ICullingTickable target)
     {
         if (target == null)
         {
             return;
         }
 
-        if (instance == null)
-        {
-            GameObject managerObject = new GameObject(nameof(CullingManager));
-            DontDestroyOnLoad(managerObject);
-            instance = managerObject.AddComponent<CullingManager>();
-        }
-
-        instance.Add(target);
+        Add(target);
     }
 
-    /// <summary>대상의 등록을 해제한다. 앱 종료 중 매니저가 먼저 파괴됐으면 아무것도 하지 않는다</summary>
-    public static void Unregister(ICullingTickable target)
+    /// <summary>대상의 등록을 해제한다. 등록되지 않은 대상이면 무시한다. 매니저가 이미 파괴됐는지는 호출하는 쪽이 확인한다</summary>
+    public void Unregister(ICullingTickable target)
     {
-        if (instance == null || target == null)
+        if (target == null)
         {
             return;
         }
 
-        instance.Remove(target);
+        Remove(target);
     }
 
     /// <summary>대상을 배열 끝에 추가하고 등록 시점의 판정용 구를 계산한다</summary>
@@ -157,4 +174,19 @@ public sealed class CullingManager : MonoBehaviour
         indexOf.Remove(target);
         group.SetBoundingSphereCount(targets.Count);
     }
+
+#if UNITY_EDITOR
+    /// <summary>화면 진입·이탈을 콘솔에 남긴다. 상태가 바뀔 때만 호출되므로 매 프레임 찍히지 않는다</summary>
+    private void LogVisibilityChanged(CullingGroupEvent e)
+    {
+        if (!logVisibility || e.index >= targets.Count)
+        {
+            return;
+        }
+
+        UnityEngine.Object context = targets[e.index] as UnityEngine.Object;
+        string state = e.hasBecomeVisible ? "화면 진입" : "화면 이탈";
+        Debug.Log($"[CullingManager] {(context != null ? context.name : "(파괴됨)")} {state}", context);
+    }
+#endif
 }
