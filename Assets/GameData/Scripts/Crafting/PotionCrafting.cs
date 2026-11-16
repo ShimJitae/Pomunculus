@@ -222,6 +222,7 @@ namespace Pomunculus.Items
             inventory.AddItem(material.Id, 1);
             RefreshUI();
         }
+        //결과이미지 보이기
         private void RefreshResultPreview()
         {
             if (resultPreviewImage == null)
