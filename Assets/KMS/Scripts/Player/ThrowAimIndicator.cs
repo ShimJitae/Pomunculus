@@ -30,9 +30,10 @@ public class ThrowAimIndicator : MonoBehaviour
         }
 
         Vector3 goal = player.Thrower.ClampToThrowRange(mousePoint);
-        ThrownProjectile prefab = player.Thrower.GetProjectilePrefab(player.GetThrowablePotion());
+        PotionData potion = player.GetThrowablePotion();
+        ThrownProjectile prefab = player.Thrower.GetProjectilePrefab(potion);
         Vector3 impactPoint = DrawTrajectory(goal, prefab);
-        DrawRangeCircle(impactPoint, prefab != null ? prefab.ImpactRadius : 0f);
+        DrawRangeCircle(impactPoint, GetRangeRadius(potion, prefab));
         SetVisible(true);
     }
 
@@ -88,11 +89,18 @@ public class ThrowAimIndicator : MonoBehaviour
         }
     }
 
-    // 지금 던질 투사체 프리팹의 피격 반경
-    float GetImpactRadius()
+    // 투사체 착탄 반경과 효과 범위(장판 등) 중 가장 큰 값
+    float GetRangeRadius(PotionData potion, ThrownProjectile prefab)
     {
-        ThrownProjectile prefab = player.Thrower.GetProjectilePrefab(player.GetThrowablePotion());
-        return prefab != null ? prefab.ImpactRadius : 0f;
+        float radius = prefab != null ? prefab.ImpactRadius : 0f;
+        if (potion == null) return radius;
+
+        foreach (PotionEffect effect in potion.Effects)
+        {
+            if (effect != null)
+                radius = Mathf.Max(radius, effect.AreaRadius);
+        }
+        return radius;
     }
 
     void SetVisible(bool visible)
