@@ -31,12 +31,12 @@ public class EnemyHpBar : MonoBehaviour
     {
         if (cameraTransform == null)
         {
-            Camera mainCam = Camera.main;
+            Camera mainCamera = Camera.main;
 
-            if (mainCam == null)
+            if (mainCamera == null)
                 return;
 
-            cameraTransform = mainCam.transform;
+            cameraTransform = mainCamera.transform;
         }
 
         transform.rotation = cameraTransform.rotation;

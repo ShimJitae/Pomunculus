@@ -10,7 +10,7 @@ public class EnemyDetector : MonoBehaviour
     private readonly List<GameObject> playersInRange = new();
     
     [SerializeField] private SphereCollider detectCollider;
-    [SerializeField] private Rigidbody rb;
+    [SerializeField] private Rigidbody detectRigidbody;
 
 
     private void OnEnable()
@@ -18,9 +18,9 @@ public class EnemyDetector : MonoBehaviour
         detectCollider = GetComponent<SphereCollider>();
         detectCollider.isTrigger = true;
 
-        rb = GetComponent<Rigidbody>();
-        rb.isKinematic = true;
-        rb.useGravity = false;
+        detectRigidbody = GetComponent<Rigidbody>();
+        detectRigidbody.isKinematic = true;
+        detectRigidbody.useGravity = false;
     }
 
     private void OnDisable()
@@ -61,27 +61,27 @@ public class EnemyDetector : MonoBehaviour
 
     public GameObject GetNearestPlayer()
     {
-        GameObject nearset = null;
-        float minSqr = float.MaxValue;
+        GameObject nearestPlayer = null;
+        float minSqrDistance = float.MaxValue;
 
         for (int i = playersInRange.Count - 1; i >= 0; i--)
         {
-            GameObject obj = playersInRange[i];
+            GameObject player = playersInRange[i];
 
-            if(obj == null || !obj.activeInHierarchy)
+            if(player == null || !player.activeInHierarchy)
             {
                 playersInRange.RemoveAt(i);
                 continue;
             }
 
-            float sqr = (obj.transform.position - transform.position).sqrMagnitude;
+            float sqrDistance = (player.transform.position - transform.position).sqrMagnitude;
 
-            if(sqr <  minSqr)
+            if(sqrDistance <  minSqrDistance)
             {
-                minSqr = sqr;
-                nearset = obj;
+                minSqrDistance = sqrDistance;
+                nearestPlayer = player;
             }
         }
-        return nearset;
+        return nearestPlayer;
     }
 }

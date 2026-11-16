@@ -19,14 +19,14 @@ public class EnemyDatabase : ScriptableObject
 
         for (int i = 0; i < data.Count; i++)
         {
-            EnemyDataSO so = data[i];
+            EnemyDataSO enemySo = data[i];
 
-            if (so == null)
+            if (enemySo == null)
                 continue;
 
-            int enemyId = so.GetEnemyId();
+            int enemyId = enemySo.GetEnemyId();
 
-            if (enemyId <= 0 || !enemy.TryAdd(enemyId, so))
+            if (enemyId <= 0 || !enemy.TryAdd(enemyId, enemySo))
                 continue;
 
         }
@@ -39,9 +39,9 @@ public class EnemyDatabase : ScriptableObject
 
     public EnemyDataSO TryGetDataSO(int monsterId)
     {
-        if (enemy.TryGetValue(monsterId, out EnemyDataSO so))
+        if (enemy.TryGetValue(monsterId, out EnemyDataSO enemySo))
         {
-            return so;
+            return enemySo;
         }
 
         Debug.Log($"{monsterId}에 해당하는 데이터 없음");
@@ -50,9 +50,9 @@ public class EnemyDatabase : ScriptableObject
 
     public int TryGetDropItemID(int monsterId)
     {
-        if (enemy.TryGetValue(monsterId, out EnemyDataSO so))
+        if (enemy.TryGetValue(monsterId, out EnemyDataSO enemySo))
         {
-            return so.GetDropId();
+            return enemySo.GetDropId();
         }
 
         Debug.Log($"{monsterId}에 해당하는 데이터 없음");
@@ -61,9 +61,9 @@ public class EnemyDatabase : ScriptableObject
 
     public string TryGetDropItemName(int monsterId)
     {
-        if (enemy.TryGetValue(monsterId, out EnemyDataSO so))
+        if (enemy.TryGetValue(monsterId, out EnemyDataSO enemySo))
         {
-            return so.GetDropName();
+            return enemySo.GetDropName();
         }
 
         Debug.Log($"{monsterId}에 해당하는 데이터 없음");
@@ -79,24 +79,24 @@ public class EnemyDatabase : ScriptableObject
         }
     }
 
-    public void SpawnEnemy(Vector3 spawnPositon)
+    public void SpawnEnemy(Vector3 spawnPosition)
     {
-        int value = Random.Range(0, data.Count);
+        int randomIndex = Random.Range(0, data.Count);
 
-        GameObject prefab = data[value].GetEnemyPrefab();
+        GameObject prefab = data[randomIndex].GetEnemyPrefab();
 
-        GameObject enemyObject = GameObject.Instantiate(prefab, spawnPositon, Quaternion.identity);
+        GameObject enemyObject = GameObject.Instantiate(prefab, spawnPosition, Quaternion.identity);
     }
 
-    public void SpawnWitch(Vector3 spawnPositon)
+    public void SpawnWitch(Vector3 spawnPosition)
     {
         GameObject prefab;
 
-        if(enemy.TryGetValue(40006, out  EnemyDataSO so))
+        if(enemy.TryGetValue(40006, out  EnemyDataSO enemySo))
         {
-            prefab = so.GetEnemyPrefab();
+            prefab = enemySo.GetEnemyPrefab();
 
-            GameObject enemyObject = GameObject.Instantiate(prefab, spawnPositon, Quaternion.identity);
+            GameObject enemyObject = GameObject.Instantiate(prefab, spawnPosition, Quaternion.identity);
         }
     }
 }

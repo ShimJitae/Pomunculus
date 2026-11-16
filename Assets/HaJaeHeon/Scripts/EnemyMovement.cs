@@ -31,8 +31,8 @@ public class EnemyMovement : MonoBehaviour
             if (Random.value < 0.5f) step = -step;
             float angle = Mathf.Repeat(currentAngle + step, 360f);
 
-            float rad = angle * Mathf.Deg2Rad;
-            Vector3 point = spawnCenter + new Vector3(Mathf.Cos(rad), 0f, Mathf.Sin(rad)) * patrolRadius;
+            float angleRadian = angle * Mathf.Deg2Rad;
+            Vector3 point = spawnCenter + new Vector3(Mathf.Cos(angleRadian), 0f, Mathf.Sin(angleRadian)) * patrolRadius;
 
             if (NavMesh.SamplePosition(point, out NavMeshHit hit, 2f, NavMesh.AllAreas))
             {
@@ -46,7 +46,7 @@ public class EnemyMovement : MonoBehaviour
     // 추적 → 순찰 복귀 시 호출
     public void SyncAngleToCurrentPosition()
     {
-        Vector3 dir = transform.position - spawnCenter;
-        currentAngle = Mathf.Atan2(dir.z, dir.x) * Mathf.Rad2Deg;
+        Vector3 directionFromCenter = transform.position - spawnCenter;
+        currentAngle = Mathf.Atan2(directionFromCenter.z, directionFromCenter.x) * Mathf.Rad2Deg;
     }
 }

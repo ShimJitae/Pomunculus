@@ -99,11 +99,6 @@ public class EnemyPatternDataSO : ScriptableObject
         return patternName;
     }
 
-    public int GetPatternId()
-    {
-        return patternId;
-    }
-
     public int GetMonsterId()
     {
         return monsterId;

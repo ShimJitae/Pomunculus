@@ -53,6 +53,8 @@ public class PlayerInputReader : MonoBehaviour
     {
         cam = Camera.main;
 
+        controls = Instantiate(controls);
+
         playerMap = controls.FindActionMap("Player", throwIfNotFound: true);
         moveAction = playerMap.FindAction("Move", throwIfNotFound: true);
         attackAction = playerMap.FindAction("Attack", throwIfNotFound: true);
@@ -88,6 +90,12 @@ public class PlayerInputReader : MonoBehaviour
 #if UNITY_EDITOR
         debugMap.Disable();
 #endif
+    }
+
+    // 복제한 입력 에셋을 정리한다
+    void OnDestroy()
+    {
+        if (controls != null) Destroy(controls);
     }
 
     // 마우스 커서가 UI 위에 있는지 확인한다

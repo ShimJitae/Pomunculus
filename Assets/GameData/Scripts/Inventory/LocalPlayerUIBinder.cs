@@ -51,10 +51,17 @@ namespace Pomunculus.Items
                 Debug.LogWarning("내 플레이어에 Inventory가 없습니다.", obj.gameObject);
                 return false;
             }
-            BindInventory(inventory);
+            // 플레이어에게 붙어 있는 포션 장착 정보 가져오기
+            PotionLoadout loadout = obj.gameObject.GetComponent<PotionLoadout>();
+            if (loadout == null)
+            {
+                Debug.LogWarning("내 플레이어에 PotionLoadout이 없습니다.", obj.gameObject);
+                return false;
+            }
+            BindInventory(inventory, loadout);
             return true;
         }
-        private void BindInventory(Inventory inventory)
+        private void BindInventory(Inventory inventory, PotionLoadout loadout)
         {
             // 제작 기능에서 사용할 인벤토리 연결
             if (potionCrafting != null)
@@ -82,7 +89,7 @@ namespace Pomunculus.Items
             {
                 bool wasEnabled = potionSlotSelector.enabled;
                 potionSlotSelector.enabled = false;
-                potionSlotSelector.inventory = inventory;
+                potionSlotSelector.Bind(inventory, loadout);
                 potionSlotSelector.enabled = wasEnabled;
             }
         }

@@ -1,4 +1,3 @@
-using Photon.Pun;
 using Pomunculus.Items;
 using System;
 using System.Collections.Generic;
@@ -21,8 +20,6 @@ public class ItemPickupController : MonoBehaviour
     private PlayerFSM owner;
     private float nextScanAt;
     private readonly HashSet<Component> detectedThisScan = new HashSet<Component>();
-
-    private const int LocalOnlyId = -1;
 
     private void Awake()
     {
@@ -71,7 +68,7 @@ public class ItemPickupController : MonoBehaviour
         }
     }
 
-    // 재료를 인벤토리에 넣고 필드에서 제거한다
+    // 재료를 화면에서 숨기고 방장에게 획득을 요청한다 (지급은 PlayerFSM.GrantItem RPC로 받음)
     private void PickupMaterial(MaterialPickup material)
     {
         if (material.Material == null)
@@ -79,11 +76,9 @@ public class ItemPickupController : MonoBehaviour
             Debug.LogWarning("MaterialData가 비어 있는 재료", material);
             return;
         }
-        if (!CanRemoveFromField(material.ID)) return;   // 먼저 확인하고 나서 추가 (추가만 되고 삭제 안 되는 경우 방지)
-
-        owner.Inventory.AddItem(material.Material.Id, material.Amount);
-        RemoveFromField(material.gameObject, material.ID);
-        OnMaterialPickedUp?.Invoke(material);
+        material.gameObject.SetActive(false);   // 다음 스캔에서 다시 요청하지 않도록
+        material.RequestPickup(owner.Owner);
+        OnMaterialPickedUp?.Invoke(material);   // 현재 구독자 없음. 지급 확정 시점이 필요하면 GrantItem 쪽으로 옮길 것
     }
 
     // 포션을 인벤토리에 넣고 필드에서 제거한다 (포션은 항상 로컬 오브젝트)
@@ -92,23 +87,15 @@ public class ItemPickupController : MonoBehaviour
         if (potion.Data == null) { Debug.LogWarning("PotionData가 비어 있는 포션", potion); return; }
 
         owner.Inventory.AddItem(potion.Data.Id, 1);
-        RemoveFromField(potion.gameObject, LocalOnlyId);
+        RemoveFromField(potion.gameObject);
         OnPotionPickedUp?.Invoke(potion);
     }
 
-    // WorldManager에 등록된 아이템은 방장만 지울 수 있다
-    private bool CanRemoveFromField(int worldObjectId)
-    {
-        if (worldObjectId == LocalOnlyId) return true;
-        return !PhotonNetwork.InRoom || PhotonNetwork.IsMasterClient;
-    }
-
-    // 다음 스캔에서 다시 감지되지 않게 즉시 끄고 삭제한다
-    private void RemoveFromField(GameObject item, int worldObjectId)
+    // 로컬 아이템을 다음 스캔에서 다시 감지되지 않게 즉시 끄고 삭제한다
+    private void RemoveFromField(GameObject item)
     {
         item.SetActive(false);
-        if (worldObjectId == LocalOnlyId) Destroy(item);
-        else WorldManager.Instance.Despawn(worldObjectId);
+        Destroy(item);
     }
 
     void OnDrawGizmosSelected()

@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2622a819b824cf64292e2f07625f2fa7, type: 3}
+  m_Name: "40010_\uC2A4\uCF08\uB808\uD1A4_\uD65C \uC3D8\uAE30"
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyPatternDataSO
+  patternId: 45062
+  monsterName: "\uC2A4\uCF08\uB808\uD1A4 \uD65C"
+  monsterId: 40010
+  patternName: "\uC2A4\uCF08\uB808\uD1A4_\uD65C \uC3D8\uAE30"
+  telegraph: 0.9
+  value: 0
+  recovery: 1.4
+  interval: 2
+  patternWeight: 1
+  animatorTrigger: 2
+  useRange: 0
+  attackArea:
+    shape: 3
+    anchor: 0
+    radius: 0
+    angle: 0
+    width: 1
+    length: 8
+    offset: {x: 0, y: 0, z: 0}
+  skillParticle: {fileID: 5553961212022900120, guid: c4edb53d61da7ed4c8e0b6cb50602d17, type: 3}
+  hitParticle: {fileID: 0}
+  skillParticleOffset: {x: -0.30711052, y: 1.0258687, z: 1.0111294}
+  skillParticleRotation: {x: 359.98474, y: 359.9709, z: 0.000010703318}
+  scaleSkillParticleWithArea: 0
+  note: "\uD65C\uC744 \uB4E0 \uC2A4\uCF08\uB808\uD1A4\uC758 \uC6D0\uAC70\uB9AC \uACF5\uACA9"
