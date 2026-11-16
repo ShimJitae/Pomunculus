@@ -1,3 +1,6 @@
+
+using Unity.Collections;
+
 public class WorldSlotLoader : Singleton<WorldSlotLoader>
 {
     public WorldSlotLInfo SaveInfo
@@ -28,6 +31,18 @@ public class WorldSlotLoader : Singleton<WorldSlotLoader>
         data.SlotId = SaveInfo.LastSlotId;
         data.WorldName = worldName;
         SaveInfo.Slots.Add(data);
+        Save();
+    }
+    public void DeleteWorld(int id)
+    {
+        var s = SaveInfo.Slots.Find(x => x.SlotId == id);
+        if(s == null)
+        {
+            UnityEngine.Debug.Log("존재하지 않는 슬롯입니다.");
+            return;
+        }
+        SaveInfo.Slots.Remove(s);
+        WorldManager.Instance.DeleteWorld(id);
         Save();
     }
     public void Save()

@@ -14,7 +14,7 @@ public class TitleTestUI : MonoBehaviour
         m_findRoomButton.onClick.AddListener(OnClickFindRoom);
 
         // 저장된 월드가 없으면 이어하기 숨김
-        m_continueGameButton.gameObject.SetActive(WorldManager.Instance.HasWorld(GameManager.TempWorldSlot));
+        //m_continueGameButton.gameObject.SetActive(WorldManager.Instance.HasWorld(GameManager.TempWorldSlot));
     }
     private void Start()
     {

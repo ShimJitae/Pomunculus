@@ -6,6 +6,7 @@ public class WorldSlotListUI : MonoBehaviour
     public void Init()
     {
         Refresh();
+        m_worldcreateUI.Close();
     }
     public void Open()
     {
@@ -28,7 +29,7 @@ public class WorldSlotListUI : MonoBehaviour
     }
     public void OnClickCreateWorld()
     {
-        
+        m_worldcreateUI.Open();
     }
     public void Refresh()
     {
@@ -57,6 +58,7 @@ public class WorldSlotListUI : MonoBehaviour
     private Queue<WorldSlotUI> m_pool = new Queue<WorldSlotUI>();
     [SerializeField]private GameObject m_SlotPrefab;
     [SerializeField]private Transform m_SlotListRoot;
+    [SerializeField]private WorldCreateUI m_worldcreateUI;
 }
 public class WorldSlotData
 {
