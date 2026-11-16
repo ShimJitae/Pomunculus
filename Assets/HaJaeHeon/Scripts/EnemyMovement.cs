@@ -17,11 +17,13 @@ public class EnemyMovement : MonoBehaviour
         currentAngle = Random.Range(0f, 360f);
     }
 
+    // 순찰 위치 계산에 사용 할 중심 좌표를 설정한다.
     public void InitSpawnCenter(Vector3 position)
     {
         spawnCenter = position;
     }
 
+    // 순찰 각도를 바꾸며 NavMesh 위치를 최대 3회 탐색하고, 탐색에 실패하면 순찰 중심을 반환한다.
     public Vector3 GetNextPatrolPoint()
     {
         // NavMesh 보정 실패 대비

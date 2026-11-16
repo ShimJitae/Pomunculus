@@ -70,6 +70,10 @@ public class EnemyPatternDataSO : ScriptableObject
     [SerializeField] private Vector3 skillParticleRotation;               // 회전 보정 (Vefects 이펙트는 Y -90부터 시작)
     [SerializeField] private bool scaleSkillParticleWithArea = true;      // 범위 크기에 맞춰 스케일 조절
 
+    [Header("사운드 (비우면 해당 타이밍에 재생 안함)")]
+    [SerializeField] private AudioSO telegraphSound; // 예고 시작(기 모으기, 경고음)
+    [SerializeField] private AudioSO attackSound; //판정 순간(타격, 폭발, 투사체 발사)
+
     [Header("설명")]
     [SerializeField, TextArea(3, 8)] private string note;
 
@@ -90,6 +94,8 @@ public class EnemyPatternDataSO : ScriptableObject
     public Vector3 SkillParticleOffset => skillParticleOffset;
     public Vector3 SkillParticleRotation => skillParticleRotation;
     public bool ScaleSkillParticleWithArea => scaleSkillParticleWithArea;
+    public AudioSO TelegraphSound => telegraphSound;
+    public AudioSO AttackSound => attackSound;
     public string Note => note;
 
 
