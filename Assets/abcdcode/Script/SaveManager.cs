@@ -25,6 +25,7 @@ public class SaveManager : Singleton<SaveManager>
     }
     public string SavePath(string fileName)
     {
-        return $"{Application.persistentDataPath}/{fileName}";
+        // 멀티 테스트용 인스턴스는 프로필별 폴더에 저장. 기본 프로필은 기존과 같은 persistentDataPath
+        return $"{MultiplayerTestProfile.SaveDirectory}/{fileName}";
     }
 }

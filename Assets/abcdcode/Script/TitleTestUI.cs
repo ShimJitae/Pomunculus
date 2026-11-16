@@ -14,7 +14,7 @@ public class TitleTestUI : MonoBehaviour
         m_findRoomButton.onClick.AddListener(OnClickFindRoom);
 
         // 저장된 월드가 없으면 이어하기 숨김
-        m_continueGameButton.gameObject.SetActive(WorldManager.Instance.HasWorld(GameManager.TempWorldSlot));
+        //m_continueGameButton.gameObject.SetActive(WorldManager.Instance.HasWorld(GameManager.TempWorldSlot));
     }
     private void Start()
     {
@@ -41,6 +41,10 @@ public class TitleTestUI : MonoBehaviour
     private void OnClickFindRoom()
     {
         m_lobbyPanel.Open(); // 오프라인이면 여기서 접속 시작
+    }
+    public void OnClickExitGame()
+    {
+        Application.Quit();
     }
 
     // 보통은 방장이 방을 만들 때 씬이 방 속성에 기록되어 PUN이 TestScene으로 자동 이동시킴
