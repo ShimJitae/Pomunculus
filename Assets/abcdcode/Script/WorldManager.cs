@@ -53,6 +53,10 @@ public class WorldManager : Singleton<WorldManager>
     public const float DayLength = 60f; // 하루 길이(초)
     // 바뀐 Day. 방장/수신 쪽 모두 호출됨
     public event Action<int> OnDayChangedEvent;
+    // 바뀐 계절. 날짜가 넘어가며 계절이 바뀔 때 OnDayChangedEvent 다음에 호출. 방장/수신 쪽 모두 호출됨
+    // 월드를 불러오거나 스냅샷을 받을 때는 호출되지 않으므로 초기값은 CurSeason으로 확인
+    public event Action<Season> OnSeasonChangedEvent;
+    public Season CurSeason => CurWorldData?.Season ?? Season.Spring;
 
     // GameManager.Update에서 매 프레임 호출
     // 시간은 모두가 로컬로 흘려보내고, 날짜가 넘어가는 건 방장만 결정해서 전파한다
@@ -68,12 +72,14 @@ public class WorldManager : Singleton<WorldManager>
         }
         if (CurWorldData.Time < DayLength) return;
 
+        Season prevSeason = CurWorldData.Season;
         while (CurWorldData.Time >= DayLength)
         {
             CurWorldData.Time -= DayLength;
             CurWorldData.Day++;
         }
         OnDayChangedEvent?.Invoke(CurWorldData.Day);
+        if (CurWorldData.Season != prevSeason) OnSeasonChangedEvent?.Invoke(CurWorldData.Season);
         if (!PhotonNetwork.InRoom) return;
 
         // 남은 Time도 같이 보내서 다른 플레이어의 오차를 날짜마다 맞춤
@@ -91,9 +97,11 @@ public class WorldManager : Singleton<WorldManager>
         // 스냅샷 전에 보낸 날짜는 스냅샷에 이미 반영되어 오므로 무시
         if (!IsReady || CurWorldData == null || day < CurWorldData.Day) return;
         bool changed = day != CurWorldData.Day;
+        Season prevSeason = CurWorldData.Season;
         CurWorldData.Day = day;
         CurWorldData.Time = time;
         if (changed) OnDayChangedEvent?.Invoke(day);
+        if (CurWorldData.Season != prevSeason) OnSeasonChangedEvent?.Invoke(CurWorldData.Season);
     }
     #endregion
 
