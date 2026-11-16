@@ -206,7 +206,8 @@ public class GameManager : SingletonBehavior<GameManager>
         if(SaveManager.Instance.Load(UserProfile) == null)
         {
             var uid = Guid.NewGuid().ToString();
-            string userName = "Sans";
+            // 멀티 테스트 인스턴스끼리 닉네임으로 구분할 수 있도록 프로필 이름을 붙임
+            string userName = MultiplayerTestProfile.IsDefault ? "Sans" : $"Sans_{MultiplayerTestProfile.Name}";
             LocalUserProfile = new()
             {
                 UID = uid,
