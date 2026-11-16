@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 8193246601162589827}
   - component: {fileID: 2847924491586064537}
   - component: {fileID: 2876184975763051935}
+  - component: {fileID: 5832766045148742711}
   m_Layer: 0
   m_Name: SESourceZone_Slime
   m_TagString: Untagged
@@ -96,6 +97,26 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1.2, y: 1.5, z: 1.2}
   m_Center: {x: 0, y: 0.75, z: 0}
+--- !u!114 &5832766045148742711
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5088338205906165071}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e3fdca004f2d45fe8abbed571a8abd5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.AI.Navigation::Unity.AI.Navigation.NavMeshModifier
+  m_SerializedVersion: 0
+  m_OverrideArea: 0
+  m_Area: 0
+  m_OverrideGenerateLinks: 0
+  m_GenerateLinks: 0
+  m_IgnoreFromBuild: 1
+  m_ApplyToChildren: 1
+  m_AffectedAgents: ffffffff
 --- !u!1 &5852760568566950318
 GameObject:
   m_ObjectHideFlags: 0
