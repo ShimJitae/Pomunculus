@@ -111,6 +111,10 @@ namespace Pomunculus.Items
             discoveredPotionIds.Add(potionId);
             Refresh();
         }
+        public bool IsDiscovered(int potionId)
+        {
+            return discoveredPotionIds.Contains(potionId);
+        }
         private static string Number(float value)
         {
             return value == 0 ? "-" : value.ToString("0.##", CultureInfo.InvariantCulture);

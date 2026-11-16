@@ -36,6 +36,9 @@ namespace Pomunculus.Items
         [Header("투입한 재료 아이콘")]
         [SerializeField] private Image[] insertedMaterialIcons = new Image[3];
         private readonly List<MaterialData> insertedMaterials = new List<MaterialData>();
+        [Header("제작 결과 미리보기")]
+        [SerializeField] private Image resultPreviewImage;
+        [SerializeField] private Sprite unknownIcon;
         private void OnEnable()
         {
             RefreshUI();
@@ -145,6 +148,7 @@ namespace Pomunculus.Items
                 icon.sprite = hasMaterial ? insertedMaterials[i].Icon : null;
                 icon.preserveAspect = true;
                 icon.enabled = hasMaterial && icon.sprite != null;
+                RefreshResultPreview();
             }
         }
         private bool HasRemainingElements()
@@ -217,6 +221,29 @@ namespace Pomunculus.Items
             }
             inventory.AddItem(material.Id, 1);
             RefreshUI();
+        }
+        //결과이미지 보이기
+        private void RefreshResultPreview()
+        {
+            if (resultPreviewImage == null)
+                return;
+
+            if (insertedMaterials.Count == 0)
+            {
+                resultPreviewImage.sprite = null;
+                resultPreviewImage.enabled = false;
+                return;
+            }
+
+            PotionData potion = FindMatchingPotion();
+
+            bool discovered = potion != null
+                && recipeBook != null
+                && recipeBook.IsDiscovered(potion.Id);
+
+            resultPreviewImage.sprite = discovered ? potion.Icon : unknownIcon;
+            resultPreviewImage.preserveAspect = true;
+            resultPreviewImage.enabled = resultPreviewImage.sprite != null;
         }
     }
 }
