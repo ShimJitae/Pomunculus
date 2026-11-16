@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>트리거 범위 안의 Entity에게 간격마다 상태이상을 건다. 간격은 파생 클래스가 정한다.</summary>
-[RequireComponent(typeof(Rigidbody))]
 public abstract class SESource : CullingTickBehaviour
 {
     private struct ApplyEntry
@@ -29,11 +28,8 @@ public abstract class SESource : CullingTickBehaviour
         return data != null && (data.TargetLayers & (1 << entity.gameObject.layer)) != 0;
     }
 
-    // 플레이어에게 Rigidbody가 없으므로 트리거 이벤트를 받으려면 이쪽에 kinematic Rigidbody가 필요하다
     protected virtual void Awake()
     {
-        GetComponent<Rigidbody>().isKinematic = true;
-
         // 대상이 아닌 레이어와는 물리 쌍을 만들지 않는다. 범위 안의 지형·소품마다 들어오던
         // OnTriggerEnter 호출과 GetComponentInParent 비용이 사라진다
         SESourceData data = Data;

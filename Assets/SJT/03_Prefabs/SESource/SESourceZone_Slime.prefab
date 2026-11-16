@@ -9,7 +9,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2326260984647377172}
-  - component: {fileID: 8193246601162589827}
   - component: {fileID: 2847924491586064537}
   - component: {fileID: 2876184975763051935}
   - component: {fileID: 5832766045148742711}
@@ -36,33 +35,6 @@ Transform:
   - {fileID: 5850070935486592568}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!54 &8193246601162589827
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5088338205906165071}
-  serializedVersion: 5
-  m_Mass: 1
-  m_LinearDamping: 0
-  m_AngularDamping: 0.05
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
-  m_InertiaTensor: {x: 1, y: 1, z: 1}
-  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ImplicitCom: 1
-  m_ImplicitTensor: 1
-  m_UseGravity: 0
-  m_IsKinematic: 1
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 0
 --- !u!114 &2847924491586064537
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -75,6 +47,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 202140fce124b79479ef24672f695e08, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SESourceZone
+  isMoving: 0
   data: {fileID: 11400000, guid: 7d88b67d340427749871150c8e45cd82, type: 2}
 --- !u!65 &2876184975763051935
 BoxCollider:
@@ -161,7 +134,7 @@ ParticleSystem:
   lengthInSec: 5
   simulationSpeed: 1
   stopAction: 0
-  cullingMode: 3
+  cullingMode: 0
   ringBufferMode: 0
   ringBufferLoopRange: {x: 0, y: 1}
   emitterVelocityMode: 0
