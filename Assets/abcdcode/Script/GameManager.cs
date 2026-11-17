@@ -102,13 +102,13 @@ public class GameManager : SingletonBehavior<GameManager>
         }
         WorldManager.Instance.SaveWorld(SelectedWorldSlot);
         WorldManager.Instance.Release();
-        SceneManager.LoadScene(TitleSceneName);
+        LoadingUI.LoadScene(TitleSceneName);
     }
     // 월드 슬롯 UI에서 호출. 선택한 슬롯을 기억해두고 월드 씬으로 이동하면 StartWorldOffline에서 해당 슬롯을 불러옴
     public void EnterWorld(int slotId)
     {
         SelectedWorldSlot = slotId;
-        SceneManager.LoadScene(TestSceneName);
+        LoadingUI.LoadScene(TestSceneName);
     }
     private void StartWorldOnline()
     {

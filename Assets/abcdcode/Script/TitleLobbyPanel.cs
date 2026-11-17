@@ -103,11 +103,13 @@ public class TitleLobbyPanel : MonoBehaviour
         foreach (var room in rooms)
         {
             bool full = room.MaxPlayers != 0 && room.PlayerCount >= room.MaxPlayers;
-            string roomName = room.Name;
+            string roomName = room.Name; // 룸 코드. 참가할 때 사용
+            // 표시는 방장이 커스텀 프로퍼티로 넘긴 월드 이름. 없으면 룸 코드
+            string displayName = room.CustomProperties.TryGetValue(NetworkManager.WorldNameProperty, out var worldName) && worldName is string s && !string.IsNullOrEmpty(s) ? s : roomName;
             var button = Instantiate(m_roomButtonTemplate, m_roomButtonTemplate.transform.parent);
             button.name = roomName;
             button.GetComponentInChildren<TMP_Text>().text =
-                $"{room.Name}  {room.PlayerCount}/{(room.MaxPlayers == 0 ? "-" : room.MaxPlayers.ToString())}{(room.IsOpen ? "" : "  [Closed]")}";
+                $"{displayName}  {room.PlayerCount}/{(room.MaxPlayers == 0 ? "-" : room.MaxPlayers.ToString())}{(room.IsOpen ? "" : "  [Closed]")}";
             button.interactable = room.IsOpen && !full;
             button.onClick.AddListener(() => OnClickJoinRoom(roomName));
             button.gameObject.SetActive(true);
