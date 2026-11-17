@@ -1,3 +1,4 @@
+using MoreMountains.Feedbacks;
 using Pomunculus.Items;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,6 +7,9 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
 public class ThrownProjectile : MonoBehaviour
 {
+    // 빈 병 기본 피해를 받는 대상 (적과 채집물)
+    private const PotionTargetFlags FallbackDamageTargets = PotionTargetFlags.Enemy | PotionTargetFlags.Gatherable;
+
     [Tooltip("착탄 지점 주변 피해 반경. 0이면 직접 맞은 대상에게만 피해")]
     public float ImpactRadius = 1.5f;
     public float MaxLifeTime = 5f;
@@ -125,6 +129,9 @@ public class ThrownProjectile : MonoBehaviour
             Destroy(impactEffect, impactEffectLifeTime);
         }
 
+        MMF_Player fb = FindAnyObjectByType<MMF_Player>();
+        fb.PlayFeedbacks();
+
         Destroy(gameObject);
     }
 
@@ -159,16 +166,16 @@ public class ThrownProjectile : MonoBehaviour
         }
     }
 
-    // 대상과의 관계에 맞는 효과만 순서대로 적용한다. 효과가 없으면 적에게 기본 피해
+    // 대상과의 관계에 맞는 효과만 순서대로 적용한다. 효과가 없으면 적과 채집물에게 기본 피해
     void ApplyEffects(IDamageable damageable, Vector3 point)
     {
         Entity entity = damageable as Entity;
         if (!PotionTargeting.HasAuthority(entity)) return;   // 결정권자가 아니면 연출만 하고 효과는 건너뛴다
-        PotionTargetFlags relation = PotionTargeting.GetRelation(entity);
+        PotionTargetFlags relation = PotionTargeting.GetRelation(entity, thrower);
 
         if (potion == null || potion.Effects.Count == 0)
         {
-            if (relation == PotionTargetFlags.Enemy)
+            if ((relation & FallbackDamageTargets) != 0)
                 damageable.TakeDamage(fallbackDamage, point);
             return;
         }
