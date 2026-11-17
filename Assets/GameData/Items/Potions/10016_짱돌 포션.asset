@@ -21,3 +21,13 @@ MonoBehaviour:
   ColdElement: 0
   WindElement: 0
   projectilePrefab: {fileID: 6398676829056186882, guid: a89acdec79638767078903e17a80f554, type: 3}
+  effects:
+  - rid: 3760827132846276721
+  references:
+    version: 2
+    RefIds:
+    - rid: 3760827132846276721
+      type: {class: DamagePotionEffect, ns: , asm: Assembly-CSharp}
+      data:
+        affectedTargets: 3
+        amount: 30
