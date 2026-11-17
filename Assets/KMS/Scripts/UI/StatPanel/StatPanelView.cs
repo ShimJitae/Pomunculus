@@ -2,7 +2,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-// HP·스태미나 바를 그리는 View. Model(PlayerStats)은 StatPanelPresenter가 연결한다.
+// HP·스태미나·보호막 바를 그리는 View. Model(PlayerStats)은 StatPanelPresenter가 연결한다.
 public class StatPanelView : MonoBehaviour, IStatPanelView
 {
     [SerializeField] private Slider hpBar;
@@ -10,12 +10,27 @@ public class StatPanelView : MonoBehaviour, IStatPanelView
     [SerializeField] private Slider staminaBar;
     [SerializeField] private TMP_Text staminaText;
 
+    [Header("Shield")]
+    [SerializeField] private Image shieldFill;   // HP Fill 뒤에 깔리는 Filled(Horizontal) 이미지
+    [SerializeField] private Color shieldTextColor = new Color(1f, 0.84f, 0.3f);
+
+    private int currentHp;
+    private int maxHp;
+    private int currentShield;
+
     // HP 변경 시 바와 텍스트 갱신
     public void SetHp(int currentHp, int maxHp)
     {
-        hpBar.maxValue = Mathf.Max(1, maxHp);
-        hpBar.value = currentHp;
-        hpText.text = $"{currentHp} / {maxHp}";
+        this.currentHp = currentHp;
+        this.maxHp = maxHp;
+        RefreshHpBar();
+    }
+
+    // 보호막 변경 시 바와 텍스트 갱신
+    public void SetShield(int currentShield)
+    {
+        this.currentShield = Mathf.Max(0, currentShield);
+        RefreshHpBar();
     }
 
     // 스태미나 변경 시 바와 텍스트 갱신
@@ -24,5 +39,31 @@ public class StatPanelView : MonoBehaviour, IStatPanelView
         staminaBar.maxValue = Mathf.Max(1, maxStamina);
         staminaBar.value = currentStamina;
         staminaText.text = $"{currentStamina} / {maxStamina}";
+    }
+
+    /// <summary>
+    /// HP+보호막을 한 바에 그린다. HP+보호막이 최대 HP를 넘으면 그 합을 바 전체 길이로 삼아
+    /// HP 구간 뒤에 보호막 구간이 이어 붙도록 한다.
+    /// </summary>
+    private void RefreshHpBar()
+    {
+        int barTotal = Mathf.Max(1, maxHp, currentHp + currentShield);
+
+        hpBar.maxValue = barTotal;
+        hpBar.value = currentHp;
+
+        if (shieldFill != null)
+        {
+            shieldFill.fillAmount = currentShield > 0 ? (float)(currentHp + currentShield) / barTotal : 0f;
+        }
+
+        string hpLabel = $"{currentHp} / {maxHp}";
+        if (currentShield > 0)
+        {
+            string shieldColorHex = ColorUtility.ToHtmlStringRGB(shieldTextColor);
+            hpLabel = $"<color=#{shieldColorHex}>+{currentShield}</color> {hpLabel}";
+        }
+
+        hpText.text = hpLabel;
     }
 }
