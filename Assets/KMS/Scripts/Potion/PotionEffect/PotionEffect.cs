@@ -5,7 +5,7 @@ using UnityEngine;
 [Serializable]
 public abstract class PotionEffect
 {
-    [Tooltip("이 효과가 적용될 대상")]
+    [Tooltip("이 효과가 적용될 대상 (Ally = 다른 플레이어, Self = 던진 사람, Gatherable = 채집물)")]
     [SerializeField] private PotionTargetFlags affectedTargets = PotionTargetFlags.Enemy;
     // 조준 원에 표시할 효과 범위. 범위가 없는 효과는 0
     public virtual float AreaRadius => 0f;

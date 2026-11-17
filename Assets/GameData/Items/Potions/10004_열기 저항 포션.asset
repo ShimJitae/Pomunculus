@@ -23,3 +23,27 @@ MonoBehaviour:
   ColdElement: 3
   WindElement: 0
   projectilePrefab: {fileID: 6398676829056186882, guid: e6a5a7970d7b26f2042e8407967172bf, type: 3}
+  effects:
+  - rid: 3760827132846276710
+  - rid: 3760827132846276724
+  references:
+    version: 2
+    RefIds:
+    - rid: 3760827132846276710
+      type: {class: StatusPotionEffect, ns: , asm: Assembly-CSharp}
+      data:
+        affectedTargets: -1
+        statusType: 20
+        stackCount: 5
+    - rid: 3760827132846276724
+      type: {class: ZonePotionEffect, ns: , asm: Assembly-CSharp}
+      data:
+        affectedTargets: 2
+        zonePrefab: {fileID: 8268399007278156908, guid: 019df4292d203cc4b8311861d9b77efe, type: 3}
+        radius: 2
+        duration: 4
+        tickInterval: 0.5
+        groundLayers:
+          serializedVersion: 2
+          m_Bits: 64
+        tickEffects: []

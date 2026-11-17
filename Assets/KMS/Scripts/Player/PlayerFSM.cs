@@ -13,7 +13,7 @@ using UnityEngine.AI;
 [RequireComponent(typeof(NavMeshAgent))]
 [RequireComponent(typeof(PlayerInputReader), typeof(PlayerMotor), typeof(PlayerThrower))]
 [RequireComponent(typeof(PotionLoadout), typeof(Inventory))]
-public class PlayerFSM : Entity, IPlayerObj, IHealable, IWorldRPC
+public class PlayerFSM : Entity, IPlayerObj, IHealable, IShieldable, IWorldRPC
 {
     [SerializeField] private PlayerTuningSO tuning;
     public PlayerTuningSO Tuning => tuning;
@@ -89,6 +89,9 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IWorldRPC
 
         Motor.Initialize(Tuning, Data.GetSpeed());
         Stats = new PlayerStats(this, Data);
+
+        Stats.OnShieldChanged += HandleShieldChanged;
+
         startPos = transform.position;
 
         fsm = new StateMachine<PlayerStateType, PlayerFSM>(this);
@@ -203,7 +206,25 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IWorldRPC
 
     }
 
-    protected override void OnDie() => SetState(PlayerStateType.Dead);
+    private bool IsShield => Stats.CurrentShield > 0;
+
+    private void HandleShieldChanged(int shield) => SendShieldSync();
+
+    public void GetShield(int amount, float duration)
+    {
+        if(amount <= 0) return;
+        if(!IsMine) { SendShieldRequest(amount, duration); return; }
+        if (IsDead) return;
+
+        Stats.AddShield(amount, duration);
+    }
+
+    protected override void OnDie()
+    {
+        Stats.ClearShield();
+        SetState(PlayerStateType.Dead);
+    }
+    
 
     // 지금 던지면 나갈 포션. 선택한 포션이 인벤토리에 없으면 null(빈 병)
     public PotionData GetThrowablePotion()
@@ -244,6 +265,7 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IWorldRPC
         CurrentHp = so.GetMaxHp();
         isDie = false;
         Stats.RestoreAll();
+        Stats.ClearShield();
         Input.ClearMoveCommand();
         if (!Motor.AgentEnabled) Motor.SetAgentEnabled(true);
         if (spawnPos == null)
@@ -335,7 +357,9 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IWorldRPC
         RequestDamage,
         RequestHeal,
         GrantItem,
-        SyncLoadout
+        SyncLoadout,
+        RequestShield,
+        SyncShield
     }
 
     // 소유자가 확정한 HP를 다른 플레이어에게 전송
@@ -347,6 +371,16 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IWorldRPC
         packet.Write((byte)PlayerRPCType.SyncHp);
         packet.Write(CurrentHp);
         this.SendRPC(packet, WorldRPCTarget.Others);   // 확장 메서드라 this. 필요. 소유자는 이미 적용했으므로 나머지에게만
+    }
+
+    private void SendShieldSync()
+    {
+        if (!IsMine) return;
+
+        PacketData packet = new();
+        packet.Write((byte)PlayerRPCType.SyncShield);
+        packet.Write(Stats.CurrentShield);
+        this.SendRPC(packet, WorldRPCTarget.Others);
     }
 
     // 장착이 바뀌면 전체 장착 상태를 다른 클라이언트에 보낸다
@@ -400,6 +434,15 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IWorldRPC
         this.SendRPC(packet, Owner);
     }
 
+    public void SendShieldRequest(int amount, float duration)
+    {
+        PacketData packet = new();
+        packet.Write((byte)PlayerRPCType.RequestShield);
+        packet.Write(amount);
+        packet.Write(duration);
+        this.SendRPC(packet, Owner);
+    }
+
     // 방장이 확정한 아이템을 이 플레이어의 소유자에게만 지급한다
     public void SendGrantItem(int itemId, int amount)
     {
@@ -448,6 +491,14 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IWorldRPC
                 int selected = packet.ReadInt();
                 if (!IsMine) Loadout.Restore(ids, selected);
                 break;
+            case PlayerRPCType.RequestShield:
+                int shield = packet.ReadInt();
+                float duration = packet.ReadFloat();
+                if (IsMine) GetShield(shield, duration);
+                break;
+            case PlayerRPCType.SyncShield:
+                ApplyShield(packet.ReadInt());
+                break;
         }
     }
 
@@ -459,11 +510,15 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IWorldRPC
         Stats.NotifyHpChanged();
     }
 
+    private void ApplyShield(int shield) => Stats.ApplySyncedShield(shield);
+
     // 장착 변경 이벤트 구독을 해제한다
     private void OnDestroy()
     {
+        Stats.OnShieldChanged -= HandleShieldChanged;
         if (Loadout == null) return;
         Loadout.OnEquipChanged -= HandleLoadoutEquipChanged;
         Loadout.OnSelectChanged -= HandleLoadoutSelectChanged;
+        
     }
 }
