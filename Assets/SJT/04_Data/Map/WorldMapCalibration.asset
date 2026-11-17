@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 24b93c39589c9df4f87be2a8faaae802, type: 3}
+  m_Name: WorldMapCalibration
+  m_EditorClassIdentifier: Assembly-CSharp::WorldMapCalibration
+  points:
+  - worldXZ: {x: -17.82867, y: 96.45961}
+    imageUV: {x: 0.4315476, y: 0.5164021}
+  - worldXZ: {x: 15.42699, y: 96.45961}
+    imageUV: {x: 0.54940474, y: 0.5164021}
+  - worldXZ: {x: -16.9049, y: 130.63902}
+    imageUV: {x: 0.44464287, y: 0.57883596}
+  - worldXZ: {x: 10, y: 130.63902}
+    imageUV: {x: 0.5404762, y: 0.57883596}
+  triangles:
+  - {x: 0, y: 1, z: 3}
+  - {x: 0, y: 3, z: 2}
