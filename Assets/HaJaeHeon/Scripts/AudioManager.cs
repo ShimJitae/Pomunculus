@@ -169,19 +169,22 @@ public class AudioManager : SingletonBehavior<AudioManager>
     // 옵션 UI 슬라이더(0~1)에서 호출. Slider 타입에 의존하지 않도록 값만 받음
     public void SetVolume(AudioChannelType channelType, float linearVolume)
     {
-        float clampedVolume = Mathf.Clamp01(linearVolume);
-        float volumeDecibel = clampedVolume <= 0.0001f ? Min_dB : Mathf.Log10(clampedVolume) * 20f;
 
-        audioMixer.SetFloat(GetVolumeParam(channelType), volumeDecibel);
+        float clampedVolume = Mathf.Clamp01(linearVolume);
+        float volumedB = clampedVolume <= 0.0001f ? Min_dB : Mathf.Log10(clampedVolume) * 20f;
+        string volumeParamName = GetVolumeParam(channelType);
+
+        if (!audioMixer.SetFloat(GetVolumeParam(channelType), volumedB))
+            Debug.LogWarning($"믹서에 {GetVolumeParam(channelType)} 파라미터가 없습니다.");
     }
 
     // 슬라이더 초기 위치용. 믹서의 현재 dB 값을 0~1로 변환
     public float GetVolume(AudioChannelType channelType)
     {
-        if (!audioMixer.GetFloat(GetVolumeParam(channelType), out float volumeDecibel))
+        if (!audioMixer.GetFloat(GetVolumeParam(channelType), out float volumedB))
             return 1f;
 
-        return volumeDecibel <= Min_dB ? 0f : Mathf.Clamp01(Mathf.Pow(10f, volumeDecibel / 20f));
+        return volumedB <= Min_dB ? 0f : Mathf.Clamp01(Mathf.Pow(10f, volumedB / 20f));
     }
 
     private void BuildSfxPool()

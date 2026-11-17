@@ -299,7 +299,7 @@ public class EnemySkill : MonoBehaviour
         SkillParticlePool.Instance.Prewarm(patternData.HitParticle);
     }
 
-    private void PlayPatternSound(AudioSO patternSound, Vector3 soundPosition)
+    public void PlayPatternSound(AudioSO patternSound, Vector3 soundPosition)
     {
         if (patternSound == null || AudioManager.Instance == null)
             return;
