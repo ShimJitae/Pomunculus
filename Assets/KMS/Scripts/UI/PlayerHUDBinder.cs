@@ -1,3 +1,4 @@
+using Pomunculus.Items;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,17 +10,19 @@ public class PlayerHUDBinder : MonoBehaviour
     [SerializeField] private StatPanelView statPanelView;
     [SerializeField] private StatusPanelView statusPanelView;
     [SerializeField] private PotionSlotView potionSlotView;
+    //[SerializeField] private InventoryUI inventoryView;
 
     private readonly List<IDisposable> presenters = new();
 
     // 플레이어와 HUD를 연결. 다시 호출하면 이전 연결을 해제하고 새로 묶는다 (부활·재접속 대비)
-    public void Bind(PlayerFSM localPlayer)
+    public void Bind(PlayerFSM localPlayer, InventoryUI inventoryView)
     {
         UnbindAll();
+        //this.inventoryView = inventoryView;
 
         presenters.Add(new StatPanelPresenter(localPlayer.Stats, statPanelView));
         presenters.Add(new StatusPanelPresenter(localPlayer.GetComponent<StatusEffectController>(), statusPanelView));
-        presenters.Add(new PotionSlotPresenter(localPlayer.Loadout, localPlayer.Inventory, potionSlotView));
+        presenters.Add(new PotionSlotPresenter(localPlayer.Loadout, localPlayer.Inventory, potionSlotView, inventoryView));
     }
 
     // 모든 Presenter의 구독을 해제

@@ -121,6 +121,7 @@ MonoBehaviour:
   statPanelView: {fileID: 4508850144810268707}
   statusPanelView: {fileID: 2982118643345771969}
   potionSlotView: {fileID: 1573010702709064537}
+  inventoryView: {fileID: 0}
 --- !u!1 &9023739933486309627
 GameObject:
   m_ObjectHideFlags: 0
@@ -353,6 +354,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 811463846184172344, guid: 30037b68480e771409b79a2389efb40a, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3102852265673816412, guid: 30037b68480e771409b79a2389efb40a, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -548,6 +553,10 @@ PrefabInstance:
     - target: {fileID: 6525289841172271648, guid: 30037b68480e771409b79a2389efb40a, type: 3}
       propertyPath: m_Name
       value: PotionSlot
+      objectReference: {fileID: 0}
+    - target: {fileID: 6733961301963100274, guid: 30037b68480e771409b79a2389efb40a, type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
