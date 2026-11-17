@@ -5,6 +5,7 @@ public sealed class StatusEffect
     private const float c_timeEpsilon = 0.001f; // 틱과 만료가 float 오차로 엇갈리는 것을 막는다
 
     private StatusEffectData statusEffectData;
+    public Sprite StatusIcon => statusEffectData.Icon;
     private IStatusBehavior statusBehavior;
     private Entity target;
     private int stackCount;
