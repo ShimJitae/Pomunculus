@@ -45,7 +45,7 @@ public class WorldOpenPanel : MonoBehaviour
         if (m_messageText != null && m_messageText.text != (m_message ?? "")) m_messageText.text = m_message ?? "";
     }
     #endregion
-    private void OnLeftRoom() => SceneManager.LoadScene(GameManager.TitleSceneName);
+    private void OnLeftRoom() => LoadingUI.LoadScene(GameManager.TitleSceneName);
     #region 멀티 전환
     public void OnClickOpenRoom()
     {
