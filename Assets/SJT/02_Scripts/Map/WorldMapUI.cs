@@ -52,10 +52,7 @@ public sealed class WorldMapUI : MonoBehaviour
     {
         foreach (IWorldObj worldObject in WorldManager.Instance.Objects.GetList())
         {
-            if (worldObject is PlayerFSM player &&
-                player != null &&
-                player.IsMine &&
-                player.gameObject.activeInHierarchy)
+            if (worldObject is PlayerFSM player && player != null && player.IsMine && player.gameObject.activeInHierarchy)
             {
                 return player.transform;
             }
