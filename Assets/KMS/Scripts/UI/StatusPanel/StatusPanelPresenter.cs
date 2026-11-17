@@ -37,8 +37,8 @@ public class StatusPanelPresenter : IDisposable
     private void HandleEffectRemoved(StatusEffect effect)
         => view.RemoveStatusIcon(effect.Type);
 
-    // 아이콘 조회. 데이터 위치가 정해지면 여기만 고치면 됨
-    private Sprite GetIcon(StatusEffect effect) => null;
+    // 아이콘 조회.
+    private Sprite GetIcon(StatusEffect effect) => effect.StatusIcon;
 
     // 구독 해제 + 아이콘 정리
     public void Dispose()

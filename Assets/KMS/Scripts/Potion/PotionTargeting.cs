@@ -1,5 +1,6 @@
-// 포션 효과를 누가 적용할지, 대상이 아군인지 적인지 판정한다
+// 포션 효과를 누가 적용할지, 대상이 본인·아군·적·채집물 중 무엇인지 판정한다
 using Photon.Pun;
+using UnityEngine;
 
 public static class PotionTargeting
 {
@@ -11,7 +12,12 @@ public static class PotionTargeting
         return PhotonNetwork.IsMasterClient;
     }
 
-    // 플레이어(던진 사람 포함)는 아군, 그 외는 적으로 본다
-    public static PotionTargetFlags GetRelation(Entity entity)
-        => entity is PlayerFSM ? PotionTargetFlags.Ally : PotionTargetFlags.Enemy;
+    // 던진 사람은 Self, 다른 플레이어는 Ally, 몬스터는 Enemy, 그 외 Entity는 Gatherable로 본다
+    public static PotionTargetFlags GetRelation(Entity entity, GameObject thrower)
+    {
+        if (thrower != null && entity != null && entity.gameObject == thrower) return PotionTargetFlags.Self;
+        if (entity is PlayerFSM) return PotionTargetFlags.Ally;
+        if (entity is Enemy) return PotionTargetFlags.Enemy;
+        return PotionTargetFlags.Gatherable;
+    }
 }

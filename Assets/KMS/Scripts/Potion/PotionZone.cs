@@ -57,7 +57,7 @@ public class PotionZone : MonoBehaviour
             Entity entity = target as Entity;
             if (!PotionTargeting.HasAuthority(entity)) continue;
 
-            PotionTargetFlags relation = PotionTargeting.GetRelation(entity);
+            PotionTargetFlags relation = PotionTargeting.GetRelation(entity, thrower);
             PotionHitContext context = new PotionHitContext(entity, target, transform.position, thrower);
             foreach (PotionEffect effect in tickEffects)
             {
