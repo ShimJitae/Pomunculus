@@ -1390,7 +1390,7 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: bfd95676563b425a973ae4cbd940d5f0, type: 2}
+  - {fileID: 2100000, guid: 8d48c036a18614841abe61b146d199ba, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -2036,7 +2036,7 @@ PrefabInstance:
       objectReference: {fileID: 11400000, guid: 5c6beeacc3335eb4e819bbca1adbafa6, type: 2}
     - target: {fileID: 3972964382682025698, guid: efd4a2762157b0e4c8f0bd0b3163fd66, type: 3}
       propertyPath: m_Name
-      value: Enemy_Base Variant 3
+      value: Enemy_Skeleton
       objectReference: {fileID: 0}
     - target: {fileID: 3972964382682190530, guid: efd4a2762157b0e4c8f0bd0b3163fd66, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2092,9 +2092,8 @@ PrefabInstance:
         already bound by a Humanoid avatar. These transforms can only be changed
         by Humanoid clips.\n\tTransform 'Spine01'\n\tTransform 'Body'\n\tTransform
         'Spine01'\n\tTransform 'Body'\n\tTransform 'Spine01'\n\tTransform 'Body'\n\tFrom
-        animation clip 'GetHit'\n\tFrom animation clip 'Attack01'\n\tFrom animation
-        clip 'Attack02'\n\tFrom animation clip 'Attack03'\n\tFrom animation clip
-        'Attack04'\n\tFrom animation clip 'Attack05RPT'"
+        animation clip 'Attack03'\n\tFrom animation clip 'Attack04'\n\tFrom animation
+        clip 'Attack05RPT'"
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
