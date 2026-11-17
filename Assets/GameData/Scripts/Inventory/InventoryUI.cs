@@ -44,7 +44,6 @@ namespace Pomunculus.Items
         [Header("포션 슬롯 등록")]
         [SerializeField] private PotionSlotSelector potionSlotSelector;
 
-
         private InventoryTab currentTab = InventoryTab.All;
 
         private void OnEnable()

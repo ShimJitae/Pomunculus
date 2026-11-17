@@ -22,8 +22,9 @@ public sealed class SESourceProximity : SESource
     }
 
     // 선택하지 않아도 씬 뷰에 감지 범위를 항상 표시한다
-    private void OnDrawGizmos()
+    protected override void OnDrawGizmos()
     {
+        base.OnDrawGizmos(); // 플레이 중 화면 판정용 구
         if (data == null) return;
         Gizmos.color = new Color(0.6f, 0.2f, 1f, 0.8f);
         Gizmos.DrawWireSphere(transform.position, data.Radius);
