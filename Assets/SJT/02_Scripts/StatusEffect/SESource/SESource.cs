@@ -2,8 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>트리거 범위 안의 Entity에게 간격마다 상태이상을 건다. 간격은 파생 클래스가 정한다.</summary>
-[RequireComponent(typeof(Rigidbody))]
-public abstract class SESource : MonoBehaviour
+public abstract class SESource : CullingTickBehaviour
 {
     private struct ApplyEntry
     {
@@ -13,6 +12,9 @@ public abstract class SESource : MonoBehaviour
 
     // 범위 안 대상. 구조체라 할당 없음
     private readonly List<ApplyEntry> entries = new();
+
+    // 화면 판정용 구를 트리거 범위에 맞춰 계산할 때 쓴다
+    private Collider[] colliders;
 
     protected abstract SESourceData Data { get; }
 
@@ -26,16 +28,14 @@ public abstract class SESource : MonoBehaviour
         return data != null && (data.TargetLayers & (1 << entity.gameObject.layer)) != 0;
     }
 
-    // 플레이어에게 Rigidbody가 없으므로 트리거 이벤트를 받으려면 이쪽에 kinematic Rigidbody가 필요하다
     protected virtual void Awake()
     {
-        GetComponent<Rigidbody>().isKinematic = true;
-
         // 대상이 아닌 레이어와는 물리 쌍을 만들지 않는다. 범위 안의 지형·소품마다 들어오던
         // OnTriggerEnter 호출과 GetComponentInParent 비용이 사라진다
         SESourceData data = Data;
         int exclude = data != null ? ~data.TargetLayers.value : ~0;
-        foreach (Collider col in GetComponents<Collider>())
+        colliders = GetComponents<Collider>();
+        foreach (Collider col in colliders)
         {
             col.isTrigger = true;
             col.excludeLayers = exclude;
@@ -43,7 +43,11 @@ public abstract class SESource : MonoBehaviour
     }
 
     // 다시 켜지면 겹쳐 있는 대상의 OnTriggerEnter가 새로 들어온다
-    private void OnDisable() => entries.Clear();
+    protected override void OnDisable()
+    {
+        base.OnDisable();
+        entries.Clear();
+    }
 
     private void OnTriggerEnter(Collider other)
     {
@@ -69,11 +73,46 @@ public abstract class SESource : MonoBehaviour
         }
     }
 
-    private void Update()
+    // 트리거 범위 전체를 감싸는 구. 화면 안의 대상이 범위에 있으면 이 구도 반드시 화면에 걸린다
+    protected override BoundingSphere GetCullingSphere()
+    {
+        // 꺼진 콜라이더의 bounds는 원점의 빈 상자라서 합치면 구가 원점까지 커진다. 켜진 것만 합친다
+        bool hasBounds = false;
+        Bounds bounds = default;
+        if (colliders != null)
+        {
+            for (int i = 0; i < colliders.Length; i++)
+            {
+                Collider col = colliders[i];
+                if (col == null || !col.enabled)
+                {
+                    continue;
+                }
+
+                if (hasBounds)
+                {
+                    bounds.Encapsulate(col.bounds);
+                }
+                else
+                {
+                    bounds = col.bounds;
+                    hasBounds = true;
+                }
+            }
+        }
+
+        if (!hasBounds)
+        {
+            return new BoundingSphere(transform.position, 0f);
+        }
+        return new BoundingSphere(bounds.center, bounds.extents.magnitude);
+    }
+
+    // 화면 안에 있을 때만 CullingManager가 호출한다. 화면 밖에서는 주기 부여가 멈춘다
+    protected override void CullingTick(float now)
     {
         if (entries.Count == 0 || Data == null) return;
 
-        float now = Time.time;
         // 역순: 지울 때 마지막 원소를 이 자리로 옮기는데, 그 원소는 이미 처리했다
         for (int i = entries.Count - 1; i >= 0; i--)
         {
