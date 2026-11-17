@@ -204,11 +204,10 @@ public class Enemy : Entity, IWorldRPC, IHealable
         behaviorGraphAgent.SetVariableValue<bool>("IsDie", true);
         CancelCurrentAttack();
 
-        // 동기화 시 이 부분 삭제 필요
-        DataDBManager.Instance.SpawnDropItem(GetId(), transform.position);
-
         if (IsMaster)
         {
+            WorldManager.Instance.Spawn(DataDBManager.Instance.ItemDatabase.GetItemPrefab(DataDBManager.Instance.TryGetDropItemID(GetId())).name, transform.position + Vector3.up, Quaternion.identity);
+
             StartCoroutine(WaitDieAnimation());
         }
     }
