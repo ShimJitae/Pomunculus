@@ -212,6 +212,7 @@ public class AudioManager : SingletonBehavior<AudioManager>
 
             source.playOnAwake = false;
             source.loop = false;
+            source.dopplerLevel = 0f; // 재생 직전 위치를 순간이동시키므로 도플러로 피치가 튀는것을 방지
             sfxSources[i] = source;
         }
     }
