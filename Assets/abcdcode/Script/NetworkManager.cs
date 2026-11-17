@@ -328,6 +328,8 @@ public class NetworkManager : Singleton<NetworkManager>, IConnectionCallbacks, I
     private const string CurrentSceneProperty = "curScn";
     // 플레이어 커스텀 프로퍼티. UserProfile.UID
     public const string UidProperty = "uid";
+    // 룸 커스텀 프로퍼티. 방장의 월드 이름 (룸 이름은 룸 코드이므로 로비 목록에는 이 값을 표시)
+    public const string WorldNameProperty = "wName";
     private bool m_initialized;
     private NetworkState m_state = NetworkState.Offline;
     private readonly Dictionary<string, RoomInfo> m_roomList = new();
