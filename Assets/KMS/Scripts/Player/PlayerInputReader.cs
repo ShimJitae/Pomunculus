@@ -1,4 +1,5 @@
 using Pomunculus.Items;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.EventSystems;
@@ -23,6 +24,9 @@ public class PlayerInputReader : MonoBehaviour
 
     public bool HasPendingMove { get; private set; }     // 아직 처리되지 않은 우클릭 이동 명령
     public bool IsAimHeld => aimAction.IsPressed();
+
+    private static readonly List<RaycastResult> uiHits = new();
+    private bool isMoveBlockedByUI;
 
     private Camera cam;
     private Vector3 pendingDestination;
@@ -112,7 +116,13 @@ public class PlayerInputReader : MonoBehaviour
         // 우클릭: 이동 명령. 누르고 있으면 일정 간격으로 목적지 갱신
         bool rightDown = moveAction.WasPressedThisFrame();
         bool rightHeld = moveAction.IsPressed();
-        if (rightDown || (rightHeld && Time.time >= nextHoldRepathAt))
+
+        if (rightDown)
+            isMoveBlockedByUI = IsPointerOverRightClickConsumer();
+        if (!rightHeld)
+            isMoveBlockedByUI = false;
+
+        if (!isMoveBlockedByUI && (rightDown || (rightHeld && Time.time >= nextHoldRepathAt)))
         {
             nextHoldRepathAt = Time.time + HoldRepathInterval;
             if (TryGetNavPointUnderMouse(out Vector3 dest))
@@ -234,5 +244,23 @@ public class PlayerInputReader : MonoBehaviour
         MoveMarker.transform.position = position;
         MoveMarker.SetActive(false);   // 껐다 켜서 파티클 등을 다시 재생
         MoveMarker.SetActive(true);
+    }
+
+    // 커서 바로 아래 UI가 우클릭을 쓰는 UI인지 확인한다
+    private bool IsPointerOverRightClickConsumer()
+    {
+        if (EventSystem.current == null || Mouse.current == null)
+            return false;
+
+        var pointerData = new PointerEventData(EventSystem.current)
+        {
+            position = Mouse.current.position.ReadValue()
+        };
+        uiHits.Clear();
+        EventSystem.current.RaycastAll(pointerData, uiHits);
+
+        // 맨 위에 맞은 UI 기준
+        return uiHits.Count > 0
+            && uiHits[0].gameObject.GetComponentInParent<IRightClickConsumer>() != null;
     }
 }

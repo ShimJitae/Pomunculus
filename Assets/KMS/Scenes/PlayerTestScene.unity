@@ -399,6 +399,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4054391353111816981, guid: 221cbd062027e08468fdef6714abb672, type: 3}
+      propertyPath: inventory
+      value: 
+      objectReference: {fileID: 1750731665}
     - target: {fileID: 4183160563182517493, guid: 221cbd062027e08468fdef6714abb672, type: 3}
       propertyPath: m_AnchorMax.y
       value: 1
@@ -591,6 +595,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Canvas
       objectReference: {fileID: 0}
+    - target: {fileID: 9053503935429941734, guid: 221cbd062027e08468fdef6714abb672, type: 3}
+      propertyPath: inventory
+      value: 
+      objectReference: {fileID: 1750731665}
     m_RemovedComponents:
     - {fileID: 4691477493818471197, guid: 221cbd062027e08468fdef6714abb672, type: 3}
     m_RemovedGameObjects:
@@ -4247,6 +4255,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3732879745415184430, guid: 5e1ee9c5d5950ec4997aa8065195d697, type: 3}
   m_PrefabInstance: {fileID: 1750731657}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1750731665 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6398455313700555120, guid: 5e1ee9c5d5950ec4997aa8065195d697, type: 3}
+  m_PrefabInstance: {fileID: 1750731657}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 488ac097f44c47848b3b10f5728ead3e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Pomunculus.Items.Inventory
 --- !u!1 &1819208427
 GameObject:
   m_ObjectHideFlags: 0

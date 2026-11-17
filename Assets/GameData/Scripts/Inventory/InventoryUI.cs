@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -44,6 +45,10 @@ namespace Pomunculus.Items
         [Header("포션 슬롯 등록")]
         [SerializeField] private PotionSlotSelector potionSlotSelector;
 
+
+        public event Action<bool> OnOpenChanged;
+        public bool IsOpen => isActiveAndEnabled;
+
         private InventoryTab currentTab = InventoryTab.All;
 
         private void OnEnable()
@@ -53,6 +58,7 @@ namespace Pomunculus.Items
 
             inventory.Changed += Refresh;
             Refresh();
+            OnOpenChanged?.Invoke(true);
         }
 
         private void OnDisable()
@@ -64,6 +70,8 @@ namespace Pomunculus.Items
                 tooltip.Hide();
             if (potionSlotSelector != null)
                 potionSlotSelector.CancelSelection();
+
+            OnOpenChanged?.Invoke(false);
         }
 
         public void Refresh()
