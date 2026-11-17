@@ -47,6 +47,7 @@ public class AudioManager : SingletonBehavior<AudioManager>
     private int[] sourcePriorities;
 
     private readonly Dictionary<AudioSO, float> lastPlayTimeBySound = new();
+    private AudioSO currentBgmData; // 지금 재생 중인 BAGM 데이터(같은 BGM 재요청 판단용)
 
     public override void Awake()
     {
@@ -72,14 +73,18 @@ public class AudioManager : SingletonBehavior<AudioManager>
         if (audioDataSO == null)
             return;
 
+        // 같은 BGM 데이터를 다시 요청하면 처음부터 다시 틀지 않음
+        // 클립으로 비교하면 클립이 여러개 일 때 GetRandomClip 이 직전 클립 빼고 뽑아서 곡이 배뀌므로 SO로 비교
+        if (bgmSource.isPlaying && currentBgmData == audioDataSO)
+            return;
+
+
         AudioClip clip = audioDataSO.GetRandomClip();
 
         if (clip == null)
             return;
 
-        // 스테이지마다 같은 BGM을 요청해도 처음부터 다시 틀지 않음
-        if (bgmSource.isPlaying == true && bgmSource.clip == clip)
-            return;
+        currentBgmData = audioDataSO;
 
         bgmSource.outputAudioMixerGroup = audioDataSO.AudioMixerGroup != null ? audioDataSO.AudioMixerGroup : bgmMixerGroup;
         bgmSource.clip = clip;
@@ -107,6 +112,7 @@ public class AudioManager : SingletonBehavior<AudioManager>
     {
         bgmSource.Stop();
         bgmSource.clip = null;
+        currentBgmData = null;
     }
 
     // 2D (UI 등 위치 무관)
@@ -169,13 +175,12 @@ public class AudioManager : SingletonBehavior<AudioManager>
     // 옵션 UI 슬라이더(0~1)에서 호출. Slider 타입에 의존하지 않도록 값만 받음
     public void SetVolume(AudioChannelType channelType, float linearVolume)
     {
-
         float clampedVolume = Mathf.Clamp01(linearVolume);
         float volumedB = clampedVolume <= 0.0001f ? Min_dB : Mathf.Log10(clampedVolume) * 20f;
         string volumeParamName = GetVolumeParam(channelType);
 
-        if (!audioMixer.SetFloat(GetVolumeParam(channelType), volumedB))
-            Debug.LogWarning($"믹서에 {GetVolumeParam(channelType)} 파라미터가 없습니다.");
+        if (!audioMixer.SetFloat(volumeParamName, volumedB))
+            Debug.LogWarning($"믹서에 {volumeParamName} 파라미터가 없습니다.");
     }
 
     // 슬라이더 초기 위치용. 믹서의 현재 dB 값을 0~1로 변환
