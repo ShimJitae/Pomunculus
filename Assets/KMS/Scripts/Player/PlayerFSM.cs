@@ -12,7 +12,7 @@ using UnityEngine.AI;
 /// </summary>
 [RequireComponent(typeof(NavMeshAgent))]
 [RequireComponent(typeof(PlayerInputReader), typeof(PlayerMotor), typeof(PlayerThrower))]
-[RequireComponent(typeof(PotionLoadout), typeof(Inventory))]
+[RequireComponent(typeof(PotionLoadout), typeof(Inventory), typeof(PlayerAnimator))]
 public class PlayerFSM : Entity, IPlayerObj, IHealable, IShieldable, IWorldRPC
 {
     [SerializeField] private PlayerTuningSO tuning;
@@ -24,13 +24,6 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IShieldable, IWorldRPC
     private Vector3 startPos;
     [Header("디버그")]
     [SerializeField] private PlayerStateType currentStateView;
-
-    public static readonly int LocomotionHash = Animator.StringToHash("Locomotion");
-    public static readonly int AttackHash = Animator.StringToHash("Attack");
-    public static readonly int DodgeHash = Animator.StringToHash("Dodge");
-    public static readonly int HitHash = Animator.StringToHash("Hit");
-    public static readonly int DieHash = Animator.StringToHash("Die");
-    public static readonly int SpeedParam = Animator.StringToHash("Speed");
 
     private StateMachine<PlayerStateType, PlayerFSM> fsm;
     private Animator anim;
@@ -47,6 +40,7 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IShieldable, IWorldRPC
     public PlayerInteractor Interactor { get; private set; }   // 없을 수 있음 (null 허용)
     public Inventory Inventory { get; private set; }
     public PotionLoadout Loadout { get; private set; }
+    public PlayerAnimator Animator { get; private set; }
 
     // ───── 상태들이 읽어 가는 데이터 ─────
     public PlayerStateType CurrentStateType => fsm.CurrentStateType;
@@ -83,6 +77,7 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IShieldable, IWorldRPC
         Interactor = GetComponent<PlayerInteractor>();
         Inventory = GetComponentInChildren<Inventory>();
         Loadout = GetComponent<PotionLoadout>();
+        Animator = GetComponent<PlayerAnimator>();
 
         Loadout.OnEquipChanged += HandleLoadoutEquipChanged;
         Loadout.OnSelectChanged += HandleLoadoutSelectChanged;
@@ -275,25 +270,6 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IShieldable, IWorldRPC
         SetState(PlayerStateType.Idle);
         SendHpSync();
     }
-
-    // ═══════════════════════ 애니메이션 ═══════════════════════
-
-    public void PlayAnim(int stateHash, bool restart = false, float fade = 0.08f)
-    {
-        if (anim == null) return;
-        if (restart) { anim.Play(stateHash, 0, 0f); return; }
-
-        int playing = anim.IsInTransition(0)
-            ? anim.GetNextAnimatorStateInfo(0).shortNameHash
-            : anim.GetCurrentAnimatorStateInfo(0).shortNameHash;
-        if (playing != stateHash) anim.CrossFadeInFixedTime(stateHash, fade);
-    }
-
-    public void SetAnimSpeed(float value)
-    {
-        if (anim != null) anim.SetFloat(SpeedParam, value, 0.1f, Time.deltaTime);
-    }
-
 
     // ═════════════════════ Save & Load ═══════════════════════
 
