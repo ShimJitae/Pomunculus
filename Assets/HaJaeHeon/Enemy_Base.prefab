@@ -347,6 +347,8 @@ MonoBehaviour:
   target: {fileID: 0}
   detector: {fileID: 0}
   knockbackDistance: 0
+  detectRangeBonus: 10
+  chaseSpeedMultiplier: 3
 --- !u!114 &451304765473268782
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -413,7 +415,7 @@ NavMeshAgent:
   m_AgentTypeID: 0
   m_Radius: 0.5
   m_Speed: 3.5
-  m_Acceleration: 8
+  m_Acceleration: 60
   avoidancePriority: 50
   m_AngularSpeed: 720
   m_StoppingDistance: 0
