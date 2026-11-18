@@ -164,8 +164,7 @@ public abstract class SESource : CullingTickBehaviour
         {
             SEApplyEntry entry = list[i];
             int count = Mathf.Max(1, entry.stackCount); // 인스펙터에서 새로 추가한 항목은 0으로 시작한다
-            for (int s = 0; s < count; s++)
-                entity.RegisterStatusEffect(entry.type);
+            entity.RegisterStatusEffect(entry.type, count);
         }
     }
 }

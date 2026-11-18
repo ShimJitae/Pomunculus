@@ -52,14 +52,14 @@ public class Enemy : Entity, IWorldRPC, IHealable
     // 적의 행동 그래프와 전투 상태를 초기화하고 실행 권한에 따라 감지와 공격 준비를 수행
     protected override void OnEnable()
     {
-        if(EnemySo == null)
+        if (EnemySo == null)
         {
             Debug.Log("SO 데이터가 연결되어있지 않습니다.");
             gameObject.SetActive(false);
             return;
         }
         movement.InitSpawnCenter(transform.position);
-        
+
         behaviorGraphAgent.Graph = EnemySo.GetBehaviorGraph();
         behaviorGraphAgent.SetVariableValue("SpawnPosition", movement.SpawnCenter);
 
@@ -111,7 +111,7 @@ public class Enemy : Entity, IWorldRPC, IHealable
         if (IsDamageBlock || damage <= 0)
             return;
 
-        CurrentHp -=  Mathf.CeilToInt(damage * DamageTakenRatio);
+        CurrentHp -= Mathf.CeilToInt(damage * DamageTakenRatio);
         OnHpChanged?.Invoke(CurrentHp, MaxHp);
         SendHpSync();
 
@@ -189,7 +189,7 @@ public class Enemy : Entity, IWorldRPC, IHealable
         float currentMoveSpeed = CanMove ? EnemySo.GetSpeed() * MoveSpeedRatio : 0f;
 
         behaviorGraphAgent.SetVariableValue("MoveSpeed", currentMoveSpeed);
-        agent.speed = currentMoveSpeed; 
+        agent.speed = currentMoveSpeed;
         // 기절 0 / 구속 1 / 그외 >> 이동 배율대로
         float animationSpeedRatio = !CanAttack ? 0f : (CanMove ? MoveSpeedRatio : 1f);
         animator.SetFloat("MoveAnimSpeed", animationSpeedRatio);
@@ -295,6 +295,7 @@ public class Enemy : Entity, IWorldRPC, IHealable
         SyncHp,           // 방장 > 다른 플레이어 : 확정된 HP
         ShowTelegraph,    // 방장 > 다른 플레이어 : 공격 범위 표시
         CancelTelegraph,  // 방장 > 다른 플레이어 : 공격 취소 (그로기, 사망)
+        RegisterStatusEffect = RpcRegisterStatusEffect, // 결정권자 > 모두 : 상태이상 등록 (Entity 공용)
     }
 
 
@@ -353,6 +354,10 @@ public class Enemy : Entity, IWorldRPC, IHealable
 
             case EnemyRPCType.CancelTelegraph:
                 enemySkill.CancelAttack();
+                break;
+
+            case EnemyRPCType.RegisterStatusEffect:
+                ReceiveRegisterStatusEffect(packet);
                 break;
         }
     }

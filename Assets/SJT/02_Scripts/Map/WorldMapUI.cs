@@ -7,6 +7,7 @@ public sealed class WorldMapUI : MonoBehaviour
     [SerializeField] private RectTransform playerPin;
     [SerializeField] private WorldMapCalibration calibration;
 
+    [ContextMenu("Open 테스트")]
     public void Open()
     {
         gameObject.SetActive(true);

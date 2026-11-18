@@ -158,7 +158,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyDetector
   detectCollider: {fileID: 0}
-  rb: {fileID: 0}
+  detectRigidbody: {fileID: 0}
 --- !u!54 &4786107880399126209
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -280,6 +280,7 @@ GameObject:
   - component: {fileID: 7369029942017902270}
   - component: {fileID: -940495177206895338}
   - component: {fileID: -4567853140864783940}
+  - component: {fileID: 1848307129059378724}
   m_Layer: 7
   m_Name: Enemy_Base
   m_TagString: Enemy
@@ -503,22 +504,46 @@ MonoBehaviour:
     SynchronizeType: 0
     Name: Attack1
   - Type: 9
+    SynchronizeType: 1
+    Name: Attack2
+  - Type: 9
+    SynchronizeType: 1
+    Name: Attack3
+  - Type: 9
+    SynchronizeType: 1
+    Name: Attack4
+  - Type: 9
+    SynchronizeType: 1
+    Name: Attack5
+  - Type: 9
     SynchronizeType: 0
     Name: Die
   - Type: 9
     SynchronizeType: 0
-    Name: TakeDamage
+    Name: Dizzy
   - Type: 1
     SynchronizeType: 1
     Name: MoveAnimSpeed
-  - Type: 3
-    SynchronizeType: 1
-    Name: MoveState
   m_sendRate: 10
   m_sampleRate: 30
   m_changeThreshold: 0.001
   m_keyframeInterval: 1
   m_stateLayers: 00000000
+--- !u!114 &1848307129059378724
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3972964382682025698}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1763b034f7227b943a41c119c2830cac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StatusEffectVisualizer
+  anchor: {fileID: 0}
+  feedbackTarget: {fileID: 0}
+  fitToModelBounds: 0
 --- !u!1 &4620801548373769430
 GameObject:
   m_ObjectHideFlags: 0

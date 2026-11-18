@@ -20,8 +20,24 @@ MonoBehaviour:
   value: 2
   recovery: 0
   interval: 0
-  patternWeight: 1
+  patternWeight: 0
   animatorTrigger: 1
+  useRange: 5
+  attackArea:
+    shape: 1
+    anchor: 1
+    radius: 2
+    angle: 360
+    width: 0
+    length: 0
+    offset: {x: 0, y: 0, z: 0}
+  skillParticle: {fileID: 0}
+  hitParticle: {fileID: 0}
+  skillParticleOffset: {x: 0, y: 0, z: 0}
+  skillParticleRotation: {x: 0, y: 0, z: 0}
+  scaleSkillParticleWithArea: 1
+  telegraphSound: {fileID: 0}
+  attackSound: {fileID: 0}
   note: "\uB3C5\uB2AA \uC548\uC5D0 \uC788\uB294 \uB3D9\uC548 \uD53C\uD574 \uC800\uD56D\uC774
     \uD06C\uAC8C \uC624\uB974\uACE0 \uCCB4\uB825\uC744 \uD68C\uBCF5 (\uC9C0\uC18D
     \uD6A8\uACFC)"
