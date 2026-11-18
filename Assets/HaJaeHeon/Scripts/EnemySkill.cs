@@ -29,6 +29,8 @@ public class EnemySkill : MonoBehaviour
     private NavMeshAgent agent;
     private EnemyAttackIndicator attackIndicator;
 
+    private Collider bodyCollider; // Navigate To Target 정지 거리이ㅔ 더하는 몸 콜라이더(노드와 같은 방식으로 찾음)
+
 
     private void Awake()
     {
@@ -155,10 +157,15 @@ public class EnemySkill : MonoBehaviour
 
         // 인식 범위를 넘으면 의미가 없으므로 제한 (큰 값 = 인식 범위 전체)
         float attackRange = Mathf.Min(useRange, enemy.Data.GetDetectRange());
-        float chaseMargin = 0.2f;   // 경계 오차 여유
+        float chaseMargin = 0.3f;   // 경계 오차 여유 (공격 판정은 높이까지 포함한 거리라 조금 넉넉하게)
+
+        // Navigate To Target은 정지 거리에 몸 콜라이더 크기를 더하므로 같은 값을 빼야 공격 사거리 안쪽에서 멈춘다
+        float bodyExtent = bodyCollider != null
+            ? Mathf.Max(bodyCollider.bounds.extents.x, bodyCollider.bounds.extents.z)
+            : agent.radius;
 
         enemy.BehaviorGraphAgent.SetVariableValue("AttackRange", attackRange);
-        enemy.BehaviorGraphAgent.SetVariableValue("ChaseDistance", Mathf.Max(0.1f, attackRange - agent.radius - chaseMargin));
+        enemy.BehaviorGraphAgent.SetVariableValue("ChaseDistance", Mathf.Max(0.1f, attackRange - bodyExtent - chaseMargin));
     }
 
     // 공격 진해 여부를 로컬 상태와 ㅎBG에 함께 반영한다.
