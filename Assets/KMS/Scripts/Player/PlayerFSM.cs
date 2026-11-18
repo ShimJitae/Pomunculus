@@ -53,6 +53,7 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IShieldable, IWorldRPC
     public PotionData AttackPotion { get; private set; }
 
     private float lastDodgeAt = float.NegativeInfinity;
+    private WorldMapUI worldMapUI;   // 씬의 지도 UI. 처음 Tab을 누를 때 찾아서 캐시
 
     private bool IsDamageBlocked =>
     IsInvincible || CheckDie() ||
@@ -138,6 +139,7 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IShieldable, IWorldRPC
 
         Input.ReadInput();
         if (Input.ConsumePotionSlotSelect(out int slot)) Loadout.SelectSlot(slot);
+        if (Input.IsWorldMapPressed()) ToggleWorldMap();
 #if UNITY_EDITOR
         ReadDebugKeys();
 #endif
@@ -152,6 +154,17 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IShieldable, IWorldRPC
         => fsm.ChangeState(next, allowReenter);
 
     // ═══════════════════════ 입력 ═══════════════════════
+
+    // Tab: 지도 열기/닫기. 플레이어는 런타임에 스폰되므로 씬의 지도 UI를 처음 쓸 때 찾는다
+    void ToggleWorldMap()
+    {
+        if (worldMapUI == null)
+            worldMapUI = FindAnyObjectByType<WorldMapUI>(FindObjectsInactive.Include);
+        if (worldMapUI == null) return;
+
+        if (worldMapUI.gameObject.activeSelf) worldMapUI.Close();
+        else worldMapUI.Open();
+    }
 
 #if UNITY_EDITOR
     // 에디터 테스트용: H = 10 피해, R = 사망 상태에서 부활

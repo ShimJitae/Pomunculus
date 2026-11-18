@@ -16,7 +16,6 @@ public class WorldTestUI : MonoBehaviour
     {
         var network = NetworkManager.Instance;
         network.OnJoinedLobbyEvent += OnJoinedLobby;
-        network.OnLeftRoomEvent += OnLeftRoom;
         network.OnCreateRoomFailedEvent += OnRoomFailed;
         network.OnDisconnectedEvent += OnDisconnected;
         // 월드 시작은 GameManager가 씬 로드 시점에 오프라인/방 입장 흐름으로 처리
@@ -25,7 +24,6 @@ public class WorldTestUI : MonoBehaviour
     {
         var network = NetworkManager.Instance;
         network.OnJoinedLobbyEvent -= OnJoinedLobby;
-        network.OnLeftRoomEvent -= OnLeftRoom;
         network.OnCreateRoomFailedEvent -= OnRoomFailed;
         network.OnDisconnectedEvent -= OnDisconnected;
     }
@@ -56,8 +54,7 @@ public class WorldTestUI : MonoBehaviour
     }
     #endregion
 
-    // 월드 정리는 GameManager.OnLeftRoom에서 처리
-    private void OnLeftRoom() => LoadingUI.LoadScene(GameManager.TitleSceneName);
+    // 방을 나가면 월드 정리와 타이틀 이동은 GameManager.OnLeftRoom에서 처리
     private void GoTitle() => GameManager.Instance.GoToTitle();
 
     private void OnGUI()
