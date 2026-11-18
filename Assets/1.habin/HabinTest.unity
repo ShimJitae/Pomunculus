@@ -567,6 +567,17 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 143617804}
   m_CullTransparentMesh: 1
+--- !u!114 &157486599 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6485532426938730610, guid: 221cbd062027e08468fdef6714abb672, type: 3}
+  m_PrefabInstance: {fileID: 2956341442691384814}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 825d71a5efea07f4dbe28f784819e0f0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Pomunculus.Items.ItemTooltipUI
 --- !u!1001 &162081578
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1316,6 +1327,56 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3071901638163193059, guid: df67aa14d62fa804c97104a8f35a5ff3, type: 3}
   m_PrefabInstance: {fileID: 299254948390613951}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &448891918 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7130129327938159314, guid: 221cbd062027e08468fdef6714abb672, type: 3}
+  m_PrefabInstance: {fileID: 2956341442691384814}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &448891923
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 448891918}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.EventSystems.EventTrigger
+  m_Delegates:
+  - eventID: 0
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 857587124}
+          m_TargetAssemblyTypeName: Pomunculus.Items.CraftingMaterialListUI, Assembly-CSharp
+          m_MethodName: ShowMaterialTooltip
+          m_Mode: 3
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 2
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 1
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 857587124}
+          m_TargetAssemblyTypeName: Pomunculus.Items.CraftingMaterialListUI, Assembly-CSharp
+          m_MethodName: HideMaterialTooltip
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1001 &489271569
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1453,6 +1514,56 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 496927366}
   m_CullTransparentMesh: 1
+--- !u!1 &497134617 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5060383244512310674, guid: 221cbd062027e08468fdef6714abb672, type: 3}
+  m_PrefabInstance: {fileID: 2956341442691384814}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &497134622
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 497134617}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.EventSystems.EventTrigger
+  m_Delegates:
+  - eventID: 0
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 857587124}
+          m_TargetAssemblyTypeName: Pomunculus.Items.CraftingMaterialListUI, Assembly-CSharp
+          m_MethodName: ShowMaterialTooltip
+          m_Mode: 3
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 3
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 1
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 857587124}
+          m_TargetAssemblyTypeName: Pomunculus.Items.CraftingMaterialListUI, Assembly-CSharp
+          m_MethodName: HideMaterialTooltip
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!4 &502524469 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2794320640746888614, guid: 57125e26eaf1b61469954be1b0ff514f, type: 3}
@@ -2152,6 +2263,56 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 8024293268696654463, guid: 58228a36f486c6a48a4b8339f31d208d, type: 3}
   m_PrefabInstance: {fileID: 8087941902724148293}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &699812132 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3149931304761332124, guid: 221cbd062027e08468fdef6714abb672, type: 3}
+  m_PrefabInstance: {fileID: 2956341442691384814}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &699812137
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 699812132}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.EventSystems.EventTrigger
+  m_Delegates:
+  - eventID: 0
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 857587123}
+          m_TargetAssemblyTypeName: Pomunculus.Items.PotionCrafting, Assembly-CSharp
+          m_MethodName: ShowInsertedMaterialTooltip
+          m_Mode: 3
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 2
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 1
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 857587123}
+          m_TargetAssemblyTypeName: Pomunculus.Items.PotionCrafting, Assembly-CSharp
+          m_MethodName: HideInsertedMaterialTooltip
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &732786523
 GameObject:
   m_ObjectHideFlags: 0
@@ -2395,6 +2556,56 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 798654598}
   m_CullTransparentMesh: 1
+--- !u!1 &806886086 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3454833320378167073, guid: 221cbd062027e08468fdef6714abb672, type: 3}
+  m_PrefabInstance: {fileID: 2956341442691384814}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &806886091
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 806886086}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.EventSystems.EventTrigger
+  m_Delegates:
+  - eventID: 0
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 857587124}
+          m_TargetAssemblyTypeName: Pomunculus.Items.CraftingMaterialListUI, Assembly-CSharp
+          m_MethodName: ShowMaterialTooltip
+          m_Mode: 3
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 1
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 857587124}
+          m_TargetAssemblyTypeName: Pomunculus.Items.CraftingMaterialListUI, Assembly-CSharp
+          m_MethodName: HideMaterialTooltip
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &811387851
 GameObject:
   m_ObjectHideFlags: 0
@@ -2849,6 +3060,28 @@ Transform:
   - {fileID: 5176193579815173080}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &857587123 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3884248725812276937, guid: 221cbd062027e08468fdef6714abb672, type: 3}
+  m_PrefabInstance: {fileID: 2956341442691384814}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 720ee251eb82bbe4ba6432deb5a42bf5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Pomunculus.Items.PotionCrafting
+--- !u!114 &857587124 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7884052719781456571, guid: 221cbd062027e08468fdef6714abb672, type: 3}
+  m_PrefabInstance: {fileID: 2956341442691384814}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7dc28bb72f84cb74ea8694e2d78b5477, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Pomunculus.Items.CraftingMaterialListUI
 --- !u!1 &864488027
 GameObject:
   m_ObjectHideFlags: 0
@@ -3211,6 +3444,56 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 942253925}
   m_CullTransparentMesh: 1
+--- !u!1 &947220843 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6977509051160909348, guid: 221cbd062027e08468fdef6714abb672, type: 3}
+  m_PrefabInstance: {fileID: 2956341442691384814}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &947220848
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 947220843}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.EventSystems.EventTrigger
+  m_Delegates:
+  - eventID: 0
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 857587124}
+          m_TargetAssemblyTypeName: Pomunculus.Items.CraftingMaterialListUI, Assembly-CSharp
+          m_MethodName: ShowMaterialTooltip
+          m_Mode: 3
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 5
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 1
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 857587124}
+          m_TargetAssemblyTypeName: Pomunculus.Items.CraftingMaterialListUI, Assembly-CSharp
+          m_MethodName: HideMaterialTooltip
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &968704664
 GameObject:
   m_ObjectHideFlags: 0
@@ -3500,6 +3783,56 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1023686637}
   m_CullTransparentMesh: 1
+--- !u!1 &1076102939 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1980045789859029381, guid: 221cbd062027e08468fdef6714abb672, type: 3}
+  m_PrefabInstance: {fileID: 2956341442691384814}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1076102944
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1076102939}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.EventSystems.EventTrigger
+  m_Delegates:
+  - eventID: 0
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 857587123}
+          m_TargetAssemblyTypeName: Pomunculus.Items.PotionCrafting, Assembly-CSharp
+          m_MethodName: ShowInsertedMaterialTooltip
+          m_Mode: 3
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 1
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 857587123}
+          m_TargetAssemblyTypeName: Pomunculus.Items.PotionCrafting, Assembly-CSharp
+          m_MethodName: HideInsertedMaterialTooltip
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &1096364192
 GameObject:
   m_ObjectHideFlags: 0
@@ -3670,6 +4003,56 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 6457083117859499690, guid: 1fadf21bd359b7940a421cb29089a7d3, type: 3}
   m_PrefabInstance: {fileID: 1146563284}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1156900049 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8753124525800069286, guid: 221cbd062027e08468fdef6714abb672, type: 3}
+  m_PrefabInstance: {fileID: 2956341442691384814}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1156900054
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1156900049}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.EventSystems.EventTrigger
+  m_Delegates:
+  - eventID: 0
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 857587124}
+          m_TargetAssemblyTypeName: Pomunculus.Items.CraftingMaterialListUI, Assembly-CSharp
+          m_MethodName: ShowMaterialTooltip
+          m_Mode: 3
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 4
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 1
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 857587124}
+          m_TargetAssemblyTypeName: Pomunculus.Items.CraftingMaterialListUI, Assembly-CSharp
+          m_MethodName: HideMaterialTooltip
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &1209513006
 GameObject:
   m_ObjectHideFlags: 0
@@ -4897,6 +5280,56 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 1060225501525400305, guid: efbda5d317efb9e4e9000f527feea431, type: 3}
   m_PrefabInstance: {fileID: 1439300218}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1461592275 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1388720590869748950, guid: 221cbd062027e08468fdef6714abb672, type: 3}
+  m_PrefabInstance: {fileID: 2956341442691384814}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1461592279
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1461592275}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.EventSystems.EventTrigger
+  m_Delegates:
+  - eventID: 0
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 857587123}
+          m_TargetAssemblyTypeName: Pomunculus.Items.PotionCrafting, Assembly-CSharp
+          m_MethodName: ShowResultTooltip
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 1
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 857587123}
+          m_TargetAssemblyTypeName: Pomunculus.Items.PotionCrafting, Assembly-CSharp
+          m_MethodName: HideResultTooltip
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &1470624571
 GameObject:
   m_ObjectHideFlags: 0
@@ -5751,6 +6184,56 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Pomunculus.Items.Inventory
   slots: []
+--- !u!1 &1713023923 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6375736138228138437, guid: 221cbd062027e08468fdef6714abb672, type: 3}
+  m_PrefabInstance: {fileID: 2956341442691384814}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1713023928
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1713023923}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.EventSystems.EventTrigger
+  m_Delegates:
+  - eventID: 0
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 857587123}
+          m_TargetAssemblyTypeName: Pomunculus.Items.PotionCrafting, Assembly-CSharp
+          m_MethodName: ShowInsertedMaterialTooltip
+          m_Mode: 3
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 1
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 1
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 857587123}
+          m_TargetAssemblyTypeName: Pomunculus.Items.PotionCrafting, Assembly-CSharp
+          m_MethodName: HideInsertedMaterialTooltip
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1001 &1721202814
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5940,6 +6423,56 @@ MonoBehaviour:
   m_ShadowLayerMask: 1
   m_RenderingLayers: 1
   m_ShadowRenderingLayers: 1
+--- !u!1 &1749154694 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 62205016181342014, guid: 221cbd062027e08468fdef6714abb672, type: 3}
+  m_PrefabInstance: {fileID: 2956341442691384814}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1749154699
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1749154694}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.EventSystems.EventTrigger
+  m_Delegates:
+  - eventID: 0
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 857587124}
+          m_TargetAssemblyTypeName: Pomunculus.Items.CraftingMaterialListUI, Assembly-CSharp
+          m_MethodName: ShowMaterialTooltip
+          m_Mode: 3
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 1
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 1
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 857587124}
+          m_TargetAssemblyTypeName: Pomunculus.Items.CraftingMaterialListUI, Assembly-CSharp
+          m_MethodName: HideMaterialTooltip
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1001 &1759028548
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -9334,6 +9867,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 62205016181342014, guid: 221cbd062027e08468fdef6714abb672, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 171117481622111841, guid: 221cbd062027e08468fdef6714abb672, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -9430,25 +9967,87 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3454833320378167073, guid: 221cbd062027e08468fdef6714abb672, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3884248725812276937, guid: 221cbd062027e08468fdef6714abb672, type: 3}
+      propertyPath: tooltip
+      value: 
+      objectReference: {fileID: 157486599}
     - target: {fileID: 3884248725812276937, guid: 221cbd062027e08468fdef6714abb672, type: 3}
       propertyPath: inventory
       value: 
       objectReference: {fileID: 1707856449}
+    - target: {fileID: 3884248725812276937, guid: 221cbd062027e08468fdef6714abb672, type: 3}
+      propertyPath: potionDatabase
+      value: 
+      objectReference: {fileID: 11400000, guid: 1da0e82e68ba5074d9c22a90186fdaf4, type: 2}
+    - target: {fileID: 5060383244512310674, guid: 221cbd062027e08468fdef6714abb672, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5710170608179177837, guid: 221cbd062027e08468fdef6714abb672, type: 3}
       propertyPath: inventory
       value: 
       objectReference: {fileID: 1707856449}
+    - target: {fileID: 6977509051160909348, guid: 221cbd062027e08468fdef6714abb672, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7130129327938159314, guid: 221cbd062027e08468fdef6714abb672, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7884052719781456571, guid: 221cbd062027e08468fdef6714abb672, type: 3}
+      propertyPath: tooltip
+      value: 
+      objectReference: {fileID: 157486599}
     - target: {fileID: 7884052719781456571, guid: 221cbd062027e08468fdef6714abb672, type: 3}
       propertyPath: inventory
       value: 
       objectReference: {fileID: 1707856449}
+    - target: {fileID: 8753124525800069286, guid: 221cbd062027e08468fdef6714abb672, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 171117481622111841, guid: 221cbd062027e08468fdef6714abb672, type: 3}
       insertIndex: -1
       addedObject: {fileID: 737888380}
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 3454833320378167073, guid: 221cbd062027e08468fdef6714abb672, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 806886091}
+    - targetCorrespondingSourceObject: {fileID: 62205016181342014, guid: 221cbd062027e08468fdef6714abb672, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1749154699}
+    - targetCorrespondingSourceObject: {fileID: 7130129327938159314, guid: 221cbd062027e08468fdef6714abb672, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 448891923}
+    - targetCorrespondingSourceObject: {fileID: 5060383244512310674, guid: 221cbd062027e08468fdef6714abb672, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 497134622}
+    - targetCorrespondingSourceObject: {fileID: 8753124525800069286, guid: 221cbd062027e08468fdef6714abb672, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1156900054}
+    - targetCorrespondingSourceObject: {fileID: 6977509051160909348, guid: 221cbd062027e08468fdef6714abb672, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 947220848}
+    - targetCorrespondingSourceObject: {fileID: 1980045789859029381, guid: 221cbd062027e08468fdef6714abb672, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1076102944}
+    - targetCorrespondingSourceObject: {fileID: 6375736138228138437, guid: 221cbd062027e08468fdef6714abb672, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1713023928}
+    - targetCorrespondingSourceObject: {fileID: 3149931304761332124, guid: 221cbd062027e08468fdef6714abb672, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 699812137}
+    - targetCorrespondingSourceObject: {fileID: 1388720590869748950, guid: 221cbd062027e08468fdef6714abb672, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1461592279}
   m_SourcePrefab: {fileID: 100100000, guid: 221cbd062027e08468fdef6714abb672, type: 3}
 --- !u!1001 &2967627172666346398
 PrefabInstance:
@@ -10123,7 +10722,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5164033378329711167, guid: 8cfd451f0bcf23c478f5c5d7f282683a, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.00000029066723
+      value: 0.07
       objectReference: {fileID: 0}
     - target: {fileID: 5164033378329711167, guid: 8cfd451f0bcf23c478f5c5d7f282683a, type: 3}
       propertyPath: m_LocalPosition.z

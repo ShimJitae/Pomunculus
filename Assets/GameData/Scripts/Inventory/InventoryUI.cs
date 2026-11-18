@@ -31,8 +31,8 @@ namespace Pomunculus.Items
         [SerializeField] private ItemTooltipUI tooltip;
 
         [Header("전체 아이템 데이터")]
-        [SerializeField] private List<MaterialData> materials = new List<MaterialData>();
-        [SerializeField] private List<PotionData> potions = new List<PotionData>();
+        [SerializeField] private MaterialDatabase materialDatabase;
+        [SerializeField] private PotionDatabase potionDatabase;
 
         [Header("슬롯 생성")]
         [SerializeField] private Transform content;
@@ -118,7 +118,7 @@ namespace Pomunculus.Items
 
             if (currentTab != InventoryTab.Potion)
             {
-                foreach (MaterialData material in materials)
+                foreach (MaterialData material in materialDatabase.Materials)
                 {
                     if (material == null)
                         continue;
@@ -144,7 +144,7 @@ namespace Pomunculus.Items
             }
             if (currentTab != InventoryTab.Material)
             {
-                foreach (PotionData potion in potions)
+                foreach (PotionData potion in potionDatabase.Potions)
                 {
                     if (potion == null)
                         continue;

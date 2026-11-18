@@ -3,6 +3,7 @@ using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.InputSystem;
 
 namespace Pomunculus.Items
 {
@@ -20,7 +21,7 @@ namespace Pomunculus.Items
         [SerializeField] private PotionCrafting crafting;
 
         [Header("전체 재료 데이터")]
-        [SerializeField] private List<MaterialData> materials = new List<MaterialData>();
+        [SerializeField] private MaterialDatabase materialDatabase;
 
         [Header("왼쪽 위부터 재료 칸 6개")]
         [SerializeField] private MaterialSlotView[] slotViews = new MaterialSlotView[6];
@@ -31,7 +32,11 @@ namespace Pomunculus.Items
         [SerializeField] private TMP_Text pageText;
         private const int SlotsPerPage = 6;
         private readonly MaterialData[] displayedMaterials = new MaterialData[SlotsPerPage];
+ 
         private int currentPage;
+        [Header("아이템 툴팁")]
+        [SerializeField] private ItemTooltipUI tooltip;
+        private int hoveredSlotIndex = -1;
         private void Awake()
         {
             for (int i = 0; i < SlotsPerPage; i++)
@@ -57,6 +62,8 @@ namespace Pomunculus.Items
         {
             if (inventory != null)
                 inventory.Changed -= Refresh;
+
+            HideMaterialTooltip();
         }
 
         private void OnMaterialClicked(int slotIndex)
@@ -74,7 +81,7 @@ namespace Pomunculus.Items
             if (inventory == null)
                 return;
 
-            List<MaterialData> ownedMaterials = materials
+            List<MaterialData> ownedMaterials = materialDatabase.Materials
                 .Where(material => material != null && inventory.GetItemCount(material.Id) > 0)
                 .OrderBy(material => material.Id)
                 .ToList();
@@ -106,6 +113,7 @@ namespace Pomunculus.Items
             pageText.text = $"{currentPage + 1} / {pageCount}";
             backButton.interactable = currentPage > 0;
             nextButton.interactable = currentPage < pageCount - 1;
+            RefreshMaterialTooltip();
         }
 
         public void NextPage()
@@ -118,6 +126,49 @@ namespace Pomunculus.Items
         {
             currentPage--;
             Refresh();
+        }
+        public void ShowMaterialTooltip(int slotIndex)
+        {
+            hoveredSlotIndex = slotIndex;
+            RefreshMaterialTooltip();
+        }
+
+        public void HideMaterialTooltip()
+        {
+            hoveredSlotIndex = -1;
+
+            if (tooltip != null)
+                tooltip.HideFor(this);
+        }
+        private void RefreshMaterialTooltip()
+        {
+            if (tooltip == null)
+                return;
+            if (inventory == null ||
+                hoveredSlotIndex < 0 ||
+                hoveredSlotIndex >= displayedMaterials.Length)
+            {
+                tooltip.HideFor(this);
+                return;
+            }
+            MaterialData material = displayedMaterials[hoveredSlotIndex];
+            if (material == null || Mouse.current == null)
+            {
+                tooltip.HideFor(this);
+                return;
+            }
+
+            tooltip.Show(this,
+                material.ItemName,
+                material.Description,
+                material.Icon,
+                inventory.GetItemCount(material.Id),
+                Mouse.current.position.ReadValue(),
+                material.PhysicsElement,
+                material.FireElement,
+                material.ColdElement,
+                material.WindElement
+            );
         }
     }
 }

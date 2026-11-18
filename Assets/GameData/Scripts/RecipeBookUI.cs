@@ -31,7 +31,7 @@ namespace Pomunculus.Items
         }
 
         [Header("포션 데이터")]
-        [SerializeField] private List<PotionData> potions = new List<PotionData>();
+        [SerializeField] private PotionDatabase potionDatabase;
 
         [Header("위에서부터 레시피 4행")]
         [SerializeField] private RecipeRow[] rows = new RecipeRow[4];
@@ -54,7 +54,7 @@ namespace Pomunculus.Items
         }
         public void Refresh()
         {
-            List<PotionData> recipes = potions
+            List<PotionData> recipes = potionDatabase.Potions
                 .Where(potion => potion != null && potion.Id != 10001)
                 .OrderBy(potion => potion.Id)
                 .ToList();
