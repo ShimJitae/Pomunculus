@@ -21,12 +21,15 @@ public class Enemy : Entity, IWorldRPC, IHealable
     [SerializeField] private GameObject target;
     [SerializeField] private EnemyDetector detector;
     [SerializeField] private float knockbackDistance;
+    [SerializeField] private float detectRangeBonus = 10f; // 피격 시 추가되는 감지 범위
+    [SerializeField] private float chaseSpeedMultiplier = 3f; // 추적 시 이동속도 배율
 
     private bool IsDamageBlock => IsInvincible || CheckDie();
     private NavMeshAgent agent;
     private Animator animator;
     private EnemyMovement movement;
     private EnemySkill enemySkill;
+    private bool hasDetectRangeExpanded;
 
     private float groggyHpRatio = 0.5f;
     private bool hasGroggyTriggered;
@@ -69,6 +72,7 @@ public class Enemy : Entity, IWorldRPC, IHealable
         ApplyAuthority(IsMaster);
 
         hasGroggyTriggered = false;
+        hasDetectRangeExpanded = false;
         behaviorGraphAgent.SetVariableValue("IsGroggy", false);
 
         enemySkill.PrewarmParticles();
@@ -123,6 +127,7 @@ public class Enemy : Entity, IWorldRPC, IHealable
         }
         else
         {
+            TryExpandDetectRange();
             TryEnterGroggy();
         }
     }
@@ -157,6 +162,15 @@ public class Enemy : Entity, IWorldRPC, IHealable
         CancelCurrentAttack();
     }
 
+    private void TryExpandDetectRange()
+    {
+        if (hasDetectRangeExpanded)
+            return;
+
+        hasDetectRangeExpanded = true;
+        detector.SetRadius(EnemySo.GetDetectRange() + detectRangeBonus);
+    }
+
     // 넉백을 포함한 takeDamage
     //public override void TakeDamage(int damage, Vector3 sourcePosition)
     //{
@@ -187,8 +201,10 @@ public class Enemy : Entity, IWorldRPC, IHealable
 
 
         float currentMoveSpeed = CanMove ? EnemySo.GetSpeed() * MoveSpeedRatio : 0f;
+        float currentChaseSpeed = currentMoveSpeed * chaseSpeedMultiplier;
 
         behaviorGraphAgent.SetVariableValue("MoveSpeed", currentMoveSpeed);
+        behaviorGraphAgent.SetVariableValue("ChaseSpeed", currentChaseSpeed);
         agent.speed = currentMoveSpeed;
         // 기절 0 / 구속 1 / 그외 >> 이동 배율대로
         float animationSpeedRatio = !CanAttack ? 0f : (CanMove ? MoveSpeedRatio : 1f);
@@ -211,8 +227,15 @@ public class Enemy : Entity, IWorldRPC, IHealable
 
         if (IsMaster)
         {
-            WorldManager.Instance.Spawn(DataDBManager.Instance.ItemDatabase.GetItemPrefab(DataDBManager.Instance.TryGetDropItemID(GetId())).name, transform.position + DataDBManager.Instance.ItemDropOffset, Quaternion.identity);
+            int dropItemId = DataDBManager.Instance.TryGetDropItemID(GetId());
 
+            if (dropItemId > 0)
+            {
+                GameObject dropItemPrefab = DataDBManager.Instance.ItemDatabase.GetItemPrefab(dropItemId);
+
+                if (dropItemPrefab != null)
+                    WorldManager.Instance.Spawn(dropItemPrefab.name, transform.position + DataDBManager.Instance.ItemDropOffset, Quaternion.identity);
+            }
             StartCoroutine(WaitDieAnimation());
         }
     }
@@ -241,6 +264,10 @@ public class Enemy : Entity, IWorldRPC, IHealable
             return;
 
         SetTarget(detector.GetNearestPlayer());
+
+        // 넓힌 범위 안에도 플레이어가 없으면 감지 범위로 복구
+        if (target == null)
+            ResetDetectRange();
     }
 
     protected override int GetId()
@@ -284,6 +311,15 @@ public class Enemy : Entity, IWorldRPC, IHealable
             return;
 
         AudioManager.Instance.PlaySound(enemySound, transform.position);
+    }
+
+    private void ResetDetectRange()
+    {
+        if (!hasDetectRangeExpanded)
+            return;
+
+        hasDetectRangeExpanded = false;
+        detector.SetRadius(EnemySo.GetDetectRange());
     }
 
     #region 네트워크
