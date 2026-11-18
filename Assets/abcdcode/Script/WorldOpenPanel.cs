@@ -106,7 +106,7 @@ public class WorldOpenPanel : MonoBehaviour
     [SerializeField] private Button m_openRoomButton; // 접속 중이거나 이미 방 안이면 비활성화
     [SerializeField] private TMP_Text m_messageText; // 실패 메시지 표시용. 없어도 됨
 
-    private const int MaxPlayers = 4;
+    private const int MaxPlayers = 5;
     private const int RoomCodeLength = 6;
 
     private string m_message;
