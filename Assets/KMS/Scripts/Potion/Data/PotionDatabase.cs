@@ -7,6 +7,7 @@ using UnityEngine;
 public class PotionDatabase : ScriptableObject
 {
     [SerializeField] private List<PotionData> potions = new List<PotionData>();
+    public IReadOnlyList<PotionData> Potions => potions;
 
     private Dictionary<int, PotionData> potionById;
     private static PotionDatabase instance;

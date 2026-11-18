@@ -13,6 +13,7 @@ namespace Pomunculus.Items.Editor
         private const string CsvPath = "Assets/GameData/CSV/Materials.csv";
         private const string OutputFolder = "Assets/GameData/Items/Materials";
         private const string MenuPath = "Tools/GameData/재료 CSV 가져오기";
+        private const string DatabasePath = "Assets/Resources/MaterialDatabase.asset";
 
         private class MaterialRow
         {
@@ -83,6 +84,7 @@ namespace Pomunculus.Items.Editor
                 }
 
                 AssetDatabase.SaveAssets();
+                UpdateMaterialDatabase();
 
                 string message = $"새로 생성: {created}개\n기존 갱신: {updated}개\n파일 이름 변경: {renamed}개";
 
@@ -386,6 +388,55 @@ namespace Pomunculus.Items.Editor
                 FinishRow();
 
             return table;
+        }
+        [MenuItem("Tools/GameData/재료 DB 갱신")]
+        public static void UpdateMaterialDatabase()
+        {
+            MaterialDatabase database =
+                AssetDatabase.LoadAssetAtPath<MaterialDatabase>(DatabasePath);
+
+            if (database == null)
+            {
+                EnsureFolder("Assets/Resources");
+
+                database = ScriptableObject.CreateInstance<MaterialDatabase>();
+                AssetDatabase.CreateAsset(database, DatabasePath);
+            }
+
+            List<MaterialData> materials = new List<MaterialData>();
+            HashSet<int> ids = new HashSet<int>();
+
+            foreach (string guid in AssetDatabase.FindAssets("t:MaterialData"))
+            {
+                string path = AssetDatabase.GUIDToAssetPath(guid);
+                MaterialData material =
+                    AssetDatabase.LoadAssetAtPath<MaterialData>(path);
+
+                if (material == null)
+                    continue;
+
+                if (!ids.Add(material.Id))
+                {
+                    Debug.LogError($"중복된 재료 ID입니다: {material.Id}", material);
+                    continue;
+                }
+
+                materials.Add(material);
+            }
+
+            materials.Sort((a, b) => a.Id.CompareTo(b.Id));
+
+            SerializedObject serializedDatabase = new SerializedObject(database);
+            SerializedProperty list = serializedDatabase.FindProperty("materials");
+
+            list.arraySize = materials.Count;
+
+            for (int i = 0; i < materials.Count; i++)
+                list.GetArrayElementAtIndex(i).objectReferenceValue = materials[i];
+
+            serializedDatabase.ApplyModifiedProperties();
+            EditorUtility.SetDirty(database);
+            AssetDatabase.SaveAssets();
         }
     }
 }

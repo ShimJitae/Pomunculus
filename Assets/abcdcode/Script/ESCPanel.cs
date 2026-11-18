@@ -2,6 +2,10 @@ using UnityEngine;
 
 public class ESCPanel : MonoBehaviour
 {
+    public void Awake()
+    {
+        Root.gameObject.SetActive(false);
+    }
     public void Update()
     {
         if(Input.GetKeyDown(KeyCode.Escape))

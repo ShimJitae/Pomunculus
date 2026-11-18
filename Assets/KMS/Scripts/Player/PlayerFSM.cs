@@ -50,6 +50,9 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IShieldable, IWorldRPC
     public bool IsDead => CheckDie();
     public Vector3 LastHitSourcePosition { get; private set; }
 
+    private float lastDodgeAt = float.NegativeInfinity;
+    private WorldMapUI worldMapUI;   // 씬의 지도 UI. 처음 Tab을 누를 때 찾아서 캐시
+
     private bool IsDamageBlocked =>
     IsInvincible || CheckDie() ||
     (fsm.CurrentState is PlayerStateBase state && state.IsInvincible(this));
@@ -57,6 +60,8 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IShieldable, IWorldRPC
     public int Owner { get; set; }
     public bool IsMine => !PhotonNetwork.InRoom ||
                       (PhotonNetwork.LocalPlayer != null && PhotonNetwork.LocalPlayer.ActorNumber == Owner);
+
+    protected override bool HasStateAuthority { get => IsMine; }
 
     public event Action OnDied;
     public event Action OnRevived;
@@ -133,6 +138,7 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IShieldable, IWorldRPC
 
         Input.ReadInput();
         if (Input.ConsumePotionSlotSelect(out int slot)) Loadout.SelectSlot(slot);
+        if (Input.IsWorldMapPressed()) ToggleWorldMap();
 #if UNITY_EDITOR
         ReadDebugKeys();
 #endif
@@ -147,6 +153,17 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IShieldable, IWorldRPC
         => fsm.ChangeState(next, allowReenter);
 
     // ═══════════════════════ 입력 ═══════════════════════
+
+    // Tab: 지도 열기/닫기. 플레이어는 런타임에 스폰되므로 씬의 지도 UI를 처음 쓸 때 찾는다
+    void ToggleWorldMap()
+    {
+        if (worldMapUI == null)
+            worldMapUI = FindAnyObjectByType<WorldMapUI>(FindObjectsInactive.Include);
+        if (worldMapUI == null) return;
+
+        if (worldMapUI.gameObject.activeSelf) worldMapUI.Close();
+        else worldMapUI.Open();
+    }
 
 #if UNITY_EDITOR
     // 에디터 테스트용: H = 10 피해, R = 사망 상태에서 부활
@@ -317,7 +334,8 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IShieldable, IWorldRPC
         SyncLoadout,
         RequestShield,
         SyncShield,
-        SyncInventory
+        SyncInventory,
+        RegisterStatusEffect = RpcRegisterStatusEffect, // Entity에서 정의한 하위 RPC enum과 겹치지 않는 공용 번호.
     }
 
     // 소유자가 확정한 HP를 다른 플레이어에게 전송
@@ -475,6 +493,9 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IShieldable, IWorldRPC
                 for (int i = 0; i < count; i++)
                     items.Add(new InventorySlot(packet.ReadInt(), packet.ReadInt()));
                 if (!IsMine) RestoreInventory(items);
+                break;
+            case PlayerRPCType.RegisterStatusEffect:
+                ReceiveRegisterStatusEffect(packet);   // 소유자 여부와 상관없이 모두 적용
                 break;
         }
     }

@@ -12,7 +12,7 @@ public class WorldOpenPanel : MonoBehaviour
     // 접속 중이어도 패널만 닫음. 진행 중인 방 생성 요청은 그대로 진행됨
     public void Close()
     {
-        gameObject.SetActive(false);
+        //gameObject.SetActive(false);
     }
     
     #region Unity
@@ -25,7 +25,6 @@ public class WorldOpenPanel : MonoBehaviour
         network.OnJoinedRoomEvent += OnJoinedRoom;
         network.OnCreateRoomFailedEvent += OnRoomFailed;
         network.OnDisconnectedEvent += OnDisconnected;
-        network.OnLeftRoomEvent += OnLeftRoom;
     }
     // NetworkManager는 씬 이동 후에도 남아 있으므로 반드시 구독 해제. 한 번도 켜지지 않았으면 Awake처럼 호출되지 않음
     private void OnDestroy()
@@ -35,7 +34,6 @@ public class WorldOpenPanel : MonoBehaviour
         network.OnJoinedRoomEvent -= OnJoinedRoom;
         network.OnCreateRoomFailedEvent -= OnRoomFailed;
         network.OnDisconnectedEvent -= OnDisconnected;
-        network.OnLeftRoomEvent -= OnLeftRoom;
     }
     private void Update()
     {
@@ -49,7 +47,6 @@ public class WorldOpenPanel : MonoBehaviour
         if (m_messageText != null && m_messageText.text != (m_message ?? "")) m_messageText.text = m_message ?? "";
     }
     #endregion
-    private void OnLeftRoom() => LoadingUI.LoadScene(GameManager.TitleSceneName);
     #region 멀티 전환
     public void OnClickOpenRoom()
     {
@@ -106,7 +103,7 @@ public class WorldOpenPanel : MonoBehaviour
     [SerializeField] private Button m_openRoomButton; // 접속 중이거나 이미 방 안이면 비활성화
     [SerializeField] private TMP_Text m_messageText; // 실패 메시지 표시용. 없어도 됨
 
-    private const int MaxPlayers = 4;
+    private const int MaxPlayers = 5;
     private const int RoomCodeLength = 6;
 
     private string m_message;

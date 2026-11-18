@@ -34,7 +34,7 @@ public class RegionVolume : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        if (!TryGetComponent(out BoxCollider box)) return;
+        if (!TryGetComponent(out CapsuleCollider c)) return;
 
         Color color = m_region switch
         {
@@ -46,9 +46,10 @@ public class RegionVolume : MonoBehaviour
         };
         Gizmos.matrix = transform.localToWorldMatrix;
         Gizmos.color = new Color(color.r, color.g, color.b, 0.08f);
-        Gizmos.DrawCube(box.center, box.size);
+        Gizmos.DrawSphere(c.center,c.radius);
+        //Gizmos.DrawCube(box.center, box.size);
         Gizmos.color = color;
-        Gizmos.DrawWireCube(box.center, box.size);
+        //Gizmos.DrawWireCube(box.center, box.size);
     }
 
     [SerializeField] private RegionType m_region;
