@@ -44,6 +44,7 @@ public class PlayerInputReader : MonoBehaviour
     private InputAction interactAction;
     private InputAction pointAction;
     private InputAction aimAction;
+    private InputAction worldMapAction;
     private InputAction[] potionSlotActions;              // 1/2/3 키. 인덱스 = 슬롯 번호
     
 #if UNITY_EDITOR
@@ -66,6 +67,7 @@ public class PlayerInputReader : MonoBehaviour
         interactAction = playerMap.FindAction("Interact", throwIfNotFound: true);
         pointAction = playerMap.FindAction("Point", throwIfNotFound: true);
         aimAction = playerMap.FindAction("Aim", throwIfNotFound: true);
+        worldMapAction = playerMap.FindAction("WorldMap", throwIfNotFound: true);
         potionSlotActions = new InputAction[PotionLoadout.SlotCount];
         
         for (int i = 0; i < PotionLoadout.SlotCount; i++)
@@ -197,6 +199,9 @@ public class PlayerInputReader : MonoBehaviour
         pendingPotionSlot = -1;
         return true;
     }
+
+    // 지도 키(Tab)를 이번 프레임에 눌렀는지
+    public bool IsWorldMapPressed() => worldMapAction.WasPressedThisFrame();
 
 #if UNITY_EDITOR
     // 디버그 피격 키(H)를 이번 프레임에 눌렀는지

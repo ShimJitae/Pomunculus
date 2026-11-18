@@ -629,6 +629,11 @@ MonoBehaviour:
   m_ShadowLayerMask: 1
   m_RenderingLayers: 1
   m_ShadowRenderingLayers: 1
+--- !u!4 &308605326 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 9173483715141810696, guid: 200ec7a1d3e08454ab91bc116eb16d3d, type: 3}
+  m_PrefabInstance: {fileID: 1250869289}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &363368492
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1540,6 +1545,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 7486839068672850478, guid: 200ec7a1d3e08454ab91bc116eb16d3d, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 9173483715141810696, guid: 200ec7a1d3e08454ab91bc116eb16d3d, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -2328,6 +2337,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5870979108193400306, guid: 3a52548958256c040b08e421897941ab, type: 3}
+      propertyPath: worldRoot
+      value: 
+      objectReference: {fileID: 308605326}
     - target: {fileID: 6115480593395721304, guid: 3a52548958256c040b08e421897941ab, type: 3}
       propertyPath: m_Pivot.x
       value: 0
