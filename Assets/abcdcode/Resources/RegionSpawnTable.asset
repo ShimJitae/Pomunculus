@@ -23,8 +23,8 @@ MonoBehaviour:
     - "\uC232 \uB465\uC9C0"
     - "\uC232 \uBC8C\uC9D1"
     - "\uC232\uB098\uBB34"
-    MobPrefabIds:
-    - EvilMagePADefault
+    MobPrefabIds: []
+    FieldBossPrefabIds: []
   - Region: 2
     GatherPrefabIds:
     - "\uC6A9\uC554 \uAD11\uB9E5 Variant"
@@ -35,7 +35,10 @@ MonoBehaviour:
     - "\uC6A9\uC554\uB364\uBE14\uBCA0\uB9AC Variant"
     - "\uC6A9\uC554\uB369\uC5B4\uB9AC Variant"
     MobPrefabIds:
-    - EvilMagePADefault
+    - Enemy_LavaDragon
+    - Enemy_Golem
+    FieldBossPrefabIds:
+    - Enemy_RedDragon
   - Region: 3
     GatherPrefabIds:
     - "\uC124\uC0B0 \uAD11\uB9E5 Variant"
@@ -45,7 +48,10 @@ MonoBehaviour:
     - "\uC124\uC0B0 \uC218\uC815"
     - "\uC124\uC0B0 \uC5BC\uC74C\uB369\uC5B4\uB9AC Variant"
     MobPrefabIds:
-    - EvilMagePADefault
+    - Enemy_Werewolf
+    - Enemy_Yeti
+    FieldBossPrefabIds:
+    - Enemy_FrostGiant
   - Region: 4
     GatherPrefabIds:
     - "\uB2AA \uAD11\uB9E5 Variant"
@@ -56,5 +62,8 @@ MonoBehaviour:
     - "\uB2AA \uBF08\uBB34\uB354\uAE30 Variant"
     - "\uB2AA \uD0C0\uB974\uB369\uC5B4\uB9AC"
     MobPrefabIds:
-    - EvilMagePADefault
-  m_despawnDelay: 3
+    - Enemy_Slime
+    - Enemy_EvilMage
+    FieldBossPrefabIds:
+    - Enemy_Chimera
+  m_despawnDelay: 2
