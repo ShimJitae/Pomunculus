@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 864150b1474b29c46b25acae04f4cdbc, type: 3}
-  m_Name: "\uC11C\uB9AC \uAC70\uC778"
+  m_Name: FrostGiaint
   m_EditorClassIdentifier: Assembly-CSharp::MonsterDataSO
   hp: 400
   maxHp: 400
@@ -29,5 +29,7 @@ MonoBehaviour:
   detectRange: 6
   attackRange: 2.5
   behaviourGraph: {fileID: -8369483795943858381, guid: 548c8a7dfd53fe743900d6e6d4467ff2, type: 2}
-  enemyPrefab: {fileID: 4819749472615531902, guid: bbf68fc081ed8324d89e671fc0f67c0d, type: 3}
+  enemyPrefab: {fileID: 8411471230040761270, guid: 7b4808a3a88a4744bba0ca1e728c0f5e, type: 3}
   normalAttackPattern: {fileID: 11400000, guid: c2cb23d454adc324e974eb77199e07f4, type: 2}
+  groggySound: {fileID: 0}
+  dieSound: {fileID: 0}

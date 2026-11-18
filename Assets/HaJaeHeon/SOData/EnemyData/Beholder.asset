@@ -10,23 +10,23 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 864150b1474b29c46b25acae04f4cdbc, type: 3}
-  m_Name: "\uD0A4\uBA54\uB77C"
+  m_Name: Beholder
   m_EditorClassIdentifier: Assembly-CSharp::MonsterDataSO
-  hp: 444
-  maxHp: 444
-  moveSpeed: 4
-  monster_id: 42002
-  monster_name: "\uD0A4\uBA54\uB77C"
-  kind: 1
-  atk: 44
-  speed: 4
-  zone_id: 2
-  zone_name: "\uB3C5\uB2AA"
-  drop_id: 25038
-  drop_name: "\uD569\uC131\uD45C\uBCF8"
-  behaviour: "\uBAB8\uBD80\uB9BC, \uC801\uAC1C\uC2EC, \uC7AC\uC0DD"
-  detectRange: 4
+  hp: 100
+  maxHp: 100
+  moveSpeed: 2.5
+  monster_id: 41001
+  monster_name: "\uC8FC\uC2DC\uC790"
+  kind: 2
+  atk: 0
+  speed: 2.5
+  zone_id: -1
+  zone_name: "\uBAA8\uB4E0 \uC9C0\uC5ED"
+  drop_id: 0
+  drop_name: 
+  behaviour: "\uBC30\uD68C, \uC800\uC8FC \uC751\uC2DC"
+  detectRange: 6
   attackRange: 2.5
   behaviourGraph: {fileID: -8369483795943858381, guid: 548c8a7dfd53fe743900d6e6d4467ff2, type: 2}
-  enemyPrefab: {fileID: 4819749472615531902, guid: b633c9f7099b1284d93de8626cf7d3cf, type: 3}
-  normalAttackPattern: {fileID: 11400000, guid: c48c1d01f1343af4aaa5e976f1742420, type: 2}
+  enemyPrefab: {fileID: 4819749472615531902, guid: 0ccca8d45e9fdee4fb567c5a9b1bd655, type: 3}
+  normalAttackPattern: {fileID: 11400000, guid: 53e6c3455e4f3444a9d33384f7b9371d, type: 2}

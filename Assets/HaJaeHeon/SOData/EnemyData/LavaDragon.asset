@@ -10,23 +10,25 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 864150b1474b29c46b25acae04f4cdbc, type: 3}
-  m_Name: "\uB9C8\uB140"
+  m_Name: LavaDragon
   m_EditorClassIdentifier: Assembly-CSharp::MonsterDataSO
-  hp: 110
-  maxHp: 110
-  moveSpeed: 1
-  monster_id: 40006
-  monster_name: "\uB9C8\uB140"
+  hp: 130
+  maxHp: 130
+  moveSpeed: 0
+  monster_id: 40009
+  monster_name: "\uC6A9\uC554\uD1A0\uB8E1"
   kind: 0
   atk: 15
-  speed: 1
-  zone_id: 2
-  zone_name: "\uB3C5\uB2AA"
-  drop_id: 25037
-  drop_name: "\uC5D0\uD14C\uB974"
-  behaviour: "\uB3C5\uC548\uAC1C, \uBD88\uB369\uC774"
-  detectRange: 6
+  speed: 0
+  zone_id: 3
+  zone_name: "\uC6A9\uC554\uC9C0\uB300"
+  drop_id: 0
+  drop_name: 
+  behaviour: "\uBD88\uB369\uC774 \uBC1C\uC0AC, \uC7A0\uBCF5"
+  detectRange: 5
   attackRange: 2.5
   behaviourGraph: {fileID: -8369483795943858381, guid: 548c8a7dfd53fe743900d6e6d4467ff2, type: 2}
-  enemyPrefab: {fileID: 8110191569375057927, guid: 0440e450c2c58ce4991f489f0a2e2d7b, type: 3}
-  normalAttackPattern: {fileID: 11400000, guid: 8ce189ccae82b5d41ac4640d05c2fc59, type: 2}
+  enemyPrefab: {fileID: 595553454976677703, guid: ab383dfdea65b9747bc48a8520e07789, type: 3}
+  normalAttackPattern: {fileID: 11400000, guid: 72c23a0fa8f3b424da7a0c06c39da427, type: 2}
+  groggySound: {fileID: 0}
+  dieSound: {fileID: 0}

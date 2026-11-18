@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 864150b1474b29c46b25acae04f4cdbc, type: 3}
-  m_Name: "\uC124\uC778"
+  m_Name: Yeti
   m_EditorClassIdentifier: Assembly-CSharp::MonsterDataSO
   hp: 140
   maxHp: 140
@@ -28,5 +28,7 @@ MonoBehaviour:
   detectRange: 5
   attackRange: 2.5
   behaviourGraph: {fileID: -8369483795943858381, guid: 548c8a7dfd53fe743900d6e6d4467ff2, type: 2}
-  enemyPrefab: {fileID: 4819749472615531902, guid: 4a6a028ecbad264419aa48fdc8a34f60, type: 3}
+  enemyPrefab: {fileID: 4819749472615531902, guid: a281ac46dddf39844a456affaa9aee04, type: 3}
   normalAttackPattern: {fileID: 11400000, guid: 66e208a8d7369df4ea27489fbbe3f35b, type: 2}
+  groggySound: {fileID: 0}
+  dieSound: {fileID: 0}
