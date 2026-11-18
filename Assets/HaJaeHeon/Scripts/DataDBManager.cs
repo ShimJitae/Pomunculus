@@ -33,9 +33,11 @@ public class DataDBManager : SingletonBehavior<DataDBManager>
 
     public int TryGetDropItemID(int monsterId)
     {
-        if (EnemyDatabase.TryGetDropItemID(monsterId) != -1)
+        int dropItemId = EnemyDatabase.TryGetDropItemID(monsterId);
+
+        if (dropItemId > 0)
         {
-            return EnemyDatabase.TryGetDataSO(monsterId).GetDropId();
+            return dropItemId;
         }
 
         Debug.Log($"{monsterId}에 해당하는 데이터 없음");
