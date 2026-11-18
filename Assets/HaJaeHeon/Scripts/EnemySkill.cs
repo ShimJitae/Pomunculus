@@ -51,6 +51,9 @@ public class EnemySkill : MonoBehaviour
         SetAttackActive(false);
 
         ApplyNextPatternRange();
+
+        if (bodyCollider == null)
+            bodyCollider = GetComponentInChildren<Collider>();
     }
 
     private void CacheComponents()
