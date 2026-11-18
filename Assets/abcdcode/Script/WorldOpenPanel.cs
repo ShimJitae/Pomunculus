@@ -12,7 +12,7 @@ public class WorldOpenPanel : MonoBehaviour
     // 접속 중이어도 패널만 닫음. 진행 중인 방 생성 요청은 그대로 진행됨
     public void Close()
     {
-        gameObject.SetActive(false);
+        //gameObject.SetActive(false);
     }
     
     #region Unity
