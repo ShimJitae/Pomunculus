@@ -814,48 +814,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Pomunculus.Items.CraftingMaterialListUI
   inventory: {fileID: 0}
   crafting: {fileID: 3884248725812276937}
-  materials:
-  - {fileID: 11400000, guid: 164cbb060862b354eb69b5f6aa7e3cba, type: 2}
-  - {fileID: 11400000, guid: 3613042f62aa5304c928480fdff5632e, type: 2}
-  - {fileID: 11400000, guid: d7e292297c837ad4db37027cce94f31d, type: 2}
-  - {fileID: 11400000, guid: e87bdda88577af946a2d3800acbca88c, type: 2}
-  - {fileID: 11400000, guid: bed0be9093bbb7946a5340dee11a3b68, type: 2}
-  - {fileID: 11400000, guid: e6ef66d9912fac546910f17ba83f420a, type: 2}
-  - {fileID: 11400000, guid: 8a337227161e8964c9d93cb0d976ba27, type: 2}
-  - {fileID: 11400000, guid: 51b6dd547f8f7d74e943f809cee40385, type: 2}
-  - {fileID: 11400000, guid: 9b0ec6d34a3457046a593955b6eb9bed, type: 2}
-  - {fileID: 11400000, guid: 6a323fa78a43f7e4bac56dd1274411d8, type: 2}
-  - {fileID: 11400000, guid: 2f35067d8b028c54d8ad2b6a5c8fda9a, type: 2}
-  - {fileID: 11400000, guid: 9d1eae9af16b6b241ac4b9f735452ef2, type: 2}
-  - {fileID: 11400000, guid: 2ce441b9e388e2c4cbcbd84a622acb09, type: 2}
-  - {fileID: 11400000, guid: 7233fd5d6d7717241821d2e3e3b343f8, type: 2}
-  - {fileID: 11400000, guid: 82e0b30937045094b947f427b69e9773, type: 2}
-  - {fileID: 11400000, guid: f77b6630abbd1de4fb211564b4499166, type: 2}
-  - {fileID: 11400000, guid: 719557ac75422004ba711fd7e0b26af6, type: 2}
-  - {fileID: 11400000, guid: 8297475e30bffd64b95496b7adfb8ad5, type: 2}
-  - {fileID: 11400000, guid: 57538448c871eef42ad608420cfcd14c, type: 2}
-  - {fileID: 11400000, guid: 00b02d5dee5e0af4aaae0e121ad1b2b9, type: 2}
-  - {fileID: 11400000, guid: 7ac65f96f676764479512aa982cea9d6, type: 2}
-  - {fileID: 11400000, guid: 8ada56aac08378542909dcaa64c67f93, type: 2}
-  - {fileID: 11400000, guid: 0a82021a80ba0a64fb77c8cd64080d5e, type: 2}
-  - {fileID: 11400000, guid: f206700b3d265ea4fa8f1927892ee7a7, type: 2}
-  - {fileID: 11400000, guid: a2b71e874eaad414a8113ef89fb579ee, type: 2}
-  - {fileID: 11400000, guid: 275d407b2ec2d7c4f9e6aee8983c8a31, type: 2}
-  - {fileID: 11400000, guid: 4a44403fd1a001743a10899c094fe7a6, type: 2}
-  - {fileID: 11400000, guid: 59be8f0aae19a9f4a9b2c5469bde88fd, type: 2}
-  - {fileID: 11400000, guid: e36854256e565204488431ef72494471, type: 2}
-  - {fileID: 11400000, guid: 8e8fcecdf53081a4e83cf14a9e9366ee, type: 2}
-  - {fileID: 11400000, guid: 72d2e02fee13a67438972fa294c5d586, type: 2}
-  - {fileID: 11400000, guid: 97fe7f7b415532240820a2b9f48b3fff, type: 2}
-  - {fileID: 11400000, guid: 48fcbd9360f950642a8ae7ca82ff6c0d, type: 2}
-  - {fileID: 11400000, guid: 99360b90d6fb5434599c0abb04d75236, type: 2}
-  - {fileID: 11400000, guid: d38d0507a62292f4db77dea2d3c1fad6, type: 2}
-  - {fileID: 11400000, guid: 1104546d877f2c243b813380797ef77d, type: 2}
-  - {fileID: 11400000, guid: 541124d1e381e4d4598e3a7f5768d565, type: 2}
-  - {fileID: 11400000, guid: c249c44aef69f404697ca5c30f06abbd, type: 2}
-  - {fileID: 11400000, guid: 7198b37089e408e44a41fc86714234c6, type: 2}
-  - {fileID: 11400000, guid: 16a7b565f4876e84588d24ba8319b2ad, type: 2}
-  - {fileID: 11400000, guid: dc7eda80d6f861d49adc1e45f9768a61, type: 2}
+  materialDatabase: {fileID: 11400000, guid: 2b1cc7425a77ea343972ce31b15bfc14, type: 2}
   slotViews:
   - Button: {fileID: 9009364633733049253}
     Icon: {fileID: 8634643306849069333}
@@ -878,6 +837,7 @@ MonoBehaviour:
   backButton: {fileID: 198007314785939131}
   nextButton: {fileID: 1478643964966967823}
   pageText: {fileID: 7167622120764710819}
+  tooltip: {fileID: 0}
 --- !u!114 &3884248725812276937
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -891,30 +851,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Pomunculus.Items.PotionCrafting
   inventory: {fileID: 0}
-  potions:
-  - {fileID: 11400000, guid: fbf01ee17ade5084fbdb9636bd06c6a4, type: 2}
-  - {fileID: 11400000, guid: 03af78c23f83918489be0b9c20aac547, type: 2}
-  - {fileID: 11400000, guid: 3a87766a7a0fb064b9445fe3906cdba2, type: 2}
-  - {fileID: 11400000, guid: 102117122407343459936197392940a0, type: 2}
-  - {fileID: 11400000, guid: 2e8fd05c1697d6049907491dae0664fc, type: 2}
-  - {fileID: 11400000, guid: 6c83747dd27e2a14094192e8a46db8aa, type: 2}
-  - {fileID: 11400000, guid: a13f23997c9ec864eb5f9294a90b0af6, type: 2}
-  - {fileID: 11400000, guid: 6373dcaab2812954aae21ce3e26cfbf2, type: 2}
-  - {fileID: 11400000, guid: 9a9c478845365a8418ccffdfe6d0f8dd, type: 2}
-  - {fileID: 11400000, guid: bfc25d3d68aaae8458921949cb0b8b62, type: 2}
-  - {fileID: 11400000, guid: e6134f22a14eaef43a114dc795ad7924, type: 2}
-  - {fileID: 11400000, guid: 77860e04648a460459bbe18b7c566208, type: 2}
-  - {fileID: 11400000, guid: b2708ddbd3b7fd944911299dc68fc97d, type: 2}
-  - {fileID: 11400000, guid: 8494c8d8b0ecefd4c95b2728adc9747a, type: 2}
-  - {fileID: 11400000, guid: bcb6fabd24deba64f8a34552077e4466, type: 2}
-  - {fileID: 11400000, guid: 996ee61e8ffa5a144ac15a5de7483428, type: 2}
-  - {fileID: 11400000, guid: afcdad758f8b63d4db9fd3c6605f6701, type: 2}
-  - {fileID: 11400000, guid: b6dde68a3db969640b39bfa955755ce6, type: 2}
-  - {fileID: 11400000, guid: b129f1a1110c3194e91f308e89ca5df4, type: 2}
-  - {fileID: 11400000, guid: 8fca0559310d89948a74cef66976c3d8, type: 2}
-  - {fileID: 11400000, guid: 726b4a401d5ec5d408b4efda28d21a1c, type: 2}
-  - {fileID: 11400000, guid: dc850afb268f71b4b92ff3e15d275ace, type: 2}
-  - {fileID: 11400000, guid: ba477f8fed8c5434eb411993026d95a0, type: 2}
+  potionDatabase: {fileID: 11400000, guid: 1da0e82e68ba5074d9c22a90186fdaf4, type: 2}
   failurePotion: {fileID: 11400000, guid: bcb6fabd24deba64f8a34552077e4466, type: 2}
   recipeBook: {fileID: 160632840399735969}
   craftButton: {fileID: 1114873207357517666}
@@ -934,6 +871,7 @@ MonoBehaviour:
   - {fileID: 7883383474520403317}
   resultPreviewImage: {fileID: 5266753083994973437}
   unknownIcon: {fileID: 21300000, guid: e494113864f7c8249a808dbab3380390, type: 3}
+  tooltip: {fileID: 0}
 --- !u!1 &298656181856218645
 GameObject:
   m_ObjectHideFlags: 0
@@ -6308,30 +6246,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d06b03e52d09cb547b67002c2f8918a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Pomunculus.Items.RecipeBookUI
-  potions:
-  - {fileID: 11400000, guid: fbf01ee17ade5084fbdb9636bd06c6a4, type: 2}
-  - {fileID: 11400000, guid: 03af78c23f83918489be0b9c20aac547, type: 2}
-  - {fileID: 11400000, guid: 3a87766a7a0fb064b9445fe3906cdba2, type: 2}
-  - {fileID: 11400000, guid: 102117122407343459936197392940a0, type: 2}
-  - {fileID: 11400000, guid: 2e8fd05c1697d6049907491dae0664fc, type: 2}
-  - {fileID: 11400000, guid: 6c83747dd27e2a14094192e8a46db8aa, type: 2}
-  - {fileID: 11400000, guid: a13f23997c9ec864eb5f9294a90b0af6, type: 2}
-  - {fileID: 11400000, guid: 6373dcaab2812954aae21ce3e26cfbf2, type: 2}
-  - {fileID: 11400000, guid: 9a9c478845365a8418ccffdfe6d0f8dd, type: 2}
-  - {fileID: 11400000, guid: bfc25d3d68aaae8458921949cb0b8b62, type: 2}
-  - {fileID: 11400000, guid: e6134f22a14eaef43a114dc795ad7924, type: 2}
-  - {fileID: 11400000, guid: 77860e04648a460459bbe18b7c566208, type: 2}
-  - {fileID: 11400000, guid: b2708ddbd3b7fd944911299dc68fc97d, type: 2}
-  - {fileID: 11400000, guid: 8494c8d8b0ecefd4c95b2728adc9747a, type: 2}
-  - {fileID: 11400000, guid: bcb6fabd24deba64f8a34552077e4466, type: 2}
-  - {fileID: 11400000, guid: 996ee61e8ffa5a144ac15a5de7483428, type: 2}
-  - {fileID: 11400000, guid: afcdad758f8b63d4db9fd3c6605f6701, type: 2}
-  - {fileID: 11400000, guid: b6dde68a3db969640b39bfa955755ce6, type: 2}
-  - {fileID: 11400000, guid: b129f1a1110c3194e91f308e89ca5df4, type: 2}
-  - {fileID: 11400000, guid: 8fca0559310d89948a74cef66976c3d8, type: 2}
-  - {fileID: 11400000, guid: 726b4a401d5ec5d408b4efda28d21a1c, type: 2}
-  - {fileID: 11400000, guid: dc850afb268f71b4b92ff3e15d275ace, type: 2}
-  - {fileID: 11400000, guid: ba477f8fed8c5434eb411993026d95a0, type: 2}
+  potionDatabase: {fileID: 11400000, guid: 1da0e82e68ba5074d9c22a90186fdaf4, type: 2}
   rows:
   - PhysicsText: {fileID: 1407283390385288076}
     FireText: {fileID: 7342320780576714437}
@@ -11326,72 +11241,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Pomunculus.Items.InventoryUI
   inventory: {fileID: 0}
   tooltip: {fileID: 6485532426938730610}
-  materials:
-  - {fileID: 11400000, guid: 164cbb060862b354eb69b5f6aa7e3cba, type: 2}
-  - {fileID: 11400000, guid: 3613042f62aa5304c928480fdff5632e, type: 2}
-  - {fileID: 11400000, guid: d7e292297c837ad4db37027cce94f31d, type: 2}
-  - {fileID: 11400000, guid: e87bdda88577af946a2d3800acbca88c, type: 2}
-  - {fileID: 11400000, guid: bed0be9093bbb7946a5340dee11a3b68, type: 2}
-  - {fileID: 11400000, guid: e6ef66d9912fac546910f17ba83f420a, type: 2}
-  - {fileID: 11400000, guid: 8a337227161e8964c9d93cb0d976ba27, type: 2}
-  - {fileID: 11400000, guid: 51b6dd547f8f7d74e943f809cee40385, type: 2}
-  - {fileID: 11400000, guid: 9b0ec6d34a3457046a593955b6eb9bed, type: 2}
-  - {fileID: 11400000, guid: 6a323fa78a43f7e4bac56dd1274411d8, type: 2}
-  - {fileID: 11400000, guid: 2f35067d8b028c54d8ad2b6a5c8fda9a, type: 2}
-  - {fileID: 11400000, guid: 9d1eae9af16b6b241ac4b9f735452ef2, type: 2}
-  - {fileID: 11400000, guid: 2ce441b9e388e2c4cbcbd84a622acb09, type: 2}
-  - {fileID: 11400000, guid: 7233fd5d6d7717241821d2e3e3b343f8, type: 2}
-  - {fileID: 11400000, guid: 82e0b30937045094b947f427b69e9773, type: 2}
-  - {fileID: 11400000, guid: f77b6630abbd1de4fb211564b4499166, type: 2}
-  - {fileID: 11400000, guid: 719557ac75422004ba711fd7e0b26af6, type: 2}
-  - {fileID: 11400000, guid: 8297475e30bffd64b95496b7adfb8ad5, type: 2}
-  - {fileID: 11400000, guid: 57538448c871eef42ad608420cfcd14c, type: 2}
-  - {fileID: 11400000, guid: 00b02d5dee5e0af4aaae0e121ad1b2b9, type: 2}
-  - {fileID: 11400000, guid: 7ac65f96f676764479512aa982cea9d6, type: 2}
-  - {fileID: 11400000, guid: 8ada56aac08378542909dcaa64c67f93, type: 2}
-  - {fileID: 11400000, guid: 0a82021a80ba0a64fb77c8cd64080d5e, type: 2}
-  - {fileID: 11400000, guid: f206700b3d265ea4fa8f1927892ee7a7, type: 2}
-  - {fileID: 11400000, guid: a2b71e874eaad414a8113ef89fb579ee, type: 2}
-  - {fileID: 11400000, guid: 275d407b2ec2d7c4f9e6aee8983c8a31, type: 2}
-  - {fileID: 11400000, guid: 4a44403fd1a001743a10899c094fe7a6, type: 2}
-  - {fileID: 11400000, guid: 59be8f0aae19a9f4a9b2c5469bde88fd, type: 2}
-  - {fileID: 11400000, guid: e36854256e565204488431ef72494471, type: 2}
-  - {fileID: 11400000, guid: 8e8fcecdf53081a4e83cf14a9e9366ee, type: 2}
-  - {fileID: 11400000, guid: 72d2e02fee13a67438972fa294c5d586, type: 2}
-  - {fileID: 11400000, guid: 97fe7f7b415532240820a2b9f48b3fff, type: 2}
-  - {fileID: 11400000, guid: 48fcbd9360f950642a8ae7ca82ff6c0d, type: 2}
-  - {fileID: 11400000, guid: 99360b90d6fb5434599c0abb04d75236, type: 2}
-  - {fileID: 11400000, guid: d38d0507a62292f4db77dea2d3c1fad6, type: 2}
-  - {fileID: 11400000, guid: 1104546d877f2c243b813380797ef77d, type: 2}
-  - {fileID: 11400000, guid: 541124d1e381e4d4598e3a7f5768d565, type: 2}
-  - {fileID: 11400000, guid: c249c44aef69f404697ca5c30f06abbd, type: 2}
-  - {fileID: 11400000, guid: 7198b37089e408e44a41fc86714234c6, type: 2}
-  - {fileID: 11400000, guid: 16a7b565f4876e84588d24ba8319b2ad, type: 2}
-  - {fileID: 11400000, guid: dc7eda80d6f861d49adc1e45f9768a61, type: 2}
-  potions:
-  - {fileID: 11400000, guid: fbf01ee17ade5084fbdb9636bd06c6a4, type: 2}
-  - {fileID: 11400000, guid: 03af78c23f83918489be0b9c20aac547, type: 2}
-  - {fileID: 11400000, guid: 3a87766a7a0fb064b9445fe3906cdba2, type: 2}
-  - {fileID: 11400000, guid: 102117122407343459936197392940a0, type: 2}
-  - {fileID: 11400000, guid: 2e8fd05c1697d6049907491dae0664fc, type: 2}
-  - {fileID: 11400000, guid: 6c83747dd27e2a14094192e8a46db8aa, type: 2}
-  - {fileID: 11400000, guid: a13f23997c9ec864eb5f9294a90b0af6, type: 2}
-  - {fileID: 11400000, guid: 6373dcaab2812954aae21ce3e26cfbf2, type: 2}
-  - {fileID: 11400000, guid: 9a9c478845365a8418ccffdfe6d0f8dd, type: 2}
-  - {fileID: 11400000, guid: bfc25d3d68aaae8458921949cb0b8b62, type: 2}
-  - {fileID: 11400000, guid: e6134f22a14eaef43a114dc795ad7924, type: 2}
-  - {fileID: 11400000, guid: 77860e04648a460459bbe18b7c566208, type: 2}
-  - {fileID: 11400000, guid: b2708ddbd3b7fd944911299dc68fc97d, type: 2}
-  - {fileID: 11400000, guid: 8494c8d8b0ecefd4c95b2728adc9747a, type: 2}
-  - {fileID: 11400000, guid: bcb6fabd24deba64f8a34552077e4466, type: 2}
-  - {fileID: 11400000, guid: 996ee61e8ffa5a144ac15a5de7483428, type: 2}
-  - {fileID: 11400000, guid: afcdad758f8b63d4db9fd3c6605f6701, type: 2}
-  - {fileID: 11400000, guid: b6dde68a3db969640b39bfa955755ce6, type: 2}
-  - {fileID: 11400000, guid: b129f1a1110c3194e91f308e89ca5df4, type: 2}
-  - {fileID: 11400000, guid: 8fca0559310d89948a74cef66976c3d8, type: 2}
-  - {fileID: 11400000, guid: 726b4a401d5ec5d408b4efda28d21a1c, type: 2}
-  - {fileID: 11400000, guid: dc850afb268f71b4b92ff3e15d275ace, type: 2}
-  - {fileID: 11400000, guid: ba477f8fed8c5434eb411993026d95a0, type: 2}
+  materialDatabase: {fileID: 11400000, guid: 2b1cc7425a77ea343972ce31b15bfc14, type: 2}
+  potionDatabase: {fileID: 11400000, guid: 1da0e82e68ba5074d9c22a90186fdaf4, type: 2}
   content: {fileID: 3039008511452865787}
   slotPrefab: {fileID: 152448964971317975, guid: 03aab6d6872d3c3498be906cc940a6fc, type: 3}
   scrollRect: {fileID: 5343753720368069024}

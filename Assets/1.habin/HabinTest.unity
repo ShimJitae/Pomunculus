@@ -567,6 +567,17 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 143617804}
   m_CullTransparentMesh: 1
+--- !u!114 &157486599 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6485532426938730610, guid: 221cbd062027e08468fdef6714abb672, type: 3}
+  m_PrefabInstance: {fileID: 2956341442691384814}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 825d71a5efea07f4dbe28f784819e0f0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Pomunculus.Items.ItemTooltipUI
 --- !u!1001 &162081578
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1305,10 +1316,10 @@ Transform:
   - {fileID: 6868477142069088122}
   - {fileID: 3836711607899767303}
   - {fileID: 620393749}
-  - {fileID: 699090153}
   - {fileID: 1437526444598682895}
   - {fileID: 6782811790876417646}
   - {fileID: 8999180357722955869}
+  - {fileID: 7219594372930890859}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &377692598 stripped
@@ -1316,6 +1327,56 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3071901638163193059, guid: df67aa14d62fa804c97104a8f35a5ff3, type: 3}
   m_PrefabInstance: {fileID: 299254948390613951}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &448891918 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7130129327938159314, guid: 221cbd062027e08468fdef6714abb672, type: 3}
+  m_PrefabInstance: {fileID: 2956341442691384814}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &448891923
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 448891918}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.EventSystems.EventTrigger
+  m_Delegates:
+  - eventID: 0
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 857587124}
+          m_TargetAssemblyTypeName: Pomunculus.Items.CraftingMaterialListUI, Assembly-CSharp
+          m_MethodName: ShowMaterialTooltip
+          m_Mode: 3
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 2
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 1
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 857587124}
+          m_TargetAssemblyTypeName: Pomunculus.Items.CraftingMaterialListUI, Assembly-CSharp
+          m_MethodName: HideMaterialTooltip
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1001 &489271569
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1324,6 +1385,26 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 321812663}
     m_Modifications:
+    - target: {fileID: 896158493881536755, guid: 15a5462781390624bb3226ae676c5458, type: 3}
+      propertyPath: m_Size.y
+      value: 0.012064064
+      objectReference: {fileID: 0}
+    - target: {fileID: 896158493881536755, guid: 15a5462781390624bb3226ae676c5458, type: 3}
+      propertyPath: m_Size.z
+      value: 0.019791603
+      objectReference: {fileID: 0}
+    - target: {fileID: 896158493881536755, guid: 15a5462781390624bb3226ae676c5458, type: 3}
+      propertyPath: m_Center.y
+      value: 0.004847798
+      objectReference: {fileID: 0}
+    - target: {fileID: 896158493881536755, guid: 15a5462781390624bb3226ae676c5458, type: 3}
+      propertyPath: m_Center.z
+      value: -0.0000000029062084
+      objectReference: {fileID: 0}
+    - target: {fileID: 1680080802635805650, guid: 15a5462781390624bb3226ae676c5458, type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 4300000, guid: 68ef0813bbfc8d34694066fb119765f4, type: 2}
     - target: {fileID: 2377622443670928503, guid: 15a5462781390624bb3226ae676c5458, type: 3}
       propertyPath: m_LocalPosition.x
       value: 9.848345
@@ -1338,19 +1419,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2377622443670928503, guid: 15a5462781390624bb3226ae676c5458, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.7071067
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2377622443670928503, guid: 15a5462781390624bb3226ae676c5458, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.7071068
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2377622443670928503, guid: 15a5462781390624bb3226ae676c5458, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2377622443670928503, guid: 15a5462781390624bb3226ae676c5458, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2377622443670928503, guid: 15a5462781390624bb3226ae676c5458, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -1453,6 +1534,56 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 496927366}
   m_CullTransparentMesh: 1
+--- !u!1 &497134617 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5060383244512310674, guid: 221cbd062027e08468fdef6714abb672, type: 3}
+  m_PrefabInstance: {fileID: 2956341442691384814}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &497134622
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 497134617}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.EventSystems.EventTrigger
+  m_Delegates:
+  - eventID: 0
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 857587124}
+          m_TargetAssemblyTypeName: Pomunculus.Items.CraftingMaterialListUI, Assembly-CSharp
+          m_MethodName: ShowMaterialTooltip
+          m_Mode: 3
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 3
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 1
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 857587124}
+          m_TargetAssemblyTypeName: Pomunculus.Items.CraftingMaterialListUI, Assembly-CSharp
+          m_MethodName: HideMaterialTooltip
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!4 &502524469 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2794320640746888614, guid: 57125e26eaf1b61469954be1b0ff514f, type: 3}
@@ -2147,11 +2278,56 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3961298626215757451, guid: 4b9abbf54583c7a4db7ad343ee4fdcf1, type: 3}
   m_PrefabInstance: {fileID: 5175929581599882758}
   m_PrefabAsset: {fileID: 0}
---- !u!4 &699090153 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 8024293268696654463, guid: 58228a36f486c6a48a4b8339f31d208d, type: 3}
-  m_PrefabInstance: {fileID: 8087941902724148293}
+--- !u!1 &699812132 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3149931304761332124, guid: 221cbd062027e08468fdef6714abb672, type: 3}
+  m_PrefabInstance: {fileID: 2956341442691384814}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &699812137
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 699812132}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.EventSystems.EventTrigger
+  m_Delegates:
+  - eventID: 0
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 857587123}
+          m_TargetAssemblyTypeName: Pomunculus.Items.PotionCrafting, Assembly-CSharp
+          m_MethodName: ShowInsertedMaterialTooltip
+          m_Mode: 3
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 2
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 1
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 857587123}
+          m_TargetAssemblyTypeName: Pomunculus.Items.PotionCrafting, Assembly-CSharp
+          m_MethodName: HideInsertedMaterialTooltip
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &732786523
 GameObject:
   m_ObjectHideFlags: 0
@@ -2395,6 +2571,56 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 798654598}
   m_CullTransparentMesh: 1
+--- !u!1 &806886086 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3454833320378167073, guid: 221cbd062027e08468fdef6714abb672, type: 3}
+  m_PrefabInstance: {fileID: 2956341442691384814}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &806886091
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 806886086}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.EventSystems.EventTrigger
+  m_Delegates:
+  - eventID: 0
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 857587124}
+          m_TargetAssemblyTypeName: Pomunculus.Items.CraftingMaterialListUI, Assembly-CSharp
+          m_MethodName: ShowMaterialTooltip
+          m_Mode: 3
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 1
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 857587124}
+          m_TargetAssemblyTypeName: Pomunculus.Items.CraftingMaterialListUI, Assembly-CSharp
+          m_MethodName: HideMaterialTooltip
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &811387851
 GameObject:
   m_ObjectHideFlags: 0
@@ -2849,6 +3075,28 @@ Transform:
   - {fileID: 5176193579815173080}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &857587123 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3884248725812276937, guid: 221cbd062027e08468fdef6714abb672, type: 3}
+  m_PrefabInstance: {fileID: 2956341442691384814}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 720ee251eb82bbe4ba6432deb5a42bf5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Pomunculus.Items.PotionCrafting
+--- !u!114 &857587124 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7884052719781456571, guid: 221cbd062027e08468fdef6714abb672, type: 3}
+  m_PrefabInstance: {fileID: 2956341442691384814}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7dc28bb72f84cb74ea8694e2d78b5477, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Pomunculus.Items.CraftingMaterialListUI
 --- !u!1 &864488027
 GameObject:
   m_ObjectHideFlags: 0
@@ -3211,6 +3459,56 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 942253925}
   m_CullTransparentMesh: 1
+--- !u!1 &947220843 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6977509051160909348, guid: 221cbd062027e08468fdef6714abb672, type: 3}
+  m_PrefabInstance: {fileID: 2956341442691384814}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &947220848
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 947220843}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.EventSystems.EventTrigger
+  m_Delegates:
+  - eventID: 0
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 857587124}
+          m_TargetAssemblyTypeName: Pomunculus.Items.CraftingMaterialListUI, Assembly-CSharp
+          m_MethodName: ShowMaterialTooltip
+          m_Mode: 3
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 5
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 1
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 857587124}
+          m_TargetAssemblyTypeName: Pomunculus.Items.CraftingMaterialListUI, Assembly-CSharp
+          m_MethodName: HideMaterialTooltip
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &968704664
 GameObject:
   m_ObjectHideFlags: 0
@@ -3500,6 +3798,56 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1023686637}
   m_CullTransparentMesh: 1
+--- !u!1 &1076102939 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1980045789859029381, guid: 221cbd062027e08468fdef6714abb672, type: 3}
+  m_PrefabInstance: {fileID: 2956341442691384814}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1076102944
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1076102939}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.EventSystems.EventTrigger
+  m_Delegates:
+  - eventID: 0
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 857587123}
+          m_TargetAssemblyTypeName: Pomunculus.Items.PotionCrafting, Assembly-CSharp
+          m_MethodName: ShowInsertedMaterialTooltip
+          m_Mode: 3
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 1
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 857587123}
+          m_TargetAssemblyTypeName: Pomunculus.Items.PotionCrafting, Assembly-CSharp
+          m_MethodName: HideInsertedMaterialTooltip
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &1096364192
 GameObject:
   m_ObjectHideFlags: 0
@@ -3634,23 +3982,23 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6457083117859499690, guid: 1fadf21bd359b7940a421cb29089a7d3, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.5
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6457083117859499690, guid: 1fadf21bd359b7940a421cb29089a7d3, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6457083117859499690, guid: 1fadf21bd359b7940a421cb29089a7d3, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6457083117859499690, guid: 1fadf21bd359b7940a421cb29089a7d3, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6457083117859499690, guid: 1fadf21bd359b7940a421cb29089a7d3, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: -90
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6457083117859499690, guid: 1fadf21bd359b7940a421cb29089a7d3, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
@@ -3658,7 +4006,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6457083117859499690, guid: 1fadf21bd359b7940a421cb29089a7d3, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 90
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -3670,6 +4018,56 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 6457083117859499690, guid: 1fadf21bd359b7940a421cb29089a7d3, type: 3}
   m_PrefabInstance: {fileID: 1146563284}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1156900049 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8753124525800069286, guid: 221cbd062027e08468fdef6714abb672, type: 3}
+  m_PrefabInstance: {fileID: 2956341442691384814}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1156900054
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1156900049}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.EventSystems.EventTrigger
+  m_Delegates:
+  - eventID: 0
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 857587124}
+          m_TargetAssemblyTypeName: Pomunculus.Items.CraftingMaterialListUI, Assembly-CSharp
+          m_MethodName: ShowMaterialTooltip
+          m_Mode: 3
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 4
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 1
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 857587124}
+          m_TargetAssemblyTypeName: Pomunculus.Items.CraftingMaterialListUI, Assembly-CSharp
+          m_MethodName: HideMaterialTooltip
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &1209513006
 GameObject:
   m_ObjectHideFlags: 0
@@ -4303,23 +4701,23 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5250729250291146328, guid: 1ef9d1fcfc788a4409276246d4a027e2, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.5
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5250729250291146328, guid: 1ef9d1fcfc788a4409276246d4a027e2, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5250729250291146328, guid: 1ef9d1fcfc788a4409276246d4a027e2, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5250729250291146328, guid: 1ef9d1fcfc788a4409276246d4a027e2, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5250729250291146328, guid: 1ef9d1fcfc788a4409276246d4a027e2, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: -90
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5250729250291146328, guid: 1ef9d1fcfc788a4409276246d4a027e2, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
@@ -4327,7 +4725,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5250729250291146328, guid: 1ef9d1fcfc788a4409276246d4a027e2, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 90
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -4897,6 +5295,56 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 1060225501525400305, guid: efbda5d317efb9e4e9000f527feea431, type: 3}
   m_PrefabInstance: {fileID: 1439300218}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1461592275 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1388720590869748950, guid: 221cbd062027e08468fdef6714abb672, type: 3}
+  m_PrefabInstance: {fileID: 2956341442691384814}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1461592279
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1461592275}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.EventSystems.EventTrigger
+  m_Delegates:
+  - eventID: 0
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 857587123}
+          m_TargetAssemblyTypeName: Pomunculus.Items.PotionCrafting, Assembly-CSharp
+          m_MethodName: ShowResultTooltip
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 1
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 857587123}
+          m_TargetAssemblyTypeName: Pomunculus.Items.PotionCrafting, Assembly-CSharp
+          m_MethodName: HideResultTooltip
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &1470624571
 GameObject:
   m_ObjectHideFlags: 0
@@ -5751,6 +6199,56 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Pomunculus.Items.Inventory
   slots: []
+--- !u!1 &1713023923 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6375736138228138437, guid: 221cbd062027e08468fdef6714abb672, type: 3}
+  m_PrefabInstance: {fileID: 2956341442691384814}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1713023928
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1713023923}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.EventSystems.EventTrigger
+  m_Delegates:
+  - eventID: 0
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 857587123}
+          m_TargetAssemblyTypeName: Pomunculus.Items.PotionCrafting, Assembly-CSharp
+          m_MethodName: ShowInsertedMaterialTooltip
+          m_Mode: 3
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 1
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 1
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 857587123}
+          m_TargetAssemblyTypeName: Pomunculus.Items.PotionCrafting, Assembly-CSharp
+          m_MethodName: HideInsertedMaterialTooltip
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1001 &1721202814
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5940,6 +6438,56 @@ MonoBehaviour:
   m_ShadowLayerMask: 1
   m_RenderingLayers: 1
   m_ShadowRenderingLayers: 1
+--- !u!1 &1749154694 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 62205016181342014, guid: 221cbd062027e08468fdef6714abb672, type: 3}
+  m_PrefabInstance: {fileID: 2956341442691384814}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1749154699
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1749154694}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.EventSystems.EventTrigger
+  m_Delegates:
+  - eventID: 0
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 857587124}
+          m_TargetAssemblyTypeName: Pomunculus.Items.CraftingMaterialListUI, Assembly-CSharp
+          m_MethodName: ShowMaterialTooltip
+          m_Mode: 3
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 1
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 1
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 857587124}
+          m_TargetAssemblyTypeName: Pomunculus.Items.CraftingMaterialListUI, Assembly-CSharp
+          m_MethodName: HideMaterialTooltip
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1001 &1759028548
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6514,6 +7062,26 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 227464866}
     m_Modifications:
+    - target: {fileID: 130396615443979536, guid: 1fadf21bd359b7940a421cb29089a7d3, type: 3}
+      propertyPath: m_Size.x
+      value: 0.9163819
+      objectReference: {fileID: 0}
+    - target: {fileID: 130396615443979536, guid: 1fadf21bd359b7940a421cb29089a7d3, type: 3}
+      propertyPath: m_Size.y
+      value: 0.5764771
+      objectReference: {fileID: 0}
+    - target: {fileID: 130396615443979536, guid: 1fadf21bd359b7940a421cb29089a7d3, type: 3}
+      propertyPath: m_Size.z
+      value: 0.97988904
+      objectReference: {fileID: 0}
+    - target: {fileID: 130396615443979536, guid: 1fadf21bd359b7940a421cb29089a7d3, type: 3}
+      propertyPath: m_Center.x
+      value: -0.00000003436071
+      objectReference: {fileID: 0}
+    - target: {fileID: 130396615443979536, guid: 1fadf21bd359b7940a421cb29089a7d3, type: 3}
+      propertyPath: m_Center.y
+      value: 0.2882385
+      objectReference: {fileID: 0}
     - target: {fileID: 4219586952472548522, guid: 1fadf21bd359b7940a421cb29089a7d3, type: 3}
       propertyPath: so
       value: 
@@ -6560,23 +7128,23 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6457083117859499690, guid: 1fadf21bd359b7940a421cb29089a7d3, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.5
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6457083117859499690, guid: 1fadf21bd359b7940a421cb29089a7d3, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6457083117859499690, guid: 1fadf21bd359b7940a421cb29089a7d3, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6457083117859499690, guid: 1fadf21bd359b7940a421cb29089a7d3, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6457083117859499690, guid: 1fadf21bd359b7940a421cb29089a7d3, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: -90
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6457083117859499690, guid: 1fadf21bd359b7940a421cb29089a7d3, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
@@ -6584,8 +7152,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6457083117859499690, guid: 1fadf21bd359b7940a421cb29089a7d3, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 90
+      value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7940956062245511439, guid: 1fadf21bd359b7940a421cb29089a7d3, type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 4300000, guid: 755a1b70d17857743b3874c54daa7460, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -7375,23 +7947,23 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: b06b40ff055243d4e9d99d763658c9fb, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.7071067
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: b06b40ff055243d4e9d99d763658c9fb, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.7071068
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: b06b40ff055243d4e9d99d763658c9fb, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: b06b40ff055243d4e9d99d763658c9fb, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: b06b40ff055243d4e9d99d763658c9fb, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
+      value: -90
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: b06b40ff055243d4e9d99d763658c9fb, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
@@ -7409,6 +7981,10 @@ PrefabInstance:
       propertyPath: 'm_Materials.Array.data[1]'
       value: 
       objectReference: {fileID: 2100000, guid: 984955a79a43d8e4d9aaf09058480081, type: 2}
+    - target: {fileID: -5754084199372789682, guid: b06b40ff055243d4e9d99d763658c9fb, type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 4300000, guid: 548a887639b57bb4fa83ebbb9a006a07, type: 2}
     - target: {fileID: 919132149155446097, guid: b06b40ff055243d4e9d99d763658c9fb, type: 3}
       propertyPath: m_Name
       value: "\uC6A9\uC554 \uD0C0\uB974\uB369\uC5B4\uB9AC"
@@ -8472,6 +9048,30 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 344637682}
     m_Modifications:
+    - target: {fileID: 2037732773559087383, guid: 925af1307375c39409511d381f3dd9e0, type: 3}
+      propertyPath: m_Size.x
+      value: 1.2295616
+      objectReference: {fileID: 0}
+    - target: {fileID: 2037732773559087383, guid: 925af1307375c39409511d381f3dd9e0, type: 3}
+      propertyPath: m_Size.y
+      value: 0.78396636
+      objectReference: {fileID: 0}
+    - target: {fileID: 2037732773559087383, guid: 925af1307375c39409511d381f3dd9e0, type: 3}
+      propertyPath: m_Size.z
+      value: 1.2462871
+      objectReference: {fileID: 0}
+    - target: {fileID: 2037732773559087383, guid: 925af1307375c39409511d381f3dd9e0, type: 3}
+      propertyPath: m_Center.y
+      value: 0.39198315
+      objectReference: {fileID: 0}
+    - target: {fileID: 2037732773559087383, guid: 925af1307375c39409511d381f3dd9e0, type: 3}
+      propertyPath: m_Center.z
+      value: -0.00000003504602
+      objectReference: {fileID: 0}
+    - target: {fileID: 4722200346451259684, guid: 925af1307375c39409511d381f3dd9e0, type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 4300000, guid: 52369d33543345d4f893f8adad36e483, type: 2}
     - target: {fileID: 8513909579476319873, guid: 925af1307375c39409511d381f3dd9e0, type: 3}
       propertyPath: m_LocalPosition.x
       value: 6.13
@@ -8486,23 +9086,23 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8513909579476319873, guid: 925af1307375c39409511d381f3dd9e0, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.7071068
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8513909579476319873, guid: 925af1307375c39409511d381f3dd9e0, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.7071068
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8513909579476319873, guid: 925af1307375c39409511d381f3dd9e0, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8513909579476319873, guid: 925af1307375c39409511d381f3dd9e0, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8513909579476319873, guid: 925af1307375c39409511d381f3dd9e0, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
+      value: -90
       objectReference: {fileID: 0}
     - target: {fileID: 8513909579476319873, guid: 925af1307375c39409511d381f3dd9e0, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
@@ -8510,7 +9110,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8513909579476319873, guid: 925af1307375c39409511d381f3dd9e0, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
+      value: 110
       objectReference: {fileID: 0}
     - target: {fileID: 9037786620199920699, guid: 925af1307375c39409511d381f3dd9e0, type: 3}
       propertyPath: m_Name
@@ -9334,6 +9934,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 62205016181342014, guid: 221cbd062027e08468fdef6714abb672, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 171117481622111841, guid: 221cbd062027e08468fdef6714abb672, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -9430,25 +10034,87 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3454833320378167073, guid: 221cbd062027e08468fdef6714abb672, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3884248725812276937, guid: 221cbd062027e08468fdef6714abb672, type: 3}
+      propertyPath: tooltip
+      value: 
+      objectReference: {fileID: 157486599}
     - target: {fileID: 3884248725812276937, guid: 221cbd062027e08468fdef6714abb672, type: 3}
       propertyPath: inventory
       value: 
       objectReference: {fileID: 1707856449}
+    - target: {fileID: 3884248725812276937, guid: 221cbd062027e08468fdef6714abb672, type: 3}
+      propertyPath: potionDatabase
+      value: 
+      objectReference: {fileID: 11400000, guid: 1da0e82e68ba5074d9c22a90186fdaf4, type: 2}
+    - target: {fileID: 5060383244512310674, guid: 221cbd062027e08468fdef6714abb672, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5710170608179177837, guid: 221cbd062027e08468fdef6714abb672, type: 3}
       propertyPath: inventory
       value: 
       objectReference: {fileID: 1707856449}
+    - target: {fileID: 6977509051160909348, guid: 221cbd062027e08468fdef6714abb672, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7130129327938159314, guid: 221cbd062027e08468fdef6714abb672, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7884052719781456571, guid: 221cbd062027e08468fdef6714abb672, type: 3}
+      propertyPath: tooltip
+      value: 
+      objectReference: {fileID: 157486599}
     - target: {fileID: 7884052719781456571, guid: 221cbd062027e08468fdef6714abb672, type: 3}
       propertyPath: inventory
       value: 
       objectReference: {fileID: 1707856449}
+    - target: {fileID: 8753124525800069286, guid: 221cbd062027e08468fdef6714abb672, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 171117481622111841, guid: 221cbd062027e08468fdef6714abb672, type: 3}
       insertIndex: -1
       addedObject: {fileID: 737888380}
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 3454833320378167073, guid: 221cbd062027e08468fdef6714abb672, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 806886091}
+    - targetCorrespondingSourceObject: {fileID: 62205016181342014, guid: 221cbd062027e08468fdef6714abb672, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1749154699}
+    - targetCorrespondingSourceObject: {fileID: 7130129327938159314, guid: 221cbd062027e08468fdef6714abb672, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 448891923}
+    - targetCorrespondingSourceObject: {fileID: 5060383244512310674, guid: 221cbd062027e08468fdef6714abb672, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 497134622}
+    - targetCorrespondingSourceObject: {fileID: 8753124525800069286, guid: 221cbd062027e08468fdef6714abb672, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1156900054}
+    - targetCorrespondingSourceObject: {fileID: 6977509051160909348, guid: 221cbd062027e08468fdef6714abb672, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 947220848}
+    - targetCorrespondingSourceObject: {fileID: 1980045789859029381, guid: 221cbd062027e08468fdef6714abb672, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1076102944}
+    - targetCorrespondingSourceObject: {fileID: 6375736138228138437, guid: 221cbd062027e08468fdef6714abb672, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1713023928}
+    - targetCorrespondingSourceObject: {fileID: 3149931304761332124, guid: 221cbd062027e08468fdef6714abb672, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 699812137}
+    - targetCorrespondingSourceObject: {fileID: 1388720590869748950, guid: 221cbd062027e08468fdef6714abb672, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1461592279}
   m_SourcePrefab: {fileID: 100100000, guid: 221cbd062027e08468fdef6714abb672, type: 3}
 --- !u!1001 &2967627172666346398
 PrefabInstance:
@@ -9897,6 +10563,63 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: aaea830bb9ada0a4eb261aeea5684535, type: 3}
+--- !u!1001 &3459084071775855379
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 344637682}
+    m_Modifications:
+    - target: {fileID: 67896553459918250, guid: 58228a36f486c6a48a4b8339f31d208d, type: 3}
+      propertyPath: m_Name
+      value: "\uC232 \uB465\uC9C0"
+      objectReference: {fileID: 0}
+    - target: {fileID: 531007992511205111, guid: 58228a36f486c6a48a4b8339f31d208d, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 3.21
+      objectReference: {fileID: 0}
+    - target: {fileID: 531007992511205111, guid: 58228a36f486c6a48a4b8339f31d208d, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.076
+      objectReference: {fileID: 0}
+    - target: {fileID: 531007992511205111, guid: 58228a36f486c6a48a4b8339f31d208d, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0.18
+      objectReference: {fileID: 0}
+    - target: {fileID: 531007992511205111, guid: 58228a36f486c6a48a4b8339f31d208d, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 531007992511205111, guid: 58228a36f486c6a48a4b8339f31d208d, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 531007992511205111, guid: 58228a36f486c6a48a4b8339f31d208d, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 531007992511205111, guid: 58228a36f486c6a48a4b8339f31d208d, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 531007992511205111, guid: 58228a36f486c6a48a4b8339f31d208d, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: -90
+      objectReference: {fileID: 0}
+    - target: {fileID: 531007992511205111, guid: 58228a36f486c6a48a4b8339f31d208d, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 531007992511205111, guid: 58228a36f486c6a48a4b8339f31d208d, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 58228a36f486c6a48a4b8339f31d208d, type: 3}
 --- !u!1001 &3675172184882428108
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -10123,7 +10846,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5164033378329711167, guid: 8cfd451f0bcf23c478f5c5d7f282683a, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.00000029066723
+      value: 0.07
       objectReference: {fileID: 0}
     - target: {fileID: 5164033378329711167, guid: 8cfd451f0bcf23c478f5c5d7f282683a, type: 3}
       propertyPath: m_LocalPosition.z
@@ -11837,6 +12560,26 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 344637682}
     m_Modifications:
+    - target: {fileID: 130396615443979536, guid: 1fadf21bd359b7940a421cb29089a7d3, type: 3}
+      propertyPath: m_Size.x
+      value: 0.91638196
+      objectReference: {fileID: 0}
+    - target: {fileID: 130396615443979536, guid: 1fadf21bd359b7940a421cb29089a7d3, type: 3}
+      propertyPath: m_Size.y
+      value: 0.57647705
+      objectReference: {fileID: 0}
+    - target: {fileID: 130396615443979536, guid: 1fadf21bd359b7940a421cb29089a7d3, type: 3}
+      propertyPath: m_Size.z
+      value: 0.97988904
+      objectReference: {fileID: 0}
+    - target: {fileID: 130396615443979536, guid: 1fadf21bd359b7940a421cb29089a7d3, type: 3}
+      propertyPath: m_Center.y
+      value: 0.28823853
+      objectReference: {fileID: 0}
+    - target: {fileID: 130396615443979536, guid: 1fadf21bd359b7940a421cb29089a7d3, type: 3}
+      propertyPath: m_Center.z
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5969515048037495824, guid: 1fadf21bd359b7940a421cb29089a7d3, type: 3}
       propertyPath: m_Name
       value: "\uC232 \uAD11\uB9E5"
@@ -11863,19 +12606,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6457083117859499690, guid: 1fadf21bd359b7940a421cb29089a7d3, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.5
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6457083117859499690, guid: 1fadf21bd359b7940a421cb29089a7d3, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6457083117859499690, guid: 1fadf21bd359b7940a421cb29089a7d3, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6457083117859499690, guid: 1fadf21bd359b7940a421cb29089a7d3, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6457083117859499690, guid: 1fadf21bd359b7940a421cb29089a7d3, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -11889,6 +12632,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 90
       objectReference: {fileID: 0}
+    - target: {fileID: 7940956062245511439, guid: 1fadf21bd359b7940a421cb29089a7d3, type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 4300000, guid: 755a1b70d17857743b3874c54daa7460, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -12485,6 +13232,11 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 2974764374517872687, guid: 143ec2e63b7497749995f6edc5c275db, type: 3}
   m_PrefabInstance: {fileID: 7209043091100575447}
   m_PrefabAsset: {fileID: 0}
+--- !u!4 &7219594372930890859 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 531007992511205111, guid: 58228a36f486c6a48a4b8339f31d208d, type: 3}
+  m_PrefabInstance: {fileID: 3459084071775855379}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &7491713413829573984
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -12973,71 +13725,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2f93de36cb719ca408b6008d5779440c, type: 3}
---- !u!1001 &8087941902724148293
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 344637682}
-    m_Modifications:
-    - target: {fileID: 7212467086223259845, guid: 58228a36f486c6a48a4b8339f31d208d, type: 3}
-      propertyPath: m_Name
-      value: "\uC232 \uB465\uC9C0"
-      objectReference: {fileID: 0}
-    - target: {fileID: 7212467086223259845, guid: 58228a36f486c6a48a4b8339f31d208d, type: 3}
-      propertyPath: m_Layer
-      value: 7
-      objectReference: {fileID: 0}
-    - target: {fileID: 7212467086223259845, guid: 58228a36f486c6a48a4b8339f31d208d, type: 3}
-      propertyPath: m_TagString
-      value: Enemy
-      objectReference: {fileID: 0}
-    - target: {fileID: 8024293268696654463, guid: 58228a36f486c6a48a4b8339f31d208d, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 6.3086205
-      objectReference: {fileID: 0}
-    - target: {fileID: 8024293268696654463, guid: 58228a36f486c6a48a4b8339f31d208d, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8024293268696654463, guid: 58228a36f486c6a48a4b8339f31d208d, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -0.19205856
-      objectReference: {fileID: 0}
-    - target: {fileID: 8024293268696654463, guid: 58228a36f486c6a48a4b8339f31d208d, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 0.7071068
-      objectReference: {fileID: 0}
-    - target: {fileID: 8024293268696654463, guid: 58228a36f486c6a48a4b8339f31d208d, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: -0.7071068
-      objectReference: {fileID: 0}
-    - target: {fileID: 8024293268696654463, guid: 58228a36f486c6a48a4b8339f31d208d, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8024293268696654463, guid: 58228a36f486c6a48a4b8339f31d208d, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8024293268696654463, guid: 58228a36f486c6a48a4b8339f31d208d, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8024293268696654463, guid: 58228a36f486c6a48a4b8339f31d208d, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8024293268696654463, guid: 58228a36f486c6a48a4b8339f31d208d, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 58228a36f486c6a48a4b8339f31d208d, type: 3}
 --- !u!1001 &8120231178002663740
 PrefabInstance:
   m_ObjectHideFlags: 0
