@@ -21,12 +21,14 @@ public class Enemy : Entity, IWorldRPC, IHealable
     [SerializeField] private GameObject target;
     [SerializeField] private EnemyDetector detector;
     [SerializeField] private float knockbackDistance;
+    [SerializeField] private float detectRangeBonus = 10f; // 피격 시 추가되는 감지 범위
 
     private bool IsDamageBlock => IsInvincible || CheckDie();
     private NavMeshAgent agent;
     private Animator animator;
     private EnemyMovement movement;
     private EnemySkill enemySkill;
+    private bool hasDetectRangeExpanded;
 
     private float groggyHpRatio = 0.5f;
     private bool hasGroggyTriggered;
@@ -69,6 +71,7 @@ public class Enemy : Entity, IWorldRPC, IHealable
         ApplyAuthority(IsMaster);
 
         hasGroggyTriggered = false;
+        hasDetectRangeExpanded = false;
         behaviorGraphAgent.SetVariableValue("IsGroggy", false);
 
         enemySkill.PrewarmParticles();
@@ -123,6 +126,7 @@ public class Enemy : Entity, IWorldRPC, IHealable
         }
         else
         {
+            TryExpandDetectRange();
             TryEnterGroggy();
         }
     }
@@ -155,6 +159,15 @@ public class Enemy : Entity, IWorldRPC, IHealable
 
         behaviorGraphAgent.SetVariableValue("IsGroggy", true);
         CancelCurrentAttack();
+    }
+
+    private void TryExpandDetectRange()
+    {
+        if (hasDetectRangeExpanded)
+            return;
+
+        hasDetectRangeExpanded = true;
+        detector.SetRadius(EnemySo.GetDetectRange() + detectRangeBonus);
     }
 
     // 넉백을 포함한 takeDamage
@@ -211,8 +224,15 @@ public class Enemy : Entity, IWorldRPC, IHealable
 
         if (IsMaster)
         {
-            WorldManager.Instance.Spawn(DataDBManager.Instance.ItemDatabase.GetItemPrefab(DataDBManager.Instance.TryGetDropItemID(GetId())).name, transform.position + DataDBManager.Instance.ItemDropOffset, Quaternion.identity);
+            int dropItemId = DataDBManager.Instance.TryGetDropItemID(GetId());
 
+            if (dropItemId > 0)
+            {
+                GameObject dropItemPrefab = DataDBManager.Instance.ItemDatabase.GetItemPrefab(dropItemId);
+
+                if (dropItemPrefab != null)
+                    WorldManager.Instance.Spawn(dropItemPrefab.name, transform.position + DataDBManager.Instance.ItemDropOffset, Quaternion.identity);
+            }
             StartCoroutine(WaitDieAnimation());
         }
     }
