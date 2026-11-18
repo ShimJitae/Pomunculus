@@ -22,6 +22,7 @@ public class Enemy : Entity, IWorldRPC, IHealable
     [SerializeField] private EnemyDetector detector;
     [SerializeField] private float knockbackDistance;
     [SerializeField] private float detectRangeBonus = 10f; // 피격 시 추가되는 감지 범위
+    [SerializeField] private float chaseSpeedMultiplier = 3f; // 추적 시 이동속도 배율
 
     private bool IsDamageBlock => IsInvincible || CheckDie();
     private NavMeshAgent agent;
@@ -200,8 +201,10 @@ public class Enemy : Entity, IWorldRPC, IHealable
 
 
         float currentMoveSpeed = CanMove ? EnemySo.GetSpeed() * MoveSpeedRatio : 0f;
+        float currentChaseSpeed = currentMoveSpeed * chaseSpeedMultiplier;
 
         behaviorGraphAgent.SetVariableValue("MoveSpeed", currentMoveSpeed);
+        behaviorGraphAgent.SetVariableValue("ChaseSpeed", currentChaseSpeed);
         agent.speed = currentMoveSpeed;
         // 기절 0 / 구속 1 / 그외 >> 이동 배율대로
         float animationSpeedRatio = !CanAttack ? 0f : (CanMove ? MoveSpeedRatio : 1f);
@@ -261,6 +264,10 @@ public class Enemy : Entity, IWorldRPC, IHealable
             return;
 
         SetTarget(detector.GetNearestPlayer());
+
+        // 넓힌 범위 안에도 플레이어가 없으면 감지 범위로 복구
+        if (target == null)
+            ResetDetectRange();
     }
 
     protected override int GetId()
@@ -304,6 +311,15 @@ public class Enemy : Entity, IWorldRPC, IHealable
             return;
 
         AudioManager.Instance.PlaySound(enemySound, transform.position);
+    }
+
+    private void ResetDetectRange()
+    {
+        if (!hasDetectRangeExpanded)
+            return;
+
+        hasDetectRangeExpanded = false;
+        detector.SetRadius(EnemySo.GetDetectRange());
     }
 
     #region 네트워크
