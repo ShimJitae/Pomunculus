@@ -47,6 +47,7 @@ public class AudioManager : SingletonBehavior<AudioManager>
     private int[] sourcePriorities;
 
     private readonly Dictionary<AudioSO, float> lastPlayTimeBySound = new();
+    private AudioSO currentBgmData; // 지금 재생 중인 BAGM 데이터(같은 BGM 재요청 판단용)
 
     public override void Awake()
     {
@@ -72,14 +73,18 @@ public class AudioManager : SingletonBehavior<AudioManager>
         if (audioDataSO == null)
             return;
 
+        // 같은 BGM 데이터를 다시 요청하면 처음부터 다시 틀지 않음
+        // 클립으로 비교하면 클립이 여러개 일 때 GetRandomClip 이 직전 클립 빼고 뽑아서 곡이 배뀌므로 SO로 비교
+        if (bgmSource.isPlaying && currentBgmData == audioDataSO)
+            return;
+
+
         AudioClip clip = audioDataSO.GetRandomClip();
 
         if (clip == null)
             return;
 
-        // 스테이지마다 같은 BGM을 요청해도 처음부터 다시 틀지 않음
-        if (bgmSource.isPlaying == true && bgmSource.clip == clip)
-            return;
+        currentBgmData = audioDataSO;
 
         bgmSource.outputAudioMixerGroup = audioDataSO.AudioMixerGroup != null ? audioDataSO.AudioMixerGroup : bgmMixerGroup;
         bgmSource.clip = clip;
@@ -107,6 +112,7 @@ public class AudioManager : SingletonBehavior<AudioManager>
     {
         bgmSource.Stop();
         bgmSource.clip = null;
+        currentBgmData = null;
     }
 
     // 2D (UI 등 위치 무관)
@@ -170,18 +176,20 @@ public class AudioManager : SingletonBehavior<AudioManager>
     public void SetVolume(AudioChannelType channelType, float linearVolume)
     {
         float clampedVolume = Mathf.Clamp01(linearVolume);
-        float volumeDecibel = clampedVolume <= 0.0001f ? Min_dB : Mathf.Log10(clampedVolume) * 20f;
+        float volumedB = clampedVolume <= 0.0001f ? Min_dB : Mathf.Log10(clampedVolume) * 20f;
+        string volumeParamName = GetVolumeParam(channelType);
 
-        audioMixer.SetFloat(GetVolumeParam(channelType), volumeDecibel);
+        if (!audioMixer.SetFloat(volumeParamName, volumedB))
+            Debug.LogWarning($"믹서에 {volumeParamName} 파라미터가 없습니다.");
     }
 
     // 슬라이더 초기 위치용. 믹서의 현재 dB 값을 0~1로 변환
     public float GetVolume(AudioChannelType channelType)
     {
-        if (!audioMixer.GetFloat(GetVolumeParam(channelType), out float volumeDecibel))
+        if (!audioMixer.GetFloat(GetVolumeParam(channelType), out float volumedB))
             return 1f;
 
-        return volumeDecibel <= Min_dB ? 0f : Mathf.Clamp01(Mathf.Pow(10f, volumeDecibel / 20f));
+        return volumedB <= Min_dB ? 0f : Mathf.Clamp01(Mathf.Pow(10f, volumedB / 20f));
     }
 
     private void BuildSfxPool()
@@ -204,6 +212,7 @@ public class AudioManager : SingletonBehavior<AudioManager>
 
             source.playOnAwake = false;
             source.loop = false;
+            source.dopplerLevel = 0f; // 재생 직전 위치를 순간이동시키므로 도플러로 피치가 튀는것을 방지
             sfxSources[i] = source;
         }
     }

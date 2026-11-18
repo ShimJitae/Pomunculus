@@ -150,6 +150,9 @@ public class Enemy : Entity, IWorldRPC, IHealable
             return;
 
         hasGroggyTriggered = true;
+
+        PlayEnemySound(EnemySo.GroggySound);
+
         behaviorGraphAgent.SetVariableValue("IsGroggy", true);
         CancelCurrentAttack();
     }
@@ -201,12 +204,14 @@ public class Enemy : Entity, IWorldRPC, IHealable
     // 죽었을 시 아이템 스폰 and 적 사라지기 (하던 행동 끊김)
     protected override void OnDie()
     {
+        PlayEnemySound(EnemySo.DieSound);
+
         behaviorGraphAgent.SetVariableValue<bool>("IsDie", true);
         CancelCurrentAttack();
 
         if (IsMaster)
         {
-            WorldManager.Instance.Spawn(DataDBManager.Instance.ItemDatabase.GetItemPrefab(DataDBManager.Instance.TryGetDropItemID(GetId())).name, transform.position + Vector3.up, Quaternion.identity);
+            WorldManager.Instance.Spawn(DataDBManager.Instance.ItemDatabase.GetItemPrefab(DataDBManager.Instance.TryGetDropItemID(GetId())).name, transform.position + DataDBManager.Instance.ItemDropOffset, Quaternion.identity);
 
             StartCoroutine(WaitDieAnimation());
         }
@@ -260,7 +265,7 @@ public class Enemy : Entity, IWorldRPC, IHealable
         if (!_data.Child.TryGetValue("enemyHp", out SaveData enemyHpData))
             return;
 
-        ApplyHp(enemyHpData.GetData<int>());
+        ApplyHp(enemyHpData.GetData<int>(), false);
     }
 
     // 마스터가 넘어갔을 시 그 마스터에게만 동작 권한 넘기기용 함수
@@ -270,6 +275,15 @@ public class Enemy : Entity, IWorldRPC, IHealable
         behaviorGraphAgent.enabled = isAuthority;
         agent.enabled = isAuthority;
         detector.gameObject.SetActive(isAuthority);
+    }
+
+    // 몬스터 위치에서 소리 재생 (각 클라이언트에서 로컬로). AudioManager가 없는 씬에서도 게임 로직이 멈추지 않도록 확인
+    private void PlayEnemySound(AudioSO enemySound)
+    {
+        if (enemySound == null || AudioManager.Instance == null)
+            return;
+
+        AudioManager.Instance.PlaySound(enemySound, transform.position);
     }
 
     #region 네트워크
@@ -331,7 +345,7 @@ public class Enemy : Entity, IWorldRPC, IHealable
         switch (rpcType)
         {
             case EnemyRPCType.SyncHp:
-                ApplyHp(packet.ReadInt());
+                ApplyHp(packet.ReadInt(), true);
                 break;
             case EnemyRPCType.ShowTelegraph:
                 ReceiveShowTelegraph(packet);
@@ -359,8 +373,12 @@ public class Enemy : Entity, IWorldRPC, IHealable
     }
 
     // 방장이 확정한 HP나 저장된 HP를 적용 (드롭·파괴는 하지 않음)
-    private void ApplyHp(int hp)
+    // playFeedback : 실시간 동기화면 true, 저장 데이터 로드면 false (입장 시 소리 재생 방지)
+    private void ApplyHp(int hp, bool playFeedback)
     {
+        bool wasDie = isDie;
+        bool wasGroggyTriggered = hasGroggyTriggered;
+
         CurrentHp = hp;
         isDie = CurrentHp <= 0;
 
@@ -373,6 +391,15 @@ public class Enemy : Entity, IWorldRPC, IHealable
             enemySkill.CancelAttack();
 
         OnHpChanged?.Invoke(CurrentHp, MaxHp);
+
+        if (!playFeedback)
+            return;
+
+        // 한 번에 죽으면 그로기음 없이 사망음만
+        if (!wasDie && isDie)
+            PlayEnemySound(EnemySo.DieSound);
+        else if (!wasGroggyTriggered && hasGroggyTriggered)
+            PlayEnemySound(EnemySo.GroggySound);
     }
     #endregion
 }

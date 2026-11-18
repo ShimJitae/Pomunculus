@@ -69,7 +69,7 @@ public class PlayerIdleState : PlayerStateBase
     {
         base.Enter(player);
         player.Motor.StopMoving();
-        player.PlayAnim(PlayerFSM.LocomotionHash);
+        player.Animator.PlayAnim(PlayerAnimator.LocomotionHash);
     }
 
     public override void Update(PlayerFSM player)
@@ -80,7 +80,7 @@ public class PlayerIdleState : PlayerStateBase
         if (TryStartAction(player)) return;
         if (TryStartMove(player)) return;
 
-        player.SetAnimSpeed(0f);
+        player.Animator.SetAnimSpeed(0f);
     }
 }
 
@@ -94,7 +94,7 @@ public class PlayerMoveState : PlayerStateBase
     public override void Enter(PlayerFSM player)
     {
         base.Enter(player);
-        player.PlayAnim(PlayerFSM.LocomotionHash);
+        player.Animator.PlayAnim(PlayerAnimator.LocomotionHash);
         // 목적지 설정(MoveTo)은 이 상태로 오기 직전에 이미 호출됨
     }
 
@@ -108,7 +108,7 @@ public class PlayerMoveState : PlayerStateBase
         TryStartMove(player);   // 이동 중 다시 우클릭하면 목적지만 갱신
 
         player.Motor.FaceMoveDirection();
-        player.SetAnimSpeed(player.Motor.NormalizedSpeed);
+        player.Animator.SetAnimSpeed(player.Motor.NormalizedSpeed);
 
         if (player.Motor.HasArrived) player.SetState(PlayerStateType.Idle);
     }
@@ -137,7 +137,7 @@ public class PlayerAttackState : PlayerStateBase
 
         player.Motor.StopMoving();
         player.Motor.RotateTowards(target - player.transform.position, instant: true);
-        player.PlayAnim(PlayerFSM.AttackHash, restart: true);
+        player.Animator.PlayAnim(PlayerAnimator.AttackHash, restart: true);
     }
 
     public override void Update(PlayerFSM player)
@@ -200,7 +200,7 @@ public class PlayerDodgeState : PlayerStateBase
 
         player.Motor.RotateTowards(dir, instant: true);
         player.MarkDodgeUsed();
-        player.PlayAnim(PlayerFSM.DodgeHash, restart: true);
+        player.Animator.PlayAnim(PlayerAnimator.DodgeHash, restart: true);
     }
 
     public override void Update(PlayerFSM player)
@@ -232,7 +232,7 @@ public class PlayerHitState : PlayerStateBase
         knockDir = v.sqrMagnitude > 0.0001f ? v.normalized : -player.transform.forward;
 
         player.Motor.RotateTowards(-knockDir, instant: true);
-        player.PlayAnim(PlayerFSM.HitHash, restart: true);
+        player.Animator.PlayAnim(PlayerAnimator.HitHash, restart: true);
     }
 
     public override void Update(PlayerFSM player)
@@ -259,6 +259,6 @@ public class PlayerDeadState : PlayerStateBase
     {
         base.Enter(player);
         player.Motor.SetAgentEnabled(false);
-        player.PlayAnim(PlayerFSM.DieHash);
+        player.Animator.PlayAnim(PlayerAnimator.DieHash);
     }
 }

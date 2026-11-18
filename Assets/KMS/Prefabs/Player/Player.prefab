@@ -450,9 +450,6 @@ PrefabInstance:
       addedObject: {fileID: 9007856692369991479}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f4f75312eb965614dab993c80e2de8f6, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 4318981986115598492}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f4f75312eb965614dab993c80e2de8f6, type: 3}
-      insertIndex: -1
       addedObject: {fileID: 1293915795150272698}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f4f75312eb965614dab993c80e2de8f6, type: 3}
       insertIndex: -1
@@ -477,10 +474,19 @@ PrefabInstance:
       addedObject: {fileID: 5546669532597847604}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f4f75312eb965614dab993c80e2de8f6, type: 3}
       insertIndex: -1
+      addedObject: {fileID: 4318981986115598492}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f4f75312eb965614dab993c80e2de8f6, type: 3}
+      insertIndex: -1
       addedObject: {fileID: 1153259731567378278}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f4f75312eb965614dab993c80e2de8f6, type: 3}
       insertIndex: -1
+      addedObject: {fileID: 3914769151039475671}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f4f75312eb965614dab993c80e2de8f6, type: 3}
+      insertIndex: -1
       addedObject: {fileID: 3516278904216698761}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f4f75312eb965614dab993c80e2de8f6, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6395502337418687732}
   m_SourcePrefab: {fileID: 100100000, guid: f4f75312eb965614dab993c80e2de8f6, type: 3}
 --- !u!4 &3732879745415184430 stripped
 Transform:
@@ -661,22 +667,6 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &4318981986115598492
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4072954961796356756}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5906a5903973cc844b6efa71368af563, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::StatusEffectController
-  entity: {fileID: 8441542970358718260}
-  activeStatusEffectsCapacity: 20
-  logStatusEffects: 1
-  debugStatusEffectType: 1
 --- !u!114 &1293915795150272698
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -813,6 +803,22 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 65
   circleHeightOffset: 0.05
+--- !u!114 &4318981986115598492
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4072954961796356756}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5906a5903973cc844b6efa71368af563, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StatusEffectController
+  entity: {fileID: 8441542970358718260}
+  activeStatusEffectsCapacity: 20
+  logStatusEffects: 1
+  debugStatusEffectType: 1
 --- !u!114 &1153259731567378278
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -828,6 +834,19 @@ MonoBehaviour:
   anchor: {fileID: 0}
   feedbackTarget: {fileID: 0}
   fitToModelBounds: 0
+--- !u!114 &3914769151039475671
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4072954961796356756}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6ceac8dbacf0fe64c94c179d503a5607, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::OccluderTarget
+  centerOffset: {x: 0, y: 1, z: 0}
 --- !u!54 &3516278904216698761
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -855,6 +874,20 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &6395502337418687732
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4072954961796356756}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 34c73967d809f4a4f81857e3f4dab685, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerAnimator
+  defaultFade: 0.08
+  speedDampTime: 0.1
 --- !u!4 &6633543304050246393 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7514387204552156476, guid: f4f75312eb965614dab993c80e2de8f6, type: 3}

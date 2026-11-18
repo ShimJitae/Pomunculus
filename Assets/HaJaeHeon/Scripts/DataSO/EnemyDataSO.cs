@@ -1,4 +1,5 @@
 using Unity.Behavior;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public enum Monster_Kind
@@ -38,7 +39,13 @@ public class EnemyDataSO : EntityDataSO
     [SerializeField] private BehaviorGraph behaviourGraph;
     [SerializeField] private GameObject enemyPrefab;
     [SerializeField] private EnemyPatternDataSO normalAttackPattern;
-    
+
+    [Header("소리 SO")]
+    [SerializeField] private AudioSO groggySound;
+    [SerializeField] private AudioSO dieSound;
+
+    public AudioSO GroggySound => groggySound;
+    public AudioSO DieSound => dieSound;
 
     public int GetEnemyId()
     {
