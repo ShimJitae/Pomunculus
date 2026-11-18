@@ -180,14 +180,23 @@ public class GameManager : SingletonBehavior<GameManager>
         m_worldClosing = true;
         NetworkManager.Instance.LeaveRoom();
     }
-    // 내가 나가면 월드 전체 정리
+    // 내가 나가면 월드 전체 정리 후 타이틀로 이동
+    // 씬 전환을 항상 살아 있는 GameManager에서 처리해야 UI(ESC 메뉴 등)가 한 번도 켜지지 않았어도 타이틀로 돌아감
     private void OnLeftRoom()
     {
-        m_worldPending = false;
-        m_worldClosing = false;
-        WorldManager.Instance.SaveWorld(SelectedWorldSlot); // 참여한 월드면 WorldManager에서 무시됨
-        RaiseEventManager.Instance.UnRegisterEvent((int)WorldEventID.PlayerSpawnRequest);
-        WorldManager.Instance.Release();
+        try
+        {
+            m_worldPending = false;
+            m_worldClosing = false;
+            WorldManager.Instance.SaveWorld(SelectedWorldSlot); // 참여한 월드면 WorldManager에서 무시됨
+            RaiseEventManager.Instance.UnRegisterEvent((int)WorldEventID.PlayerSpawnRequest);
+            WorldManager.Instance.Release();
+        }
+        finally
+        {
+            // 정리 중 예외가 나도 게임 씬에 갇히지 않도록 씬 전환은 반드시 수행
+            if (SceneManager.GetActiveScene().name != TitleSceneName) LoadingUI.LoadScene(TitleSceneName);
+        }
     }
 
     private const string PlayerPrefabId = "Player";

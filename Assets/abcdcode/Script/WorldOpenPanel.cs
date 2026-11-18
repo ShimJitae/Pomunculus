@@ -25,7 +25,6 @@ public class WorldOpenPanel : MonoBehaviour
         network.OnJoinedRoomEvent += OnJoinedRoom;
         network.OnCreateRoomFailedEvent += OnRoomFailed;
         network.OnDisconnectedEvent += OnDisconnected;
-        network.OnLeftRoomEvent += OnLeftRoom;
     }
     // NetworkManager는 씬 이동 후에도 남아 있으므로 반드시 구독 해제. 한 번도 켜지지 않았으면 Awake처럼 호출되지 않음
     private void OnDestroy()
@@ -35,7 +34,6 @@ public class WorldOpenPanel : MonoBehaviour
         network.OnJoinedRoomEvent -= OnJoinedRoom;
         network.OnCreateRoomFailedEvent -= OnRoomFailed;
         network.OnDisconnectedEvent -= OnDisconnected;
-        network.OnLeftRoomEvent -= OnLeftRoom;
     }
     private void Update()
     {
@@ -49,7 +47,6 @@ public class WorldOpenPanel : MonoBehaviour
         if (m_messageText != null && m_messageText.text != (m_message ?? "")) m_messageText.text = m_message ?? "";
     }
     #endregion
-    private void OnLeftRoom() => LoadingUI.LoadScene(GameManager.TitleSceneName);
     #region 멀티 전환
     public void OnClickOpenRoom()
     {
