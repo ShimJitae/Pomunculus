@@ -62,6 +62,8 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IShieldable, IWorldRPC
     public bool IsMine => !PhotonNetwork.InRoom ||
                       (PhotonNetwork.LocalPlayer != null && PhotonNetwork.LocalPlayer.ActorNumber == Owner);
 
+    protected override bool HasStateAuthority { get => IsMine; }
+
     public event Action OnDied;
     public event Action OnRevived;
 
@@ -212,8 +214,8 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IShieldable, IWorldRPC
 
     public void GetShield(int amount, float duration)
     {
-        if(amount <= 0) return;
-        if(!IsMine) { SendShieldRequest(amount, duration); return; }
+        if (amount <= 0) return;
+        if (!IsMine) { SendShieldRequest(amount, duration); return; }
         if (IsDead) return;
 
         Stats.AddShield(amount, duration);
@@ -225,7 +227,7 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IShieldable, IWorldRPC
         SetState(PlayerStateType.Dead);
         OnDied?.Invoke();
     }
-    
+
     // 지금 던지면 나갈 포션. 선택한 포션이 인벤토리에 없으면 null(빈 병)
     public PotionData GetThrowablePotion()
     {
@@ -278,7 +280,7 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IShieldable, IWorldRPC
     }
 
     #region 데이터
-    
+
     // ═════════════════════ Save & Load ═══════════════════════
 
     // 데이터 저장 및 불어오기 위치값은 굳이 안넣어도 됨 이미 알아하는중
@@ -314,7 +316,7 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IShieldable, IWorldRPC
     // 저장 데이터에서 상태를 꺼내 적용한다.
     public override void LoadData(SaveData _data)
     {
-        
+
         if (_data?.Data == null) return; // 처음 생성됐거나 예전 세이브라 데이터가 없을 때
         isLoadingState = true;
         try
@@ -354,7 +356,8 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IShieldable, IWorldRPC
         SyncLoadout,
         RequestShield,
         SyncShield,
-        SyncInventory
+        SyncInventory,
+        RegisterStatusEffect = RpcRegisterStatusEffect, // Entity에서 정의한 하위 RPC enum과 겹치지 않는 공용 번호.
     }
 
     // 소유자가 확정한 HP를 다른 플레이어에게 전송
@@ -513,6 +516,9 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IShieldable, IWorldRPC
                     items.Add(new InventorySlot(packet.ReadInt(), packet.ReadInt()));
                 if (!IsMine) RestoreInventory(items);
                 break;
+            case PlayerRPCType.RegisterStatusEffect:
+                ReceiveRegisterStatusEffect(packet);   // 소유자 여부와 상관없이 모두 적용
+                break;
         }
     }
 
@@ -531,9 +537,9 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IShieldable, IWorldRPC
         isDie = CurrentHp <= 0;
         Stats.NotifyHpChanged();
 
-        if (!wasDead && isDie) 
+        if (!wasDead && isDie)
             OnDied?.Invoke();
-        else if (wasDead && !isDie) 
+        else if (wasDead && !isDie)
             OnRevived?.Invoke();
     }
 

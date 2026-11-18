@@ -98,7 +98,8 @@ public class StatusEffectController : MonoBehaviour, ISavable
 
     /// <summary>
     /// 상태이상 바깥(포션·지형·디버그 등)에서 상태를 걸 때 호출한다.
-    /// 이 호출은 한 컴퓨터에서만 일어나므로, 멀티에서는 모든 컴퓨터에 알려 각자 ApplyStatusEffectLocal을 실행하게 한다.
+    /// Entity가 결정권자(적 = 방장, 플레이어 = 소유자)일 때만 모든 컴퓨터에 전송하고, 각자 ApplyStatusEffectLocal을 실행한다.
+    /// 결정권자가 아닌 컴퓨터에서 호출하면 무시된다.
     /// IStatusBehavior 안(틱 등)은 모든 컴퓨터에서 똑같이 실행되므로 이 함수 대신 ApplyStatusEffectLocal을 쓴다.
     /// </summary>
     public void RegisterStatusEffect(StatusEffectType seType)
@@ -108,8 +109,7 @@ public class StatusEffectController : MonoBehaviour, ISavable
             return;
         }
 
-        // TODO: Entity에 SendRegisterStatusEffect가 추가되면 entity.SendRegisterStatusEffect(seType)로 교체
-        ApplyStatusEffectLocal(seType);
+        entity.RegisterStatusEffect(seType);
     }
 
     /// <summary>
