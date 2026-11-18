@@ -2,7 +2,6 @@ using Photon.Pun;
 using Pomunculus.Items;
 using System;
 using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -43,16 +42,13 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IShieldable, IWorldRPC
     public Inventory Inventory { get; private set; }
     public PotionLoadout Loadout { get; private set; }
     public PlayerAnimator Animator { get; private set; }
+    public PlayerActionGate Actions { get; private set; }
 
     // ───── 상태들이 읽어 가는 데이터 ─────
     public PlayerStateType CurrentStateType => fsm.CurrentStateType;
     public PlayerStateType PreviousStateType => fsm.PreviousStateType;
     public bool IsDead => CheckDie();
     public Vector3 LastHitSourcePosition { get; private set; }
-    public Vector3 AttackTarget { get; private set; }   // ConsumeAttack 성공 시 설정
-    public PotionData AttackPotion { get; private set; }
-
-    private float lastDodgeAt = float.NegativeInfinity;
 
     private bool IsDamageBlocked =>
     IsInvincible || CheckDie() ||
@@ -89,6 +85,7 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IShieldable, IWorldRPC
 
         Motor.Initialize(Tuning, Data.GetSpeed());
         Stats = new PlayerStats(this, Data);
+        Actions = new PlayerActionGate(this);
 
         Stats.OnShieldChanged += HandleShieldChanged;
 
@@ -212,8 +209,8 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IShieldable, IWorldRPC
 
     public void GetShield(int amount, float duration)
     {
-        if(amount <= 0) return;
-        if(!IsMine) { SendShieldRequest(amount, duration); return; }
+        if (amount <= 0) return;
+        if (!IsMine) { SendShieldRequest(amount, duration); return; }
         if (IsDead) return;
 
         Stats.AddShield(amount, duration);
@@ -225,40 +222,6 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IShieldable, IWorldRPC
         SetState(PlayerStateType.Dead);
         OnDied?.Invoke();
     }
-    
-    // 지금 던지면 나갈 포션. 선택한 포션이 인벤토리에 없으면 null(빈 병)
-    public PotionData GetThrowablePotion()
-    {
-        PotionData potion = Loadout.SelectedPotion;
-        return potion != null && Inventory.GetItemCount(potion.Id) > 0 ? potion : null;
-    }
-
-    public bool ConsumeAttack()
-    {
-        if (!CanAttack || !Stats.CanUseStamina) return false;
-        if (!Input.ConsumeAttack(out Vector3 target)) return false;
-
-        PotionData potion = GetThrowablePotion();
-        bool hasPotion = potion != null && Inventory.GetItemCount(potion.Id) > 0;
-
-        AttackPotion = hasPotion ? potion : null;   // null이면 빈 병
-        AttackTarget = Thrower.ClampToThrowRange(target);
-        Stats.SpendStamina(Data.ThrowStaminaCost);
-        return true;
-    }
-
-    // 쿨다운 중이면 입력을 소비하지 않고 버퍼에 남겨 둔다
-    public bool ConsumeDodge()
-    {
-        if (!CanDodge || !Stats.CanUseStamina) return false;
-        if (Time.time - lastDodgeAt < tuning.DodgeCooldown) return false;
-        if (!Input.ConsumeDodge()) return false;
-
-        Stats.SpendStamina(Data.DodgeStaminaCost);
-        return true;
-    }
-
-    public void MarkDodgeUsed() => lastDodgeAt = Time.time;
 
     public void Revive()
     {
@@ -278,7 +241,7 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IShieldable, IWorldRPC
     }
 
     #region 데이터
-    
+
     // ═════════════════════ Save & Load ═══════════════════════
 
     // 데이터 저장 및 불어오기 위치값은 굳이 안넣어도 됨 이미 알아하는중
@@ -314,7 +277,7 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IShieldable, IWorldRPC
     // 저장 데이터에서 상태를 꺼내 적용한다.
     public override void LoadData(SaveData _data)
     {
-        
+
         if (_data?.Data == null) return; // 처음 생성됐거나 예전 세이브라 데이터가 없을 때
         isLoadingState = true;
         try
@@ -531,9 +494,9 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IShieldable, IWorldRPC
         isDie = CurrentHp <= 0;
         Stats.NotifyHpChanged();
 
-        if (!wasDead && isDie) 
+        if (!wasDead && isDie)
             OnDied?.Invoke();
-        else if (wasDead && !isDie) 
+        else if (wasDead && !isDie)
             OnRevived?.Invoke();
     }
 

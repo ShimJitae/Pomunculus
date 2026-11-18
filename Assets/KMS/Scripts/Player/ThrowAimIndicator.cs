@@ -30,7 +30,7 @@ public class ThrowAimIndicator : MonoBehaviour
         }
 
         Vector3 goal = player.Thrower.ClampToThrowRange(mousePoint);
-        PotionData potion = player.GetThrowablePotion();
+        PotionData potion = player.Actions.GetThrowablePotion();
         ThrownProjectile prefab = player.Thrower.GetProjectilePrefab(potion);
         Vector3 impactPoint = DrawTrajectory(goal, prefab);
         DrawRangeCircle(impactPoint, GetRangeRadius(potion, prefab));
