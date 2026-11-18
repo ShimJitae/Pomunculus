@@ -1,6 +1,8 @@
 using Photon.Pun;
 using Pomunculus.Items;
 using System;
+using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -79,6 +81,10 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IShieldable, IWorldRPC
         Interactor = GetComponent<PlayerInteractor>();
         Inventory = GetComponentInChildren<Inventory>();
         Loadout = GetComponent<PotionLoadout>();
+
+        Inventory.Changed += SendInventorySync;
+        Loadout.OnEquipChanged += HandleLoadoutEquipChanged;
+
         Animator = GetComponent<PlayerAnimator>();
 
         Motor.Initialize(Tuning, Data.GetSpeed());
@@ -283,6 +289,9 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IShieldable, IWorldRPC
     // 현재 상태를 묶어서 저장 데이터에 담는다.
     private bool isLoadingState;
 
+    // 방장이 아닌 소유자만 방장 사본에 상태를 보낸다. 방장/오프라인은 자기 오브젝트가 곧 저장 대상
+    private bool ShouldSyncToMaster => IsMine && PhotonNetwork.InRoom && !PhotonNetwork.IsMasterClient;
+
     public override void SaveData(SaveData _data)
     {
         var s = new SaveData();
@@ -305,26 +314,29 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IShieldable, IWorldRPC
     // 저장 데이터에서 상태를 꺼내 적용한다.
     public override void LoadData(SaveData _data)
     {
-        isLoadingState = true;
-        if (_data?.Data == null) return; // 처음 생성됐거나 예전 세이브라 데이터가 없을 때
-        if (_data.Child.TryGetValue("b", out SaveData entityData))
-            base.LoadData(entityData);
-        var state = _data.GetData<PlayerWorldData>();
-        SetOwner(state.Owner);
-        CurrentHp = state.CurrentHp;
-        isDie = CurrentHp <= 0;
-        Stats.LoadStamina(state.CurrentStamina);
-        Stats.NotifyHpChanged();
-        if (state.Item != null)
-        {
-            Inventory.Slots.Clear();
-            foreach (var item in state.Item)
-                Inventory.AddItem(item.ItemId, item.Amount);
-        }
         
-        if (state.PotionSlotIds != null)
-            Loadout.Restore(state.PotionSlotIds, state.SelectedPotionSlot);
-        isLoadingState = false;
+        if (_data?.Data == null) return; // 처음 생성됐거나 예전 세이브라 데이터가 없을 때
+        isLoadingState = true;
+        try
+        {
+            if (_data.Child.TryGetValue("b", out SaveData entityData))
+                base.LoadData(entityData);
+            var state = _data.GetData<PlayerWorldData>();
+            SetOwner(state.Owner);
+            CurrentHp = state.CurrentHp;
+            isDie = CurrentHp <= 0;
+            Stats.LoadStamina(state.CurrentStamina);
+            Stats.NotifyHpChanged();
+            if (state.Item != null)
+                RestoreInventory(state.Item);
+
+            if (state.PotionSlotIds != null)
+                Loadout.Restore(state.PotionSlotIds, state.SelectedPotionSlot);
+        }
+        finally
+        {
+            isLoadingState = false;
+        }
     }
     #endregion
 
@@ -339,8 +351,10 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IShieldable, IWorldRPC
         RequestDamage,
         RequestHeal,
         GrantItem,
+        SyncLoadout,
         RequestShield,
-        SyncShield
+        SyncShield,
+        SyncInventory
     }
 
     // 소유자가 확정한 HP를 다른 플레이어에게 전송
@@ -351,7 +365,7 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IShieldable, IWorldRPC
         PacketData packet = new();
         packet.Write((byte)PlayerRPCType.SyncHp);
         packet.Write(CurrentHp);
-        this.SendRPC(packet, WorldRPCTarget.Others);   // 확장 메서드라 this. 필요. 소유자는 이미 적용했으므로 나머지에게만
+        this.SendRPC(packet, WorldRPCTarget.Others);
     }
 
     private void SendShieldSync()
@@ -362,6 +376,38 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IShieldable, IWorldRPC
         packet.Write((byte)PlayerRPCType.SyncShield);
         packet.Write(Stats.CurrentShield);
         this.SendRPC(packet, WorldRPCTarget.Others);
+    }
+
+    private void SendInventorySync()
+    {
+        if (!ShouldSyncToMaster || isLoadingState) return;
+
+        PacketData packet = new();
+        packet.Write((byte)PlayerRPCType.SyncInventory);
+        packet.Write(Inventory.Slots.Count);            // 받는 쪽이 읽을 개수
+        foreach (InventorySlot slot in Inventory.Slots)  // 리스트 순서가 곧 슬롯 위치
+        {
+            packet.Write(slot.ItemId);
+            packet.Write(slot.Amount);
+        }
+        this.SendRPC(packet, WorldRPCTarget.MasterClient);
+    }
+
+    // 장착이 바뀌면 전체 장착 상태를 다른 클라이언트에 보낸다
+    private void HandleLoadoutEquipChanged(int slotIndex, PotionData potion) => SendLoadoutSync();
+
+    private void SendLoadoutSync()
+    {
+        if (!ShouldSyncToMaster || isLoadingState) return;
+        PacketData packet = new();
+        packet.Write((byte)PlayerRPCType.SyncLoadout);
+        for (int i = 0; i < PotionLoadout.SlotCount; i++)
+        {
+            PotionData potion = Loadout.GetSlot(i);
+            packet.Write(potion != null ? potion.Id : -1);   // 빈 슬롯은 -1
+        }
+        packet.Write(Loadout.SelectedIndex);
+        this.SendRPC(packet, WorldRPCTarget.MasterClient);
     }
 
     // 던지기 정보를 모든 클라이언트에 보낸다 (내 화면은 즉시 실행)
@@ -445,6 +491,13 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IShieldable, IWorldRPC
                 int amount = packet.ReadInt();
                 if (IsMine) Inventory.AddItem(itemId, amount);
                 break;
+            case PlayerRPCType.SyncLoadout:
+                int[] ids = new int[PotionLoadout.SlotCount];
+                for (int i = 0; i < ids.Length; i++)
+                    ids[i] = packet.ReadInt();
+                int selected = packet.ReadInt();
+                if (!IsMine) Loadout.Restore(ids, selected);
+                break;
             case PlayerRPCType.RequestShield:
                 int shield = packet.ReadInt();
                 float duration = packet.ReadFloat();
@@ -453,7 +506,21 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IShieldable, IWorldRPC
             case PlayerRPCType.SyncShield:
                 ApplyShield(packet.ReadInt());
                 break;
+            case PlayerRPCType.SyncInventory:
+                int count = packet.ReadInt();
+                var items = new List<InventorySlot>(count);
+                for (int i = 0; i < count; i++)
+                    items.Add(new InventorySlot(packet.ReadInt(), packet.ReadInt()));
+                if (!IsMine) RestoreInventory(items);
+                break;
         }
+    }
+
+    private void RestoreInventory(List<InventorySlot> items)
+    {
+        Inventory.Slots.Clear();
+        foreach (var item in items)
+            Inventory.AddItem(item.ItemId, item.Amount);
     }
 
     // 소유자가 확정한 HP를 적용한다
@@ -476,6 +543,8 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IShieldable, IWorldRPC
     private void OnDestroy()
     {
         Stats.OnShieldChanged -= HandleShieldChanged;
+        if (Loadout == null) return;
+        Loadout.OnEquipChanged -= HandleLoadoutEquipChanged;
     }
 
     #endregion
