@@ -1,5 +1,4 @@
 using Pomunculus.Items;
-using System.Collections.Generic;
 using UnityEngine;
 
 // 목표 지점에 포물선으로 떨어지는 투사체를 던진다
