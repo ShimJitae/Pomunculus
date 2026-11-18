@@ -1572,6 +1572,7 @@ GameObject:
   m_Component:
   - component: {fileID: 9173483715141810696}
   - component: {fileID: 7486839068672850478}
+  - component: {fileID: 388699960417461937}
   m_Layer: 0
   m_Name: World_PurePoly
   m_TagString: Untagged
@@ -1635,6 +1636,33 @@ MonoBehaviour:
   m_MinRegionArea: 2
   m_NavMeshData: {fileID: 23800000, guid: 0d04aa6bd56be984ebbe62781f0bffe4, type: 2}
   m_BuildHeightMesh: 0
+--- !u!114 &388699960417461937
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1062197608283547737}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 99157ff39e9a9ca4ba12de432e66aa84, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpawnPointRegistry
+  forestNormalMobs: {fileID: 0}
+  forestGathers: {fileID: 0}
+  forestPlayerSpawnPoint: {fileID: 0}
+  volcanoNormalMobs: {fileID: 0}
+  volcanoGathers: {fileID: 0}
+  volcanoBoss: {fileID: 0}
+  volcanoPlayerSpawnPoint: {fileID: 0}
+  snowyNormalMobs: {fileID: 0}
+  snowyGathers: {fileID: 0}
+  snowyBoss: {fileID: 0}
+  snowyPlayerSpawnPoint: {fileID: 0}
+  swampNormalMobs: {fileID: 0}
+  swampGathers: {fileID: 0}
+  swampBoss: {fileID: 0}
+  swampPlayerSpawnPoint: {fileID: 0}
 --- !u!1 &1100807798819374797
 GameObject:
   m_ObjectHideFlags: 0
