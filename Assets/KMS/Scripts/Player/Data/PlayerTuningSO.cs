@@ -35,4 +35,8 @@ public class PlayerTuningSO : ScriptableObject
     public float HitStunDuration => hitStunDuration;
     [SerializeField, Min(0f)] private float knockbackSpeed = 0f;          // 피격 시 밀려나는 속도 (0이면 넉백 없음)
     public float KnockbackSpeed => knockbackSpeed;
+
+    [Header("부활")]
+    [SerializeField, Min(0f)] private float respawnDelay = 10f;           // 사망 후 자동 부활까지 대기 시간
+    public float RespawnDelay => respawnDelay;
 }

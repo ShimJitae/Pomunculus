@@ -10,6 +10,7 @@ public class PlayerHUDBinder : MonoBehaviour
     [SerializeField] private StatPanelView statPanelView;
     [SerializeField] private StatusPanelView statusPanelView;
     [SerializeField] private PotionSlotView potionSlotView;
+    [SerializeField] private RespawnUIView respawnUIView;
     //[SerializeField] private InventoryUI inventoryView;
 
     private readonly List<IDisposable> presenters = new();
@@ -23,6 +24,9 @@ public class PlayerHUDBinder : MonoBehaviour
         presenters.Add(new StatPanelPresenter(localPlayer.Stats, statPanelView));
         presenters.Add(new StatusPanelPresenter(localPlayer.GetComponent<StatusEffectController>(), statusPanelView));
         presenters.Add(new PotionSlotPresenter(localPlayer.Loadout, localPlayer.Inventory, potionSlotView, inventoryView));
+
+        if (respawnUIView != null)
+            presenters.Add(new RespawnUIPresenter(localPlayer, respawnUIView));
     }
 
     // 모든 Presenter의 구독을 해제
