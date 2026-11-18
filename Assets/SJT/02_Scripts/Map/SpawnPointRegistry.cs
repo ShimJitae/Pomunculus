@@ -13,6 +13,7 @@ public class SpawnPointRegistry : MonoBehaviour
     [Header("숲")]
     [SerializeField] private Transform forestNormalMobs;
     [SerializeField] private Transform forestGathers;
+    [SerializeField] private Transform forestBoss;
     [SerializeField] private Transform forestPlayerSpawnPoint;
 
     [Header("화산")]
@@ -94,6 +95,7 @@ public class SpawnPointRegistry : MonoBehaviour
         AddGather(RegionType.SnowyMountain, snowyGathers);
         AddGather(RegionType.Swamp, swampGathers);
 
+        AddBoss(RegionType.Forest, forestBoss);
         AddBoss(RegionType.Volcano, volcanoBoss);
         AddBoss(RegionType.SnowyMountain, snowyBoss);
         AddBoss(RegionType.Swamp, swampBoss);
@@ -153,6 +155,7 @@ public class SpawnPointRegistry : MonoBehaviour
         DrawPointList(swampGathers);
 
         Gizmos.color = Color.red;
+        DrawPoint(forestBoss);
         DrawPoint(volcanoBoss);
         DrawPoint(snowyBoss);
         DrawPoint(swampBoss);
