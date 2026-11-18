@@ -441,7 +441,7 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: bfd95676563b425a973ae4cbd940d5f0, type: 2}
+  - {fileID: 2100000, guid: ed665744232f4494b9cb4187fac9bd09, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1753,9 +1753,25 @@ PrefabInstance:
       propertyPath: so
       value: 
       objectReference: {fileID: 11400000, guid: 2ef8cd31dc7a98c42b4b36b783363dce, type: 2}
+    - target: {fileID: 451304765473268782, guid: efd4a2762157b0e4c8f0bd0b3163fd66, type: 3}
+      propertyPath: hitLayers.m_Bits
+      value: 392
+      objectReference: {fileID: 0}
+    - target: {fileID: 2476253165477942513, guid: efd4a2762157b0e4c8f0bd0b3163fd66, type: 3}
+      propertyPath: m_Height
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2476253165477942513, guid: efd4a2762157b0e4c8f0bd0b3163fd66, type: 3}
+      propertyPath: m_Radius
+      value: 0.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 2476253165477942513, guid: efd4a2762157b0e4c8f0bd0b3163fd66, type: 3}
+      propertyPath: m_Center.y
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3972964382682025698, guid: efd4a2762157b0e4c8f0bd0b3163fd66, type: 3}
       propertyPath: m_Name
-      value: Enemy_Base Variant 2
+      value: Enemy_MonsterPlant
       objectReference: {fileID: 0}
     - target: {fileID: 3972964382682190530, guid: efd4a2762157b0e4c8f0bd0b3163fd66, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1804,7 +1820,7 @@ PrefabInstance:
     - target: {fileID: 3972964382691556668, guid: efd4a2762157b0e4c8f0bd0b3163fd66, type: 3}
       propertyPath: m_Controller
       value: 
-      objectReference: {fileID: 9100000, guid: 8dcb375fe30441a4be410a80c53fa296, type: 2}
+      objectReference: {fileID: 22100000, guid: b0901c8757b9d524e85a914df720fac1, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:

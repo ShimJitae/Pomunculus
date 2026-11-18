@@ -27,8 +27,8 @@ public abstract class PlayerStateBase : IState<PlayerStateType, PlayerFSM>
     // 회피 → 던지기 순으로 입력 확인. 전이했으면 true
     protected bool TryStartAction(PlayerFSM player)
     {
-        if (player.ConsumeDodge()) { player.SetState(PlayerStateType.Dodge); return true; }
-        if (player.ConsumeAttack()) { player.SetState(PlayerStateType.Attack); return true; }
+        if (player.Actions.ConsumeDodge()) { player.SetState(PlayerStateType.Dodge); return true; }
+        if (player.Actions.ConsumeAttack()) { player.SetState(PlayerStateType.Attack); return true; }
         return false;
     }
 
@@ -38,7 +38,11 @@ public abstract class PlayerStateBase : IState<PlayerStateType, PlayerFSM>
     /// </summary>
     protected bool TryStartMove(PlayerFSM player)
     {
-        if (!player.CanMove) return false;
+        if (!player.CanMove)
+        {
+            player.Input.ClearMoveCommand();
+            return false;
+        }
         if (!player.Input.ConsumeMoveCommand(out Vector3 destination)) return false;
         player.Motor.MoveTo(destination);
         player.SetState(PlayerStateType.Move);
@@ -69,7 +73,7 @@ public class PlayerIdleState : PlayerStateBase
     {
         base.Enter(player);
         player.Motor.StopMoving();
-        player.PlayAnim(PlayerFSM.LocomotionHash);
+        player.Animator.PlayAnim(PlayerAnimator.LocomotionHash);
     }
 
     public override void Update(PlayerFSM player)
@@ -80,7 +84,7 @@ public class PlayerIdleState : PlayerStateBase
         if (TryStartAction(player)) return;
         if (TryStartMove(player)) return;
 
-        player.SetAnimSpeed(0f);
+        player.Animator.SetAnimSpeed(0f);
     }
 }
 
@@ -94,7 +98,7 @@ public class PlayerMoveState : PlayerStateBase
     public override void Enter(PlayerFSM player)
     {
         base.Enter(player);
-        player.PlayAnim(PlayerFSM.LocomotionHash);
+        player.Animator.PlayAnim(PlayerAnimator.LocomotionHash);
         // 목적지 설정(MoveTo)은 이 상태로 오기 직전에 이미 호출됨
     }
 
@@ -108,7 +112,7 @@ public class PlayerMoveState : PlayerStateBase
         TryStartMove(player);   // 이동 중 다시 우클릭하면 목적지만 갱신
 
         player.Motor.FaceMoveDirection();
-        player.SetAnimSpeed(player.Motor.NormalizedSpeed);
+        player.Animator.SetAnimSpeed(player.Motor.NormalizedSpeed);
 
         if (player.Motor.HasArrived) player.SetState(PlayerStateType.Idle);
     }
@@ -118,7 +122,6 @@ public class PlayerMoveState : PlayerStateBase
 // Attack : 클릭한 위치로 던지기
 //   - 멈춰서 목표 방향으로 즉시 회전 → releaseTime에 발사
 //   - cancelTime 이후 회피 / 연속 던지기 / 우클릭 이동으로 캔슬
-//   - 이동 중에 던졌다면 끝난 뒤 원래 목적지로 이동 재개 (옵션)
 // ─────────────────────────────────────────────
 public class PlayerAttackState : PlayerStateBase
 {
@@ -131,13 +134,13 @@ public class PlayerAttackState : PlayerStateBase
     public override void Enter(PlayerFSM player)
     {
         base.Enter(player);
-        target = player.AttackTarget;
+        target = player.Actions.AttackTarget;
         released = false;
-        currentPotion = player.AttackPotion;
+        currentPotion = player.Actions.AttackPotion;
 
         player.Motor.StopMoving();
         player.Motor.RotateTowards(target - player.transform.position, instant: true);
-        player.PlayAnim(PlayerFSM.AttackHash, restart: true);
+        player.Animator.PlayAnim(PlayerAnimator.AttackHash, restart: true);
     }
 
     public override void Update(PlayerFSM player)
@@ -159,8 +162,8 @@ public class PlayerAttackState : PlayerStateBase
         // 2) 캔슬 구간
         if (elapsed >= player.Tuning.AttackCancelTime)
         {
-            if (player.ConsumeDodge()) { player.SetState(PlayerStateType.Dodge); return; }
-            if (player.ConsumeAttack()) { player.SetState(PlayerStateType.Attack, allowReenter: true); return; }
+            if (player.Actions.ConsumeDodge()) { player.SetState(PlayerStateType.Dodge); return; }
+            if (player.Actions.ConsumeAttack()) { player.SetState(PlayerStateType.Attack, allowReenter: true); return; }
             if (TryStartMove(player)) return;   // 우클릭으로 후딜레이 캔슬
         }
 
@@ -199,8 +202,8 @@ public class PlayerDodgeState : PlayerStateBase
         }
 
         player.Motor.RotateTowards(dir, instant: true);
-        player.MarkDodgeUsed();
-        player.PlayAnim(PlayerFSM.DodgeHash, restart: true);
+        player.Actions.MarkDodgeUsed();
+        player.Animator.PlayAnim(PlayerAnimator.DodgeHash, restart: true);
     }
 
     public override void Update(PlayerFSM player)
@@ -232,7 +235,7 @@ public class PlayerHitState : PlayerStateBase
         knockDir = v.sqrMagnitude > 0.0001f ? v.normalized : -player.transform.forward;
 
         player.Motor.RotateTowards(-knockDir, instant: true);
-        player.PlayAnim(PlayerFSM.HitHash, restart: true);
+        player.Animator.PlayAnim(PlayerAnimator.HitHash, restart: true);
     }
 
     public override void Update(PlayerFSM player)
@@ -259,6 +262,6 @@ public class PlayerDeadState : PlayerStateBase
     {
         base.Enter(player);
         player.Motor.SetAgentEnabled(false);
-        player.PlayAnim(PlayerFSM.DieHash);
+        player.Animator.PlayAnim(PlayerAnimator.DieHash);
     }
 }

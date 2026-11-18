@@ -1,4 +1,4 @@
-using Photon.Pun;
+using MoreMountains.Feedbacks;
 using Pomunculus.Items;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,6 +7,9 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
 public class ThrownProjectile : MonoBehaviour
 {
+    // 빈 병 기본 피해를 받는 대상 (적과 채집물)
+    private const PotionTargetFlags FallbackDamageTargets = PotionTargetFlags.Enemy | PotionTargetFlags.Gatherable;
+
     [Tooltip("착탄 지점 주변 피해 반경. 0이면 직접 맞은 대상에게만 피해")]
     public float ImpactRadius = 1.5f;
     public float MaxLifeTime = 5f;
@@ -113,6 +116,7 @@ public class ThrownProjectile : MonoBehaviour
 
     void Impact(Vector3 point, Collider directHit)
     {
+        TriggerImpactEffects(point);
         CollectTargets(point, directHit);
 
         foreach (IDamageable damageable in hitTargets)
@@ -125,7 +129,20 @@ public class ThrownProjectile : MonoBehaviour
             Destroy(impactEffect, impactEffectLifeTime);
         }
 
+        MMF_Player fb = FindAnyObjectByType<MMF_Player>();
+        fb.PlayFeedbacks();
+
         Destroy(gameObject);
+    }
+
+    // 대상과 상관없이 착탄 시 한 번 실행할 효과
+    void TriggerImpactEffects(Vector3 point)
+    {
+        if (potion == null) return;
+
+        PotionImpactContext context = new PotionImpactContext(point, thrower, hitLayers);
+        foreach (PotionEffect effect in potion.Effects)
+            effect?.OnImpact(context);
     }
 
     // 직접 맞은 대상과 착탄 반경 안의 대상을 중복 없이 모은다
@@ -149,16 +166,16 @@ public class ThrownProjectile : MonoBehaviour
         }
     }
 
-    // 대상과의 관계에 맞는 효과만 순서대로 적용한다. 효과가 없으면 적에게 기본 피해
+    // 대상과의 관계에 맞는 효과만 순서대로 적용한다. 효과가 없으면 적과 채집물에게 기본 피해
     void ApplyEffects(IDamageable damageable, Vector3 point)
     {
         Entity entity = damageable as Entity;
-        if (!HasAuthority(entity)) return;   // 결정권자가 아니면 연출만 하고 효과는 건너뛴다
-        PotionTargetFlags relation = GetRelation(entity);
+        if (!PotionTargeting.HasAuthority(entity)) return;   // 결정권자가 아니면 연출만 하고 효과는 건너뛴다
+        PotionTargetFlags relation = PotionTargeting.GetRelation(entity, thrower);
 
         if (potion == null || potion.Effects.Count == 0)
         {
-            if (relation == PotionTargetFlags.Enemy)
+            if ((relation & FallbackDamageTargets) != 0)
                 damageable.TakeDamage(fallbackDamage, point);
             return;
         }
@@ -170,18 +187,6 @@ public class ThrownProjectile : MonoBehaviour
                 effect.Apply(context);
         }
     }
-
-    // 이 클라이언트가 대상의 결정권자인지 확인한다 (적 = 방장, 플레이어 = 본인)
-    bool HasAuthority(Entity entity)
-    {
-        if (!PhotonNetwork.InRoom) return true;
-        if (entity is PlayerFSM player) return player.IsMine;
-        return PhotonNetwork.IsMasterClient;
-    }
-
-    // 플레이어(던진 사람 포함)는 아군, 그 외는 적으로 본다
-    PotionTargetFlags GetRelation(Entity entity)
-        => entity is PlayerFSM ? PotionTargetFlags.Ally : PotionTargetFlags.Enemy;
 
     bool IsInHitLayer(GameObject go) => (hitLayers.value & (1 << go.layer)) != 0;
 

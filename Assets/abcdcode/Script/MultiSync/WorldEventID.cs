@@ -19,4 +19,5 @@ public enum WorldEventID : int
 
     SpawnRequest = 19,      // WorldManager (방장이 아닌 플레이어의 생성 요청)
     DayChanged = 20,        // WorldManager (방장이 결정한 날짜 경과)
+    PlayerStateSync = 21,   // WorldManager (소유자가 자기 플레이어 상태를 방장에게 전송)
 }

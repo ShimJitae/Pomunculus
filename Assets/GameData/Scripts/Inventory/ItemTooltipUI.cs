@@ -26,9 +26,9 @@ namespace Pomunculus.Items
         private RectTransform tooltipRect;
         private RectTransform canvasRect;
         private Canvas rootCanvas;
-        private InventorySlotUI owner;
+        private Component owner;
 
-        public void Show(InventorySlotUI slot, string itemName, string description, Sprite sprite, int amount, Vector2 screenPosition,
+        public void Show(Component slot, string itemName, string description,Sprite sprite, int amount, Vector2 screenPosition,
             float physics, float fire, float cold, float wind)
         {
             tooltipRect = GetComponent<RectTransform>();
@@ -100,7 +100,7 @@ namespace Pomunculus.Items
             tooltipRect.localPosition = new Vector3(x, y, 0);
         }
 
-        public void HideFor(InventorySlotUI slot)
+        public void HideFor(Component slot)
         {
             if (owner == slot)
                 Hide();

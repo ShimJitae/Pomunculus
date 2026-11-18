@@ -1,4 +1,5 @@
 using Pomunculus.Items;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.EventSystems;
@@ -24,6 +25,9 @@ public class PlayerInputReader : MonoBehaviour
     public bool HasPendingMove { get; private set; }     // 아직 처리되지 않은 우클릭 이동 명령
     public bool IsAimHeld => aimAction.IsPressed();
 
+    private static readonly List<RaycastResult> uiHits = new();
+    private bool isMoveBlockedByUI;
+
     private Camera cam;
     private Vector3 pendingDestination;
     private Vector3 bufferedAttackTarget;
@@ -40,6 +44,7 @@ public class PlayerInputReader : MonoBehaviour
     private InputAction interactAction;
     private InputAction pointAction;
     private InputAction aimAction;
+    private InputAction worldMapAction;
     private InputAction[] potionSlotActions;              // 1/2/3 키. 인덱스 = 슬롯 번호
     
 #if UNITY_EDITOR
@@ -62,6 +67,7 @@ public class PlayerInputReader : MonoBehaviour
         interactAction = playerMap.FindAction("Interact", throwIfNotFound: true);
         pointAction = playerMap.FindAction("Point", throwIfNotFound: true);
         aimAction = playerMap.FindAction("Aim", throwIfNotFound: true);
+        worldMapAction = playerMap.FindAction("WorldMap", throwIfNotFound: true);
         potionSlotActions = new InputAction[PotionLoadout.SlotCount];
         
         for (int i = 0; i < PotionLoadout.SlotCount; i++)
@@ -112,7 +118,13 @@ public class PlayerInputReader : MonoBehaviour
         // 우클릭: 이동 명령. 누르고 있으면 일정 간격으로 목적지 갱신
         bool rightDown = moveAction.WasPressedThisFrame();
         bool rightHeld = moveAction.IsPressed();
-        if (rightDown || (rightHeld && Time.time >= nextHoldRepathAt))
+
+        if (rightDown)
+            isMoveBlockedByUI = IsPointerOverRightClickConsumer();
+        if (!rightHeld)
+            isMoveBlockedByUI = false;
+
+        if (!isMoveBlockedByUI && (rightDown || (rightHeld && Time.time >= nextHoldRepathAt)))
         {
             nextHoldRepathAt = Time.time + HoldRepathInterval;
             if (TryGetNavPointUnderMouse(out Vector3 dest))
@@ -188,6 +200,9 @@ public class PlayerInputReader : MonoBehaviour
         return true;
     }
 
+    // 지도 키(Tab)를 이번 프레임에 눌렀는지
+    public bool IsWorldMapPressed() => worldMapAction.WasPressedThisFrame();
+
 #if UNITY_EDITOR
     // 디버그 피격 키(H)를 이번 프레임에 눌렀는지
     public bool IsDebugDamagePressed() => debugDamageAction.WasPressedThisFrame();
@@ -234,5 +249,23 @@ public class PlayerInputReader : MonoBehaviour
         MoveMarker.transform.position = position;
         MoveMarker.SetActive(false);   // 껐다 켜서 파티클 등을 다시 재생
         MoveMarker.SetActive(true);
+    }
+
+    // 커서 바로 아래 UI가 우클릭을 쓰는 UI인지 확인한다
+    private bool IsPointerOverRightClickConsumer()
+    {
+        if (EventSystem.current == null || Mouse.current == null)
+            return false;
+
+        var pointerData = new PointerEventData(EventSystem.current)
+        {
+            position = Mouse.current.position.ReadValue()
+        };
+        uiHits.Clear();
+        EventSystem.current.RaycastAll(pointerData, uiHits);
+
+        // 맨 위에 맞은 UI 기준
+        return uiHits.Count > 0
+            && uiHits[0].gameObject.GetComponentInParent<IRightClickConsumer>() != null;
     }
 }

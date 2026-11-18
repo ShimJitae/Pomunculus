@@ -13,6 +13,7 @@ public class RegionSpawnTable : ScriptableObject
         public RegionType Region;
         public List<string> GatherPrefabIds = new(); // NetworkPrefabCatalog 이름
         public List<string> MobPrefabIds = new();
+        public List<string> FieldBossPrefabIds = new(); // 지금은 지역마다 1종이지만 여러 종을 넣으면 무작위로 고른다
     }
 
     // 지역에 플레이어가 없어진 뒤 디스폰하기까지 기다리는 시간. 경계에서 들락날락할 때 매번 다시 소환되지 않도록
@@ -21,6 +22,7 @@ public class RegionSpawnTable : ScriptableObject
     // 목록이 비어 있으면 null
     public string PickGather(RegionType region) => Pick(region, e => e.GatherPrefabIds);
     public string PickMob(RegionType region) => Pick(region, e => e.MobPrefabIds);
+    public string PickFieldBoss(RegionType region) => Pick(region, e => e.FieldBossPrefabIds);
 
     private string Pick(RegionType region, Func<Entry, List<string>> selector)
     {

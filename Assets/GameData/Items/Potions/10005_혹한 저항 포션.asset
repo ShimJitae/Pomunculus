@@ -21,3 +21,15 @@ MonoBehaviour:
   FireElement: 3
   ColdElement: -2
   WindElement: 0
+  projectilePrefab: {fileID: 6398676829056186882, guid: a738ddbf199646ff16b15f6e23d0919d, type: 3}
+  effects:
+  - rid: 3760827132846276711
+  references:
+    version: 2
+    RefIds:
+    - rid: 3760827132846276711
+      type: {class: StatusPotionEffect, ns: , asm: Assembly-CSharp}
+      data:
+        affectedTargets: -1
+        statusType: 21
+        stackCount: 5

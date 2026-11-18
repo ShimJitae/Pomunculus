@@ -1,3 +1,4 @@
+using Pomunculus.Items;
 using UnityEngine;
 
 // 이 플레이어가 로컬(내 소유) 플레이어면 PlayerHUD를 생성해 연결하고, 플레이어가 사라지면 HUD도 제거한다.
@@ -14,8 +15,10 @@ public class LocalPlayerHUD : MonoBehaviour
         var player = GetComponent<PlayerFSM>();
         if (!player.IsMine || hudPrefab == null) return;
 
+        InventoryUI inventoryView = FindAnyObjectByType<InventoryUI>(FindObjectsInactive.Include);
+
         spawnedHud = Instantiate(hudPrefab);
-        spawnedHud.Bind(player);
+        spawnedHud.Bind(player, inventoryView);
     }
 
     // 플레이어가 파괴될 때(방 나가기·스냅샷 재구성) HUD도 함께 제거

@@ -23,6 +23,7 @@ public class EnemySkill : MonoBehaviour
     private bool isAttackActive;
     private float hitAcceptStartTime; // 이 시각 전의 판정 이벤트는 이전 공격 모션의 잔여 이벤트로 보고 무시
     private readonly Dictionary<GameObject, List<GameObject>> spawnPools = new();   // 프리팹별 소환 인스턴스 (꺼진 것을 재사용)
+    private AudioManager.SoundHandle telegraphSoundHandle; // 재생중인 예고음 (공격 취소 시 정지용)
 
     private Enemy enemy;
     private NavMeshAgent agent;
@@ -112,6 +113,12 @@ public class EnemySkill : MonoBehaviour
 
         if (attackIndicator != null)
             attackIndicator.Hide();
+
+        // 취소된 공격의 예고음 정지 (이미 끝났거나 다른 소리가 슬롯을 쓰면 audioManager가 무시
+        if (AudioManager.Instance != null)
+            AudioManager.Instance.StopSfx(telegraphSoundHandle);
+
+        telegraphSoundHandle = default;
     }
 
     // 다른 클라이언트: 방장이 보낸 공격 정보로 표시
@@ -128,7 +135,8 @@ public class EnemySkill : MonoBehaviour
 
     private void ShowTelegraph()
     {
-        PlayPatternSound(CurrentAttackPattern.TelegraphSound, transform.position); // 기 모으는 몬스터 위치에서 소리 재생
+        //PlayPatternSound(CurrentAttackPattern.TelegraphSound, transform.position); // 기 모으는 몬스터 위치에서 소리 재생
+        telegraphSoundHandle = PlayPatternSound(CurrentAttackPattern.TelegraphSound, transform.position); //  기 모으는 몬스터 위치에서 소리 재생ㅇ
 
         if (attackIndicator == null || CurrentAttackPattern.AttackArea.shape == AttackAreaShape.None)
             return;
@@ -299,12 +307,12 @@ public class EnemySkill : MonoBehaviour
         SkillParticlePool.Instance.Prewarm(patternData.HitParticle);
     }
 
-    private void PlayPatternSound(AudioSO patternSound, Vector3 soundPosition)
+    public AudioManager.SoundHandle PlayPatternSound(AudioSO patternSound, Vector3 soundPosition)
     {
         if (patternSound == null || AudioManager.Instance == null)
-            return;
+            return default;
 
-        AudioManager.Instance.PlaySound(patternSound, soundPosition);
+        return AudioManager.Instance.PlaySound(patternSound, soundPosition);
     }
 
 #if UNITY_EDITOR

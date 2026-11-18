@@ -8,6 +8,8 @@ public interface IPotionSlotView
     public void SetSelectedSlot(int slotIndex);
     public void SetSlotCount(int slotIndex, int amount, bool visible);
     public void SetEquipButtonsVisible(bool visible);
+    public void SetUnequipInteractable(bool isOpen);
 
     public event Action<int> OnEquipButtonClicked;
+    public event Action<int> OnSlotRightClicked;
 }

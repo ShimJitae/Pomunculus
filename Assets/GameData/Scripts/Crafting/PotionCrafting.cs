@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.InputSystem;
 
 namespace Pomunculus.Items
 {
@@ -9,7 +10,7 @@ namespace Pomunculus.Items
     {
         public Inventory inventory;
         [Header("전체 포션 데이터")]
-        [SerializeField] private List<PotionData> potions = new List<PotionData>();
+        [SerializeField] private PotionDatabase potionDatabase;
         [Header("실패했을 때 지급할 포션")]
         [SerializeField] private PotionData failurePotion;
         [Header("레시피북")]
@@ -36,6 +37,13 @@ namespace Pomunculus.Items
         [Header("투입한 재료 아이콘")]
         [SerializeField] private Image[] insertedMaterialIcons = new Image[3];
         private readonly List<MaterialData> insertedMaterials = new List<MaterialData>();
+        [Header("제작 결과 미리보기")]
+        [SerializeField] private Image resultPreviewImage;
+        [SerializeField] private Sprite unknownIcon;
+        [Header("아이템 툴팁")]
+        [SerializeField] private ItemTooltipUI tooltip;
+        private int hoveredMaterialIndex = -1;
+        private bool isResultHovered;
         private void OnEnable()
         {
             RefreshUI();
@@ -98,7 +106,7 @@ namespace Pomunculus.Items
 
         private PotionData FindMatchingPotion()
         {
-            foreach (PotionData potion in potions)
+            foreach (PotionData potion in potionDatabase.Potions)
             {
                 if (potion == null || potion.Id == EmptyBottleId)
                     continue;
@@ -146,6 +154,10 @@ namespace Pomunculus.Items
                 icon.preserveAspect = true;
                 icon.enabled = hasMaterial && icon.sprite != null;
             }
+            RefreshResultPreview();
+            RefreshInsertedMaterialTooltip();
+            RefreshResultTooltip();
+
         }
         private bool HasRemainingElements()
         {
@@ -217,6 +229,123 @@ namespace Pomunculus.Items
             }
             inventory.AddItem(material.Id, 1);
             RefreshUI();
+        }
+        //결과이미지 보이기
+        private void RefreshResultPreview()
+        {
+            if (resultPreviewImage == null)
+                return;
+
+            if (insertedMaterials.Count == 0)
+            {
+                resultPreviewImage.sprite = null;
+                resultPreviewImage.enabled = false;
+                return;
+            }
+
+            PotionData potion = FindMatchingPotion();
+
+            bool discovered = potion != null
+                && recipeBook != null
+                && recipeBook.IsDiscovered(potion.Id);
+
+            resultPreviewImage.sprite = discovered ? potion.Icon : unknownIcon;
+            resultPreviewImage.preserveAspect = true;
+            resultPreviewImage.enabled = resultPreviewImage.sprite != null;
+        }
+        public void ShowInsertedMaterialTooltip(int index)
+        {
+            hoveredMaterialIndex = index;
+            RefreshInsertedMaterialTooltip();
+        }
+
+        public void HideInsertedMaterialTooltip()
+        {
+            hoveredMaterialIndex = -1;
+
+            if (tooltip != null)
+                tooltip.HideFor(this);
+        }
+
+        private void RefreshInsertedMaterialTooltip()
+        {
+            if (tooltip == null)
+                return;
+
+            if (hoveredMaterialIndex < 0 ||
+                hoveredMaterialIndex >= insertedMaterials.Count ||
+                inventory == null ||
+                Mouse.current == null)
+            {
+                tooltip.HideFor(this);
+                return;
+            }
+
+            MaterialData material = insertedMaterials[hoveredMaterialIndex];
+
+            tooltip.Show(
+                this,
+                material.ItemName,
+                material.Description,
+                material.Icon,
+                inventory.GetItemCount(material.Id),
+                Mouse.current.position.ReadValue(),
+                material.PhysicsElement,
+                material.FireElement,
+                material.ColdElement,
+                material.WindElement
+            );
+        }
+        private void OnDisable()
+        {
+            HideInsertedMaterialTooltip();
+            HideResultTooltip();
+        }
+        public void ShowResultTooltip()
+        {
+            isResultHovered = true;
+            RefreshResultTooltip();
+        }
+
+        public void HideResultTooltip()
+        {
+            isResultHovered = false;
+
+            if (tooltip != null)
+                tooltip.HideFor(this);
+        }
+
+        private void RefreshResultTooltip()
+        {
+            if (!isResultHovered || tooltip == null)
+                return;
+
+            PotionData potion = insertedMaterials.Count > 0
+                ? FindMatchingPotion()
+                : null;
+
+            bool discovered = potion != null
+                && recipeBook != null
+                && recipeBook.IsDiscovered(potion.Id);
+
+            if (!discovered || inventory == null || Mouse.current == null)
+            {
+                tooltip.HideFor(this);
+                return;
+            }
+
+            tooltip.Show(
+                this,
+                potion.ItemName,
+                potion.Description,
+                potion.Icon,
+                inventory.GetItemCount(potion.Id),
+                Mouse.current.position.ReadValue(),
+                potion.PhysicsElement,
+                potion.FireElement,
+                potion.ColdElement,
+                potion.WindElement
+            );
         }
     }
 }

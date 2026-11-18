@@ -22,13 +22,20 @@ MonoBehaviour:
   interval: 4.5
   patternWeight: 1
   animatorTrigger: 1
-  useRange: 0
+  useRange: 8
   attackArea:
-    shape: 0
+    shape: 1
     anchor: 0
-    radius: 0
-    angle: 0
+    radius: 8
+    angle: 360
     width: 0
     length: 0
     offset: {x: 0, y: 0, z: 0}
+  skillParticle: {fileID: 0}
+  hitParticle: {fileID: 0}
+  skillParticleOffset: {x: 0, y: 0, z: 0}
+  skillParticleRotation: {x: 0, y: 0, z: 0}
+  scaleSkillParticleWithArea: 1
+  telegraphSound: {fileID: 0}
+  attackSound: {fileID: 0}
   note: "\uB290\uB9AC\uACE0 \uAC15\uD55C \uCDA9\uACA9\uD30C \uADFC\uC811 \uACF5\uACA9"

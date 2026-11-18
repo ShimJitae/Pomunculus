@@ -11,6 +11,10 @@
 <!-- harness:status:end -->
 - Claude Code 겸용 레이어를 이 프로젝트에만 추가했다(UnityHarness 원본 미반영). `CLAUDE.md`, `.claude/`, `scripts/ai/sync-claude.ps1`이 해당하며 Codex 파일은 바꾸지 않았다. 스킬·역할은 Codex 원본을 고친 뒤 `sync-claude.ps1`로 다시 생성한다.
 
+## World_PurePoly 가림 페이드 — 2026-11-17
+
+- `NewMapScene`에 [가림 페이드 구성](PROJECT.md#world_purepoly-원형-월드-맵)을 저장했다. 씬 자체에 `OccluderTarget`이 없으므로, 플레이어가 배치되는 환경에서 보스 고지 위·아래, 지역 외곽, 돌문 옆 통로의 페이드와 원본 재질 복귀를 확인해야 한다. 고지 측면과 전투 바닥은 한 메시이므로 함께 페이드된다.
+
 ## 디버프 장판과 통합 맵 배치 — 2026-11-10
 
 - `World.prefab`의 네 지역 일반 필드의 `SESources`에 장판 48개를 배치했다. 지형에 맞춰 재배치한 결과와 검증 상태는 [장판 작업 기록](plans/2026-11-10-디버프-장판.md#지형에-맞춘-재배치)을 참고한다. 플레이 진입·재부여·우회 동작은 후속 확인 대상이다.

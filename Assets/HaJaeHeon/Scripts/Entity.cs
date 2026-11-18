@@ -1,4 +1,5 @@
 using UnityEngine;
+using Photon.Pun;
 
 [RequireComponent(typeof(StatusEffectController))]
 public class Entity : MonoBehaviour, IWorldObj, IDamageable
@@ -17,6 +18,11 @@ public class Entity : MonoBehaviour, IWorldObj, IDamageable
     public bool IsInvincible { get; private set; } = false; // 무적 상태 여부. 기본값은 false
 
     private StatusEffectController statusEffectController;
+
+    #region 소유권자 확인
+    protected bool IsMaster => !PhotonNetwork.InRoom || PhotonNetwork.IsMasterClient;
+    protected virtual bool HasStateAuthority { get => IsMaster; }
+    #endregion
 
     private void HandleModifiersChanged(StatusModifiers m)
     {
@@ -134,16 +140,58 @@ public class Entity : MonoBehaviour, IWorldObj, IDamageable
         Debug.Log("Entity 사망");
     }
 
-    public void RegisterStatusEffect(StatusEffectType seType)
+    #region 상태이상 동기화
+    // 하위 RPC enum과 겹치지 않는 공용 번호. 하위 enum에 같은 값으로 추가한다
+    protected const byte RpcRegisterStatusEffect = 200;
+
+    /// <summary>
+    /// 외부(포션·장판·디버그)에서 상태이상을 건다.
+    /// 결정권자(적 = 방장, 플레이어 = 소유자)만 모든 클라이언트에 전송하고 나머지는 무시한다.
+    /// 여러 클라이언트가 같은 접촉을 감지해도 한 번만 걸린다.
+    /// </summary>
+    public void RegisterStatusEffect(StatusEffectType seType, int count = 1)
     {
-        if (statusEffectController == null || seType == StatusEffectType.None)
+        if (statusEffectController == null || seType == StatusEffectType.None || count <= 0)
         {
             return;
         }
 
-        // TODO: Entity에 SendRegisterStatusEffect가 추가되면 entity.SendRegisterStatusEffect(seType)로 교체
-        statusEffectController.ApplyStatusEffectLocal(seType);
+        if (!HasStateAuthority)
+        {
+            return;
+        }
+
+        // 네트워크 대상이 아닌 Entity는 로컬에만 적용
+        if (this is not IWorldRPC rpc)
+        {
+            ApplyStatusEffects(seType, count);
+            return;
+        }
+
+        PacketData packet = new();
+        packet.Write(RpcRegisterStatusEffect);
+        packet.Write((int)seType);
+        packet.Write(count);
+        rpc.SendRPC(packet, WorldRPCTarget.All);   // 나도 하위 ReceiveRPC를 거쳐 적용됨
     }
+
+    /// <summary>하위 ReceiveRPC의 RegisterStatusEffect case에서 호출한다. 첫 바이트는 읽은 뒤다.</summary>
+    protected void ReceiveRegisterStatusEffect(PacketData packet)
+    {
+        StatusEffectType seType = (StatusEffectType)packet.ReadInt();
+        int count = packet.ReadInt();
+        ApplyStatusEffects(seType, count);
+    }
+
+    // 1중첩씩 등록한다. 저항이 있으면 1회씩 막힌다
+    private void ApplyStatusEffects(StatusEffectType seType, int count)
+    {
+        for (int i = 0; i < count; i++)
+        {
+            statusEffectController.ApplyStatusEffectLocal(seType);
+        }
+    }
+    #endregion
 
     protected virtual int GetId()
     {

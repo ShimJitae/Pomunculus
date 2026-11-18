@@ -21,12 +21,15 @@ public class Enemy : Entity, IWorldRPC, IHealable
     [SerializeField] private GameObject target;
     [SerializeField] private EnemyDetector detector;
     [SerializeField] private float knockbackDistance;
+    [SerializeField] private float detectRangeBonus = 10f; // 피격 시 추가되는 감지 범위
+    [SerializeField] private float chaseSpeedMultiplier = 2.5f; // 추적 시 이동속도 배율
 
     private bool IsDamageBlock => IsInvincible || CheckDie();
     private NavMeshAgent agent;
     private Animator animator;
     private EnemyMovement movement;
     private EnemySkill enemySkill;
+    private bool hasDetectRangeExpanded;
 
     private float groggyHpRatio = 0.5f;
     private bool hasGroggyTriggered;
@@ -52,14 +55,14 @@ public class Enemy : Entity, IWorldRPC, IHealable
     // 적의 행동 그래프와 전투 상태를 초기화하고 실행 권한에 따라 감지와 공격 준비를 수행
     protected override void OnEnable()
     {
-        if(EnemySo == null)
+        if (EnemySo == null)
         {
             Debug.Log("SO 데이터가 연결되어있지 않습니다.");
             gameObject.SetActive(false);
             return;
         }
         movement.InitSpawnCenter(transform.position);
-        
+
         behaviorGraphAgent.Graph = EnemySo.GetBehaviorGraph();
         behaviorGraphAgent.SetVariableValue("SpawnPosition", movement.SpawnCenter);
 
@@ -69,6 +72,7 @@ public class Enemy : Entity, IWorldRPC, IHealable
         ApplyAuthority(IsMaster);
 
         hasGroggyTriggered = false;
+        hasDetectRangeExpanded = false;
         behaviorGraphAgent.SetVariableValue("IsGroggy", false);
 
         enemySkill.PrewarmParticles();
@@ -111,7 +115,7 @@ public class Enemy : Entity, IWorldRPC, IHealable
         if (IsDamageBlock || damage <= 0)
             return;
 
-        CurrentHp -=  Mathf.CeilToInt(damage * DamageTakenRatio);
+        CurrentHp -= Mathf.CeilToInt(damage * DamageTakenRatio);
         OnHpChanged?.Invoke(CurrentHp, MaxHp);
         SendHpSync();
 
@@ -123,6 +127,7 @@ public class Enemy : Entity, IWorldRPC, IHealable
         }
         else
         {
+            TryExpandDetectRange();
             TryEnterGroggy();
         }
     }
@@ -150,8 +155,20 @@ public class Enemy : Entity, IWorldRPC, IHealable
             return;
 
         hasGroggyTriggered = true;
+
+        PlayEnemySound(EnemySo.GroggySound);
+
         behaviorGraphAgent.SetVariableValue("IsGroggy", true);
         CancelCurrentAttack();
+    }
+
+    private void TryExpandDetectRange()
+    {
+        if (hasDetectRangeExpanded)
+            return;
+
+        hasDetectRangeExpanded = true;
+        detector.SetRadius(EnemySo.GetDetectRange() + detectRangeBonus);
     }
 
     // 넉백을 포함한 takeDamage
@@ -184,9 +201,11 @@ public class Enemy : Entity, IWorldRPC, IHealable
 
 
         float currentMoveSpeed = CanMove ? EnemySo.GetSpeed() * MoveSpeedRatio : 0f;
+        float currentChaseSpeed = currentMoveSpeed * chaseSpeedMultiplier;
 
         behaviorGraphAgent.SetVariableValue("MoveSpeed", currentMoveSpeed);
-        agent.speed = currentMoveSpeed; 
+        behaviorGraphAgent.SetVariableValue("ChaseSpeed", currentChaseSpeed);
+        agent.speed = currentMoveSpeed;
         // 기절 0 / 구속 1 / 그외 >> 이동 배율대로
         float animationSpeedRatio = !CanAttack ? 0f : (CanMove ? MoveSpeedRatio : 1f);
         animator.SetFloat("MoveAnimSpeed", animationSpeedRatio);
@@ -201,14 +220,22 @@ public class Enemy : Entity, IWorldRPC, IHealable
     // 죽었을 시 아이템 스폰 and 적 사라지기 (하던 행동 끊김)
     protected override void OnDie()
     {
+        PlayEnemySound(EnemySo.DieSound);
+
         behaviorGraphAgent.SetVariableValue<bool>("IsDie", true);
         CancelCurrentAttack();
 
-        // 동기화 시 이 부분 삭제 필요
-        DataDBManager.Instance.SpawnDropItem(GetId(), transform.position);
-
         if (IsMaster)
         {
+            int dropItemId = DataDBManager.Instance.TryGetDropItemID(GetId());
+
+            if (dropItemId > 0)
+            {
+                GameObject dropItemPrefab = DataDBManager.Instance.ItemDatabase.GetItemPrefab(dropItemId);
+
+                if (dropItemPrefab != null)
+                    WorldManager.Instance.Spawn(dropItemPrefab.name, transform.position + DataDBManager.Instance.ItemDropOffset, Quaternion.identity);
+            }
             StartCoroutine(WaitDieAnimation());
         }
     }
@@ -237,6 +264,10 @@ public class Enemy : Entity, IWorldRPC, IHealable
             return;
 
         SetTarget(detector.GetNearestPlayer());
+
+        // 넓힌 범위 안에도 플레이어가 없으면 감지 범위로 복구
+        if (target == null)
+            ResetDetectRange();
     }
 
     protected override int GetId()
@@ -261,7 +292,7 @@ public class Enemy : Entity, IWorldRPC, IHealable
         if (!_data.Child.TryGetValue("enemyHp", out SaveData enemyHpData))
             return;
 
-        ApplyHp(enemyHpData.GetData<int>());
+        ApplyHp(enemyHpData.GetData<int>(), false);
     }
 
     // 마스터가 넘어갔을 시 그 마스터에게만 동작 권한 넘기기용 함수
@@ -273,6 +304,24 @@ public class Enemy : Entity, IWorldRPC, IHealable
         detector.gameObject.SetActive(isAuthority);
     }
 
+    // 몬스터 위치에서 소리 재생 (각 클라이언트에서 로컬로). AudioManager가 없는 씬에서도 게임 로직이 멈추지 않도록 확인
+    private void PlayEnemySound(AudioSO enemySound)
+    {
+        if (enemySound == null || AudioManager.Instance == null)
+            return;
+
+        AudioManager.Instance.PlaySound(enemySound, transform.position);
+    }
+
+    private void ResetDetectRange()
+    {
+        if (!hasDetectRangeExpanded)
+            return;
+
+        hasDetectRangeExpanded = false;
+        detector.SetRadius(EnemySo.GetDetectRange());
+    }
+
     #region 네트워크
     // 방 밖에서는 로컬 실행을 허용하고, 방 안에서는 마스터 클라이언트만 실행 권한을 가진다.
     private bool IsMaster => !PhotonNetwork.InRoom || PhotonNetwork.IsMasterClient;
@@ -282,6 +331,7 @@ public class Enemy : Entity, IWorldRPC, IHealable
         SyncHp,           // 방장 > 다른 플레이어 : 확정된 HP
         ShowTelegraph,    // 방장 > 다른 플레이어 : 공격 범위 표시
         CancelTelegraph,  // 방장 > 다른 플레이어 : 공격 취소 (그로기, 사망)
+        RegisterStatusEffect = RpcRegisterStatusEffect, // 결정권자 > 모두 : 상태이상 등록 (Entity 공용)
     }
 
 
@@ -332,7 +382,7 @@ public class Enemy : Entity, IWorldRPC, IHealable
         switch (rpcType)
         {
             case EnemyRPCType.SyncHp:
-                ApplyHp(packet.ReadInt());
+                ApplyHp(packet.ReadInt(), true);
                 break;
             case EnemyRPCType.ShowTelegraph:
                 ReceiveShowTelegraph(packet);
@@ -340,6 +390,10 @@ public class Enemy : Entity, IWorldRPC, IHealable
 
             case EnemyRPCType.CancelTelegraph:
                 enemySkill.CancelAttack();
+                break;
+
+            case EnemyRPCType.RegisterStatusEffect:
+                ReceiveRegisterStatusEffect(packet);
                 break;
         }
     }
@@ -360,8 +414,12 @@ public class Enemy : Entity, IWorldRPC, IHealable
     }
 
     // 방장이 확정한 HP나 저장된 HP를 적용 (드롭·파괴는 하지 않음)
-    private void ApplyHp(int hp)
+    // playFeedback : 실시간 동기화면 true, 저장 데이터 로드면 false (입장 시 소리 재생 방지)
+    private void ApplyHp(int hp, bool playFeedback)
     {
+        bool wasDie = isDie;
+        bool wasGroggyTriggered = hasGroggyTriggered;
+
         CurrentHp = hp;
         isDie = CurrentHp <= 0;
 
@@ -374,6 +432,15 @@ public class Enemy : Entity, IWorldRPC, IHealable
             enemySkill.CancelAttack();
 
         OnHpChanged?.Invoke(CurrentHp, MaxHp);
+
+        if (!playFeedback)
+            return;
+
+        // 한 번에 죽으면 그로기음 없이 사망음만
+        if (!wasDie && isDie)
+            PlayEnemySound(EnemySo.DieSound);
+        else if (!wasGroggyTriggered && hasGroggyTriggered)
+            PlayEnemySound(EnemySo.GroggySound);
     }
     #endregion
 }

@@ -1,5 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.IO.Compression;
+using System.Text;
 using Newtonsoft.Json;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -10,6 +13,12 @@ public class WorldData
     public int Day{get;set;}
     public float Time{get;set;}
     public int NextId{get;set;} // 다음에 발급할 IdManager id
+
+    // 계절은 Day로 계산하므로 따로 저장/전송하지 않음 (Day 0 = 1일차)
+    public const int SeasonLength = 10; // 계절 하나의 일수
+    [JsonIgnore] public Season Season => GetSeason(Day);
+    public static Season GetSeason(int day) => (Season)(Math.Max(day, 0) / SeasonLength % SeasonCount);
+    private const int SeasonCount = 4;
 
     public Dictionary<string, PlayerSaveData> Players{get;set;} = new(); // key : UID
     public List<WorldObjSaveData> Entities{get;set;} = new();
@@ -52,6 +61,15 @@ public class WorldData
     }
 }
 
+// 봄에서 시작해 SeasonLength일마다 다음 계절로, 겨울 다음은 다시 봄
+public enum Season
+{
+    Spring = 0,
+    Summer = 1,
+    Autumn = 2,
+    Winter = 3,
+}
+
 // 플레이어는 UID 기준으로 월드 엔티티와 따로 저장하므로, 다시 들어왔을 때 놓을 위치도 같이 둔다
 public class PlayerSaveData
 {
@@ -83,18 +101,23 @@ public class WorldSnapshot
     public List<WorldObjSaveData> Entities{get;set;} = new();
 
     // 네트워크 전송용 바이너리
+    // 엔티티 목록은 통째로 한 번에 압축. 엔티티마다 반복되는 JSON 키가 같이 압축되어 개별 압축보다 효율이 좋음
     public void Write(PacketData p)
     {
         p.Write(Day);
         p.Write(Time);
-        p.Write(Entities.Count);
-        foreach(var e in Entities) e.Write(p);
+        var inner = new PacketData();
+        inner.Write(Entities.Count);
+        foreach(var e in Entities) e.Write(inner, compressState: false); // 바깥에서 한 번에 압축하므로 개별 압축 안 함
+        inner.Save();
+        p.WriteBlock(inner.GetData(), compress: true);
     }
     public static WorldSnapshot Read(PacketData p)
     {
         var s = new WorldSnapshot { Day = p, Time = p };
-        int count = p;
-        for(int i = 0; i < count; i++) s.Entities.Add(WorldObjSaveData.Read(p));
+        var inner = new PacketData(p.ReadBlock());
+        int count = inner;
+        for(int i = 0; i < count; i++) s.Entities.Add(WorldObjSaveData.Read(inner));
         return s;
     }
 }
@@ -124,14 +147,15 @@ public class WorldObjSaveData
     }
 
     // 네트워크 전송용 바이너리. 다시 생성하는 데 필요한 값은 고정 크기로 쓰고,
-    // 상태(SaveData)는 Entity마다 형태가 달라서 JSON 문자열로 둔다
-    public void Write(PacketData p)
+    // 상태(SaveData)는 Entity마다 형태가 달라서 JSON으로 두고, 크면 Deflate로 압축
+    // compressState : 바깥에서 묶어서 압축하는 경우(스냅샷) false
+    public void Write(PacketData p, bool compressState = true)
     {
         p.Write(ID);
         p.Write(PrefabId);
         p.Write(Position.ToVector3());
         p.Write(Rotation.ToVector3());
-        p.WriteSaveData(State);
+        p.WriteSaveData(State, compressState);
     }
     public static WorldObjSaveData Read(PacketData p) => new()
     {
@@ -145,15 +169,81 @@ public class WorldObjSaveData
 
 public static class SaveDataPacketExtensions
 {
-    // null이면 bool 하나만 씀
-    public static void WriteSaveData(this PacketData p, SaveData d)
+    // 형식 : [byte 플래그][int 길이][바이트]
+    //   플래그 0 : null (길이/바이트 없음)
+    //   플래그 1 : 원본 그대로
+    //   플래그 2 : Deflate 압축
+    // 작은 데이터는 압축 헤더 때문에 오히려 커지므로 CompressThreshold 이상일 때만 압축하고,
+    // 압축해도 줄어들지 않으면 원본으로 보냄. 읽는 쪽은 플래그만 보고 처리하므로 압축 여부와 상관없이 같은 Read를 씀
+    public const int CompressThreshold = 256;
+    private const byte FlagNull = 0;
+    private const byte FlagRaw = 1;
+    private const byte FlagDeflate = 2;
+
+    public static void WriteSaveData(this PacketData p, SaveData d, bool compress = true)
     {
-        p.Write(d != null);
-        if(d != null) p.Write(JsonConvert.SerializeObject(d));
+        if(d == null)
+        {
+            p.Write(FlagNull);
+            return;
+        }
+        p.WriteBlock(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(d)), compress);
     }
     public static SaveData ReadSaveData(this PacketData p)
     {
-        return p.ReadBool() ? JsonConvert.DeserializeObject<SaveData>(p.ReadString()) : null;
+        byte[] bytes = p.ReadBlock();
+        return bytes == null ? null : JsonConvert.DeserializeObject<SaveData>(Encoding.UTF8.GetString(bytes));
+    }
+
+    public static void WriteBlock(this PacketData p, byte[] raw, bool compress)
+    {
+        if(raw == null)
+        {
+            p.Write(FlagNull);
+            return;
+        }
+        if(compress && raw.Length >= CompressThreshold)
+        {
+            byte[] compressed = Deflate(raw);
+            if(compressed.Length < raw.Length)
+            {
+                p.Write(FlagDeflate);
+                p.Write(compressed.Length);
+                p.Write(compressed);
+                return;
+            }
+        }
+        p.Write(FlagRaw);
+        p.Write(raw.Length);
+        p.Write(raw);
+    }
+    public static byte[] ReadBlock(this PacketData p)
+    {
+        byte flag = p.ReadByte();
+        if(flag == FlagNull) return null;
+        int length = p.ReadInt();
+        int start = p.offset;
+        p.offset += length;
+        if(flag == FlagDeflate) return Inflate(p.data, start, length);
+        var raw = new byte[length];
+        Buffer.BlockCopy(p.data, start, raw, 0, length);
+        return raw;
+    }
+
+    private static byte[] Deflate(byte[] raw)
+    {
+        using var output = new MemoryStream();
+        using(var deflate = new DeflateStream(output, System.IO.Compression.CompressionLevel.Optimal, leaveOpen: true))
+            deflate.Write(raw, 0, raw.Length);
+        return output.ToArray();
+    }
+    private static byte[] Inflate(byte[] data, int offset, int count)
+    {
+        using var input = new MemoryStream(data, offset, count);
+        using var deflate = new DeflateStream(input, CompressionMode.Decompress);
+        using var output = new MemoryStream();
+        deflate.CopyTo(output);
+        return output.ToArray();
     }
 }
 

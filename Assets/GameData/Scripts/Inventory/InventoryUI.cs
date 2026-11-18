@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -30,8 +31,8 @@ namespace Pomunculus.Items
         [SerializeField] private ItemTooltipUI tooltip;
 
         [Header("전체 아이템 데이터")]
-        [SerializeField] private List<MaterialData> materials = new List<MaterialData>();
-        [SerializeField] private List<PotionData> potions = new List<PotionData>();
+        [SerializeField] private MaterialDatabase materialDatabase;
+        [SerializeField] private PotionDatabase potionDatabase;
 
         [Header("슬롯 생성")]
         [SerializeField] private Transform content;
@@ -45,6 +46,9 @@ namespace Pomunculus.Items
         [SerializeField] private PotionSlotSelector potionSlotSelector;
 
 
+        public event Action<bool> OnOpenChanged;
+        public bool IsOpen => isActiveAndEnabled;
+
         private InventoryTab currentTab = InventoryTab.All;
 
         private void OnEnable()
@@ -54,6 +58,7 @@ namespace Pomunculus.Items
 
             inventory.Changed += Refresh;
             Refresh();
+            OnOpenChanged?.Invoke(true);
         }
 
         private void OnDisable()
@@ -65,6 +70,8 @@ namespace Pomunculus.Items
                 tooltip.Hide();
             if (potionSlotSelector != null)
                 potionSlotSelector.CancelSelection();
+
+            OnOpenChanged?.Invoke(false);
         }
 
         public void Refresh()
@@ -111,7 +118,7 @@ namespace Pomunculus.Items
 
             if (currentTab != InventoryTab.Potion)
             {
-                foreach (MaterialData material in materials)
+                foreach (MaterialData material in materialDatabase.Materials)
                 {
                     if (material == null)
                         continue;
@@ -137,7 +144,7 @@ namespace Pomunculus.Items
             }
             if (currentTab != InventoryTab.Material)
             {
-                foreach (PotionData potion in potions)
+                foreach (PotionData potion in potionDatabase.Potions)
                 {
                     if (potion == null)
                         continue;

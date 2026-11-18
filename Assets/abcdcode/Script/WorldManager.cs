@@ -24,6 +24,7 @@ public class WorldManager : Singleton<WorldManager>
         RaiseEventManager.Instance.RegisterEvent((int)WorldEventID.WorldRPC, RPCHelper.OnReceive);
         RaiseEventManager.Instance.RegisterEvent((int)WorldEventID.SpawnRequest, OnReceiveSpawnRequest);
         RaiseEventManager.Instance.RegisterEvent((int)WorldEventID.DayChanged, OnReceiveDayChanged);
+        RaiseEventManager.Instance.RegisterEvent((int)WorldEventID.PlayerStateSync, OnReceivePlayerState);
         RegionSpawner.Instance.Init();
         m_initialized = true;
     }
@@ -37,6 +38,7 @@ public class WorldManager : Singleton<WorldManager>
         RaiseEventManager.Instance.UnRegisterEvent((int)WorldEventID.WorldRPC);
         RaiseEventManager.Instance.UnRegisterEvent((int)WorldEventID.SpawnRequest);
         RaiseEventManager.Instance.UnRegisterEvent((int)WorldEventID.DayChanged);
+        RaiseEventManager.Instance.UnRegisterEvent((int)WorldEventID.PlayerStateSync);
         RegionSpawner.Instance.Release();
         ClearWorld();
         CurSlot = NoSlot;
@@ -51,6 +53,10 @@ public class WorldManager : Singleton<WorldManager>
     public const float DayLength = 60f; // 하루 길이(초)
     // 바뀐 Day. 방장/수신 쪽 모두 호출됨
     public event Action<int> OnDayChangedEvent;
+    // 바뀐 계절. 날짜가 넘어가며 계절이 바뀔 때 OnDayChangedEvent 다음에 호출. 방장/수신 쪽 모두 호출됨
+    // 월드를 불러오거나 스냅샷을 받을 때는 호출되지 않으므로 초기값은 CurSeason으로 확인
+    public event Action<Season> OnSeasonChangedEvent;
+    public Season CurSeason => CurWorldData?.Season ?? Season.Spring;
 
     // GameManager.Update에서 매 프레임 호출
     // 시간은 모두가 로컬로 흘려보내고, 날짜가 넘어가는 건 방장만 결정해서 전파한다
@@ -66,12 +72,14 @@ public class WorldManager : Singleton<WorldManager>
         }
         if (CurWorldData.Time < DayLength) return;
 
+        Season prevSeason = CurWorldData.Season;
         while (CurWorldData.Time >= DayLength)
         {
             CurWorldData.Time -= DayLength;
             CurWorldData.Day++;
         }
         OnDayChangedEvent?.Invoke(CurWorldData.Day);
+        if (CurWorldData.Season != prevSeason) OnSeasonChangedEvent?.Invoke(CurWorldData.Season);
         if (!PhotonNetwork.InRoom) return;
 
         // 남은 Time도 같이 보내서 다른 플레이어의 오차를 날짜마다 맞춤
@@ -89,9 +97,11 @@ public class WorldManager : Singleton<WorldManager>
         // 스냅샷 전에 보낸 날짜는 스냅샷에 이미 반영되어 오므로 무시
         if (!IsReady || CurWorldData == null || day < CurWorldData.Day) return;
         bool changed = day != CurWorldData.Day;
+        Season prevSeason = CurWorldData.Season;
         CurWorldData.Day = day;
         CurWorldData.Time = time;
         if (changed) OnDayChangedEvent?.Invoke(day);
+        if (CurWorldData.Season != prevSeason) OnSeasonChangedEvent?.Invoke(CurWorldData.Season);
     }
     #endregion
 
@@ -148,7 +158,14 @@ public class WorldManager : Singleton<WorldManager>
             return;
         }
         m_players[uid] = player;
-        if (!IsMaster) return;
+        if (!IsMaster)
+        {
+            // 인벤토리는 소유자 클라이언트에서만 바뀌므로, 바뀔 때마다 방장에게 보내 방장 쪽 사본/저장 데이터를 맞춤
+            // LoadData로 초기 상태를 적용한 뒤 등록되므로 불러올 때의 변경은 전송되지 않음
+            if (player.Owner == PhotonNetwork.LocalPlayer.ActorNumber && player is PlayerFSM fsm && fsm.Inventory != null)
+                fsm.Inventory.Changed += SendLocalPlayerState;
+            return;
+        }
         // 저장된 Owner는 이전 세션의 ActorNumber이므로 불러온 뒤 현재 값으로 되돌림
         int owner = player.Owner;
         if (CurWorldData?.LoadPlayer(uid, player) == true) player.Owner = owner;
@@ -166,6 +183,30 @@ public class WorldManager : Singleton<WorldManager>
     {
         if (!PhotonNetwork.InRoom) return GameManager.Instance.LocalUserProfile.UID;
         return PhotonNetwork.CurrentRoom.GetPlayer(actor)?.CustomProperties[NetworkManager.UidProperty] as string;
+    }
+    // 방장이 아닌 소유자가 호출. 자기 플레이어의 현재 상태를 방장에게 전송
+    public void SendLocalPlayerState()
+    {
+        if (IsMaster || !PhotonNetwork.InRoom) return;
+        string uid = GameManager.Instance.LocalUserProfile.UID;
+        if (!m_players.TryGetValue(uid, out var player) || player == null) return;
+        var state = new SaveData();
+        player.SaveData(state);
+
+        PacketData p = new();
+        p.Write((int)WorldEventID.PlayerStateSync);
+        p.WriteSaveData(state);
+        RaiseEventManager.Instance.SendPacket(p, new() { Receivers = ReceiverGroup.MasterClient }, SendOptions.SendReliable);
+    }
+    // 방장 : 소유자가 보낸 상태를 방장 쪽 사본에 적용. 나갈 때 UnregisterPlayer에서 이 사본으로 저장됨
+    private void OnReceivePlayerState(EventData e, PacketData p)
+    {
+        if (!IsMaster) return;
+        var state = p.ReadSaveData();
+        string uid = GetUid(e.Sender);
+        if (state == null || uid == null || !m_players.TryGetValue(uid, out var player)) return;
+        if (player is not IPlayerObj po || po.Owner != e.Sender) return; // 다른 사람의 플레이어는 덮어쓰지 않음
+        player.LoadData(state);
     }
     public PlayerFSM GetLocalPlayer()
     {

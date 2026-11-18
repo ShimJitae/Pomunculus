@@ -21,3 +21,14 @@ MonoBehaviour:
   FireElement: 0
   ColdElement: 2
   WindElement: 2
+  projectilePrefab: {fileID: 6398676829056186882, guid: 4377fe18fcf9242fa6c1d9899c3b356e, type: 3}
+  effects:
+  - rid: 3760827132846276719
+  references:
+    version: 2
+    RefIds:
+    - rid: 3760827132846276719
+      type: {class: HealPotionEffect, ns: , asm: Assembly-CSharp}
+      data:
+        affectedTargets: 5
+        amount: 50

@@ -11,12 +11,15 @@ public class PotionSlotPresenter : IDisposable
 
     // View
     private readonly IPotionSlotView view;
+    private readonly InventoryUI inventoryView;
 
-    public PotionSlotPresenter(PotionLoadout model, Inventory inventory, IPotionSlotView view)
+    public PotionSlotPresenter(PotionLoadout model, Inventory inventory, IPotionSlotView view, InventoryUI invenView)
     {
         this.model = model;
         this.inventory = inventory;
         this.view = view;
+
+        inventoryView = invenView;
 
         model.OnSelectChanged += view.SetSelectedSlot;
 
@@ -25,6 +28,13 @@ public class PotionSlotPresenter : IDisposable
 
         model.OnEquipModeChanged += view.SetEquipButtonsVisible;
         view.OnEquipButtonClicked += HandleEquipButtonClicked;
+        view.OnSlotRightClicked += HandleUnequipPotionClicked;
+
+        // PotionSlotPresenter: 인벤토리 창이 없는 씬에서도 HUD는 동작하게
+        if (inventoryView != null)
+            inventoryView.OnOpenChanged += view.SetUnequipInteractable;
+        view.SetUnequipInteractable(inventoryView != null && inventoryView.IsOpen);
+
         // 첫 갱신
         RefreshAllSlots();
         view.SetEquipButtonsVisible(model.IsEquipping);
@@ -60,6 +70,12 @@ public class PotionSlotPresenter : IDisposable
         model.EquipToSlot(slotIndex);
     }
 
+    private void HandleUnequipPotionClicked(int slotIndex)
+    {
+        if (inventoryView != null && inventoryView.IsOpen && !model.IsEquipping)
+            model.UnequipPotion(slotIndex);
+    }
+
     // 구독 해제 (Model 연결 후 이벤트 해제 코드를 넣는다)
     public void Dispose()
     {
@@ -68,5 +84,8 @@ public class PotionSlotPresenter : IDisposable
         model.OnEquipModeChanged -= view.SetEquipButtonsVisible;
         inventory.Changed -= RefreshAllSlots;
         view.OnEquipButtonClicked -= HandleEquipButtonClicked;
+        view.OnSlotRightClicked -= HandleUnequipPotionClicked;
+        if (inventoryView != null)
+            inventoryView.OnOpenChanged -= view.SetUnequipInteractable;
     }
 }

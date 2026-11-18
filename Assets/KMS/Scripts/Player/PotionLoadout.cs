@@ -95,5 +95,12 @@ namespace Pomunculus.Items
             PendingPotion = null;
             OnEquipModeChanged?.Invoke(false);
         }
+
+        // 인벤토리가 켜져있을 시 포션 아이콘을 누르면 포션 장착이 해제
+        public void UnequipPotion(int slotIndex)
+        {
+            SetSlot(slotIndex, null);
+        }
+
     }
 }

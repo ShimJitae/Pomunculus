@@ -33,7 +33,7 @@ public class GameManager : SingletonBehavior<GameManager>
     // 오프라인 : 방 밖에서 월드 씬 로딩이 끝나면 StartWorldOffline 호출 -> 내 플레이어 생성
     // 온라인 : 방에 들어와 월드 씬 로딩이 끝나면 자기 소유의 플레이어를 하나 생성 (생성 자체는 방장이 처리)
     // 플레이어가 방을 나가면 방장이 그 플레이어 소유의 오브젝트를 제거
-    public const string TitleSceneName = "abcdcode_TitleTestScene";
+    public const string TitleSceneName = "TitleScene";
     public const string TestSceneName = "IntegrationTestScene";
 
     private void PlayerSpawnRegister()
@@ -87,8 +87,7 @@ public class GameManager : SingletonBehavior<GameManager>
         Debug.Log("StartWorldOffline");
         if (PhotonNetwork.InRoom) return;
         WorldManager.Instance.Init();
-        // TODO 임시로 항상 0번 슬롯. 월드 선택 UI가 생기면 선택한 슬롯으로
-        WorldManager.Instance.LoadWorld(TempWorldSlot); // 불러온 뒤 바로 준비 완료
+        WorldManager.Instance.LoadWorld(SelectedWorldSlot); // 불러온 뒤 바로 준비 완료
         Debug.Log("[GameManager] 오프라인 월드 시작");
         // 플레이어는 월드 엔티티로 저장되지 않으므로 항상 새로 생성. 저장된 상태는 RegisterPlayer에서 UID로 적용됨
         SpawnPlayer(PhotonNetwork.LocalPlayer.ActorNumber);
@@ -101,9 +100,15 @@ public class GameManager : SingletonBehavior<GameManager>
             NetworkManager.Instance.LeaveRoom();
             return;
         }
-        WorldManager.Instance.SaveWorld(TempWorldSlot);
+        WorldManager.Instance.SaveWorld(SelectedWorldSlot);
         WorldManager.Instance.Release();
-        SceneManager.LoadScene(TitleSceneName);
+        LoadingUI.LoadScene(TitleSceneName);
+    }
+    // 월드 슬롯 UI에서 호출. 선택한 슬롯을 기억해두고 월드 씬으로 이동하면 StartWorldOffline에서 해당 슬롯을 불러옴
+    public void EnterWorld(int slotId)
+    {
+        SelectedWorldSlot = slotId;
+        LoadingUI.LoadScene(TestSceneName);
     }
     private void StartWorldOnline()
     {
@@ -126,11 +131,7 @@ public class GameManager : SingletonBehavior<GameManager>
                 if (p.Owner == OfflineActor) p.Owner = myActor;
                 if (p.Owner == myActor) hasMine = true;
             }
-            if (!hasMine) SpawnPlayer(myActor);
-
-
-            //테스트 코드. 월드가 온라인 될때 잡몹 하나 소환
-            
+            if (!hasMine) SpawnPlayer(myActor);           
         }
         else
         {
@@ -147,7 +148,7 @@ public class GameManager : SingletonBehavior<GameManager>
     }
     private void SpawnPlayer(int ownerActor)
     {
-        var obj = WorldManager.Instance.Spawn(PlayerPrefabId, PlayerSpawnPosition, Quaternion.identity,
+        var obj = WorldManager.Instance.Spawn(PlayerPrefabId, SpawnPointRegistry.Instance.GetPlayerSpawnPoint(RegionType.Forest).position, Quaternion.identity,
             o => { if (o is IPlayerObj p) p.Owner = ownerActor; });
         Debug.Log($"[GameManager] 플레이어 생성 (ID : {obj?.ID}, 소유자 : {ownerActor})");
     }
@@ -179,30 +180,43 @@ public class GameManager : SingletonBehavior<GameManager>
         m_worldClosing = true;
         NetworkManager.Instance.LeaveRoom();
     }
-    // 내가 나가면 월드 전체 정리
+    // 내가 나가면 월드 전체 정리 후 타이틀로 이동
+    // 씬 전환을 항상 살아 있는 GameManager에서 처리해야 UI(ESC 메뉴 등)가 한 번도 켜지지 않았어도 타이틀로 돌아감
     private void OnLeftRoom()
     {
-        m_worldPending = false;
-        m_worldClosing = false;
-        WorldManager.Instance.SaveWorld(TempWorldSlot); // 참여한 월드면 WorldManager에서 무시됨
-        RaiseEventManager.Instance.UnRegisterEvent((int)WorldEventID.PlayerSpawnRequest);
-        WorldManager.Instance.Release();
+        try
+        {
+            m_worldPending = false;
+            m_worldClosing = false;
+            WorldManager.Instance.SaveWorld(SelectedWorldSlot); // 참여한 월드면 WorldManager에서 무시됨
+            RaiseEventManager.Instance.UnRegisterEvent((int)WorldEventID.PlayerSpawnRequest);
+            WorldManager.Instance.Release();
+        }
+        finally
+        {
+            // 정리 중 예외가 나도 게임 씬에 갇히지 않도록 씬 전환은 반드시 수행
+            if (SceneManager.GetActiveScene().name != TitleSceneName) LoadingUI.LoadScene(TitleSceneName);
+        }
     }
 
     private const string PlayerPrefabId = "Player";
-    private static readonly Vector3 PlayerSpawnPosition = new(0f, 1f, 0f);
+    private static readonly Vector3 PlayerSpawnPosition = new(0,1,0);
     public const int TempWorldSlot = 0; // TODO 월드 선택 전까지 사용하는 고정 슬롯
+    // 현재 플레이할 월드 슬롯. EnterWorld로 지정. 지정하지 않으면 기존처럼 TempWorldSlot 사용
+    public int SelectedWorldSlot { get; private set; } = TempWorldSlot;
     private const int OfflineActor = -1; // 방 밖에서의 PhotonNetwork.LocalPlayer.ActorNumber
     private bool m_worldPending;
     private bool m_worldClosing; // 방장이 나가 방을 나가는 중
     private bool m_playerSpawnRegistered;
     #endregion
+
     public void UserProfileInit()
     {
         if(SaveManager.Instance.Load(UserProfile) == null)
         {
             var uid = Guid.NewGuid().ToString();
-            string userName = "Sans";
+            // 멀티 테스트 인스턴스끼리 닉네임으로 구분할 수 있도록 프로필 이름을 붙임
+            string userName = MultiplayerTestProfile.IsDefault ? "Sans" : $"Sans_{MultiplayerTestProfile.Name}";
             LocalUserProfile = new()
             {
                 UID = uid,

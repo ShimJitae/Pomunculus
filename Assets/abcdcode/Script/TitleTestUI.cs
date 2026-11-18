@@ -14,7 +14,7 @@ public class TitleTestUI : MonoBehaviour
         m_findRoomButton.onClick.AddListener(OnClickFindRoom);
 
         // 저장된 월드가 없으면 이어하기 숨김
-        m_continueGameButton.gameObject.SetActive(WorldManager.Instance.HasWorld(GameManager.TempWorldSlot));
+        //m_continueGameButton.gameObject.SetActive(WorldManager.Instance.HasWorld(GameManager.TempWorldSlot));
     }
     private void Start()
     {
@@ -29,26 +29,30 @@ public class TitleTestUI : MonoBehaviour
 
     public void OnClickStartGame()
     {
-        SceneManager.LoadScene(GameManager.TestSceneName);
+        LoadingUI.LoadScene(GameManager.TestSceneName);
     }
     public void OnClickNewGame()
     {
         // 기존 월드를 지우면 StartWorldOffline -> LoadWorld에서 새 월드로 시작됨
         WorldManager.Instance.DeleteWorld(GameManager.TempWorldSlot);
-        SceneManager.LoadScene(GameManager.TestSceneName);
+        LoadingUI.LoadScene(GameManager.TestSceneName);
     }
     
     private void OnClickFindRoom()
     {
         m_lobbyPanel.Open(); // 오프라인이면 여기서 접속 시작
     }
+    public void OnClickExitGame()
+    {
+        Application.Quit();
+    }
 
     // 보통은 방장이 방을 만들 때 씬이 방 속성에 기록되어 PUN이 TestScene으로 자동 이동시킴
-    // 기록이 없는 방이면 직접 이동
+    // 기록이 없는 방이면 직접 이동. 비동기 로딩 중에는 활성 씬이 아직 타이틀이므로 로딩 중이면 건너뜀
     private void OnJoinedRoom()
     {
-        if (NetworkManager.Instance.State == NetworkState.InRoom && SceneManager.GetActiveScene().name != GameManager.TestSceneName)
-            SceneManager.LoadScene(GameManager.TestSceneName);
+        if (NetworkManager.Instance.State == NetworkState.InRoom && !LoadingUI.IsLoading && SceneManager.GetActiveScene().name != GameManager.TestSceneName)
+            LoadingUI.LoadScene(GameManager.TestSceneName);
     }
 
     [SerializeField] private Button m_startGameButton;
