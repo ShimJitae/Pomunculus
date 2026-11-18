@@ -2,7 +2,6 @@ using Photon.Pun;
 using Pomunculus.Items;
 using System;
 using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -43,14 +42,13 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IShieldable, IWorldRPC
     public Inventory Inventory { get; private set; }
     public PotionLoadout Loadout { get; private set; }
     public PlayerAnimator Animator { get; private set; }
+    public PlayerActionGate Actions { get; private set; }
 
     // ───── 상태들이 읽어 가는 데이터 ─────
     public PlayerStateType CurrentStateType => fsm.CurrentStateType;
     public PlayerStateType PreviousStateType => fsm.PreviousStateType;
     public bool IsDead => CheckDie();
     public Vector3 LastHitSourcePosition { get; private set; }
-    public Vector3 AttackTarget { get; private set; }   // ConsumeAttack 성공 시 설정
-    public PotionData AttackPotion { get; private set; }
 
     private float lastDodgeAt = float.NegativeInfinity;
     private WorldMapUI worldMapUI;   // 씬의 지도 UI. 처음 Tab을 누를 때 찾아서 캐시
@@ -92,6 +90,7 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IShieldable, IWorldRPC
 
         Motor.Initialize(Tuning, Data.GetSpeed());
         Stats = new PlayerStats(this, Data);
+        Actions = new PlayerActionGate(this);
 
         Stats.OnShieldChanged += HandleShieldChanged;
 
@@ -240,40 +239,6 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IShieldable, IWorldRPC
         SetState(PlayerStateType.Dead);
         OnDied?.Invoke();
     }
-
-    // 지금 던지면 나갈 포션. 선택한 포션이 인벤토리에 없으면 null(빈 병)
-    public PotionData GetThrowablePotion()
-    {
-        PotionData potion = Loadout.SelectedPotion;
-        return potion != null && Inventory.GetItemCount(potion.Id) > 0 ? potion : null;
-    }
-
-    public bool ConsumeAttack()
-    {
-        if (!CanAttack || !Stats.CanUseStamina) return false;
-        if (!Input.ConsumeAttack(out Vector3 target)) return false;
-
-        PotionData potion = GetThrowablePotion();
-        bool hasPotion = potion != null && Inventory.GetItemCount(potion.Id) > 0;
-
-        AttackPotion = hasPotion ? potion : null;   // null이면 빈 병
-        AttackTarget = Thrower.ClampToThrowRange(target);
-        Stats.SpendStamina(Data.ThrowStaminaCost);
-        return true;
-    }
-
-    // 쿨다운 중이면 입력을 소비하지 않고 버퍼에 남겨 둔다
-    public bool ConsumeDodge()
-    {
-        if (!CanDodge || !Stats.CanUseStamina) return false;
-        if (Time.time - lastDodgeAt < tuning.DodgeCooldown) return false;
-        if (!Input.ConsumeDodge()) return false;
-
-        Stats.SpendStamina(Data.DodgeStaminaCost);
-        return true;
-    }
-
-    public void MarkDodgeUsed() => lastDodgeAt = Time.time;
 
     public void Revive()
     {
