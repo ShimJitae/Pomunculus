@@ -292,7 +292,11 @@ public class NetworkManager : Singleton<NetworkManager>, IConnectionCallbacks, I
     #endregion
 
     #region IInRoomCallbacks
-    public void OnPlayerEnteredRoom(Player newPlayer) { }
+    public void OnPlayerEnteredRoom(Player newPlayer)
+    {
+        Debug.Log($"[Network] 플레이어 입장 : #{newPlayer.ActorNumber} {newPlayer.NickName}");
+        OnPlayerEnteredRoomEvent?.Invoke(newPlayer);
+    }
     public void OnPlayerLeftRoom(Player otherPlayer)
     {
         Debug.Log($"[Network] 플레이어 퇴장 : #{otherPlayer.ActorNumber} {otherPlayer.NickName}");
@@ -321,6 +325,7 @@ public class NetworkManager : Singleton<NetworkManager>, IConnectionCallbacks, I
     public event Action OnJoinedRoomEvent;
     public event Action<short, string> OnJoinRoomFailedEvent;
     public event Action OnLeftRoomEvent;
+    public event Action<Player> OnPlayerEnteredRoomEvent;
     public event Action<Player> OnPlayerLeftRoomEvent;
     public event Action<Player> OnMasterClientSwitchedEvent;
 
