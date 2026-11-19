@@ -185,20 +185,25 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IShieldable, IWorldRPC
         }
     }
 
-    // 받는 피해 비율을 적용해 피해를 입고, HP가 바뀌었으면 알린다.
+
+    // 받는 피해 비율을 적용하고, 보호막이 먼저 흡수한 뒤 남은 피해만 HP에 입힌다.
     public override void TakeDamage(int damage)
     {
-        if (!IsMine || IsDamageBlocked) return;
+        if (!IsMine || IsDamageBlocked || IsDead) return;
+
+        int scaledDamage = Mathf.CeilToInt(damage * DamageTakenRatio);
+        int remainingDamage = Stats.AbsorbDamage(scaledDamage);
+        if (remainingDamage <= 0) return;
 
         int hpBefore = CurrentHp;
-        base.TakeDamage(Mathf.CeilToInt(damage * DamageTakenRatio));
+        base.TakeDamage(remainingDamage);
         if (CurrentHp != hpBefore)
         {
             SendHpSync();
             Stats.NotifyHpChanged();
         }
-
     }
+
 
     // 투사체·공격 피해. 맞은 위치로 넉백 + 경직
     public override void TakeDamage(int damage, Vector3 sourcePosition)
@@ -230,8 +235,6 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IShieldable, IWorldRPC
         }
 
     }
-
-    private bool IsShield => Stats.CurrentShield > 0;
 
     private void HandleShieldChanged(int shield) => SendShieldSync();
 
