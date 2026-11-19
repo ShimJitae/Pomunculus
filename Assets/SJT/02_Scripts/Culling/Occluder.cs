@@ -5,6 +5,7 @@ using UnityEngine;
 /// 카메라와 플레이어 사이를 가릴 수 있는 장애물. OccluderDetector가 가린다고 알려주면
 /// 투명 머티리얼로 바꾼 뒤 알파를 서서히 낮추고, 벗어나면 다시 올려 원본 머티리얼로 되돌린다.
 /// 평소에는 꺼져 있고 페이드하는 동안만 Update가 돈다.
+/// 가림 판정 2단계(정밀 판정)에서는 이 물체의 콜라이더에 레이가 맞는지로 실제 가림을 확정한다.
 /// </summary>
 public sealed class Occluder : MonoBehaviour
 {
@@ -17,6 +18,7 @@ public sealed class Occluder : MonoBehaviour
     private static MaterialPropertyBlock block;
 
     private Renderer targetRenderer;
+    private Collider[] targetColliders;   // 정밀 판정에 쓰는 콜라이더들 (계단처럼 칸마다 박스가 붙은 경우 포함)
     private Material originalMaterial;
     private Material fadeMaterial;   // 반투명 상태일 때만 값이 있다
     private Color baseColor;         // fadeMaterial의 색. 알파만 바꿔 쓴다
@@ -34,6 +36,13 @@ public sealed class Occluder : MonoBehaviour
     {
         targetRenderer = GetComponentInChildren<Renderer>();
         originalMaterial = targetRenderer.sharedMaterial;
+        targetColliders = GetComponentsInChildren<Collider>();
+
+        if (targetColliders.Length == 0)
+        {
+            Debug.LogWarning($"[Occluder] 콜라이더가 없어 가림 판정에서 제외됩니다: {name}", this);
+        }
+
         enabled = false;
         all.Add(this);
     }
@@ -41,7 +50,9 @@ public sealed class Occluder : MonoBehaviour
     private void OnDestroy()
     {
         all.Remove(this);
-    }// 페이드하는 동안만 켜져 있다
+    }
+
+    // 페이드하는 동안만 켜져 있다
     private void Update()
     {
         float target = isOccluding ? c_fadeAlpha : 1f;
@@ -86,6 +97,19 @@ public sealed class Occluder : MonoBehaviour
         }
 
         enabled = true;
+    }
+
+    /// <summary>레이가 이 물체의 콜라이더 중 하나라도 맞히는지. 콜라이더가 없으면 항상 false</summary>
+    public bool Blocks(Ray ray, float maxDistance)
+    {
+        for (int i = 0; i < targetColliders.Length; i++)
+        {
+            if (targetColliders[i].Raycast(ray, out _, maxDistance))
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     // PropertyBlock이 남아 있으면 SRP Batcher에서 빠지므로 반드시 비운다
