@@ -11,6 +11,22 @@
 <!-- harness:status:end -->
 - Claude Code 겸용 레이어를 이 프로젝트에만 추가했다(UnityHarness 원본 미반영). `CLAUDE.md`, `.claude/`, `scripts/ai/sync-claude.ps1`이 해당하며 Codex 파일은 바꾸지 않았다. 스킬·역할은 Codex 원본을 고친 뒤 `sync-claude.ps1`로 다시 생성한다.
 
+## Forest 보스 계단 접합부 — 2026-11-19
+
+- `World_PurePoly`의 `Forest/Map/07_FinalBossPlateau/Stair/Stair`만 위로 1cm 이동했다(local Y `0.751289` → `0.761289`). Collider 68개도 함께 이동했으며, Scene 뷰의 근거리·일반 거리·낮은 각도에서 마지막 단·상부참의 동일 평면 겹침이 분리된 것을 확인했다.
+- `IntegrationTestScene`의 기존 NavMesh 데이터·참조와 씬 파일 해시는 유지됐다. 계단 좌·중·우에서 광장까지 양방향 경로 6개가 모두 `PathComplete`이고, 샘플 좌표와 경로 코너도 수정 전과 같다.
+- 30~32번째 단의 고지 사면 관통은 승인한 범위에 따라 남겼다. NavMesh 재베이크와 씬 저장은 하지 않았으며, 실제 캐릭터 이동·발 위치·걸림은 PlayMode 미검증이다.
+
+## World_PurePoly 지역별 바닥 박스·보스 고지 충돌 — 2026-11-19
+
+- 일반 바닥·연결 통로의 Box 제거 Override를 유지하면서 `GroundCollision` 아래의 지역 5개·통로 4개별 얇은 BoxCollider로 바꿨다. 앞서 만든 통합 메시 Collider와 자산·meta는 제거했다. 사용자 요청에 따라 물 구멍도 받치며, 보스 고지 본체 4개는 시각 메시를 공유하는 MeshCollider다. 현재 수량은 Box 686 / Mesh 4 / Sphere 3개다.
+- 개별 지형 Variant·Imports·시각 메시·씬 파일·NavMesh와 위 Forest 계단의 1cm 보정을 유지한다. 일반 바닥의 1m 격자 평균 오차 22.1cm·95백분위 60.8cm이며 정점·격자 표본 최대 차이는 약 3.94m다. 독립 통계 재계산과 실제 Box Raycast 1,089건이 일치했고 NavMesh 대표 552건에서 새 미검출은 없었다. 실제 이동·포션 착탄·성능은 미검증이다. [최종 구성·오차 기록](plans/2026-11-19-world-purepoly-flat-box-floors.md)
+
+## World_PurePoly BoxCollider 전환 — 2026-11-19
+
+- 지형 Variant 135개와 월드 프리팹에서 남아 있던 MeshCollider 779개를 BoxCollider로 전환했다. 전환 직후 수량은 Mesh 0 / Box 1,233 / 기존 Sphere 3개였고, 월드 내부 바닥·보스 고지는 위 후속 요청으로 변경했다. 계단·난간·돌문의 여러 박스와 개별 Variant는 유지한다.
+- 실제 플레이 이동·비정형 지형의 충돌·NavMesh는 미검증이다. 대상·구성·독립 검사 근거는 [전환 기록](plans/2026-11-19-world-purepoly-box-colliders.md)을 따른다.
+
 ## World_PurePoly 가림 페이드 — 2026-11-17
 
 - `NewMapScene`에 [가림 페이드 구성](PROJECT.md#world_purepoly-원형-월드-맵)을 저장했다. 씬 자체에 `OccluderTarget`이 없으므로, 플레이어가 배치되는 환경에서 보스 고지 위·아래, 지역 외곽, 돌문 옆 통로의 페이드와 원본 재질 복귀를 확인해야 한다. 고지 측면과 전투 바닥은 한 메시이므로 함께 페이드된다.
