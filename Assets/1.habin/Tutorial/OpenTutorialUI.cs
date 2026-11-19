@@ -50,29 +50,20 @@ public class OpenTutorialUI : MonoBehaviour
     {
         if (nearbyColliders.Count == 0 || tutorialUI == null)
             return;
-
         Keyboard keyboard = Keyboard.current;
-
         if (keyboard == null)
             return;
-
-        bool isOpen = tutorialUI.gameObject.activeSelf;
-
         if (keyboard.eKey.wasPressedThisFrame)
         {
-            if (isOpen)
+            if (tutorialUI.gameObject.activeSelf)
             {
                 CloseTutorial();
             }
             else
             {
                 openedHere = true;
-                tutorialUI.gameObject.SetActive(true);
+                tutorialUI.Open();
             }
-        }
-        else if (isOpen && keyboard.escapeKey.wasPressedThisFrame)
-        {
-            CloseTutorial();
         }
         RefreshInteractionText();
     }
