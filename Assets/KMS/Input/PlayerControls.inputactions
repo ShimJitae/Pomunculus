@@ -224,9 +224,18 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "DebugRevive",
+                    "name": "DebugGiveMaterials",
                     "type": "Button",
-                    "id": "8031f565-b304-47d9-a862-1c1de3f7bc5b",
+                    "id": "4b0c0bed-6709-49db-86e9-a6b54c18e2d7",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "DebugGivePotions",
+                    "type": "Button",
+                    "id": "f36027c3-c465-4209-9013-b478740b1ec0",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -247,12 +256,23 @@
                 },
                 {
                     "name": "",
-                    "id": "3e17600a-b10e-4c86-9613-2abb698308e3",
-                    "path": "<Keyboard>/r",
+                    "id": "1b1a0110-ae13-4b7f-8400-5ad65949e453",
+                    "path": "<Keyboard>/f1",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "DebugRevive",
+                    "action": "DebugGiveMaterials",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "291a598b-0f37-435c-8ebc-d56688d4abc3",
+                    "path": "<Keyboard>/f2",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "DebugGivePotions",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

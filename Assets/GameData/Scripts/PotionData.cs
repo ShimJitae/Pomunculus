@@ -31,5 +31,9 @@ namespace Pomunculus.Items
 
         public ThrownProjectile ProjectilePrefab => projectilePrefab;
         public IReadOnlyList<PotionEffect> Effects => effects;
+
+        [Header("프리팹")]
+        [SerializeField] private PotionPickup pickupPrefab;
+        public PotionPickup PickupPrefab => pickupPrefab;
     }
 }
