@@ -11,6 +11,12 @@
 <!-- harness:status:end -->
 - Claude Code 겸용 레이어를 이 프로젝트에만 추가했다(UnityHarness 원본 미반영). `CLAUDE.md`, `.claude/`, `scripts/ai/sync-claude.ps1`이 해당하며 Codex 파일은 바꾸지 않았다. 스킬·역할은 Codex 원본을 고친 뒤 `sync-claude.ps1`로 다시 생성한다.
 
+## World_PurePoly 추가 겹침 수정 — 2026-11-19
+
+- 숲 동·서 연못 시각 지면 5개만 ±1cm, 설산·화산 계단 +1cm, 늪 계단 약 +1.692cm 보정했다. 늪 수면 4개·화산 용암면 3개는 중앙 fan의 연결 인덱스만 수정했다. 기존 지역별 바닥 박스와 보스 고지 MeshCollider·기존 숲 계단 보정은 유지한다.
+- 동일 평면 겹침 및 수면 내부 겹침 제거를 기하·독립 리뷰로 확인했다. 계단 사면 관통·투명한 숲 연못 아래 지형의 삼각형 모양은 남아 있으며, 실제 캐릭터 이동과 파도 애니메이션은 PlayMode 미검증이다. 대상·검증과 남은 범위는 [수정 기록](plans/2026-11-19-world-purepoly-overlap.md)을 따른다.
+- 네 지역 계단 양방향 24경로·연못 NavMesh 30표본은 수정 전과 정확히 같고 NavMesh·씬 파일·meta 해시도 유지됐다. 최종 Editor의 미저장 씬 상태는 해제·저장하지 않았다.
+
 ## Forest 보스 계단 접합부 — 2026-11-19
 
 - `World_PurePoly`의 `Forest/Map/07_FinalBossPlateau/Stair/Stair`만 위로 1cm 이동했다(local Y `0.751289` → `0.761289`). Collider 68개도 함께 이동했으며, Scene 뷰의 근거리·일반 거리·낮은 각도에서 마지막 단·상부참의 동일 평면 겹침이 분리된 것을 확인했다.
