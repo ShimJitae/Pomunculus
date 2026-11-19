@@ -82,7 +82,7 @@ PrefabInstance:
       addedObject: {fileID: -3236991656994021222}
     - targetCorrespondingSourceObject: {fileID: 5234085925757046299, guid: 941be520ba9892045ba0dd858f562e4d, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 3292465322463083892}
+      addedObject: {fileID: -2026163001004068974}
   m_SourcePrefab: {fileID: 100100000, guid: 941be520ba9892045ba0dd858f562e4d, type: 3}
 --- !u!1 &2854529655113921314 stripped
 GameObject:
@@ -176,7 +176,7 @@ MonoBehaviour:
     - {fileID: 9100957458502131902, guid: 98b45f03bc715c7499c52f898e1a8936, type: 3}
   spawnHeight: 0.5
   heightGap: 0.5
---- !u!114 &3292465322463083892
+--- !u!114 &-2026163001004068974
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -185,10 +185,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 2854529655113921314}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f2663dc1f60dcb5418069a66943e9d89, type: 3}
+  m_Script: {fileID: 11500000, guid: 72c4c1ed2e0d7a5488daf19d1154ec5d, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ItemDropper
-  itemPrefabs: []
-  statusDropRules: []
-  spawnHeight: 0.5
-  heightGap: 0.5
+  m_EditorClassIdentifier: Assembly-CSharp::Occluder
