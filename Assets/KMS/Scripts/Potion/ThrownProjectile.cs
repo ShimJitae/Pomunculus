@@ -129,8 +129,8 @@ public class ThrownProjectile : MonoBehaviour
             Destroy(impactEffect, impactEffectLifeTime);
         }
 
-        MMF_Player fb = FindAnyObjectByType<MMF_Player>();
-        fb.PlayFeedbacks();
+        //MMF_Player fb = FindAnyObjectByType<MMF_Player>();
+        //fb.PlayFeedbacks();
 
         Destroy(gameObject);
     }
