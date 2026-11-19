@@ -14,10 +14,13 @@ public class RecipeHintUI : MonoBehaviour
     {
         if (note == null || note.lines == null || note.lines.Length == 0)
             return;
+        if (hintPanel == null)
+            return;
 
         titleText.text = note.SpeakerName;
         hintText.text = note.lines[0];
-        hintPanel.SetActive(true);
+        if (hintPanel.TryGetComponent<PopupUI>(out var popup))
+            popup.Open();
     }
     private readonly HashSet<RecipeHintInteractable> nearbyHints = new HashSet<RecipeHintInteractable>();
 
@@ -34,6 +37,9 @@ public class RecipeHintUI : MonoBehaviour
 
     public void Close()
     {
-        hintPanel.SetActive(false);
+        if (hintPanel == null)
+            return;
+        if (hintPanel.TryGetComponent<PopupUI>(out var popup))
+            popup.Close();
     }
 }

@@ -26,44 +26,93 @@ namespace Pomunculus.Items
 
             if (keyboard == null)
                 return;
-            if (recipeBookKey != Key.None && keyboard[recipeBookKey].wasPressedThisFrame)
+
+            if (keyboard.escapeKey.wasPressedThisFrame)
+            {
+                PopupUIManager manager = PopupUIManager.Instance;
+                if (manager == null)
+                    return;
+                PopupUI top = manager.TopPopup;
+                if (top == null)
+                    return;
+                // 제작창이면 재료를 반환하고 닫기
+                if (top.gameObject == craftingUI)
+                    CloseCraftingUI();
+                else
+                    manager.TryCloseTop();
+
+                return;
+            }
+            if (recipeBookKey != Key.None &&
+                keyboard[recipeBookKey].wasPressedThisFrame)
+            {
                 ToggleRecipeBook();
+            }
 
-            if (craftingKey != Key.None && keyboard[craftingKey].wasPressedThisFrame)
+            if (craftingKey != Key.None &&
+                keyboard[craftingKey].wasPressedThisFrame)
+            {
                 ToggleCraftingUI();
+            }
 
-            if (inventoryKey != Key.None && keyboard[inventoryKey].wasPressedThisFrame)
+            if (inventoryKey != Key.None &&
+                keyboard[inventoryKey].wasPressedThisFrame)
+            {
                 ToggleInventoryUI();
+            }
         }
 
         public void ToggleRecipeBook()
         {
-            if (recipeBook != null)
-                recipeBook.SetActive(!recipeBook.activeSelf);
+            if (recipeBook == null)
+                return;
+
+            if (recipeBook.TryGetComponent<PopupUI>(out var popup))
+                popup.Toggle();
         }
+
+        public void ToggleInventoryUI()
+        {
+            if (inventoryUI == null)
+                return;
+
+            if (inventoryUI.TryGetComponent<PopupUI>(out var popup))
+                popup.Toggle();
+        }
+
         public void ToggleCraftingUI()
         {
             if (craftingUI == null)
                 return;
-            if (!craftingUI.activeSelf)
+
+            // 이미 열려 있으면 재료를 반환하고 닫기
+            if (craftingUI.activeSelf)
             {
-                craftingUI.SetActive(true);
+                CloseCraftingUI();
                 return;
             }
-            if (craftingUI.TryGetComponent<PotionCrafting>(out var crafting))
-                crafting.Close();
+
+            // 닫혀 있으면 매니저를 통해 열기
+            if (craftingUI.TryGetComponent<PopupUI>(out var popup))
+                popup.Open();
         }
-        public void ToggleInventoryUI()
-        {
-            if (inventoryUI != null)
-                inventoryUI.SetActive(!inventoryUI.activeSelf);
-        }
+
         public void CloseCraftingUI()
         {
-            if (craftingUI != null && craftingUI.activeSelf &&
-                craftingUI.TryGetComponent<PotionCrafting>(out var crafting))
+            if (craftingUI == null || !craftingUI.activeSelf)
+                return;
+
+            if (!craftingUI.TryGetComponent<PotionCrafting>(out var crafting))
+                return;
+
+            // 기존 함수가 재료를 반환하고 창을 끔
+            crafting.Close();
+
+            // 실제로 닫혔으면 매니저에서도 정리
+            if (!craftingUI.activeSelf &&
+                craftingUI.TryGetComponent<PopupUI>(out var popup))
             {
-                crafting.Close();
+                popup.Close();
             }
         }
 
