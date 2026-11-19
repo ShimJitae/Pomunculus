@@ -11,6 +11,11 @@
 <!-- harness:status:end -->
 - Claude Code 겸용 레이어를 이 프로젝트에만 추가했다(UnityHarness 원본 미반영). `CLAUDE.md`, `.claude/`, `scripts/ai/sync-claude.ps1`이 해당하며 Codex 파일은 바꾸지 않았다. 스킬·역할은 Codex 원본을 고친 뒤 `sync-claude.ps1`로 다시 생성한다.
 
+## World_PurePoly 지역·통로 외곽 암벽 MeshCollider 복구 — 2026-11-19
+
+- 5개 지역 외곽 암벽 166개와 현재 Seam_Walls 23개에 이어 설산 보스 뒤 SnowyMountain/Map/08_정상_암봉의 큰 암벽 14개도 시각 메시와 같은 non-convex MeshCollider로 되돌렸다. World 내부의 Box 제거·Mesh 추가 Override만 저장했고 개별 Terrain Variant와 Imports는 유지한다. 설산 RimDecor의 나무 7개·작은 장식 바위 7개와 바닥 박스 9개·보스 고지 Mesh 4개는 변경하지 않았다.
+- 현재 전체 수량은 Box 481 / Mesh 207 / Sphere 3개다. 이전 외곽 166개·통로 23개와 설산 정상 암벽 14개 모두 독립 검증을 마쳤다. 정상 암벽의 실제 Collider.Raycast 42건도 통과했고 나무 7개의 Collider·Renderer·배치와 작은 바위 7개는 기준과 동일하다. 채집·몬스터 마커 및 현재 통로 배치를 보존했고 씬·NavMesh는 저장하지 않았다. 실제 플레이 이동과 성능은 미검증이다. [대상·구현·검증 기록](plans/2026-11-19-world-purepoly-boundary-mesh-colliders.md)
+
 ## World_PurePoly 추가 겹침 수정 — 2026-11-19
 
 - 숲 동·서 연못 시각 지면 5개만 ±1cm, 설산·화산 계단 +1cm, 늪 계단 약 +1.692cm 보정했다. 늪 수면 4개·화산 용암면 3개는 중앙 fan의 연결 인덱스만 수정했다. 기존 지역별 바닥 박스와 보스 고지 MeshCollider·기존 숲 계단 보정은 유지한다.
