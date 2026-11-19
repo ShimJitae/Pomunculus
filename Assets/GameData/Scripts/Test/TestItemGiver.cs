@@ -81,11 +81,11 @@ namespace Pomunculus.Items
             PlayerFSM player = GetComponentInParent<PlayerFSM>();
             if (player == null || !player.IsMine)
                 return;
-            if (command == "/give all materials" || command == "/wofy")
+            if (command == "give all materials" || command == "wofy")
             {
                 GiveAllMaterials();
             }
-            else if (command == "/give all potion" || command == "/vhtus")
+            else if (command == "give all potion" || command == "vhtus")
             {
                 GiveAllPotion();
             }
