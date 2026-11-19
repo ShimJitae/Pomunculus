@@ -33,7 +33,7 @@ MonoBehaviour:
         BlackboardGroupReferences: []
         Root:
           rid: 3122968572790833437
-        m_VersionTimestamp: 639305961085360774
+        m_VersionTimestamp: 639306295156346066
     - rid: 3122968244181794817
       type: {class: BlackboardReference, ns: Unity.Behavior, asm: Unity.Behavior}
       data:
@@ -2557,7 +2557,7 @@ MonoBehaviour:
   - rid: 3122968394833855437
   - rid: 3122968396165284419
   - rid: 3122968396189663526
-  m_VersionTimestamp: 639305961085360774
+  m_VersionTimestamp: 639306295156346066
   m_SerializedVersion: 3
   m_DebugInfo: {fileID: 1830973146141740898}
   m_RuntimeGraph: {fileID: -8369483795943858381}
@@ -4515,7 +4515,7 @@ MonoBehaviour:
         LocalValue:
           rid: 3122968261855806152
         LinkedVariable:
-          rid: 3122968261855806417
+          rid: 3122968580529849175
     - rid: 3122968261855806145
       type: {class: BehaviorGraphNodeModel/FieldModel, ns: Unity.Behavior, asm: Unity.Behavior.Authoring}
       data:
@@ -4635,16 +4635,6 @@ MonoBehaviour:
           m_Value1: 0
         Name: 
         m_Value: 1
-    - rid: 3122968261855806417
-      type: {class: 'TypedVariableModel`1[[System.Single, mscorlib]]', ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
-      data:
-        ID:
-          m_Value0: 2923537522388089860
-          m_Value1: 385432006773209894
-        Name: MoveSpeed
-        IsExposed: 1
-        m_IsShared: 0
-        m_Value: 3
     - rid: 3122968261890146814
       type: {class: FloatingPortNodeModel, ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
       data:
@@ -10898,6 +10888,16 @@ MonoBehaviour:
         IsExposed: 1
         m_IsShared: 0
         m_Value: Dizzy
+    - rid: 3122968580529849175
+      type: {class: 'TypedVariableModel`1[[System.Single, mscorlib]]', ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
+      data:
+        ID:
+          m_Value0: 10846820636180710940
+          m_Value1: 13621662884348468428
+        Name: ChaseSpeed
+        IsExposed: 1
+        m_IsShared: 0
+        m_Value: 0
 --- !u!114 &51073090822688366
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10910,7 +10910,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5c02bb70996b49eba31d0c206e28da24, type: 3}
   m_Name: Enemy_BehaviorGraph Blackboard
   m_EditorClassIdentifier: Unity.Behavior::Unity.Behavior.RuntimeBlackboardAsset
-  VersionTimestamp: 639305961083357254
+  VersionTimestamp: 639299156009364299
   AssetID:
     m_Value0: 8430267900682210388
     m_Value1: 17473762959440609337
@@ -11101,8 +11101,8 @@ MonoBehaviour:
         GUID:
           m_Value0: 3359692569229946239
           m_Value1: 17669480908235883307
-        Name: Dizzy
-        m_Value: Dizzy
+        Name: TakeDamage
+        m_Value: TakeDamage
     - rid: 3122968393744384432
       type: {class: 'BlackboardVariable`1[[System.Boolean, mscorlib]]', ns: Unity.Behavior, asm: Unity.Behavior}
       data:
@@ -11162,8 +11162,13 @@ MonoBehaviour:
   - rid: 3122968258819391665
   - rid: 3122968261190221911
   - rid: 3122968283786773109
+  - rid: 3122968396189663949
+  - rid: 3122968369999905351
+  - rid: 3122968369999905458
+  - rid: 3122968580529848692
   - rid: 3122968258819391559
   - rid: 3122968258819391594
+  - rid: 3122968266476093980
   - rid: 3122968260145054521
   - rid: 3122968261190222111
   - rid: 3122968261890147196
@@ -11172,14 +11177,10 @@ MonoBehaviour:
   - rid: 3122968393744384243
   - rid: 3122968393744384433
   - rid: 3122968263150535446
-  - rid: 3122968266476093980
   - rid: 3122968278636429383
   - rid: 3122968369999905245
-  - rid: 3122968369999905351
-  - rid: 3122968369999905458
   - rid: 3122968375754228375
-  - rid: 3122968396189663949
-  m_VersionTimestamp: 639305961083357254
+  m_VersionTimestamp: 639306294905346903
   m_CommandBuffer:
     m_Commands: []
   m_RuntimeBlackboardAsset: {fileID: 51073090822688366}
@@ -11416,3 +11417,13 @@ MonoBehaviour:
         IsExposed: 1
         m_IsShared: 0
         m_Value: 360
+    - rid: 3122968580529848692
+      type: {class: 'TypedVariableModel`1[[System.Single, mscorlib]]', ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
+      data:
+        ID:
+          m_Value0: 10846820636180710940
+          m_Value1: 13621662884348468428
+        Name: ChaseSpeed
+        IsExposed: 1
+        m_IsShared: 0
+        m_Value: 0
