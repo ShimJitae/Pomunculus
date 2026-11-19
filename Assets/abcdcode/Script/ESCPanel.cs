@@ -8,7 +8,8 @@ public class ESCPanel : MonoBehaviour
     }
     public void Update()
     {
-        if(Input.GetKeyDown(KeyCode.Escape))
+        // 채팅 중의 Esc는 채팅창을 닫는 데 쓰이므로 무시
+        if(Input.GetKeyDown(KeyCode.Escape) && !ChatUI.IsTyping)
         {
             Toggle();
         }
