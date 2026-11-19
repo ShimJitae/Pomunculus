@@ -2,8 +2,9 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// 로컬 플레이어 주변 화면 영역으로 카메라→플레이어 작은 절두체를 만들고,
-/// 매 프레임 Occluder들과 겹치는지 TestPlanesAABB로 검사해 가림 여부를 알려준다. 씬에 하나 배치한다.
+/// 로컬 플레이어 주변 화면 사각형을 기준으로 장애물의 가림 여부를 2단계로 판정한다. 씬에 하나 배치한다.
+/// 1단계: 사각형으로 만든 카메라→플레이어 절두체와 Occluder AABB를 TestPlanesAABB로 비교해 후보를 고른다.
+/// 2단계: 같은 사각형의 격자 지점에서 카메라로 레이를 쏴 후보 콜라이더에 맞는지 확인한다.
 /// </summary>
 public sealed class OccluderDetector : MonoBehaviour
 {
@@ -15,10 +16,16 @@ public sealed class OccluderDetector : MonoBehaviour
     [SerializeField] private Material fadeMaterial;
     [Tooltip("플레이어 주변 화면 사각형의 반 크기. 화면 높이 대비 비율 (0.12 = 12%)")]
     [SerializeField] private float halfSize = 0.12f;
+    [Tooltip("정밀 판정 레이 격자 수 (N×N). 2 = 사각형 꼭짓점 4줄. 플레이 시작 시 한 번 읽는다")]
+    [SerializeField, Min(2)] private int gridResolution = 2;
 
     private readonly Plane[] planes = new Plane[5];
     private Camera cam;
     private bool wasDetecting;
+
+    private Vector2[] gridOffsets;     // 사각형 안의 격자 상대 위치(-1 ~ +1). Start에서 한 번 만든다
+    private Ray[] sampleRays;          // 격자 지점 → 카메라 레이
+    private float[] sampleDistances;   // 각 레이의 길이
 
     /// <summary>로컬 플레이어가 자신을 검사 기준으로 지정한다</summary>
     public static void SetTarget(OccluderTarget target) => localTarget = target;
@@ -35,6 +42,9 @@ public sealed class OccluderDetector : MonoBehaviour
     private void Start()
     {
         cam = Camera.main;
+        gridOffsets = BuildGridOffsets(gridResolution);
+        sampleRays = new Ray[gridOffsets.Length];
+        sampleDistances = new float[gridOffsets.Length];
     }
 
     private void Update()
@@ -49,7 +59,9 @@ public sealed class OccluderDetector : MonoBehaviour
             return;
         }
 
-        BuildPlanes(localTarget.CenterPosition);
+        Vector3 playerCenter = localTarget.CenterPosition;
+        BuildPlanes(playerCenter);
+        BuildSampleRays(playerCenter);   // planes[4]를 쓰므로 BuildPlanes 다음에 호출한다
         wasDetecting = true;
 
         IReadOnlyList<Occluder> occluders = Occluder.All;
@@ -57,9 +69,58 @@ public sealed class OccluderDetector : MonoBehaviour
         {
             Occluder occluder = occluders[i];
             bool hit = occluder.gameObject.activeInHierarchy
-                    && GeometryUtility.TestPlanesAABB(planes, occluder.Bounds);
+                    && GeometryUtility.TestPlanesAABB(planes, occluder.Bounds)   // 1단계
+                    && BlocksAnySample(occluder);                                // 2단계
             occluder.SetOccluding(hit, fadeMaterial);
         }
+    }
+
+    /// <summary>사각형을 N×N으로 나눈 지점들의 상대 위치를 만든다. (-1,-1) = 왼쪽 아래, (1,1) = 오른쪽 위</summary>
+    private static Vector2[] BuildGridOffsets(int n)
+    {
+        Vector2[] offsets = new Vector2[n * n];
+        for (int y = 0; y < n; y++)
+        {
+            for (int x = 0; x < n; x++)
+            {
+                offsets[y * n + x] = new Vector2(x / (n - 1f) * 2f - 1f, y / (n - 1f) * 2f - 1f);
+            }
+        }
+        return offsets;
+    }
+
+    /// <summary>
+    /// 미리 정한 격자 지점마다 플레이어 깊이 평면과의 교점을 구하고,
+    /// 그 점에서 카메라 쪽으로 되돌아가는 레이를 만든다
+    /// </summary>
+    private void BuildSampleRays(Vector3 playerCenter)
+    {
+        Vector3 vp = cam.WorldToViewportPoint(playerCenter);
+        float halfX = halfSize / cam.aspect;
+        float halfY = halfSize;
+
+        for (int i = 0; i < gridOffsets.Length; i++)
+        {
+            Vector2 offset = gridOffsets[i];
+            Ray camRay = cam.ViewportPointToRay(new Vector3(vp.x + offset.x * halfX, vp.y + offset.y * halfY, 0f));
+            planes[4].Raycast(camRay, out float distance);
+
+            sampleRays[i] = new Ray(camRay.GetPoint(distance), -camRay.direction);
+            sampleDistances[i] = distance;
+        }
+    }
+
+    /// <summary>격자 레이 중 하나라도 이 물체에 맞으면 가린 것으로 본다</summary>
+    private bool BlocksAnySample(Occluder occluder)
+    {
+        for (int i = 0; i < sampleRays.Length; i++)
+        {
+            if (occluder.Blocks(sampleRays[i], sampleDistances[i]))
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     /// <summary>플레이어 주변 화면 사각형을 지나는 평면 4장과 플레이어 깊이 평면 1장을 만든다</summary>
