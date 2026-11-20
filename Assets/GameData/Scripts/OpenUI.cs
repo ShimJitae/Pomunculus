@@ -16,7 +16,11 @@ namespace Pomunculus.Items
         [Header("인벤토리")]
         [SerializeField] private GameObject inventoryUI;
         [SerializeField] private Key inventoryKey = Key.I;
+        [Header("사운드")]
+        [SerializeField] private AudioSO inventoryOpenSound;
+        [SerializeField] private AudioSO CreatingOpenSound;
 
+        [Header("텍스트")]
         [SerializeField] private GameObject craftingInteractionText;
         private ESCPanel escPanel;
         private bool pausedEscPanel;
@@ -78,35 +82,42 @@ namespace Pomunculus.Items
         {
             if (recipeBook == null)
                 return;
-
-            if (recipeBook.TryGetComponent<PopupUI>(out var popup))
-                popup.Toggle();
+            if (!recipeBook.TryGetComponent<PopupUI>(out var popup))
+                return;
+            bool wasOpen = popup.IsOpen;
+            popup.Toggle();
+            if (!wasOpen && popup.IsOpen && AudioManager.Instance != null)
+                AudioManager.Instance.PlaySound(inventoryOpenSound);
         }
-
         public void ToggleInventoryUI()
         {
             if (inventoryUI == null)
                 return;
-
-            if (inventoryUI.TryGetComponent<PopupUI>(out var popup))
-                popup.Toggle();
+            if (!inventoryUI.TryGetComponent<PopupUI>(out var popup))
+                return;
+            bool wasOpen = popup.IsOpen;
+            popup.Toggle();
+            if (!wasOpen && popup.IsOpen && AudioManager.Instance != null)
+                AudioManager.Instance.PlaySound(inventoryOpenSound);
         }
 
         public void ToggleCraftingUI()
         {
             if (craftingUI == null)
                 return;
-
             // 이미 열려 있으면 재료를 반환하고 닫기
             if (craftingUI.activeSelf)
             {
                 CloseCraftingUI();
                 return;
             }
-
             // 닫혀 있으면 매니저를 통해 열기
-            if (craftingUI.TryGetComponent<PopupUI>(out var popup))
-                popup.Open();
+            if (!craftingUI.TryGetComponent<PopupUI>(out var popup))
+                return;
+            bool wasOpen = popup.IsOpen;
+            popup.Open();
+            if (!wasOpen && popup.IsOpen && AudioManager.Instance != null)
+                AudioManager.Instance.PlaySound(CreatingOpenSound);
         }
 
         public void CloseCraftingUI()
