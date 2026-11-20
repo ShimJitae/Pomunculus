@@ -10,6 +10,15 @@ namespace Pomunculus.Items
 
         [Min(1)]
         [SerializeField] private int amount = 1;
+        private void Start()
+        {
+            ChatManager.Instance.OnCommandEvent += OnCommand;
+        }
+        private void OnDestroy()
+        {
+            if (ChatManager.Instance != null)
+                ChatManager.Instance.OnCommandEvent -= OnCommand;
+        }
 
         [ContextMenu("아이템 추가")]
         public void GiveItem()
@@ -60,12 +69,26 @@ namespace Pomunculus.Items
 
             Inventory inventory = GetComponent<Inventory>();
 
-            for (int id = 10001; id <= 10022; id++)
+            for (int id = 10001; id <= 10023; id++)
             {
                 inventory.AddItem(id, 50);
             }
 
-            Debug.Log("모든 포션 21종을 각각 50개씩 추가했습니다.", this);
+            Debug.Log("모든 포션 22종을 각각 50개씩 추가했습니다.", this);
+        }
+        private void OnCommand(string command, string[] args)
+        {
+            PlayerFSM player = GetComponentInParent<PlayerFSM>();
+            if (player == null || !player.IsMine)
+                return;
+            if (command == "give all materials" || command == "wofy")
+            {
+                GiveAllMaterials();
+            }
+            else if (command == "give all potion" || command == "vhtus")
+            {
+                GiveAllPotion();
+            }
         }
     }
 

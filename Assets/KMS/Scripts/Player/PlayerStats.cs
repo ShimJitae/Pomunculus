@@ -22,7 +22,7 @@ public class PlayerStats
     public bool CanUseStamina => CurrentStamina >= 1;
 
     // Shield
-    private struct ShieldChunk { public int Amount; public float RemainingTime; }
+    private struct ShieldChunk { public int Amount; public float ExpireTime; }
     private readonly List<ShieldChunk> shieldChunks = new();
     private int currentShield;
     public int CurrentShield => currentShield;
@@ -44,15 +44,39 @@ public class PlayerStats
         OnHpChanged?.Invoke(CurrentHp, MaxHp);
     }
 
-    // 실드 추가
+    // 실드 추가. 끝나는 시각이 빠른 순서가 유지되도록 알맞은 자리에 끼워 넣는다.
     public void AddShield(int amount, float duration)
     {
         ShieldChunk chunk = new ShieldChunk();
         chunk.Amount = amount;
-        chunk.RemainingTime = duration;
+        chunk.ExpireTime = UnityEngine.Time.time + duration;
 
-        shieldChunks.Add(chunk);
+        int insertIndex = shieldChunks.FindIndex(existing => existing.ExpireTime > chunk.ExpireTime);
+        if (insertIndex < 0) shieldChunks.Add(chunk);
+        else shieldChunks.Insert(insertIndex, chunk);
+
         SetShield(SumShieldChunks());
+    }
+
+    // 보호막으로 피해를 흡수하고, 흡수하지 못한 남은 피해를 돌려준다.
+    // shieldChunks는 끝나는 시각이 빠른 순서로 유지되므로 앞에서부터 깎는다.
+    public int AbsorbDamage(int damage)
+    {
+        if (damage <= 0 || shieldChunks.Count == 0) return damage;
+
+        int remainingDamage = damage;
+        for (int i = 0; i < shieldChunks.Count && remainingDamage > 0; i++)
+        {
+            ShieldChunk chunk = shieldChunks[i];
+            int absorbed = Math.Min(chunk.Amount, remainingDamage);
+            chunk.Amount -= absorbed;
+            remainingDamage -= absorbed;
+            shieldChunks[i] = chunk;
+        }
+
+        shieldChunks.RemoveAll(chunk => chunk.Amount <= 0);
+        SetShield(SumShieldChunks());
+        return remainingDamage;
     }
 
     // 실드 초기화(부활, 죽음)
@@ -68,31 +92,18 @@ public class PlayerStats
         SetShield(value);
     }
 
-    // 시간 지나면 제거
-    private void TickShield(float deltaTime)
+    // 끝나는 시각이 지난 보호막을 앞에서부터 제거한다. 정렬되어 있으므로 맨 앞이 안 끝났으면 멈춘다.
+    private void TickShield()
     {
-        if (shieldChunks.Count == 0) return;
+        int expiredCount = 0;
+        float now = UnityEngine.Time.time;
+        while (expiredCount < shieldChunks.Count && shieldChunks[expiredCount].ExpireTime <= now)
+            expiredCount++;
 
-        bool expired = false;
-        for (int i = shieldChunks.Count - 1; i >= 0; i--)
-        {
-            ShieldChunk chunk = shieldChunks[i];
-            chunk.RemainingTime -= deltaTime;
+        if (expiredCount == 0) return;
 
-            if( chunk.RemainingTime <= 0f)
-            {
-                shieldChunks.RemoveAt(i);
-                expired = true;
-            }
-            else
-            {
-                shieldChunks[i] = chunk;
-            }
-                
-        }
-
-        if (expired)
-            SetShield(SumShieldChunks());
+        shieldChunks.RemoveRange(0, expiredCount);
+        SetShield(SumShieldChunks());
     }
 
     private int SumShieldChunks()
@@ -121,7 +132,7 @@ public class PlayerStats
     // 스태미나 자연 회복
     public void Tick(float deltaTime)
     {
-        TickShield(deltaTime);
+        TickShield();
 
         if (owner.IsDead) return;
         if (currentStamina >= MaxStamina)

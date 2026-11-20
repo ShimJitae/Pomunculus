@@ -26,7 +26,6 @@ public class TutorialUI : MonoBehaviour
         currentPage = 0;
         RefreshPages();
     }
-
     public void NextPage()
     {
         if (pages == null || currentPage >= pages.Length - 1)
@@ -35,7 +34,6 @@ public class TutorialUI : MonoBehaviour
         currentPage++;
         RefreshPages();
     }
-
     public void BackPage()
     {
         if (pages == null || currentPage <= 0)
@@ -44,7 +42,6 @@ public class TutorialUI : MonoBehaviour
         currentPage--;
         RefreshPages();
     }
-
     private void RefreshPages()
     {
         int pageCount = pages != null ? pages.Length : 0;
@@ -64,9 +61,14 @@ public class TutorialUI : MonoBehaviour
         if (pageText != null)
             pageText.text = $"{(pageCount > 0 ? currentPage + 1 : 0)} / {pageCount}";
     }
-
     public void Close()
     {
-        gameObject.SetActive(false);
+        if (TryGetComponent<PopupUI>(out var popup))
+            popup.Close();
+    }
+    public void Open()
+    {
+        if (TryGetComponent<PopupUI>(out var popup))
+            popup.Open();
     }
 }

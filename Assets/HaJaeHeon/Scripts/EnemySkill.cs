@@ -20,6 +20,7 @@ public class EnemySkill : MonoBehaviour
     
     private readonly Collider[] hitColliders = new Collider[16]; // 범위 검색 결과를 재사용하는 버퍼이며 한 번에 최대 16개의 콜라이더를 받는다. 추후 변경 할 수 도 있음
     private readonly HashSet<IDamageable> alreadyHitTargets = new(); // 하나의 대상에 여러 콜라이더가 있어도 한 번의 판정에서는 피해를 한 번만 적용한다.
+    private readonly List<Vector3> hitParticlePositions = new(); // 이번 타격에서 피격 파티클을 띄운 위치. 다른 플레이어에게 RPC로 보낸다.
     private bool isAttackActive;
     private float hitAcceptStartTime; // 이 시각 전의 판정 이벤트는 이전 공격 모션의 잔여 이벤트로 보고 무시
     private readonly Dictionary<GameObject, List<GameObject>> spawnPools = new();   // 프리팹별 소환 인스턴스 (꺼진 것을 재사용)
@@ -28,6 +29,8 @@ public class EnemySkill : MonoBehaviour
     private Enemy enemy;
     private NavMeshAgent agent;
     private EnemyAttackIndicator attackIndicator;
+
+    private Collider bodyCollider; // Navigate To Target 정지 거리이ㅔ 더하는 몸 콜라이더(노드와 같은 방식으로 찾음)
 
 
     private void Awake()
@@ -49,6 +52,9 @@ public class EnemySkill : MonoBehaviour
         SetAttackActive(false);
 
         ApplyNextPatternRange();
+
+        if (bodyCollider == null)
+            bodyCollider = GetComponentInChildren<Collider>();
     }
 
     private void CacheComponents()
@@ -155,10 +161,15 @@ public class EnemySkill : MonoBehaviour
 
         // 인식 범위를 넘으면 의미가 없으므로 제한 (큰 값 = 인식 범위 전체)
         float attackRange = Mathf.Min(useRange, enemy.Data.GetDetectRange());
-        float chaseMargin = 0.2f;   // 경계 오차 여유
+        float chaseMargin = 0.3f;   // 경계 오차 여유 (공격 판정은 높이까지 포함한 거리라 조금 넉넉하게)
+
+        // Navigate To Target은 정지 거리에 몸 콜라이더 크기를 더하므로 같은 값을 빼야 공격 사거리 안쪽에서 멈춘다
+        float bodyExtent = bodyCollider != null
+            ? Mathf.Max(bodyCollider.bounds.extents.x, bodyCollider.bounds.extents.z)
+            : agent.radius;
 
         enemy.BehaviorGraphAgent.SetVariableValue("AttackRange", attackRange);
-        enemy.BehaviorGraphAgent.SetVariableValue("ChaseDistance", Mathf.Max(0.1f, attackRange - agent.radius - chaseMargin));
+        enemy.BehaviorGraphAgent.SetVariableValue("ChaseDistance", Mathf.Max(0.1f, attackRange - bodyExtent - chaseMargin));
     }
 
     // 공격 진해 여부를 로컬 상태와 ㅎBG에 함께 반영한다.
@@ -210,10 +221,23 @@ public class EnemySkill : MonoBehaviour
         SkillParticlePool.Instance.Spawn(attackPattern.SkillParticle, spawnPosition, spawnRotation, spawnScale);
     }
 
+    public void SpawnHitParticle(EnemyPatternDataSO attackPattern, Vector3 hitPosition)
+    {
+        if (attackPattern.HitParticle == null)
+            return;
+
+        SkillParticlePool.Instance.Spawn(attackPattern.HitParticle, hitPosition, AttackRotation, attackPattern.HitParticle.transform.localScale);
+    }
+
+
 
     // 애니메이션 이벤트에서 호출 (Function: OnAttackHit, Float: 피해 배율 %)
-    public void OnAttackHit(float damagePercent)
+    // Int : 1이면 뒤에 타격이 더 남음
+    public void OnAttackHit(AnimationEvent attackHitEvent)
     {
+        float damagePercent = attackHitEvent.floatParameter;
+        bool hasNextHit = attackHitEvent.intParameter == 1;
+
         // 예고 중에 들어온 이벤트 = 기절로 멈췄다가 다시 재생된 이전 공격 모션의 것 → 표시·판정 모두 건드리지 않음
         if (Time.time < hitAcceptStartTime)
             return;
@@ -232,7 +256,9 @@ public class EnemySkill : MonoBehaviour
         if (PhotonNetwork.InRoom && !PhotonNetwork.IsMasterClient || !isAttackActive)
             return;
 
-        SetAttackActive(false);
+        // 마지막 타격에서만 공격 종료 (다단 히트는 중간 이벤트에서 상태를 유지)
+        if (!hasNextHit)
+            SetAttackActive(false);
 
         if (!enemy.CanDoAttack || CurrentAttackPattern == null || CurrentAttackPattern.AttackArea.shape == AttackAreaShape.None)
             return;
@@ -244,6 +270,7 @@ public class EnemySkill : MonoBehaviour
         int hitCount = OverlapArea(area, areaCenter, attackForward);
         int damage = Mathf.RoundToInt( CurrentAttackPattern.GetDamageValue() * damagePercent / 100f);
         alreadyHitTargets.Clear();
+        hitParticlePositions.Clear();
 
         for (int index = 0; index < hitCount; index++)
         {
@@ -263,10 +290,16 @@ public class EnemySkill : MonoBehaviour
 
             damageTarget.TakeDamage(damage, AttackOrigin);
 
-            // 맞은 대상 위치에 피격 파티클 (판정이 방장에서만 일어나므로 현재는 방장 화면에만 보임)
+            // 맞은 대상 위치에 피격 파티클. 방장은 바로 생성하고 다른 플레이어에게는 반복문이 끝난 뒤 한 번에 보낸다
             if (CurrentAttackPattern.HitParticle != null)
-                SkillParticlePool.Instance.Spawn(CurrentAttackPattern.HitParticle, targetComponent.transform.position, AttackRotation, CurrentAttackPattern.HitParticle.transform.localScale);
+            {
+                Vector3 hitPosition = targetComponent.transform.position;
+                SpawnHitParticle(CurrentAttackPattern, hitPosition);
+                hitParticlePositions.Add(hitPosition);
+            }
         }
+        if (hitParticlePositions.Count > 0)
+            enemy.SendShowHitParticle(CurrentAttackPattern.PatternId, hitParticlePositions);
     }
 
     // 사각형은 박스로, 원과 부채꼴은 구로 후보를 수집하며 부채꼴 각도는 호출부에서 추가 검사한다.

@@ -609,6 +609,7 @@ MonoBehaviour:
   tuning: {fileID: 11400000, guid: b6e52e3df09f34b42bbbe2fa41e7e942, type: 2}
   spawnPos: {fileID: 0}
   currentStateView: 0
+  skinnedMeshRenderer: {fileID: 5388229385665870493}
 --- !u!114 &7489094407706414488
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -888,6 +889,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerAnimator
   defaultFade: 0.08
   speedDampTime: 0.1
+--- !u!137 &5388229385665870493 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: -107605695281816232, guid: f4f75312eb965614dab993c80e2de8f6, type: 3}
+  m_PrefabInstance: {fileID: 3767088622541760453}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &6633543304050246393 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7514387204552156476, guid: f4f75312eb965614dab993c80e2de8f6, type: 3}

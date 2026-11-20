@@ -22,6 +22,10 @@ namespace Pomunculus.Items
         public float ColdElement;
         public float WindElement;
 
+        [Header("픽업 프리팹")]
+        [SerializeField] private PotionPickup pickupPrefab;
+        public PotionPickup PickupPrefab => pickupPrefab;
+
         [Header("던지기")]
         [Tooltip("던질 때 생성할 프리팹. 비우면 빈 병")]
         [SerializeField] private ThrownProjectile projectilePrefab;
@@ -31,5 +35,7 @@ namespace Pomunculus.Items
 
         public ThrownProjectile ProjectilePrefab => projectilePrefab;
         public IReadOnlyList<PotionEffect> Effects => effects;
+
+        
     }
 }
