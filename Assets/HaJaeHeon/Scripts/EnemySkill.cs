@@ -20,6 +20,7 @@ public class EnemySkill : MonoBehaviour
     
     private readonly Collider[] hitColliders = new Collider[16]; // 범위 검색 결과를 재사용하는 버퍼이며 한 번에 최대 16개의 콜라이더를 받는다. 추후 변경 할 수 도 있음
     private readonly HashSet<IDamageable> alreadyHitTargets = new(); // 하나의 대상에 여러 콜라이더가 있어도 한 번의 판정에서는 피해를 한 번만 적용한다.
+    private readonly List<Vector3> hitParticlePositions = new(); // 이번 타격에서 피격 파티클을 띄운 위치. 다른 플레이어에게 RPC로 보낸다.
     private bool isAttackActive;
     private float hitAcceptStartTime; // 이 시각 전의 판정 이벤트는 이전 공격 모션의 잔여 이벤트로 보고 무시
     private readonly Dictionary<GameObject, List<GameObject>> spawnPools = new();   // 프리팹별 소환 인스턴스 (꺼진 것을 재사용)
@@ -220,6 +221,15 @@ public class EnemySkill : MonoBehaviour
         SkillParticlePool.Instance.Spawn(attackPattern.SkillParticle, spawnPosition, spawnRotation, spawnScale);
     }
 
+    public void SpawnHitParticle(EnemyPatternDataSO attackPattern, Vector3 hitPosition)
+    {
+        if (attackPattern.HitParticle == null)
+            return;
+
+        SkillParticlePool.Instance.Spawn(attackPattern.HitParticle, hitPosition, AttackRotation, attackPattern.HitParticle.transform.localScale);
+    }
+
+
 
     // 애니메이션 이벤트에서 호출 (Function: OnAttackHit, Float: 피해 배율 %)
     // Int : 1이면 뒤에 타격이 더 남음
@@ -260,6 +270,7 @@ public class EnemySkill : MonoBehaviour
         int hitCount = OverlapArea(area, areaCenter, attackForward);
         int damage = Mathf.RoundToInt( CurrentAttackPattern.GetDamageValue() * damagePercent / 100f);
         alreadyHitTargets.Clear();
+        hitParticlePositions.Clear();
 
         for (int index = 0; index < hitCount; index++)
         {
@@ -279,10 +290,16 @@ public class EnemySkill : MonoBehaviour
 
             damageTarget.TakeDamage(damage, AttackOrigin);
 
-            // 맞은 대상 위치에 피격 파티클 (판정이 방장에서만 일어나므로 현재는 방장 화면에만 보임)
+            // 맞은 대상 위치에 피격 파티클. 방장은 바로 생성하고 다른 플레이어에게는 반복문이 끝난 뒤 한 번에 보낸다
             if (CurrentAttackPattern.HitParticle != null)
-                SkillParticlePool.Instance.Spawn(CurrentAttackPattern.HitParticle, targetComponent.transform.position, AttackRotation, CurrentAttackPattern.HitParticle.transform.localScale);
+            {
+                Vector3 hitPosition = targetComponent.transform.position;
+                SpawnHitParticle(CurrentAttackPattern, hitPosition);
+                hitParticlePositions.Add(hitPosition);
+            }
         }
+        if (hitParticlePositions.Count > 0)
+            enemy.SendShowHitParticle(CurrentAttackPattern.PatternId, hitParticlePositions);
     }
 
     // 사각형은 박스로, 원과 부채꼴은 구로 후보를 수집하며 부채꼴 각도는 호출부에서 추가 검사한다.
