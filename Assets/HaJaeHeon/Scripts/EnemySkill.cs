@@ -222,8 +222,12 @@ public class EnemySkill : MonoBehaviour
 
 
     // 애니메이션 이벤트에서 호출 (Function: OnAttackHit, Float: 피해 배율 %)
-    public void OnAttackHit(float damagePercent)
+    // Int : 1이면 뒤에 타격이 더 남음
+    public void OnAttackHit(AnimationEvent attackHitEvent)
     {
+        float damagePercent = attackHitEvent.floatParameter;
+        bool hasNextHit = attackHitEvent.intParameter == 1;
+
         // 예고 중에 들어온 이벤트 = 기절로 멈췄다가 다시 재생된 이전 공격 모션의 것 → 표시·판정 모두 건드리지 않음
         if (Time.time < hitAcceptStartTime)
             return;
@@ -242,7 +246,9 @@ public class EnemySkill : MonoBehaviour
         if (PhotonNetwork.InRoom && !PhotonNetwork.IsMasterClient || !isAttackActive)
             return;
 
-        SetAttackActive(false);
+        // 마지막 타격에서만 공격 종료 (다단 히트는 중간 이벤트에서 상태를 유지)
+        if (!hasNextHit)
+            SetAttackActive(false);
 
         if (!enemy.CanDoAttack || CurrentAttackPattern == null || CurrentAttackPattern.AttackArea.shape == AttackAreaShape.None)
             return;
