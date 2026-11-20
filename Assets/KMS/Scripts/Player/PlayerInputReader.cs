@@ -46,11 +46,12 @@ public class PlayerInputReader : MonoBehaviour
     private InputAction aimAction;
     private InputAction worldMapAction;
     private InputAction[] potionSlotActions;              // 1/2/3 키. 인덱스 = 슬롯 번호
-    
-#if UNITY_EDITOR
+
     private InputActionMap debugMap;
+    private InputAction debugGiveMaterialsAction;         // F1. 빌드에서도 동작
+    private InputAction debugGivePotionsAction;           // F2. 빌드에서도 동작
+#if UNITY_EDITOR
     private InputAction debugDamageAction;
-    private InputAction debugReviveAction;
 #endif
 
     // 카메라와 액션을 캐시한다. 액션 이름이 에셋과 다르면 여기서 바로 에러가 난다
@@ -74,10 +75,12 @@ public class PlayerInputReader : MonoBehaviour
         {
             potionSlotActions[i] = playerMap.FindAction("PotionSlot" + (i + 1), throwIfNotFound: true);
         }
-#if UNITY_EDITOR
+
         debugMap = controls.FindActionMap("Debug", throwIfNotFound: true);
+        debugGiveMaterialsAction = debugMap.FindAction("DebugGiveMaterials", throwIfNotFound: true);
+        debugGivePotionsAction = debugMap.FindAction("DebugGivePotions", throwIfNotFound: true);
+#if UNITY_EDITOR
         debugDamageAction = debugMap.FindAction("DebugDamage", throwIfNotFound: true);
-        debugReviveAction = debugMap.FindAction("DebugRevive", throwIfNotFound: true);
 #endif
     }
 
@@ -85,17 +88,13 @@ public class PlayerInputReader : MonoBehaviour
     void OnEnable()
     {
         playerMap.Enable();
-#if UNITY_EDITOR
         debugMap.Enable();
-#endif
     }
 
     void OnDisable()
     {
         playerMap.Disable();
-#if UNITY_EDITOR
         debugMap.Disable();
-#endif
     }
 
     // 복제한 입력 에셋을 정리한다
@@ -203,12 +202,15 @@ public class PlayerInputReader : MonoBehaviour
     // 지도 키(Tab)를 이번 프레임에 눌렀는지
     public bool IsWorldMapPressed() => worldMapAction.WasPressedThisFrame();
 
+    // 디버그 재료 추가 키(F1)를 이번 프레임에 눌렀는지. 빌드에서도 동작
+    public bool IsDebugGiveMaterialsPressed() => debugGiveMaterialsAction.WasPressedThisFrame();
+
+    // 디버그 포션 추가 키(F2)를 이번 프레임에 눌렀는지. 빌드에서도 동작
+    public bool IsDebugGivePotionsPressed() => debugGivePotionsAction.WasPressedThisFrame();
+
 #if UNITY_EDITOR
     // 디버그 피격 키(H)를 이번 프레임에 눌렀는지
     public bool IsDebugDamagePressed() => debugDamageAction.WasPressedThisFrame();
-
-    // 디버그 부활 키(R)를 이번 프레임에 눌렀는지
-    public bool IsDebugRevivePressed() => debugReviveAction.WasPressedThisFrame();
 #endif
 
     // 마우스 아래 지면 위치 (지형 높이 반영). 실패 시 플레이어 높이 평면으로 대체

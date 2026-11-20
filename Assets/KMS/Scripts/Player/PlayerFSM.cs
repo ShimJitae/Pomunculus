@@ -50,8 +50,10 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IShieldable, IWorldRPC
     public bool IsDead => CheckDie();
     public Vector3 LastHitSourcePosition { get; private set; }
 
-    private float lastDodgeAt = float.NegativeInfinity;
+    [SerializeField] private SkinnedMeshRenderer skinnedMeshRenderer;
+
     private WorldMapUI worldMapUI;   // 씬의 지도 UI. 처음 Tab을 누를 때 찾아서 캐시
+    private TestItemGiver itemGiver; // 디버그 아이템 추가 키(F1/F2)용. 없으면 키가 무시됨
 
     private bool IsDamageBlocked =>
     IsInvincible || CheckDie() ||
@@ -65,6 +67,12 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IShieldable, IWorldRPC
 
     public event Action OnDied;
     public event Action OnRevived;
+    public event Action OnRespawnRequested;
+
+    //public void RequestRespawn()
+    //{
+    //    if (IsDead) OnRespawnRequested?.Invoke();
+    //}
 
     protected override void Awake()
     {
@@ -82,6 +90,7 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IShieldable, IWorldRPC
         Interactor = GetComponent<PlayerInteractor>();
         Inventory = GetComponentInChildren<Inventory>();
         Loadout = GetComponent<PotionLoadout>();
+        itemGiver = GetComponentInChildren<TestItemGiver>();
 
         Inventory.Changed += SendInventorySync;
         Loadout.OnEquipChanged += HandleLoadoutEquipChanged;
@@ -126,8 +135,8 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IShieldable, IWorldRPC
         if (worldAnimator != null) worldAnimator.IsOwner = () => IsMine;
         Motor.SetAgentEnabled(IsMine);
 
-        // TODO 다른 플레이어의 포션색상 다르게 하기?
-        //if (TryGetComponent(out Renderer r)) r.material.color = IsMine ? Color.green : Color.red;
+        // 다른 플레이어와 포션 색상 다르게 하기 (임시)
+        skinnedMeshRenderer.material.color = IsMine ? Color.red : Color.green;
     }
 
     void Start() => SetState(IsDead ? PlayerStateType.Dead : PlayerStateType.Idle);
@@ -139,9 +148,7 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IShieldable, IWorldRPC
         Input.ReadInput();
         if (Input.ConsumePotionSlotSelect(out int slot)) Loadout.SelectSlot(slot);
         if (Input.IsWorldMapPressed()) ToggleWorldMap();
-#if UNITY_EDITOR
         ReadDebugKeys();
-#endif
         fsm.Update();
         Stats.Tick(Time.deltaTime);
 
@@ -165,29 +172,38 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IShieldable, IWorldRPC
         else worldMapUI.Open();
     }
 
-#if UNITY_EDITOR
-    // 에디터 테스트용: H = 10 피해, R = 사망 상태에서 부활
+    // 테스트용 키: H = 10 피해(에디터 전용), F1 = 모든 재료 50개, F2 = 모든 포션 50개
     void ReadDebugKeys()
     {
+#if UNITY_EDITOR
         if (Input.IsDebugDamagePressed()) TakeDamage(10, transform.position + transform.forward);
-        if (Input.IsDebugRevivePressed() && IsDead) Revive();
-    }
 #endif
+        if (itemGiver != null)
+        {
+            if (Input.IsDebugGiveMaterialsPressed()) itemGiver.GiveAllMaterials();
+            if (Input.IsDebugGivePotionsPressed()) itemGiver.GiveAllPotion();
+        }
+    }
 
-    // 받는 피해 비율을 적용해 피해를 입고, HP가 바뀌었으면 알린다.
+
+    // 받는 피해 비율을 적용하고, 보호막이 먼저 흡수한 뒤 남은 피해만 HP에 입힌다.
     public override void TakeDamage(int damage)
     {
-        if (!IsMine || IsDamageBlocked) return;
+        if (!IsMine || IsDamageBlocked || IsDead) return;
+
+        int scaledDamage = Mathf.CeilToInt(damage * DamageTakenRatio);
+        int remainingDamage = Stats.AbsorbDamage(scaledDamage);
+        if (remainingDamage <= 0) return;
 
         int hpBefore = CurrentHp;
-        base.TakeDamage(Mathf.CeilToInt(damage * DamageTakenRatio));
+        base.TakeDamage(remainingDamage);
         if (CurrentHp != hpBefore)
         {
             SendHpSync();
             Stats.NotifyHpChanged();
         }
-
     }
+
 
     // 투사체·공격 피해. 맞은 위치로 넉백 + 경직
     public override void TakeDamage(int damage, Vector3 sourcePosition)
@@ -220,8 +236,6 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IShieldable, IWorldRPC
 
     }
 
-    private bool IsShield => Stats.CurrentShield > 0;
-
     private void HandleShieldChanged(int shield) => SendShieldSync();
 
     public void GetShield(int amount, float duration)
@@ -237,6 +251,7 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IShieldable, IWorldRPC
     {
         Stats.ClearShield();
         SetState(PlayerStateType.Dead);
+        if (IsMine && Inventory != null) Inventory.DropAllItems();
         OnDied?.Invoke();
     }
 
@@ -247,11 +262,10 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IShieldable, IWorldRPC
         Stats.RestoreAll();
         Stats.ClearShield();
         Input.ClearMoveCommand();
-        if (!Motor.AgentEnabled) Motor.SetAgentEnabled(true);
-        if (spawnPos == null)
-            transform.position = startPos; //TODO 스폰 위치 지정되면 해당 위치로 부활 하도록
-        else
-            transform.position = spawnPos.position;
+
+        transform.position = spawnPos != null ? spawnPos.position : startPos;
+
+        Motor.SetAgentEnabled(true);
         SetState(PlayerStateType.Idle);
         SendHpSync();
         OnRevived?.Invoke();

@@ -187,6 +187,8 @@ GameObject:
   - component: {fileID: 4159214722164586314}
   - component: {fileID: 3728621589469052797}
   - component: {fileID: 7213523084132001128}
+  - component: {fileID: 4806006051183514187}
+  - component: {fileID: 4856906514307765248}
   m_Layer: 7
   m_Name: "\uC232 \uB098\uBB34"
   m_TagString: Enemy
@@ -261,6 +263,33 @@ MonoBehaviour:
     - {fileID: 9100957458502131902, guid: 98b45f03bc715c7499c52f898e1a8936, type: 3}
   spawnHeight: 0.5
   heightGap: 0.5
+--- !u!114 &4806006051183514187
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5160845557896133833}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1763b034f7227b943a41c119c2830cac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StatusEffectVisualizer
+  anchor: {fileID: 0}
+  feedbackTarget: {fileID: 0}
+  fitToModelBounds: 0
+--- !u!114 &4856906514307765248
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5160845557896133833}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 72c4c1ed2e0d7a5488daf19d1154ec5d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Occluder
 --- !u!1 &8570588673459834121
 GameObject:
   m_ObjectHideFlags: 0

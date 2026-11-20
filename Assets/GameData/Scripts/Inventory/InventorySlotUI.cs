@@ -107,6 +107,12 @@ namespace Pomunculus.Items
 
         public void OnPointerClick(PointerEventData eventData)
         {
+            if (eventData.button == PointerEventData.InputButton.Right)
+            {
+                LogItemInfo();
+                return;
+            }
+
             if (eventData.button != PointerEventData.InputButton.Left)
                 return;
 
@@ -114,6 +120,15 @@ namespace Pomunculus.Items
                 return;
 
             potionSlotSelector.BeginSelection(potionData);
+        }
+
+        // 우클릭한 슬롯의 아이템 이름과 수량을 콘솔에 출력한다
+        private void LogItemInfo()
+        {
+            if (!hasItem)
+                return;
+
+            Debug.Log($"[Inventory] {itemName} x{itemAmount}", this);
         }
     }
 }
