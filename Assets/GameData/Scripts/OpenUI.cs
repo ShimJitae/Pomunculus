@@ -12,6 +12,7 @@ namespace Pomunculus.Items
         [Header("제작창")]
         [SerializeField] private GameObject craftingUI;
         [SerializeField] private Key craftingKey = Key.C;
+
         [Header("인벤토리")]
         [SerializeField] private GameObject inventoryUI;
         [SerializeField] private Key inventoryKey = Key.I;
