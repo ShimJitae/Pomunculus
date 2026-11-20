@@ -3,25 +3,28 @@ using UnityEngine.InputSystem;
 
 namespace Pomunculus.Items
 {
+    [DefaultExecutionOrder(-1000)]
     public class OpenUI : MonoBehaviour
     {
         [Header("레시피북")]
         [SerializeField] private GameObject recipeBook;
         [SerializeField] private Key recipeBookKey = Key.R;
-
         [Header("제작창")]
         [SerializeField] private GameObject craftingUI;
         [SerializeField] private Key craftingKey = Key.C;
-
         [Header("인벤토리")]
         [SerializeField] private GameObject inventoryUI;
         [SerializeField] private Key inventoryKey = Key.I;
 
         [SerializeField] private GameObject craftingInteractionText;
+        private ESCPanel escPanel;
+        private bool pausedEscPanel;
+
         public GameObject CraftingInteractionText => craftingInteractionText;
 
         private void Update()
         {
+            RefreshEscPanel();
             Keyboard keyboard = Keyboard.current;
 
             if (keyboard == null)
@@ -60,6 +63,14 @@ namespace Pomunculus.Items
             {
                 ToggleInventoryUI();
             }
+        }
+        private void OnDisable()
+        {
+            // OpenUI가 꺼지면 잠깐 껐던 ESCPanel 복원
+            if (pausedEscPanel && escPanel != null)
+                escPanel.enabled = true;
+
+            pausedEscPanel = false;
         }
 
         public void ToggleRecipeBook()
@@ -113,6 +124,28 @@ namespace Pomunculus.Items
                 craftingUI.TryGetComponent<PopupUI>(out var popup))
             {
                 popup.Close();
+            }
+        }
+        private void RefreshEscPanel()
+        {
+            if (escPanel == null)
+                escPanel = FindFirstObjectByType<ESCPanel>(FindObjectsInactive.Include);
+            if (escPanel == null)
+                return;
+            PopupUIManager manager = PopupUIManager.Instance;
+            bool hasPopup = manager != null && manager.HasOpenPopup;
+            if (hasPopup)
+            {
+                if (escPanel.enabled)
+                {
+                    escPanel.enabled = false;
+                    pausedEscPanel = true;
+                }
+            }
+            else if (pausedEscPanel)
+            {
+                escPanel.enabled = true;
+                pausedEscPanel = false;
             }
         }
 
