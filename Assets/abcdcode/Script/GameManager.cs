@@ -233,6 +233,18 @@ public class GameManager : SingletonBehavior<GameManager>
             LocalUserProfile = SaveManager.Instance.Load(UserProfile).GetData<UserProfile>();
         }
     }
+    // 닉네임 변경. 프로필에 저장하고 Photon 닉네임도 바꿔서 방 안이면 다른 플레이어에게도 반영됨
+    // 앞뒤 공백을 제거한 이름이 비어 있으면 변경하지 않고 false
+    public bool ChangeUserName(string userName)
+    {
+        userName = userName?.Trim();
+        if (string.IsNullOrEmpty(userName)) return false;
+        var profile = LocalUserProfile;
+        profile.UserName = userName;
+        LocalUserProfile = profile; // setter에서 저장됨
+        PhotonNetwork.NickName = userName;
+        return true;
+    }
     public void SaveProfile()
     {
         var d = SaveData.CreateSaveData(LocalUserProfile);
