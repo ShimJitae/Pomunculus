@@ -460,7 +460,7 @@ ParticleSystem:
         m_RotationOrder: 0
     randomizeRotationDirection: 1
     gravitySource: 0
-    maxNumParticles: 1000
+    maxNumParticles: 10
     customEmitterVelocity: {x: 0, y: 0, z: 0}
     size3D: 0
     rotation3D: 0
@@ -8442,7 +8442,7 @@ ParticleSystem:
         m_RotationOrder: 4
     minKillSpeed: 0
     maxKillSpeed: 10000
-    radiusScale: 2
+    radiusScale: 10
     collidesWith:
       serializedVersion: 2
       m_Bits: 10111
@@ -8489,12 +8489,12 @@ ParticleSystem:
       emitProbability: 1
     - serializedVersion: 3
       emitter: {fileID: 198766299176698516}
-      type: 1
+      type: 2
       properties: 4
       emitProbability: 1
     - serializedVersion: 3
       emitter: {fileID: 198724899444574882}
-      type: 1
+      type: 2
       properties: 4
       emitProbability: 1
   LightsModule:
@@ -9975,7 +9975,7 @@ ParticleSystem:
         m_RotationOrder: 0
     randomizeRotationDirection: 1
     gravitySource: 0
-    maxNumParticles: 1000
+    maxNumParticles: 10
     customEmitterVelocity: {x: 0, y: 0, z: 0}
     size3D: 0
     rotation3D: 0
@@ -14189,7 +14189,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 5, y: 5, z: 5}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 4857358969220396}
@@ -14622,7 +14622,7 @@ ParticleSystem:
         m_RotationOrder: 0
     randomizeRotationDirection: 1
     gravitySource: 0
-    maxNumParticles: 1000
+    maxNumParticles: 10
     customEmitterVelocity: {x: 0, y: 0, z: 0}
     size3D: 0
     rotation3D: 0
@@ -18762,16 +18762,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyProjectile
   localMoveAxis: {x: 0, y: 0, z: 1}
-  moveSpeed: 0
+  moveSpeed: 15
   maxDistance: 8
-  hitRadius: 0.5
+  hitRadius: 1
   damage: 8
   hitLayers:
     serializedVersion: 2
     m_Bits: 264
   blockLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 64
   projectileVisual: {fileID: 0}
   projectileEffect: {fileID: 0}
   impactEffect: {fileID: 0}
@@ -19237,7 +19237,7 @@ ParticleSystem:
         m_RotationOrder: 0
     randomizeRotationDirection: 1
     gravitySource: 0
-    maxNumParticles: 1000
+    maxNumParticles: 10
     customEmitterVelocity: {x: 0, y: 0, z: 0}
     size3D: 0
     rotation3D: 0
@@ -23891,7 +23891,7 @@ ParticleSystem:
         m_RotationOrder: 0
     randomizeRotationDirection: 1
     gravitySource: 0
-    maxNumParticles: 1000
+    maxNumParticles: 10
     customEmitterVelocity: {x: 0, y: 0, z: 0}
     size3D: 0
     rotation3D: 0
