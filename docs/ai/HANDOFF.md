@@ -20,13 +20,18 @@
   - 렌더 측정 결과 숲 바닥 변화는 봄 74%, 여름 69%, 가을 70%, 겨울 75%다.
   - 겨울 남색 판(Arctic_Ground 변형에 붙은 자식 수면 메시)을 제거했다.
   - 나무·돌은 채집 오브젝트용이라 장식에 넣지 않는다.
-- `World_PurePoly.prefab`에서 숲 양쪽 연못을 없애고 땅으로 채웠다. Forest의 PondTrim 바닥 13개를 원래 메시로 되돌리고, Basin/PondBed, PondWater, 물결 FX를 삭제했다. **NavMesh는 다시 굽지 않았다.**
+- `World_PurePoly.prefab`에서 숲 양쪽 연못을 없애고 땅으로 채웠다. Forest의 PondTrim 바닥 13개를 원래 메시로 되돌리고, Basin/PondBed, PondWater, 물결 FX를 삭제했다. 이후 사용자가 NavMesh를 다시 구웠다.
 - 검사 결과는 Collider 0, Static 0, 마커 여백 위반 0이다. 커밋하지 않았다.
+- 런타임 전환(2026-11-21): `World_PurePoly/SeasonalLayers`의 `SeasonalLayerController`(`Assets/SJT/02_Scripts/Season/`)가 계절 이벤트를 받아 레이어를 Addressables로 불러와 붙인다.
+  - 처음에는 `IsReady`를 한 번 기다려 `CurSeason`을 적용한다. 페이드·미리 만들기는 넣지 않았다(사용자 결정). 이전 레이어는 끈 뒤 여러 프레임에 나눠 파괴하고 해제한다.
+  - Addressables 기본 설정(`Assets/AddressableAssetsData/`)을 만들고 레이어 4개를 Default Local Group에 등록했다. 그 결과 `EditorBuildSettings.asset`에 config 1줄이 추가됐다.
+  - PlayMode(에디터, 2026-11-21): 첫 적용(봄)과 봄→여름→가을→겨울→봄 전환, 같은 프레임 연속 변경(마지막 계절만 붙음)을 확인했다. 레이어는 항상 1개, 남은 Addressables 작업은 활성 레이어 1개뿐이다.
+  - 처음 불러오는 계절은 에디터 Use Asset Database 모드에서 교체 직전 한 프레임이 약 0.6~1초 멈춘다.
+  - Addressables 번들 기준(Use Existing Build)에서는 같은 경우 한 프레임이 약 100~120ms 늘어나는 정도였다. 번들은 4계절이 하나(약 18.6MB)로 묶인다. 측정 후 Play Mode 설정은 Use Asset Database로 되돌렸다. 실제 플레이어 빌드에서는 측정하지 않았다.
+  - 확인 중 기존 문제 발견: `Assets/Resources/NetworkPrefabCatalog.asset`의 `m_entries` 7개가 에디터에서 로드되지 않는 프리팹(광맥 Variant, habinImports 아이템 등)을 가리켜 `GameManager.Awake`가 중간에 멈추고 월드가 시작되지 않는다. PlayMode 확인은 월드 데이터를 직접 넣어 진행했다.
 - 아직 하지 않은 것
-  - 연못 자리 NavMesh 재굽기
-  - World 연결과 런타임 전환(Addressables 미설치)
   - BaseCamp 레이어
-  - PlayMode와 성능 확인
+  - PlayMode와 성능 확인(교체 프레임 끊김 포함), 빌드에서 Addressables 콘텐츠 포함 확인
 - 상세 기록: [계획](plans/2026-11-20-seasonal-forest-layers.md)
 
 ## World_PurePoly 지역·통로 외곽 암벽 MeshCollider 복구 — 2026-11-19
