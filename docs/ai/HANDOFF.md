@@ -11,6 +11,24 @@
 <!-- harness:status:end -->
 - Claude Code 겸용 레이어를 이 프로젝트에만 추가했다(UnityHarness 원본 미반영). `CLAUDE.md`, `.claude/`, `scripts/ai/sync-claude.ps1`이 해당하며 Codex 파일은 바꾸지 않았다. 스킬·역할은 Codex 원본을 고친 뒤 `sync-claude.ps1`로 다시 생성한다.
 
+## 계절별 Forest 장식 레이어 — 2026-11-20
+
+- `Assets/SJT/03_Prefabs/Map(New)/Seasonal/`에 Forest 장식 레이어 4개(봄·여름·가을·겨울)가 있다. 생성 도구는 `Assets/SJT/02_Scripts/Editor/Season/SeasonalForestLayerBuilder.cs`(메뉴 `Tools/Season`)다.
+- 4차 요청을 반영했다
+  - 외곽 암벽과 보스 고지는 네 계절 모두 봄(기본) 그대로 둔다.
+  - 계절 덮개는 숲 바닥의 약 70%만 덮는다. 바닥을 약 22m 칸으로 나눠 무작위로 덮어 기본 숲과 골고루 섞인다(5차). 가을은 황토 땅만 쓴다.
+  - 렌더 측정 결과 숲 바닥 변화는 봄 74%, 여름 69%, 가을 70%, 겨울 75%다.
+  - 겨울 남색 판(Arctic_Ground 변형에 붙은 자식 수면 메시)을 제거했다.
+  - 나무·돌은 채집 오브젝트용이라 장식에 넣지 않는다.
+- `World_PurePoly.prefab`에서 숲 양쪽 연못을 없애고 땅으로 채웠다. Forest의 PondTrim 바닥 13개를 원래 메시로 되돌리고, Basin/PondBed, PondWater, 물결 FX를 삭제했다. **NavMesh는 다시 굽지 않았다.**
+- 검사 결과는 Collider 0, Static 0, 마커 여백 위반 0이다. 커밋하지 않았다.
+- 아직 하지 않은 것
+  - 연못 자리 NavMesh 재굽기
+  - World 연결과 런타임 전환(Addressables 미설치)
+  - BaseCamp 레이어
+  - PlayMode와 성능 확인
+- 상세 기록: [계획](plans/2026-11-20-seasonal-forest-layers.md)
+
 ## World_PurePoly 지역·통로 외곽 암벽 MeshCollider 복구 — 2026-11-19
 
 - 5개 지역 외곽 암벽 166개와 현재 Seam_Walls 23개에 이어 설산 보스 뒤 SnowyMountain/Map/08_정상_암봉의 큰 암벽 14개도 시각 메시와 같은 non-convex MeshCollider로 되돌렸다. World 내부의 Box 제거·Mesh 추가 Override만 저장했고 개별 Terrain Variant와 Imports는 유지한다. 설산 RimDecor의 나무 7개·작은 장식 바위 7개와 바닥 박스 9개·보스 고지 Mesh 4개는 변경하지 않았다.
@@ -20,6 +38,7 @@
 
 - 숲 동·서 연못 시각 지면 5개만 ±1cm, 설산·화산 계단 +1cm, 늪 계단 약 +1.692cm 보정했다. 늪 수면 4개·화산 용암면 3개는 중앙 fan의 연결 인덱스만 수정했다. 기존 지역별 바닥 박스와 보스 고지 MeshCollider·기존 숲 계단 보정은 유지한다.
 - 동일 평면 겹침 및 수면 내부 겹침 제거를 기하·독립 리뷰로 확인했다. 계단 사면 관통·투명한 숲 연못 아래 지형의 삼각형 모양은 남아 있으며, 실제 캐릭터 이동과 파도 애니메이션은 PlayMode 미검증이다. 대상·검증과 남은 범위는 수정 기록(`plans/2026-11-19-world-purepoly-overlap.md`, 로컬 전용)을 따른다.
+- (2026-11-20 갱신: 숲 동·서 연못은 이후 제거됐다. 위의 숲 연못 지면 보정과 아래 연못 NavMesh 표본은 이제 해당하지 않는다. 연못 자리 NavMesh는 다시 구워야 한다.)
 - 네 지역 계단 양방향 24경로·연못 NavMesh 30표본은 수정 전과 정확히 같고 NavMesh·씬 파일·meta 해시도 유지됐다. 최종 Editor의 미저장 씬 상태는 해제·저장하지 않았다.
 
 ## Forest 보스 계단 접합부 — 2026-11-19
