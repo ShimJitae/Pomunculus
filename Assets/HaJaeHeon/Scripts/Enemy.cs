@@ -1,6 +1,8 @@
+using NUnit.Framework;
 using Photon.Pun;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Unity.Behavior;
 using UnityEngine;
 using UnityEngine.AI;
@@ -324,13 +326,14 @@ public class Enemy : Entity, IWorldRPC, IHealable
 
     #region 네트워크
     // 방 밖에서는 로컬 실행을 허용하고, 방 안에서는 마스터 클라이언트만 실행 권한을 가진다.
-    private bool IsMaster => !PhotonNetwork.InRoom || PhotonNetwork.IsMasterClient;
+    //private bool IsMaster => !PhotonNetwork.InRoom || PhotonNetwork.IsMasterClient;
 
     private enum EnemyRPCType : byte
     {
         SyncHp,           // 방장 > 다른 플레이어 : 확정된 HP
         ShowTelegraph,    // 방장 > 다른 플레이어 : 공격 범위 표시
         CancelTelegraph,  // 방장 > 다른 플레이어 : 공격 취소 (그로기, 사망)
+        ShowHitParticle, // 방장 > 다른 플레이어 : 피격 파티클 위치
         RegisterStatusEffect = RpcRegisterStatusEffect, // 결정권자 > 모두 : 상태이상 등록 (Entity 공용)
     }
 
@@ -374,6 +377,23 @@ public class Enemy : Entity, IWorldRPC, IHealable
         this.SendRPC(packet, WorldRPCTarget.Others);
     }
 
+    // EnemySkill.OnAttackHit 에서 호출(방장만) / 이번 타격에 맞은 위치를 한 번에 전송 >> 애니메이션 이벤트 한 번 >> 묶이는 건 같은 순간에 맞은 여러 대상
+    public void SendShowHitParticle(int patternId, List<Vector3> hitPositions)
+    {
+        if (!IsMaster || hitPositions.Count == 0)
+            return;
+
+        PacketData packet = new();
+        packet.Write((byte)EnemyRPCType.ShowHitParticle);
+        packet.Write(patternId);
+        packet.Write(hitPositions.Count);
+
+        foreach(Vector3 hitPosition in hitPositions)
+            packet.Write(hitPosition);
+
+        this.SendRPC(packet, WorldRPCTarget.Others); // 방장은 판정 중에 이미 생성했으므로 나머지에게만 전송
+    }
+
     // WorldManager가 ID로 찾아서 호출
     public void ReceiveRPC(PacketData packet)
     {
@@ -390,6 +410,10 @@ public class Enemy : Entity, IWorldRPC, IHealable
 
             case EnemyRPCType.CancelTelegraph:
                 enemySkill.CancelAttack();
+                break;
+
+            case EnemyRPCType.ShowHitParticle:
+                ReceiveShowHitParticle(packet);
                 break;
 
             case EnemyRPCType.RegisterStatusEffect:
@@ -411,6 +435,24 @@ public class Enemy : Entity, IWorldRPC, IHealable
             return;
 
         enemySkill.ShowRemoteTelegraph(patternData, origin, Quaternion.Euler(0f, yaw, 0f));
+    }
+
+    // 피격 파티클 생성 RPC Receive
+    private void ReceiveShowHitParticle(PacketData packet)
+    {
+        int patternId = packet.ReadInt();
+        int hitPositionCount = packet.ReadInt();
+
+        EnemyPatternDataSO patternData = DataDBManager.Instance.PatternDatabase.TryGetDataSO(patternId);
+
+        // 패턴을 못 찾아도 패킷은 끝까지 읽는다.
+        for(int i = 0; i < hitPositionCount; i++)
+        {
+            Vector3 hitPosition = packet.ReadVector3();
+
+            if(patternData != null)
+                enemySkill.SpawnHitParticle(patternData, hitPosition);
+        }
     }
 
     // 방장이 확정한 HP나 저장된 HP를 적용 (드롭·파괴는 하지 않음)

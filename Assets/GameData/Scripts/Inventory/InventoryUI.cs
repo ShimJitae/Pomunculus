@@ -44,6 +44,8 @@ namespace Pomunculus.Items
         private readonly List<InventorySlotUI> slotViews = new List<InventorySlotUI>();
         [Header("포션 슬롯 등록")]
         [SerializeField] private PotionSlotSelector potionSlotSelector;
+        [Header("사운드")]
+        [SerializeField] private AudioSO inventoryCloseSound;
 
 
         public event Action<bool> OnOpenChanged;
@@ -68,10 +70,19 @@ namespace Pomunculus.Items
 
             if (tooltip != null)
                 tooltip.Hide();
+
             if (potionSlotSelector != null)
                 potionSlotSelector.CancelSelection();
 
             OnOpenChanged?.Invoke(false);
+
+            // 실제로 패널이 꺼졌을 때 닫기 소리 재생
+            if (Application.isPlaying &&
+                !gameObject.activeInHierarchy &&
+                AudioManager.Instance != null)
+            {
+                AudioManager.Instance.PlaySound(inventoryCloseSound);
+            }
         }
 
         public void Refresh()

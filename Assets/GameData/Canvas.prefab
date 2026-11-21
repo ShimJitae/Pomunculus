@@ -2161,6 +2161,7 @@ GameObject:
   - component: {fileID: 3999344330022569353}
   - component: {fileID: 5344725832449234975}
   - component: {fileID: 827934646805572935}
+  - component: {fileID: 6143854145501190719}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -2217,7 +2218,7 @@ Canvas:
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 2
   m_TargetDisplay: 0
 --- !u!114 &8795512891593543691
 MonoBehaviour:
@@ -2310,6 +2311,18 @@ MonoBehaviour:
   titleText: {fileID: 3117594437468197603}
   hintText: {fileID: 3400583537264299457}
   InteractionText: {fileID: 1166281987221502003}
+--- !u!114 &6143854145501190719
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1036968618779003939}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 368a4dc7d81a7e346a8bd77b82c29292, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PopupUIManager
 --- !u!1 &1138000660170061026
 GameObject:
   m_ObjectHideFlags: 0
