@@ -2913,6 +2913,7 @@ GameObject:
   - component: {fileID: 9173483715141810696}
   - component: {fileID: 7486839068672850478}
   - component: {fileID: 388699960417461937}
+  - component: {fileID: 255969523933007137}
   m_Layer: 0
   m_Name: World_PurePoly
   m_TagString: Untagged
@@ -3006,6 +3007,39 @@ MonoBehaviour:
   swampGathers: {fileID: 110977554018130686}
   swampBoss: {fileID: 1927399236297186890}
   swampPlayerSpawnPoint: {fileID: 3686386486818073203}
+--- !u!114 &255969523933007137
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1062197608283547737}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 52d79676794a25c4a9e6986d86465f53, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SeasonalLayerController
+  layers:
+  - m_AssetGUID: 484d62b7a2a3cca4c88211ca266136d5
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 0
+  - m_AssetGUID: 3782540693e02c04eaadd2302702450d
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 0
+  - m_AssetGUID: 9fef9d1cad07ae741be585518bd1519f
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 0
+  - m_AssetGUID: da711074692d0b14aa77f624139cf759
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 0
 --- !u!1 &1063586890801637088
 GameObject:
   m_ObjectHideFlags: 0
