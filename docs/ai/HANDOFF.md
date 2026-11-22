@@ -32,7 +32,13 @@
 - 아직 하지 않은 것
   - BaseCamp 레이어
   - PlayMode와 성능 확인(교체 프레임 끊김 포함), 빌드에서 Addressables 콘텐츠 포함 확인
-- 상세 기록: [계획](plans/2026-11-20-seasonal-forest-layers.md)
+- 과거 상세 기록 경로는 `plans/2026-11-20-seasonal-forest-layers.md`이며, 현재 작업 폴더에는 해당 파일이 없다.
+
+### 계절 바닥 런타임 정적 배칭 — 2026-11-22
+
+- `SeasonalLayerController`가 각 계절 생성 완료와 최신 요청 여부를 확인한 뒤 `Cover/Ground` 하위 바닥 모듈에 `StaticBatchingUtility.Combine`을 한 번 호출하도록 추가했다. 바닥 모듈은 봄 193개·여름 153개·가을 176개·겨울 171개다. 원본 FBX 16종의 Read/Write는 이미 켜져 있어 프리팹·모델 임포트 설정은 변경하지 않았다.
+- 배칭 대상 경로가 없거나 읽을 수 없는 메시가 있으면 배칭을 생략하고, 배칭 예외가 계절 교체·이전 레이어 정리를 막지 않도록 처리했다. 상세 구조는 [프로젝트 안내](PROJECT.md#계절별-forest-장식과-바닥-배칭)를 따른다.
+- 최종 수정본의 Unity 컴파일과 독립 코드 리뷰를 통과했다. AssetDatabase 조회에서 네 계절 바닥 693개의 메시 읽기 가능·활성 Renderer·배칭 허용 머티리얼을 확인했다. 이번 요청은 정적 배칭까지만이며 Occlusion 씬 설정·베이크와 페이드는 진행하지 않았다. PlayMode의 실제 배칭 여부와 성능·메모리 회수는 미검증이다.
 
 ## World_PurePoly 지역·통로 외곽 암벽 MeshCollider 복구 — 2026-11-19
 

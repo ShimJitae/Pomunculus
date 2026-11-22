@@ -109,6 +109,8 @@ public sealed class SeasonalLayerController : MonoBehaviour
             return;
         }
 
+        BatchGround(op.Result[0]);
+
         if (activeInstance != null)
         {
             DestroyGraduallyAsync(activeInstance, activeHandle).Forget();   // 이전 레이어는 끄고 천천히 정리
@@ -120,6 +122,45 @@ public sealed class SeasonalLayerController : MonoBehaviour
         activeInstance = op.Result[0];
         activeHandle = handle;
         activeSeason = season;
+    }
+
+    /// <summary>
+    /// 생성된 계절의 바닥 모듈만 한 번 정적 배칭한다. 배칭할 수 없으면 원래 렌더러로 표시한다.
+    /// </summary>
+    private static void BatchGround(GameObject layer)
+    {
+        Transform ground = layer.transform.Find("Cover/Ground");
+        if (ground == null)
+        {
+#if UNITY_EDITOR
+            Debug.LogWarning("[SeasonalLayerController] Cover/Ground가 없어 바닥 정적 배칭을 생략합니다", layer);
+#endif
+            return;
+        }
+
+        foreach (MeshFilter filter in ground.GetComponentsInChildren<MeshFilter>(true))
+        {
+            Mesh mesh = filter.sharedMesh;
+            if (mesh != null && !mesh.isReadable)
+            {
+#if UNITY_EDITOR
+                Debug.LogWarning($"[SeasonalLayerController] {mesh.name} 메시의 Read/Write가 꺼져 있어 바닥 정적 배칭을 생략합니다", filter);
+#endif
+                return;
+            }
+        }
+
+        try
+        {
+            StaticBatchingUtility.Combine(ground.gameObject);
+        }
+        catch (System.Exception exception)
+        {
+            // 선택적인 렌더링 최적화의 실패가 계절 교체와 이전 레이어 정리를 막지 않게 한다.
+#if UNITY_EDITOR
+            Debug.LogWarning($"[SeasonalLayerController] 바닥 정적 배칭에 실패해 원래 렌더러로 표시합니다: {exception.Message}", layer);
+#endif
+        }
     }
 
     /// <summary>
