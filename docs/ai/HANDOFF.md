@@ -40,6 +40,19 @@
 - 배칭 대상 경로가 없거나 읽을 수 없는 메시가 있으면 배칭을 생략하고, 배칭 예외가 계절 교체·이전 레이어 정리를 막지 않도록 처리했다. 상세 구조는 [프로젝트 안내](PROJECT.md#계절별-forest-장식과-바닥-배칭)를 따른다.
 - 최종 수정본의 Unity 컴파일과 독립 코드 리뷰를 통과했다. AssetDatabase 조회에서 네 계절 바닥 693개의 메시 읽기 가능·활성 Renderer·배칭 허용 머티리얼을 확인했다. 이번 요청은 정적 배칭까지만이며 Occlusion 씬 설정·베이크와 페이드는 진행하지 않았다. PlayMode의 실제 배칭 여부와 성능·메모리 회수는 미검증이다.
 
+### 계절 바닥 전환용 머티리얼 준비 — 2026-11-22
+
+- 사용자가 만든 `Assets/SJT/01_Assets/Materials/`의 `Spring_Fade`, `Summer_Fade`, `Authom_Fade`, `Winter_Fade`를 보정했다. 봄·여름의 Base Map을 각 원본 계절 팔레트로 바꾸고, 네 머티리얼의 Metallic 0·Smoothness 0.2·알파 1과 반사광 보존을 끈 Alpha 블렌딩을 맞췄다. 이름과 GUID는 유지했다.
+- 머티리얼 준비 단계에서는 파일만 수정했으며 이름과 GUID를 유지했다. 뒤의 직접 구현 요청에서 컨트롤러의 페이드 코드와 Inspector 연결을 추가했다. 연결 순서는 봄·여름·가을(`Authom_Fade`)·겨울이다.
+- 준비 직후의 Editor 조회에서는 네 머티리얼이 미저장 상태였으나, 구현 전 재조회에서 모두 `IsDirty=false`이고 디스크와 텍스처·알파·질감·투명 설정이 일치함을 확인했다. 실제 페이드 외형은 아직 확인하지 않았다.
+
+### 계절 바닥 교차 페이드 구현 — 2026-11-22
+
+- 기존 `SeasonalLayerController`에 바닥만 2초 교차 페이드하는 코드와 `fadeDuration`, `groundFadeMaterials`를 추가하고 `World_PurePoly/SeasonalLayers`에 기존 머티리얼 4개를 연결했다. 새 스크립트·컴포넌트·ICullingTickable·Shader Graph는 추가하지 않았다.
+- 첫 입장은 즉시 표시한다. 이후 전환에서는 바닥을 알파 0으로 준비한 뒤 새 장식을 표시하고, 바닥의 공유 머티리얼 복제본 두 개만 갱신한다. 원본 복구 후 바닥 배칭과 이전 레이어의 단계별 파괴·해제를 수행한다. Occlusion과 씬·ProjectSettings는 변경하지 않는다.
+- 기존 월드 루트에도 동일 컨트롤러가 남아 있어 루트 쪽은 삭제하지 않고 비활성화했으며, SeasonalLayers 쪽 하나에만 시간과 머티리얼을 연결했다. 프리팹과 현재 씬의 실제 로드값도 일치한다. 최종 Unity 재컴파일·독립 리뷰·바닥과 머티리얼 조건 검증을 통과했다. PlayMode·성능·메모리 회수는 미검증이다. 상세 범위와 검증 상태는 [구현 계획](plans/2026-11-22-seasonal-ground-fade.md)을 따른다.
+- 마무리 중 월드 프리팹과 IntegrationTestScene에 별도의 Occluder 추가 변경이 저장된 것을 확인했고 그대로 보존했다. 마지막 Editor 조회에서 씬은 `isDirty=true`이며 저장하지 않았다. 이 추가 변경의 실행·외형은 이번 페이드 검증 범위에 포함하지 않았다.
+
 ## World_PurePoly 지역·통로 외곽 암벽 MeshCollider 복구 — 2026-11-19
 
 - 5개 지역 외곽 암벽 166개와 현재 Seam_Walls 23개에 이어 설산 보스 뒤 SnowyMountain/Map/08_정상_암봉의 큰 암벽 14개도 시각 메시와 같은 non-convex MeshCollider로 되돌렸다. World 내부의 Box 제거·Mesh 추가 Override만 저장했고 개별 Terrain Variant와 Imports는 유지한다. 설산 RimDecor의 나무 7개·작은 장식 바위 7개와 바닥 박스 9개·보스 고지 Mesh 4개는 변경하지 않았다.

@@ -4,25 +4,36 @@ using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
 
 /// <summary>
-/// 현재 계절의 Forest 장식 레이어를 이 오브젝트 아래에 하나만 유지한다.
-/// 계절이 바뀌면 새 레이어를 불러와 붙이고, 붙은 뒤에 이전 레이어를 끄고 여러 프레임에 나눠 파괴·해제한다.
+/// 현재 계절의 Forest 장식을 관리하고 계절 변경 시 바닥만 교차 페이드한다.
+/// 첫 계절은 즉시 표시하며, 전환이 끝난 이전 레이어는 여러 프레임에 나눠 파괴·해제한다.
 /// </summary>
 public sealed class SeasonalLayerController : MonoBehaviour
 {
     private const int c_seasonCount = 4;
     private const int c_destroyPerFrame = 200;   // 이전 레이어를 정리할 때 프레임당 파괴 개수
+    private const string c_groundPath = "Cover/Ground";
+    private const int c_previousRenderQueue = 3000;
+    private const int c_nextRenderQueue = 3001;
 
     [Tooltip("봄·여름·가을·겨울 순서의 계절 레이어 프리팹")]
     [SerializeField] private AssetReferenceGameObject[] layers = new AssetReferenceGameObject[c_seasonCount];
+
+    [Tooltip("계절 바닥의 전환 시간(초). 0이면 즉시 교체한다")]
+    [SerializeField, Min(0f)] private float fadeDuration = 2f;
+    [Tooltip("봄·여름·가을·겨울 순서의 바닥 전환용 머티리얼")]
+    [SerializeField] private Material[] groundFadeMaterials = new Material[c_seasonCount];
+
+    private static readonly int baseColorId = Shader.PropertyToID("_BaseColor");
 
     // 지금 씬에 붙어 있는 레이어
     private Season? activeSeason;
     private GameObject activeInstance;
     private AsyncOperationHandle<GameObject> activeHandle;
 
-    // 마지막으로 요청한 계절과 요청 번호. 불러오는 사이 다른 요청이 오면 이전 결과는 버린다
+    // 유지 중인 요청과 요청 번호. 불러오는 사이 다른 요청이 오면 이전 결과는 버린다
     private Season? targetSeason;
     private int requestId;
+    private bool isFading;
 
     private void OnEnable()
     {
@@ -36,6 +47,18 @@ public sealed class SeasonalLayerController : MonoBehaviour
 
     private void Start()
     {
+        for (int i = 0; i < c_seasonCount; i++)
+        {
+            if (groundFadeMaterials != null && groundFadeMaterials.Length == c_seasonCount && groundFadeMaterials[i] != null && groundFadeMaterials[i].HasProperty(baseColorId))
+            {
+                continue;
+            }
+#if UNITY_EDITOR
+            Debug.LogWarning($"[SeasonalLayerController] {(Season)i} 바닥 전환용 머티리얼을 확인해 주세요", this);
+#endif
+            enabled = false;
+            return;
+        }
         ApplyInitialAsync().Forget();
     }
 
@@ -66,13 +89,13 @@ public sealed class SeasonalLayerController : MonoBehaviour
     }
 
     /// <summary>
-    /// 해당 계절 레이어를 불러와 비동기로 생성하고, 생성이 끝나면 이전 레이어와 바꾼다.
+    /// 해당 계절 레이어를 불러와 숨겨진 상태로 생성하고, 바닥 전환 후 현재 레이어로 인계한다.
     /// 기다리는 동안 다른 계절이 요청되거나 이 오브젝트가 파괴되면, 결과를 버리고 불러온 에셋을 해제한다.
     /// 취소 토큰으로 대기를 끊지 않는 것은, 끊기면 이미 불러온 핸들을 해제할 기회가 사라지기 때문이다.
     /// </summary>
     private async UniTaskVoid SwapToAsync(Season season)
     {
-        if (targetSeason == season)
+        if (targetSeason == season || (!isFading && !targetSeason.HasValue && activeSeason == season))
         {
             return;   // 이미 붙어 있거나 불러오는 중
         }
@@ -93,35 +116,158 @@ public sealed class SeasonalLayerController : MonoBehaviour
             Debug.LogWarning($"[SeasonalLayerController] {season} 레이어를 불러오지 못했습니다", this);
 #endif
             Addressables.Release(handle);
-            targetSeason = activeSeason;   // 다음 계절 이벤트에서 다시 시도할 수 있게 되돌림
+            targetSeason = null;   // 실패한 요청을 비워 진행 중인 전환과 요청 상태가 어긋나지 않게 한다
             return;
         }
 
-        AsyncInstantiateOperation<GameObject> op = Object.InstantiateAsync(handle.Result, transform);
-        await UniTask.WaitUntil(() => op.isDone);
-        if (this == null || id != requestId)
+        GameObject stagingRoot = null;
+        GameObject nextInstance = null;
+        bool transferred = false;
+        try
         {
-            foreach (GameObject instance in op.Result)
+            stagingRoot = new GameObject("SeasonalLayer_Staging");
+            stagingRoot.SetActive(false);
+            stagingRoot.transform.SetParent(transform, false);
+
+            AsyncInstantiateOperation<GameObject> op = Object.InstantiateAsync(handle.Result, stagingRoot.transform);
+            await UniTask.WaitUntil(() => op.isDone);
+            nextInstance = op.Result[0];
+
+            // 같은 바닥의 머티리얼을 두 전환 작업이 동시에 변경하지 않게 한다.
+            await UniTask.WaitUntil(() => this == null || id != requestId || !isFading);
+            if (this == null || id != requestId)
             {
-                Destroy(instance);
+                return;
             }
-            Addressables.Release(handle);
-            return;
-        }
 
-        BatchGround(op.Result[0]);
+            if (activeInstance != null && fadeDuration > 0f)
+            {
+                isFading = true;
+                try
+                {
+                    await FadeGroundAsync(nextInstance, season);
+                }
+                finally
+                {
+                    isFading = false;
+                }
+            }
+            else
+            {
+                nextInstance.transform.SetParent(transform, false);
+            }
 
-        if (activeInstance != null)
-        {
-            DestroyGraduallyAsync(activeInstance, activeHandle).Forget();   // 이전 레이어는 끄고 천천히 정리
+            BatchGround(nextInstance);
+            if (activeInstance != null)
+            {
+                DestroyGraduallyAsync(activeInstance, activeHandle).Forget();
+            }
+            else if (activeHandle.IsValid())
+            {
+                Addressables.Release(activeHandle);
+            }
+            activeInstance = nextInstance;
+            activeHandle = handle;
+            activeSeason = season;
+            transferred = true;
         }
-        else if (activeHandle.IsValid())
+        finally
         {
-            Addressables.Release(activeHandle);
+            if (!transferred)
+            {
+                if (nextInstance != null)
+                {
+                    Destroy(nextInstance);
+                }
+                if (handle.IsValid())
+                {
+                    Addressables.Release(handle);
+                }
+                if (this != null && id == requestId)
+                {
+                    targetSeason = null;
+                }
+            }
+            if (stagingRoot != null)
+            {
+                Destroy(stagingRoot);
+            }
         }
-        activeInstance = op.Result[0];
-        activeHandle = handle;
-        activeSeason = season;
+    }
+
+    /// <summary>
+    /// 각 바닥의 공유 머티리얼 하나씩만 갱신하며 교차 페이드하고, 끝나면 원본을 복구한다.
+    /// </summary>
+    private async UniTask FadeGroundAsync(GameObject nextInstance, Season nextSeason)
+    {
+        Transform previousGround = activeInstance.transform.Find(c_groundPath);
+        MeshRenderer[] previousRenderers = previousGround.GetComponentsInChildren<MeshRenderer>(true);
+        MeshRenderer[] nextRenderers = nextInstance.transform.Find(c_groundPath).GetComponentsInChildren<MeshRenderer>(true);
+        Material previousOriginal = previousRenderers[0].sharedMaterial;
+        Material nextOriginal = nextRenderers[0].sharedMaterial;
+        Material previousFade = null;
+        Material nextFade = null;
+
+        try
+        {
+            previousFade = new Material(groundFadeMaterials[(int)activeSeason.Value]) { renderQueue = c_previousRenderQueue };
+            nextFade = new Material(groundFadeMaterials[(int)nextSeason]) { renderQueue = c_nextRenderQueue };
+            SetGroundMaterial(previousRenderers, previousFade);
+            SetGroundMaterial(nextRenderers, nextFade);
+
+            Color previousColor = previousFade.GetColor(baseColorId);
+            Color nextColor = nextFade.GetColor(baseColorId);
+            nextColor.a = 0f;
+            nextFade.SetColor(baseColorId, nextColor);
+
+            foreach (Transform group in activeInstance.transform)
+            {
+                if (group != previousGround.parent)
+                {
+                    group.gameObject.SetActive(false);
+                }
+            }
+            nextInstance.transform.SetParent(transform, false);
+
+            float startTime = Time.time;
+            float duration = fadeDuration;
+            while (true)
+            {
+                float progress = Mathf.Clamp01((Time.time - startTime) / duration);
+                previousColor.a = 1f - progress;
+                nextColor.a = progress;
+                previousFade.SetColor(baseColorId, previousColor);
+                nextFade.SetColor(baseColorId, nextColor);
+
+                if (progress >= 1f)
+                {
+                    break;
+                }
+                await UniTask.Yield(cancellationToken: destroyCancellationToken);
+            }
+            activeInstance.SetActive(false);
+        }
+        finally
+        {
+            SetGroundMaterial(previousRenderers, previousOriginal);
+            SetGroundMaterial(nextRenderers, nextOriginal);
+            Destroy(previousFade);
+            Destroy(nextFade);
+        }
+    }
+
+    /// <summary>
+    /// 단일 머티리얼 슬롯을 사용하는 바닥 모듈들에 같은 공유 머티리얼을 연결한다.
+    /// </summary>
+    private static void SetGroundMaterial(MeshRenderer[] renderers, Material material)
+    {
+        foreach (MeshRenderer renderer in renderers)
+        {
+            if (renderer != null)
+            {
+                renderer.sharedMaterial = material;
+            }
+        }
     }
 
     /// <summary>
@@ -129,7 +275,7 @@ public sealed class SeasonalLayerController : MonoBehaviour
     /// </summary>
     private static void BatchGround(GameObject layer)
     {
-        Transform ground = layer.transform.Find("Cover/Ground");
+        Transform ground = layer.transform.Find(c_groundPath);
         if (ground == null)
         {
 #if UNITY_EDITOR
