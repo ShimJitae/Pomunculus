@@ -11,6 +11,11 @@
 <!-- harness:status:end -->
 - Claude Code 겸용 레이어를 이 프로젝트에만 추가했다(UnityHarness 원본 미반영). `CLAUDE.md`, `.claude/`, `scripts/ai/sync-claude.ps1`이 해당하며 Codex 파일은 바꾸지 않았다. 스킬·역할은 Codex 원본을 고친 뒤 `sync-claude.ps1`로 다시 생성한다.
 
+## 상태 효과 오디오 후보 준비 — 2026-11-23
+
+- Feel의 WAV 원본 15개를 `Assets/SJT/01_Assets/Sounds/SFX/`에 원래 파일명으로 복사했다. 복사본은 새 GUID를 사용하고 원본 오디오·임포트 설정을 유지한다. 클립별 용도는 [상태 효과 Feel 연출](PROJECT.md#상태-효과-feel-연출)에 정리했다.
+- 현재 작업은 후보 복사까지다. 청음 확정·길이/피치 가공·Feedback 연결과 Unity 임포트·재생 검증은 아직 수행하지 않았다.
+
 ## 월드맵 UI 연출 — 2026-11-23
 
 - WorldMapUI의 MapBG 이동·회전과 연속 입력 전환을 구현하고 공용 프리팹에 연결했다. PlayerFSM의 Tab 판단 한 곳은 사용자 승인으로 SJT 밖에서 수정했다.
