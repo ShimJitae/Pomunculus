@@ -7,6 +7,8 @@ public class PopupUI : MonoBehaviour
     private bool isClosing;
 
     public bool IsOpen => gameObject.activeSelf;
+    [SerializeField] private bool blocksOtherPopups;
+    internal bool BlocksOtherPopups => blocksOtherPopups;
 
     // 팝업을 연다. 매니저가 없으면 직접 켠다
     public void Open()
