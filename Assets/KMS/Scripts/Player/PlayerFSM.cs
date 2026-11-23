@@ -41,6 +41,7 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IShieldable, IWorldRPC
     public PlayerInteractor Interactor { get; private set; }   // 없을 수 있음 (null 허용)
     public Inventory Inventory { get; private set; }
     public PotionLoadout Loadout { get; } = new PotionLoadout();
+    public RecipeJournal Recipes { get; } = new RecipeJournal();
     public PlayerAnimator Animator { get; private set; }
     public PlayerActionGate Actions { get; private set; }
 
@@ -99,6 +100,7 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IShieldable, IWorldRPC
         Stats.OnShieldChanged += HandleShieldChanged;
         Inventory.Changed += SendInventorySync;
         Loadout.OnEquipChanged += HandleLoadoutEquipChanged;
+        Recipes.OnChanged += SendRecipeSync;
 
         startPos = transform.position;
 
@@ -296,6 +298,7 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IShieldable, IWorldRPC
             Item = Inventory.Slots,
             PotionSlotIds = Loadout.GetSlotIds(),
             SelectedPotionSlot = Loadout.SelectedIndex,
+            DiscoveredPotionIds = Recipes.GetDiscoveredIds()
         };
 
         _data.SetData(state);
@@ -323,6 +326,9 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IShieldable, IWorldRPC
 
             if (state.PotionSlotIds != null)
                 Loadout.Restore(state.PotionSlotIds, state.SelectedPotionSlot);
+
+            if (state.DiscoveredPotionIds != null)   // 레시피 기록이 없는 예전 세이브면 null
+                Recipes.Restore(state.DiscoveredPotionIds);
         }
         finally
         {
@@ -346,6 +352,7 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IShieldable, IWorldRPC
         RequestShield,
         SyncShield,
         SyncInventory,
+        SyncRecipes,
         RegisterStatusEffect = RpcRegisterStatusEffect, // Entity에서 정의한 하위 RPC enum과 겹치지 않는 공용 번호.
     }
 
@@ -382,6 +389,20 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IShieldable, IWorldRPC
             packet.Write(slot.ItemId);
             packet.Write(slot.Amount);
         }
+        this.SendRPC(packet, WorldRPCTarget.MasterClient);
+    }
+
+    // 발견한 레시피 목록 전체를 방장 사본에 보낸다
+    private void SendRecipeSync()
+    {
+        if (!ShouldSyncToMaster || isLoadingState) return;
+
+        List<int> potionIds = Recipes.GetDiscoveredIds();
+        PacketData packet = new();
+        packet.Write((byte)PlayerRPCType.SyncRecipes);
+        packet.Write(potionIds.Count);                  // 받는 쪽이 읽을 개수
+        foreach (int potionId in potionIds)
+            packet.Write(potionId);
         this.SendRPC(packet, WorldRPCTarget.MasterClient);
     }
 
@@ -505,6 +526,13 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IShieldable, IWorldRPC
                     items.Add(new InventorySlot(packet.ReadInt(), packet.ReadInt()));
                 if (!IsMine) RestoreInventory(items);
                 break;
+            case PlayerRPCType.SyncRecipes:
+                int recipeCount = packet.ReadInt();
+                var recipeIds = new List<int>(recipeCount);
+                for (int i = 0; i < recipeCount; i++)
+                    recipeIds.Add(packet.ReadInt());
+                if (!IsMine) Recipes.Restore(recipeIds);
+                break;
             case PlayerRPCType.RegisterStatusEffect:
                 ReceiveRegisterStatusEffect(packet);   // 소유자 여부와 상관없이 모두 적용
                 break;
@@ -539,6 +567,7 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IShieldable, IWorldRPC
     {
         Stats.OnShieldChanged -= HandleShieldChanged;
         Loadout.OnEquipChanged -= HandleLoadoutEquipChanged;
+        Recipes.OnChanged -= SendRecipeSync;
     }
 
     #endregion

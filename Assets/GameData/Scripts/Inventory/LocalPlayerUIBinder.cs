@@ -10,6 +10,7 @@ namespace Pomunculus.Items
         [SerializeField] private CraftingMaterialListUI materialListUI;
         [SerializeField] private PotionCrafting potionCrafting;
         [SerializeField] private PotionSlotSelector potionSlotSelector;
+        [SerializeField] private RecipeBookUI recipeBookUI;
         private WorldManager world;
         private void OnEnable()
         {
@@ -53,8 +54,11 @@ namespace Pomunculus.Items
                 Debug.LogWarning("내 플레이어에 Inventory가 없습니다.", obj.gameObject);
                 return false;
             }
-            
+
             BindInventory(inventory, loadout);
+            // 레시피북에 내 플레이어의 발견 레시피 목록 연결
+            if (recipeBookUI != null)
+                recipeBookUI.Bind(player.Recipes);
             return true;
         }
         private void BindInventory(Inventory inventory, PotionLoadout loadout)
