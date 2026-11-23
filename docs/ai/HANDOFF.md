@@ -11,6 +11,11 @@
 <!-- harness:status:end -->
 - Claude Code 겸용 레이어를 이 프로젝트에만 추가했다(UnityHarness 원본 미반영). `CLAUDE.md`, `.claude/`, `scripts/ai/sync-claude.ps1`이 해당하며 Codex 파일은 바꾸지 않았다. 스킬·역할은 Codex 원본을 고친 뒤 `sync-claude.ps1`로 다시 생성한다.
 
+## 월드맵 UI 연출 — 2026-11-23
+
+- WorldMapUI의 MapBG 이동·회전과 연속 입력 전환을 구현하고 공용 프리팹에 연결했다. PlayerFSM의 Tab 판단 한 곳은 사용자 승인으로 SJT 밖에서 수정했다.
+- 실제 화면 확인은 수행하지 않으며 속도·기울기·화면 밖 퇴장은 수동 확인 대상이다. 진행과 검증 결과는 [작업 기록](plans/2026-11-23-worldmap-ui-transition.md)을 참고한다.
+
 ## 계절별 Forest 장식 레이어 — 2026-11-20
 
 - `Assets/SJT/03_Prefabs/Map(New)/Seasonal/`에 Forest 장식 레이어 4개(봄·여름·가을·겨울)가 있다. 생성 도구는 `Assets/SJT/02_Scripts/Editor/Season/SeasonalForestLayerBuilder.cs`(메뉴 `Tools/Season`)다.
