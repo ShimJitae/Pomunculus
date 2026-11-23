@@ -4,10 +4,11 @@ using Photon.Pun;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-// 지역별 채집물/일반 몬스터 소환 관리 (방장 전용)
+// 지역별 채집물/일반 몬스터/필드 보스 소환 관리 (방장 전용)
 // 플레이어가 지역에 들어오면 SpawnPointRegistry의 포인트에 오브젝트를 소환하고,
 // 지역에 플레이어가 한 명도 없게 되면 상태만 기록에 남기고 디스폰한다. 다시 들어오면 기록대로 소환
-// 기록(WorldData.RegionGathers / RegionMobs)은 날짜가 바뀌기 전까지 유지되므로, 채집하거나 처치해서 사라진 자리는 다음 날까지 비어 있다
+// 기록(WorldData.RegionGathers / RegionMobs / RegionBosses)은 카테고리의 재소환 주기 동안 유지되므로,
+// 채집하거나 처치해서 사라진 자리는 채집물/몬스터는 다음 날까지, 보스는 BossRespawnDays일 뒤까지 비어 있다
 public class RegionSpawner : Singleton<RegionSpawner>
 {
     public RegionSpawner()
@@ -25,6 +26,14 @@ public class RegionSpawner : Singleton<RegionSpawner>
                 GetPoints = (registry, region) => registry.GetNormalMobPoints(region),
                 GetRecords = data => data.RegionMobs,
                 Pick = region => m_table.PickMob(region),
+            },
+            new Category
+            {
+                GetPoints = (registry, region) => SinglePoint(registry.GetBossPoint(region)),
+                GetRecords = data => data.RegionBosses,
+                Pick = region => m_table.PickFieldBoss(region),
+                RespawnDays = BossRespawnDays,
+                KeepUntilConsumed = true,
             },
         };
     }
@@ -69,6 +78,7 @@ public class RegionSpawner : Singleton<RegionSpawner>
                     var points = cat.GetPoints(registry, region);
                     if (points.Count == 0) continue;
                     var rec = GetRecord(cat, region, points);
+                    if (rec.Active) CheckConsumed(rec);
                     RefreshDay(cat, region, rec, points);
                     if (!rec.Active) Activate(rec, points);
                 }
@@ -123,7 +133,19 @@ public class RegionSpawner : Singleton<RegionSpawner>
         return rec;
     }
 
-    // 날짜가 바뀌었으면 사라진 자리와 보관 중인 상태를 새로 채운다. 지금 나와 있는 오브젝트는 그대로 둠
+    // 나와 있는 동안 사라지거나 죽는 중인 오브젝트를 그 날짜로 기록. 재소환 주기 계산에 쓴다
+    // 사망 연출 중인 몬스터는 ObjectId를 남겨 두어 Deactivate에서 같이 정리되게 한다
+    private static void CheckConsumed(RegionSpawnRecord rec)
+    {
+        foreach (var p in rec.Points)
+        {
+            if (p.Consumed || p.ObjectId == -1) continue;
+            var obj = WorldManager.Instance.Find(p.ObjectId);
+            if (!IsAlive(obj) || (obj is Entity entity && entity.CheckDie())) MarkConsumed(p);
+        }
+    }
+
+    // 날짜가 바뀌었으면 재소환 주기가 지난 자리와 보관 중인 상태를 새로 채운다. 지금 나와 있는 오브젝트는 그대로 둠
     private static void RefreshDay(Category cat, RegionType region, RegionSpawnRecord rec, IReadOnlyList<Transform> points)
     {
         int day = WorldManager.Instance.CurWorldData.Day;
@@ -132,7 +154,18 @@ public class RegionSpawner : Singleton<RegionSpawner>
         for (int i = 0; i < rec.Points.Count; i++)
         {
             var p = rec.Points[i];
-            if (rec.Active && IsAlive(p.ObjectId)) continue;
+            if (p.Consumed)
+            {
+                if (day - p.ConsumedDay < cat.RespawnDays) continue;
+                // 사망 연출이 하루를 넘길 일은 없지만, 아직 남아 있으면 정리하고 새로 소환
+                if (rec.Active && IsAlive(p.ObjectId)) WorldManager.Instance.Find(p.ObjectId).Despawn();
+            }
+            else
+            {
+                if (rec.Active && IsAlive(p.ObjectId)) continue;
+                // 보스처럼 처치되기 전까지 유지하는 대상은 보관 중인 상태(체력 등)를 그대로 둔다
+                if (cat.KeepUntilConsumed && !string.IsNullOrEmpty(p.PrefabId)) continue;
+            }
             p.PrefabId = cat.Pick(region);
             p.ObjectId = -1;
             p.Consumed = false;
@@ -163,19 +196,26 @@ public class RegionSpawner : Singleton<RegionSpawner>
             if (IsAlive(obj))
             {
                 // 몬스터는 사망 연출 동안 남아 있다가 스스로 디스폰하므로 여기서 같이 정리
-                bool dying = obj is Entity entity && entity.CheckDie();
+                bool dying = p.Consumed || (obj is Entity entity && entity.CheckDie());
                 if (!dying)
                 {
                     p.State = new SaveData();
                     obj.SaveData(p.State);
                 }
-                p.Consumed = dying;
+                else MarkConsumed(p);
                 obj.Despawn();
             }
-            else p.Consumed = true;
+            else MarkConsumed(p);
             p.ObjectId = -1;
         }
         rec.Active = false;
+    }
+
+    private static void MarkConsumed(SpawnPointRecord p)
+    {
+        if (p.Consumed) return;
+        p.Consumed = true;
+        p.ConsumedDay = WorldManager.Instance.CurWorldData.Day;
     }
 
     // 몬스터가 돌아다녔더라도 다시 소환할 때는 원래 포인트에서
@@ -193,18 +233,25 @@ public class RegionSpawner : Singleton<RegionSpawner>
     // 채집물이 WorldManager를 거치지 않고 Destroy되는 경우가 있어 목록에 남아 있어도 파괴 여부를 확인
     private static bool IsAlive(IWorldObj obj) => obj is Object o ? o != null : obj != null;
 
-    // 소환 대상 종류(채집물/몬스터)마다 포인트, 기록, 프리팹 선택만 다르다
+    // 보스 포인트는 지역마다 하나라서 다른 카테고리와 같은 목록 형태로 맞춘다
+    private static IReadOnlyList<Transform> SinglePoint(Transform point) =>
+        point != null ? new[] { point } : Array.Empty<Transform>();
+
+    // 소환 대상 종류(채집물/몬스터/보스)마다 포인트, 기록, 프리팹 선택, 재소환 규칙이 다르다
     private class Category
     {
         public Func<SpawnPointRegistry, RegionType, IReadOnlyList<Transform>> GetPoints;
         public Func<WorldData, Dictionary<RegionType, RegionSpawnRecord>> GetRecords;
         public Func<RegionType, string> Pick;
+        public int RespawnDays = 1; // 사라진 날로부터 이 일수가 지나야 다시 소환
+        public bool KeepUntilConsumed; // true면 날짜가 바뀌어도 처치되기 전까지는 같은 개체(보관 상태)를 유지
     }
 
     private static bool IsMaster => !PhotonNetwork.InRoom || PhotonNetwork.IsMasterClient; // 오프라인이면 본인이 방장
     private static readonly RegionType[] Regions =
         Array.FindAll((RegionType[])Enum.GetValues(typeof(RegionType)), r => r != RegionType.None);
     private const float CheckInterval = 0.25f;
+    private const int BossRespawnDays = 10; // 필드 보스는 처치 후 10일이 지나야 다시 소환
 
     private readonly Category[] m_categories;
     private RegionSpawnTable m_table;
