@@ -139,7 +139,16 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IShieldable, IWorldRPC
         skinnedMeshRenderer.material.color = IsMine ? Color.red : Color.green;
     }
 
-    void Start() => SetState(IsDead ? PlayerStateType.Dead : PlayerStateType.Idle);
+    private void Start()
+    {
+        if (!IsMine && TryGetComponent(out AudioListener listener))
+        {
+            listener.enabled = false;
+            Destroy(listener);
+        }
+
+        SetState(IsDead ? PlayerStateType.Dead : PlayerStateType.Idle);
+    }
 
     void Update()
     {
