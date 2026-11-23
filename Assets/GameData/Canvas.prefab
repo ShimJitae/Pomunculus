@@ -1996,6 +1996,7 @@ MonoBehaviour:
   slotPrefab: {fileID: 152448964971317975, guid: 03aab6d6872d3c3498be906cc940a6fc, type: 3}
   scrollRect: {fileID: 6551698043703437103}
   potionSlotSelector: {fileID: 7054979680724367446}
+  inventoryCloseSound: {fileID: 0}
 --- !u!114 &2181585344029689330
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2009,6 +2010,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PopupUI
   bringToFrontOnOpen: 1
+  blocksOtherPopups: 0
 --- !u!1 &885755892709407313
 GameObject:
   m_ObjectHideFlags: 0
@@ -2276,6 +2278,7 @@ MonoBehaviour:
   materialListUI: {fileID: 7223314051251817356}
   potionCrafting: {fileID: 2606690719702841110}
   potionSlotSelector: {fileID: 7054979680724367446}
+  recipeBookUI: {fileID: 5880993340054310855}
 --- !u!114 &5344725832449234975
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2294,6 +2297,8 @@ MonoBehaviour:
   craftingKey: 17
   inventoryUI: {fileID: 846460553857957472}
   inventoryKey: 23
+  inventoryOpenSound: {fileID: 0}
+  CreatingOpenSound: {fileID: 0}
   craftingInteractionText: {fileID: 4982189751030654342}
 --- !u!114 &827934646805572935
 MonoBehaviour:
@@ -2416,6 +2421,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PopupUI
   bringToFrontOnOpen: 1
+  blocksOtherPopups: 0
 --- !u!1 &1166281987221502003
 GameObject:
   m_ObjectHideFlags: 0
@@ -5679,6 +5685,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PopupUI
   bringToFrontOnOpen: 1
+  blocksOtherPopups: 0
 --- !u!1 &3352184721425472212
 GameObject:
   m_ObjectHideFlags: 0
@@ -6917,7 +6924,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7896dd2fecb79c94faff7c45596338ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Pomunculus.Items.PotionSlotSelector
-  selectPotion: {fileID: 606524301855978085}
   tooltip: {fileID: 3969116070534577027}
 --- !u!1 &3976253058024933626
 GameObject:
@@ -11720,6 +11726,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PopupUI
   bringToFrontOnOpen: 1
+  blocksOtherPopups: 0
 --- !u!1 &6210277127123145926
 GameObject:
   m_ObjectHideFlags: 0
@@ -15230,7 +15237,6 @@ MonoBehaviour:
   pageNumberText: {fileID: 1500632680889343866}
   backButton: {fileID: 2157640675213584686}
   nextButton: {fileID: 4492245563070766180}
-  discoveredPotionIds: 
 --- !u!114 &1261436269953293775
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15244,6 +15250,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PopupUI
   bringToFrontOnOpen: 1
+  blocksOtherPopups: 0
 --- !u!1 &7548196535579629623
 GameObject:
   m_ObjectHideFlags: 0

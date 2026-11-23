@@ -10,6 +10,7 @@ namespace Pomunculus.Items
         [SerializeField] private CraftingMaterialListUI materialListUI;
         [SerializeField] private PotionCrafting potionCrafting;
         [SerializeField] private PotionSlotSelector potionSlotSelector;
+        [SerializeField] private RecipeBookUI recipeBookUI;
         private WorldManager world;
         private void OnEnable()
         {
@@ -37,8 +38,10 @@ namespace Pomunculus.Items
         private bool TryBindPlayer(IWorldObj obj)
         {
             // 플레이어인지 확인
-            if (obj is not IPlayerObj player)
+            if (obj is not PlayerFSM player)
                 return false;
+            // 플레이어에게 붙어 있는 포션 장착 정보 가져오기
+            PotionLoadout loadout = player.Loadout;
             // 내 소유의 플레이어인지 확인
             if (PhotonNetwork.LocalPlayer == null)
                 return false;
@@ -51,14 +54,11 @@ namespace Pomunculus.Items
                 Debug.LogWarning("내 플레이어에 Inventory가 없습니다.", obj.gameObject);
                 return false;
             }
-            // 플레이어에게 붙어 있는 포션 장착 정보 가져오기
-            PotionLoadout loadout = obj.gameObject.GetComponent<PotionLoadout>();
-            if (loadout == null)
-            {
-                Debug.LogWarning("내 플레이어에 PotionLoadout이 없습니다.", obj.gameObject);
-                return false;
-            }
+
             BindInventory(inventory, loadout);
+            // 레시피북에 내 플레이어의 발견 레시피 목록 연결
+            if (recipeBookUI != null)
+                recipeBookUI.Bind(player.Recipes);
             return true;
         }
         private void BindInventory(Inventory inventory, PotionLoadout loadout)

@@ -45,6 +45,8 @@ public class PopupUIManager : SingletonBehavior<PopupUIManager>
     public void Open(PopupUI popupUI)
     {
         RemoveInactivePopups();
+        if (IsBlocked()) return;
+
 
         if (openPopups.Contains(popupUI))
         {
@@ -97,6 +99,18 @@ public class PopupUIManager : SingletonBehavior<PopupUIManager>
             if (popupsToClose[i] != null)
                 Close(popupsToClose[i]);
         }
+    }
+
+    private bool IsBlocked()
+    {
+        //RemoveInactivePopups(); 다른 곳에서 사용 시 주석풀기
+
+        foreach (PopupUI popupUI in openPopups)
+        {
+            if(popupUI.BlocksOtherPopups)
+                return true;
+        }
+        return false;
     }
 
     // 매니저를 거치지 않고 꺼졌거나 파괴된 팝업을 목록에서 뺀다

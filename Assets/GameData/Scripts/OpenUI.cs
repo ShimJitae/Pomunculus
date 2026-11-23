@@ -23,13 +23,17 @@ namespace Pomunculus.Items
         [Header("텍스트")]
         [SerializeField] private GameObject craftingInteractionText;
         private ESCPanel escPanel;
-        private bool pausedEscPanel;
 
         public GameObject CraftingInteractionText => craftingInteractionText;
 
+        // ESC 입력은 OpenUI가 대신 처리하므로 ESCPanel의 자체 ESC 입력을 끈다
+        private void OnEnable()
+        {
+            TakeOverEscapeKey();
+        }
+
         private void Update()
         {
-            RefreshEscPanel();
             Keyboard keyboard = Keyboard.current;
 
             if (keyboard == null)
@@ -37,18 +41,7 @@ namespace Pomunculus.Items
 
             if (keyboard.escapeKey.wasPressedThisFrame)
             {
-                PopupUIManager manager = PopupUIManager.Instance;
-                if (manager == null)
-                    return;
-                PopupUI top = manager.TopPopup;
-                if (top == null)
-                    return;
-                // 제작창이면 재료를 반환하고 닫기
-                if (top.gameObject == craftingUI)
-                    CloseCraftingUI();
-                else
-                    manager.TryCloseTop();
-
+                HandleEscapeKey();
                 return;
             }
             if (recipeBookKey != Key.None &&
@@ -69,13 +62,49 @@ namespace Pomunculus.Items
                 ToggleInventoryUI();
             }
         }
+        // OpenUI가 꺼지면 ESCPanel이 다시 ESC를 직접 처리한다
         private void OnDisable()
         {
-            // OpenUI가 꺼지면 잠깐 껐던 ESCPanel 복원
-            if (pausedEscPanel && escPanel != null)
-                escPanel.enabled = true;
+            if (escPanel != null)
+                escPanel.HandlesEscapeKey = true;
+        }
 
-            pausedEscPanel = false;
+        // ESC 하나로 맨 위 팝업을 닫고, 열린 팝업이 없으면 ESC 패널을 연다
+        private void HandleEscapeKey()
+        {
+            // ESCPanel이 OpenUI보다 늦게 생겼어도 이번 프레임에 같이 처리하지 않게 먼저 넘겨받는다
+            TakeOverEscapeKey();
+
+            // 채팅 중의 Esc는 채팅창을 닫는 데 쓰이므로 무시
+            if (ChatUI.IsTyping)
+                return;
+
+            PopupUIManager manager = PopupUIManager.Instance;
+            PopupUI top = manager != null ? manager.TopPopup : null;
+
+            if (top != null)
+            {
+                // 제작창이면 재료를 반환하고 닫기
+                if (top.gameObject == craftingUI)
+                    CloseCraftingUI();
+                else
+                    manager.TryCloseTop();
+
+                return;
+            }
+
+            if (escPanel != null)
+                escPanel.Toggle();
+        }
+
+        // 씬의 ESCPanel을 찾아 자체 ESC 입력을 끈다
+        private void TakeOverEscapeKey()
+        {
+            if (escPanel == null)
+                escPanel = FindFirstObjectByType<ESCPanel>(FindObjectsInactive.Include);
+
+            if (escPanel != null)
+                escPanel.HandlesEscapeKey = false;
         }
 
         public void ToggleRecipeBook()
@@ -138,28 +167,5 @@ namespace Pomunculus.Items
                 popup.Close();
             }
         }
-        private void RefreshEscPanel()
-        {
-            if (escPanel == null)
-                escPanel = FindFirstObjectByType<ESCPanel>(FindObjectsInactive.Include);
-            if (escPanel == null)
-                return;
-            PopupUIManager manager = PopupUIManager.Instance;
-            bool hasPopup = manager != null && manager.HasOpenPopup;
-            if (hasPopup)
-            {
-                if (escPanel.enabled)
-                {
-                    escPanel.enabled = false;
-                    pausedEscPanel = true;
-                }
-            }
-            else if (pausedEscPanel)
-            {
-                escPanel.enabled = true;
-                pausedEscPanel = false;
-            }
-        }
-
     }
 }
