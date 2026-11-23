@@ -42,6 +42,7 @@ public class WorldManager : Singleton<WorldManager>
         RegionSpawner.Instance.Release();
         ClearWorld();
         CurSlot = NoSlot;
+        DayLength = WorldSlotData.DefaultDayTime;
         m_initialized = false;
     }
     public WorldData CurWorldData{get;set;}
@@ -50,7 +51,9 @@ public class WorldManager : Singleton<WorldManager>
     public bool IsReady{get;private set;}
 
     #region 시간/날짜
-    public const float DayLength = 60f; // 하루 길이(초)
+    // 하루 길이(초). 방장은 불러온 슬롯의 WorldSlotData.DayTime, 참여자는 방장이 보낸 스냅샷 값을 쓴다
+    public float DayLength{get;private set;} = WorldSlotData.DefaultDayTime;
+    private static float ValidDayLength(float v) => v > 0f ? v : WorldSlotData.DefaultDayTime;
     // 바뀐 Day. 방장/수신 쪽 모두 호출됨
     public event Action<int> OnDayChangedEvent;
     // 바뀐 계절. 날짜가 넘어가며 계절이 바뀔 때 OnDayChangedEvent 다음에 호출. 방장/수신 쪽 모두 호출됨
@@ -120,6 +123,8 @@ public class WorldManager : Singleton<WorldManager>
     {
         ClearWorld();
         CurSlot = slotindex;
+        var slot = WorldSlotLoader.Instance.SaveInfo.Slots.Find(x => x.SlotId == slotindex);
+        DayLength = ValidDayLength(slot?.DayTime ?? WorldSlotData.DefaultDayTime);
         CurWorldData = SaveManager.Instance.Load(WorldFileName(slotindex))?.GetData<WorldData>() ?? new WorldData();
         foreach (var d in CurWorldData.Entities) SpawnLocal(d);
         // NextId가 없던 이전 세이브도 있으므로, 불러온 오브젝트 ID와 겹치지 않게 최대 ID + 1 이상으로 맞춤
@@ -302,6 +307,7 @@ public class WorldManager : Singleton<WorldManager>
         {
             Day = CurWorldData.Day,
             Time = CurWorldData.Time,
+            DayLength = DayLength,
             Entities = Objects.GetList().Select(WorldObjSaveData.Create).ToList()
         };
 
@@ -316,6 +322,7 @@ public class WorldManager : Singleton<WorldManager>
         var snapshot = WorldSnapshot.Read(p);
 
         ClearWorld();
+        DayLength = ValidDayLength(snapshot.DayLength);
         CurWorldData = new WorldData() { Day = snapshot.Day, Time = snapshot.Time };
         foreach (var d in snapshot.Entities) SpawnLocal(d);
 

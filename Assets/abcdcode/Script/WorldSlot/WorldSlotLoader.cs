@@ -24,12 +24,13 @@ public class WorldSlotLoader : Singleton<WorldSlotLoader>
         m_saveinfo = SaveManager.Instance.Load(INFONAME).GetData<WorldSlotLInfo>();
     }
     private WorldSlotLInfo m_saveinfo;
-    public void CreateNewWorld(string worldName)
+    public void CreateNewWorld(string worldName, float spawnTime)
     {
         SaveInfo.LastSlotId++;
         WorldSlotData data = new WorldSlotData();
         data.SlotId = SaveInfo.LastSlotId;
         data.WorldName = worldName;
+        data.DayTime = spawnTime;
         SaveInfo.Slots.Add(data);
         Save();
     }

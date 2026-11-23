@@ -64,6 +64,8 @@ public class WorldSlotData
 {
     public int SlotId{get;set;}
     public string WorldName{get;set;}
+    public float DayTime{get;set;} = DefaultDayTime; // 하루 길이(초). 이 값이 없던 이전 슬롯도 기본값으로 읽힌다
+    public const float DefaultDayTime = 60f;
 }
 public class WorldSlotLInfo
 {
