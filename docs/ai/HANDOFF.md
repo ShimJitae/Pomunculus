@@ -4,22 +4,70 @@
 
 <!-- harness:status:start -->
 ## 하네스 적용 상태
-- 적용한 원본 버전: `1.1.9`
+- 적용한 원본 버전: `1.2.0`
 - 기본 경로·버전·직접 패키지·주요 폴더를 확인했다.
 - 파일 배치·구조 검사와 실제 훅 신뢰·새 세션 스킬/역할 로딩은 구분한다.
 - 게임 컴파일·실행은 이 적용 작업의 확인 대상이 아니다.
 <!-- harness:status:end -->
 - Claude Code 겸용 레이어를 이 프로젝트에만 추가했다(UnityHarness 원본 미반영). `CLAUDE.md`, `.claude/`, `scripts/ai/sync-claude.ps1`이 해당하며 Codex 파일은 바꾸지 않았다. 스킬·역할은 Codex 원본을 고친 뒤 `sync-claude.ps1`로 다시 생성한다.
 
+## 월드맵 UI 연출 — 2026-11-23
+
+- WorldMapUI의 MapBG 이동·회전과 연속 입력 전환을 구현하고 공용 프리팹에 연결했다. PlayerFSM의 Tab 판단 한 곳은 사용자 승인으로 SJT 밖에서 수정했다.
+- 실제 화면 확인은 수행하지 않으며 속도·기울기·화면 밖 퇴장은 수동 확인 대상이다. 진행과 검증 결과는 [작업 기록](plans/2026-11-23-worldmap-ui-transition.md)을 참고한다.
+
+## 계절별 Forest 장식 레이어 — 2026-11-20
+
+- `Assets/SJT/03_Prefabs/Map(New)/Seasonal/`에 Forest 장식 레이어 4개(봄·여름·가을·겨울)가 있다. 생성 도구는 `Assets/SJT/02_Scripts/Editor/Season/SeasonalForestLayerBuilder.cs`(메뉴 `Tools/Season`)다.
+- 4차 요청을 반영했다
+  - 외곽 암벽과 보스 고지는 네 계절 모두 봄(기본) 그대로 둔다.
+  - 계절 덮개는 숲 바닥의 약 70%만 덮는다. 바닥을 약 22m 칸으로 나눠 무작위로 덮어 기본 숲과 골고루 섞인다(5차). 가을은 황토 땅만 쓴다.
+  - 렌더 측정 결과 숲 바닥 변화는 봄 74%, 여름 69%, 가을 70%, 겨울 75%다.
+  - 겨울 남색 판(Arctic_Ground 변형에 붙은 자식 수면 메시)을 제거했다.
+  - 나무·돌은 채집 오브젝트용이라 장식에 넣지 않는다.
+- `World_PurePoly.prefab`에서 숲 양쪽 연못을 없애고 땅으로 채웠다. Forest의 PondTrim 바닥 13개를 원래 메시로 되돌리고, Basin/PondBed, PondWater, 물결 FX를 삭제했다. 이후 사용자가 NavMesh를 다시 구웠다.
+- 검사 결과는 Collider 0, Static 0, 마커 여백 위반 0이다. 커밋하지 않았다.
+- 런타임 전환(2026-11-21): `World_PurePoly/SeasonalLayers`의 `SeasonalLayerController`(`Assets/SJT/02_Scripts/Season/`)가 계절 이벤트를 받아 레이어를 Addressables로 불러와 붙인다.
+  - 처음에는 `IsReady`를 한 번 기다려 `CurSeason`을 적용한다. 페이드·미리 만들기는 넣지 않았다(사용자 결정). 이전 레이어는 끈 뒤 여러 프레임에 나눠 파괴하고 해제한다.
+  - Addressables 기본 설정(`Assets/AddressableAssetsData/`)을 만들고 레이어 4개를 Default Local Group에 등록했다. 그 결과 `EditorBuildSettings.asset`에 config 1줄이 추가됐다.
+  - PlayMode(에디터, 2026-11-21): 첫 적용(봄)과 봄→여름→가을→겨울→봄 전환, 같은 프레임 연속 변경(마지막 계절만 붙음)을 확인했다. 레이어는 항상 1개, 남은 Addressables 작업은 활성 레이어 1개뿐이다.
+  - 처음 불러오는 계절은 에디터 Use Asset Database 모드에서 교체 직전 한 프레임이 약 0.6~1초 멈춘다.
+  - Addressables 번들 기준(Use Existing Build)에서는 같은 경우 한 프레임이 약 100~120ms 늘어나는 정도였다. 번들은 4계절이 하나(약 18.6MB)로 묶인다. 측정 후 Play Mode 설정은 Use Asset Database로 되돌렸다. 실제 플레이어 빌드에서는 측정하지 않았다.
+  - 확인 중 기존 문제 발견: `Assets/Resources/NetworkPrefabCatalog.asset`의 `m_entries` 7개가 에디터에서 로드되지 않는 프리팹(광맥 Variant, habinImports 아이템 등)을 가리켜 `GameManager.Awake`가 중간에 멈추고 월드가 시작되지 않는다. PlayMode 확인은 월드 데이터를 직접 넣어 진행했다.
+- 아직 하지 않은 것
+  - BaseCamp 레이어
+  - PlayMode와 성능 확인(교체 프레임 끊김 포함), 빌드에서 Addressables 콘텐츠 포함 확인
+- 과거 상세 기록 경로는 `plans/2026-11-20-seasonal-forest-layers.md`이며, 현재 작업 폴더에는 해당 파일이 없다.
+
+### 계절 바닥 런타임 정적 배칭 — 2026-11-22
+
+- `SeasonalLayerController`가 각 계절 생성 완료와 최신 요청 여부를 확인한 뒤 `Cover/Ground` 하위 바닥 모듈에 `StaticBatchingUtility.Combine`을 한 번 호출하도록 추가했다. 바닥 모듈은 봄 193개·여름 153개·가을 176개·겨울 171개다. 원본 FBX 16종의 Read/Write는 이미 켜져 있어 프리팹·모델 임포트 설정은 변경하지 않았다.
+- 배칭 대상 경로가 없거나 읽을 수 없는 메시가 있으면 배칭을 생략하고, 배칭 예외가 계절 교체·이전 레이어 정리를 막지 않도록 처리했다. 상세 구조는 [프로젝트 안내](PROJECT.md#계절별-forest-장식과-바닥-배칭)를 따른다.
+- 최종 수정본의 Unity 컴파일과 독립 코드 리뷰를 통과했다. AssetDatabase 조회에서 네 계절 바닥 693개의 메시 읽기 가능·활성 Renderer·배칭 허용 머티리얼을 확인했다. 이번 요청은 정적 배칭까지만이며 Occlusion 씬 설정·베이크와 페이드는 진행하지 않았다. PlayMode의 실제 배칭 여부와 성능·메모리 회수는 미검증이다.
+
+### 계절 바닥 전환용 머티리얼 준비 — 2026-11-22
+
+- 사용자가 만든 `Assets/SJT/01_Assets/Materials/`의 `Spring_Fade`, `Summer_Fade`, `Authom_Fade`, `Winter_Fade`를 보정했다. 봄·여름의 Base Map을 각 원본 계절 팔레트로 바꾸고, 네 머티리얼의 Metallic 0·Smoothness 0.2·알파 1과 반사광 보존을 끈 Alpha 블렌딩을 맞췄다. 이름과 GUID는 유지했다.
+- 머티리얼 준비 단계에서는 파일만 수정했으며 이름과 GUID를 유지했다. 뒤의 직접 구현 요청에서 컨트롤러의 페이드 코드와 Inspector 연결을 추가했다. 연결 순서는 봄·여름·가을(`Authom_Fade`)·겨울이다.
+- 준비 직후의 Editor 조회에서는 네 머티리얼이 미저장 상태였으나, 구현 전 재조회에서 모두 `IsDirty=false`이고 디스크와 텍스처·알파·질감·투명 설정이 일치함을 확인했다. 실제 페이드 외형은 아직 확인하지 않았다.
+
+### 계절 바닥 교차 페이드 구현 — 2026-11-22
+
+- 기존 `SeasonalLayerController`에 바닥만 2초 교차 페이드하는 코드와 `fadeDuration`, `groundFadeMaterials`를 추가하고 `World_PurePoly/SeasonalLayers`에 기존 머티리얼 4개를 연결했다. 새 스크립트·컴포넌트·ICullingTickable·Shader Graph는 추가하지 않았다.
+- 첫 입장은 즉시 표시한다. 이후 전환에서는 바닥을 알파 0으로 준비한 뒤 새 장식을 표시하고, 바닥의 공유 머티리얼 복제본 두 개만 갱신한다. 원본 복구 후 바닥 배칭과 이전 레이어의 단계별 파괴·해제를 수행한다. Occlusion과 씬·ProjectSettings는 변경하지 않는다.
+- 기존 월드 루트에도 동일 컨트롤러가 남아 있어 루트 쪽은 삭제하지 않고 비활성화했으며, SeasonalLayers 쪽 하나에만 시간과 머티리얼을 연결했다. 프리팹과 현재 씬의 실제 로드값도 일치한다. 최종 Unity 재컴파일·독립 리뷰·바닥과 머티리얼 조건 검증을 통과했다. PlayMode·성능·메모리 회수는 미검증이다. 상세 범위와 검증 상태는 [구현 계획](plans/2026-11-22-seasonal-ground-fade.md)을 따른다.
+- 마무리 중 월드 프리팹과 IntegrationTestScene에 별도의 Occluder 추가 변경이 저장된 것을 확인했고 그대로 보존했다. 마지막 Editor 조회에서 씬은 `isDirty=true`이며 저장하지 않았다. 이 추가 변경의 실행·외형은 이번 페이드 검증 범위에 포함하지 않았다.
+
 ## World_PurePoly 지역·통로 외곽 암벽 MeshCollider 복구 — 2026-11-19
 
 - 5개 지역 외곽 암벽 166개와 현재 Seam_Walls 23개에 이어 설산 보스 뒤 SnowyMountain/Map/08_정상_암봉의 큰 암벽 14개도 시각 메시와 같은 non-convex MeshCollider로 되돌렸다. World 내부의 Box 제거·Mesh 추가 Override만 저장했고 개별 Terrain Variant와 Imports는 유지한다. 설산 RimDecor의 나무 7개·작은 장식 바위 7개와 바닥 박스 9개·보스 고지 Mesh 4개는 변경하지 않았다.
-- 현재 전체 수량은 Box 481 / Mesh 207 / Sphere 3개다. 이전 외곽 166개·통로 23개와 설산 정상 암벽 14개 모두 독립 검증을 마쳤다. 정상 암벽의 실제 Collider.Raycast 42건도 통과했고 나무 7개의 Collider·Renderer·배치와 작은 바위 7개는 기준과 동일하다. 채집·몬스터 마커 및 현재 통로 배치를 보존했고 씬·NavMesh는 저장하지 않았다. 실제 플레이 이동과 성능은 미검증이다. [대상·구현·검증 기록](plans/2026-11-19-world-purepoly-boundary-mesh-colliders.md)
+- 현재 전체 수량은 Box 481 / Mesh 207 / Sphere 3개다. 이전 외곽 166개·통로 23개와 설산 정상 암벽 14개 모두 독립 검증을 마쳤다. 정상 암벽의 실제 Collider.Raycast 42건도 통과했고 나무 7개의 Collider·Renderer·배치와 작은 바위 7개는 기준과 동일하다. 채집·몬스터 마커 및 현재 통로 배치를 보존했고 씬·NavMesh는 저장하지 않았다. 실제 플레이 이동과 성능은 미검증이다. 대상·구현·검증 기록(`plans/2026-11-19-world-purepoly-boundary-mesh-colliders.md`, 로컬 전용)
 
 ## World_PurePoly 추가 겹침 수정 — 2026-11-19
 
 - 숲 동·서 연못 시각 지면 5개만 ±1cm, 설산·화산 계단 +1cm, 늪 계단 약 +1.692cm 보정했다. 늪 수면 4개·화산 용암면 3개는 중앙 fan의 연결 인덱스만 수정했다. 기존 지역별 바닥 박스와 보스 고지 MeshCollider·기존 숲 계단 보정은 유지한다.
-- 동일 평면 겹침 및 수면 내부 겹침 제거를 기하·독립 리뷰로 확인했다. 계단 사면 관통·투명한 숲 연못 아래 지형의 삼각형 모양은 남아 있으며, 실제 캐릭터 이동과 파도 애니메이션은 PlayMode 미검증이다. 대상·검증과 남은 범위는 [수정 기록](plans/2026-11-19-world-purepoly-overlap.md)을 따른다.
+- 동일 평면 겹침 및 수면 내부 겹침 제거를 기하·독립 리뷰로 확인했다. 계단 사면 관통·투명한 숲 연못 아래 지형의 삼각형 모양은 남아 있으며, 실제 캐릭터 이동과 파도 애니메이션은 PlayMode 미검증이다. 대상·검증과 남은 범위는 수정 기록(`plans/2026-11-19-world-purepoly-overlap.md`, 로컬 전용)을 따른다.
+- (2026-11-20 갱신: 숲 동·서 연못은 이후 제거됐다. 위의 숲 연못 지면 보정과 아래 연못 NavMesh 표본은 이제 해당하지 않는다. 연못 자리 NavMesh는 다시 구워야 한다.)
 - 네 지역 계단 양방향 24경로·연못 NavMesh 30표본은 수정 전과 정확히 같고 NavMesh·씬 파일·meta 해시도 유지됐다. 최종 Editor의 미저장 씬 상태는 해제·저장하지 않았다.
 
 ## Forest 보스 계단 접합부 — 2026-11-19
@@ -31,12 +79,12 @@
 ## World_PurePoly 지역별 바닥 박스·보스 고지 충돌 — 2026-11-19
 
 - 일반 바닥·연결 통로의 Box 제거 Override를 유지하면서 `GroundCollision` 아래의 지역 5개·통로 4개별 얇은 BoxCollider로 바꿨다. 앞서 만든 통합 메시 Collider와 자산·meta는 제거했다. 사용자 요청에 따라 물 구멍도 받치며, 보스 고지 본체 4개는 시각 메시를 공유하는 MeshCollider다. 현재 수량은 Box 686 / Mesh 4 / Sphere 3개다.
-- 개별 지형 Variant·Imports·시각 메시·씬 파일·NavMesh와 위 Forest 계단의 1cm 보정을 유지한다. 일반 바닥의 1m 격자 평균 오차 22.1cm·95백분위 60.8cm이며 정점·격자 표본 최대 차이는 약 3.94m다. 독립 통계 재계산과 실제 Box Raycast 1,089건이 일치했고 NavMesh 대표 552건에서 새 미검출은 없었다. 실제 이동·포션 착탄·성능은 미검증이다. [최종 구성·오차 기록](plans/2026-11-19-world-purepoly-flat-box-floors.md)
+- 개별 지형 Variant·Imports·시각 메시·씬 파일·NavMesh와 위 Forest 계단의 1cm 보정을 유지한다. 일반 바닥의 1m 격자 평균 오차 22.1cm·95백분위 60.8cm이며 정점·격자 표본 최대 차이는 약 3.94m다. 독립 통계 재계산과 실제 Box Raycast 1,089건이 일치했고 NavMesh 대표 552건에서 새 미검출은 없었다. 실제 이동·포션 착탄·성능은 미검증이다. 최종 구성·오차 기록(`plans/2026-11-19-world-purepoly-flat-box-floors.md`, 로컬 전용)
 
 ## World_PurePoly BoxCollider 전환 — 2026-11-19
 
 - 지형 Variant 135개와 월드 프리팹에서 남아 있던 MeshCollider 779개를 BoxCollider로 전환했다. 전환 직후 수량은 Mesh 0 / Box 1,233 / 기존 Sphere 3개였고, 월드 내부 바닥·보스 고지는 위 후속 요청으로 변경했다. 계단·난간·돌문의 여러 박스와 개별 Variant는 유지한다.
-- 실제 플레이 이동·비정형 지형의 충돌·NavMesh는 미검증이다. 대상·구성·독립 검사 근거는 [전환 기록](plans/2026-11-19-world-purepoly-box-colliders.md)을 따른다.
+- 실제 플레이 이동·비정형 지형의 충돌·NavMesh는 미검증이다. 대상·구성·독립 검사 근거는 전환 기록(`plans/2026-11-19-world-purepoly-box-colliders.md`, 로컬 전용)을 따른다.
 
 ## World_PurePoly 가림 페이드 — 2026-11-17
 
@@ -44,15 +92,15 @@
 
 ## 디버프 장판과 통합 맵 배치 — 2026-11-10
 
-- `World.prefab`의 네 지역 일반 필드의 `SESources`에 장판 48개를 배치했다. 지형에 맞춰 재배치한 결과와 검증 상태는 [장판 작업 기록](plans/2026-11-10-디버프-장판.md#지형에-맞춘-재배치)을 참고한다. 플레이 진입·재부여·우회 동작은 후속 확인 대상이다.
+- `World.prefab`의 네 지역 일반 필드의 `SESources`에 장판 48개를 배치했다. 지형에 맞춰 재배치한 결과와 검증 상태는 장판 작업 기록(`plans/2026-11-10-디버프-장판.md#지형에-맞춘-재배치`, 로컬 전용)을 참고한다. 플레이 진입·재부여·우회 동작은 후속 확인 대상이다.
 
 ## PolygonParticleFX URP 복구 — 2026-11-10
 
-- 기존 프리팹 180개와 Demo를 대상으로 URP 머티리얼을 연결했다. Demo는 원본 프리팹의 내장 파티클 교체 재질을 상속한다. 이 팩은 Git에서 제외되므로 재임포트 전에 로컬 복구본과 [복구 기록](plans/2026-11-10-polygon-particle-fx-urp.md)을 확인한다.
+- 기존 프리팹 180개와 Demo를 대상으로 URP 머티리얼을 연결했다. Demo는 원본 프리팹의 내장 파티클 교체 재질을 상속한다. 이 팩은 Git에서 제외되므로 재임포트 전에 로컬 복구본과 복구 기록(`plans/2026-11-10-polygon-particle-fx-urp.md`, 로컬 전용)을 확인한다.
 
 ## 저주 비네트·저항 아우라 — 2026-11-09
 
-- 열기·혹한·질병 저주와 저항에 Feel 프리팹을 연결했다. 테스트 씬의 단일 저주 비네트와 두 대상의 아우라를 Play Mode에서 확인했다. [연출 구성 및 검증](plans/2026-11-09-저주-저항-연출.md)
+- 열기·혹한·질병 저주와 저항에 Feel 프리팹을 연결했다. 테스트 씬의 단일 저주 비네트와 두 대상의 아우라를 Play Mode에서 확인했다. 연출 구성 및 검증(`plans/2026-11-09-저주-저항-연출.md`, 로컬 전용)
 
 ## 열기·혹한·질병 저주 틱 효과 — 2026-11-09
 
@@ -61,7 +109,7 @@
 
 ## 상태이상 8종 추가 연출 — 2026-11-09
 
-- 독·점액·젖음·기절·구속·취약·헤이스트·석화 프리팹을 공용 상태 데이터에 연결했다. 무적은 캐릭터 보호막 에셋 확보 후 이어서 진행한다. 구성과 확인 항목은 [추가 연출 계획](plans/2026-11-09-상태이상-추가-연출.md)에 있다.
+- 독·점액·젖음·기절·구속·취약·헤이스트·석화 프리팹을 공용 상태 데이터에 연결했다. 무적은 캐릭터 보호막 에셋 확보 후 이어서 진행한다. 구성과 확인 항목은 추가 연출 계획(`plans/2026-11-09-상태이상-추가-연출.md`, 로컬 전용)에 있다.
 
 ## 상태이상 틱 규칙 변경 — 2026-11-09
 
@@ -123,11 +171,11 @@
 
 - 2026-11-09 `IntegrationTestScene`에서 설산 공유 머티리얼 10개를 URP Lit으로 전환하고 기존 기본색을 보존했다. 늪 모듈 프리팹 13개는 대상 슬롯만 초원용 `EA_M_Meadows`에서 늪 전용 `EA_Swamp`로 교체했다. 두 지역의 마젠타가 사라진 것을 Scene View에서 확인했고, 눈 파티클은 별도 URP 미리보기에서 정상 표시됐다.
 - `Develop` 전환 후에도 설산 머티리얼 10개와 늪 프리팹 13개의 수정이 작업본에 남아 있음을 파일에서 확인했다. 이 중 Git에 표시되는 변경은 설산 머티리얼 5개와 늪 프리팹 13개이며, 아직 커밋되지 않았다.
-- 다른 작업본에서 늪 모듈을 쓰려면 `EA_Swamp` 및 해당 텍스처가 포함된 임포트 에셋이 필요하다. 설산의 `Assets/Imports` 아래 머티리얼 5개 수정은 로컬에 남는다. 자세한 변경과 검증은 [로컬 작업 기록](plans/2026-11-09-설산-늪-마젠타.md)을 참고한다.
+- 다른 작업본에서 늪 모듈을 쓰려면 `EA_Swamp` 및 해당 텍스처가 포함된 임포트 에셋이 필요하다. 설산의 `Assets/Imports` 아래 머티리얼 5개 수정은 로컬에 남는다. 자세한 변경과 검증은 로컬 작업 기록(`plans/2026-11-09-설산-늪-마젠타.md`, 로컬 전용)을 참고한다.
 
 ## 숲과 설산·늪 연결
 
-- `SJT-MapMaking`의 열린 `IntegrationTestScene`에 북쪽 설산길과 동쪽 늪길을 연결하고, 통로 양옆의 빈 경계도 비탈 메시로 메웠다. 지형·충돌은 확인했고 씬은 사용자 확인 후 저장할 수 있도록 미저장 상태로 뒀다. 배치와 검사 범위는 [숲·설산·늪 연결 기록](plans/2026-11-09-숲-설산-늪-연결.md)을 참고한다.
+- `SJT-MapMaking`의 열린 `IntegrationTestScene`에 북쪽 설산길과 동쪽 늪길을 연결하고, 통로 양옆의 빈 경계도 비탈 메시로 메웠다. 지형·충돌은 확인했고 씬은 사용자 확인 후 저장할 수 있도록 미저장 상태로 뒀다. 배치와 검사 범위는 숲·설산·늪 연결 기록(`plans/2026-11-09-숲-설산-늪-연결.md`, 로컬 전용)을 참고한다.
 
 ## 다음 작업과 남은 확인
 
