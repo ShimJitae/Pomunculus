@@ -14,7 +14,7 @@ using UnityEngine.AI;
 /// </summary>
 [RequireComponent(typeof(NavMeshAgent))]
 [RequireComponent(typeof(PlayerInputReader), typeof(PlayerMotor), typeof(PlayerThrower))]
-[RequireComponent(typeof(PotionLoadout), typeof(Inventory), typeof(PlayerAnimator))]
+[RequireComponent(typeof(Inventory), typeof(PlayerAnimator))]
 public class PlayerFSM : Entity, IPlayerObj, IHealable, IShieldable, IWorldRPC
 {
     [SerializeField] private PlayerTuningSO tuning;
@@ -40,7 +40,7 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IShieldable, IWorldRPC
     public PlayerThrower Thrower { get; private set; }
     public PlayerInteractor Interactor { get; private set; }   // 없을 수 있음 (null 허용)
     public Inventory Inventory { get; private set; }
-    public PotionLoadout Loadout { get; private set; }
+    public PotionLoadout Loadout { get; } = new PotionLoadout();
     public PlayerAnimator Animator { get; private set; }
     public PlayerActionGate Actions { get; private set; }
 
@@ -89,12 +89,7 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IShieldable, IWorldRPC
         Thrower = GetComponent<PlayerThrower>();
         Interactor = GetComponent<PlayerInteractor>();
         Inventory = GetComponentInChildren<Inventory>();
-        Loadout = GetComponent<PotionLoadout>();
         itemGiver = GetComponentInChildren<TestItemGiver>();
-
-        Inventory.Changed += SendInventorySync;
-        Loadout.OnEquipChanged += HandleLoadoutEquipChanged;
-
         Animator = GetComponent<PlayerAnimator>();
 
         Motor.Initialize(Tuning, Data.GetSpeed());
@@ -102,6 +97,8 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IShieldable, IWorldRPC
         Actions = new PlayerActionGate(this);
 
         Stats.OnShieldChanged += HandleShieldChanged;
+        Inventory.Changed += SendInventorySync;
+        Loadout.OnEquipChanged += HandleLoadoutEquipChanged;
 
         startPos = transform.position;
 
@@ -298,7 +295,7 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IShieldable, IWorldRPC
 
             Item = Inventory.Slots,
             PotionSlotIds = Loadout.GetSlotIds(),
-            SelectedPotionSlot = Loadout.SelectedIndex
+            SelectedPotionSlot = Loadout.SelectedIndex,
         };
 
         _data.SetData(state);
@@ -541,7 +538,6 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IShieldable, IWorldRPC
     private void OnDestroy()
     {
         Stats.OnShieldChanged -= HandleShieldChanged;
-        if (Loadout == null) return;
         Loadout.OnEquipChanged -= HandleLoadoutEquipChanged;
     }
 
