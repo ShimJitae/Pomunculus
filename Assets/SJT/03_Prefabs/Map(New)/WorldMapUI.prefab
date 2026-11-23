@@ -164,6 +164,7 @@ GameObject:
   - component: {fileID: 3723587255098844072}
   - component: {fileID: 9094914324764411693}
   - component: {fileID: 5870979108193400306}
+  - component: {fileID: 9107443124664804264}
   m_Layer: 5
   m_Name: WorldMapUI
   m_TagString: Untagged
@@ -276,6 +277,20 @@ MonoBehaviour:
   closeDuration: 0.2
   closedAngle: 8
   closedOffset: {x: 0, y: -1200}
+--- !u!114 &9107443124664804264
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3486250514255595155}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 218ae671649f8164eb7902a6cace6ff8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PopupUI
+  bringToFrontOnOpen: 1
+  blocksOtherPopups: 0
 --- !u!1 &6259811538510891202
 GameObject:
   m_ObjectHideFlags: 0
