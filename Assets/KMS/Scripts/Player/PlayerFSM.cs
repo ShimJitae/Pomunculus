@@ -168,7 +168,7 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IShieldable, IWorldRPC
             worldMapUI = FindAnyObjectByType<WorldMapUI>(FindObjectsInactive.Include);
         if (worldMapUI == null) return;
 
-        if (worldMapUI.gameObject.activeSelf) worldMapUI.Close();
+        if (worldMapUI.IsOpen) worldMapUI.Close();
         else worldMapUI.Open();
     }
 
