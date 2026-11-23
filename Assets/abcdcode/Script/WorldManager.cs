@@ -52,7 +52,7 @@ public class WorldManager : Singleton<WorldManager>
 
     #region 시간/날짜
     // 하루 길이(초). 방장은 불러온 슬롯의 WorldSlotData.DayTime, 참여자는 방장이 보낸 스냅샷 값을 쓴다
-    public float DayLength{get;private set;} = WorldSlotData.DefaultDayTime;
+    public static float DayLength{get;private set;} = WorldSlotData.DefaultDayTime;
     private static float ValidDayLength(float v) => v > 0f ? v : WorldSlotData.DefaultDayTime;
     // 바뀐 Day. 방장/수신 쪽 모두 호출됨
     public event Action<int> OnDayChangedEvent;
