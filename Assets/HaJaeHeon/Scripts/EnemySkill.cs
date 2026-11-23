@@ -246,6 +246,12 @@ public class EnemySkill : MonoBehaviour
         if (attackIndicator != null)
             attackIndicator.Hide();
 
+        // 예고음이 아직 재생중이라면 판정 순간에 끊고 공격음으로 넘어감(다단히트는 첫 타격에서만 정지됨)
+        if (AudioManager.Instance != null)
+            AudioManager.Instance.StopSfx(telegraphSoundHandle);
+
+        telegraphSoundHandle = default;
+
         // 연출 처리 이후 > 방 안에서는 마스터만 공격 판정을 진행한다.
         if (CurrentAttackPattern != null && CurrentAttackPattern.SkillParticle != null)
             SpawnSkillParticle();
