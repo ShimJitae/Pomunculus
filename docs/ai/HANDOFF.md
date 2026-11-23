@@ -11,6 +11,11 @@
 <!-- harness:status:end -->
 - Claude Code 겸용 레이어를 이 프로젝트에만 추가했다(UnityHarness 원본 미반영). `CLAUDE.md`, `.claude/`, `scripts/ai/sync-claude.ps1`이 해당하며 Codex 파일은 바꾸지 않았다. 스킬·역할은 Codex 원본을 고친 뒤 `sync-claude.ps1`로 다시 생성한다.
 
+## 상태 효과 오디오 연결 — 2026-11-23
+
+- 원본 15개를 보존하고 `Assets/SJT/01_Assets/Sounds/SFX/StatusEffect/`에 적용용 클립 19개를 생성했다. 상태 18종에 Sound 33개를 연결하고 기존 Master/SFX 믹서를 사용한다. 무적 전용 오디오 프리팹과 데이터 연결도 추가했다.
+- 석화·점액 해제의 낮은 피치에 따른 조기 반납 문제는 Holding Pause 0.1초로 보완했다. 최종 검증 상태와 상태별 연결은 [작업 기록](plans/2026-11-23-status-effect-audio.md)을 따른다. 실제 청음·PlayMode와 플레이어·몬스터 원본의 Visualizer 추가는 이번 범위에 포함하지 않았다.
+
 ## 월드맵 UI 연출 — 2026-11-23
 
 - WorldMapUI의 MapBG 이동·회전과 연속 입력 전환을 구현하고 공용 프리팹에 연결했다. PlayerFSM의 Tab 판단 한 곳은 사용자 승인으로 SJT 밖에서 수정했다.

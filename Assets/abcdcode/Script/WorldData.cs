@@ -25,6 +25,7 @@ public class WorldData
     // RegionSpawner 소환 기록
     public Dictionary<RegionType, RegionSpawnRecord> RegionGathers{get;set;} = new();
     public Dictionary<RegionType, RegionSpawnRecord> RegionMobs{get;set;} = new();
+    public Dictionary<RegionType, RegionSpawnRecord> RegionBosses{get;set;} = new();
 
     public void SavePlayer(string uid, IWorldObj player)
     {
@@ -78,10 +79,10 @@ public class PlayerSaveData
     public SaveData State{get;set;} // Player가 ISavable.SaveData로 채운 상태
 }
 
-// 지역 하나의 채집물 또는 몬스터 소환 기록. 날짜가 바뀌기 전까지는 이 기록대로만 다시 소환한다
+// 지역 하나의 채집물/몬스터/보스 소환 기록. 재소환 주기가 지나기 전까지는 이 기록대로만 다시 소환한다
 public class RegionSpawnRecord
 {
-    public int Day{get;set;} // 소환한 날
+    public int Day{get;set;} // 마지막으로 날짜 갱신을 처리한 날
     public bool Active{get;set;} // 오브젝트가 월드에 나와 있는지
     public List<SpawnPointRecord> Points{get;set;} = new(); // SpawnPointRegistry의 포인트 순서
 }
@@ -89,7 +90,8 @@ public class SpawnPointRecord
 {
     public string PrefabId{get;set;}
     public int ObjectId{get;set;} = -1; // 나와 있는 오브젝트 ID. 없으면 -1
-    public bool Consumed{get;set;} // 오늘 이미 채집/처치되어 사라짐
+    public bool Consumed{get;set;} // 이미 채집/처치되어 사라짐. 재소환 주기가 지나기 전까지 비어 있다
+    public int ConsumedDay{get;set;} // 사라진 날. Consumed일 때만 의미 있음
     public SaveData State{get;set;} // 디스폰할 때 보관한 상태. 다시 소환할 때 적용
 }
 
@@ -98,6 +100,7 @@ public class WorldSnapshot
 {
     public int Day{get;set;}
     public float Time{get;set;}
+    public float DayLength{get;set;} // 방장 월드의 하루 길이(초)
     public List<WorldObjSaveData> Entities{get;set;} = new();
 
     // 네트워크 전송용 바이너리
@@ -106,6 +109,7 @@ public class WorldSnapshot
     {
         p.Write(Day);
         p.Write(Time);
+        p.Write(DayLength);
         var inner = new PacketData();
         inner.Write(Entities.Count);
         foreach(var e in Entities) e.Write(inner, compressState: false); // 바깥에서 한 번에 압축하므로 개별 압축 안 함
@@ -114,7 +118,7 @@ public class WorldSnapshot
     }
     public static WorldSnapshot Read(PacketData p)
     {
-        var s = new WorldSnapshot { Day = p, Time = p };
+        var s = new WorldSnapshot { Day = p, Time = p, DayLength = p };
         var inner = new PacketData(p.ReadBlock());
         int count = inner;
         for(int i = 0; i < count; i++) s.Entities.Add(WorldObjSaveData.Read(inner));
