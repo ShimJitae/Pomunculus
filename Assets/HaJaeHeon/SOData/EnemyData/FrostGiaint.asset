@@ -14,12 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MonsterDataSO
   hp: 400
   maxHp: 400
-  moveSpeed: 0
+  moveSpeed: 5
   monster_id: 42001
   monster_name: "\uC11C\uB9AC \uAC70\uC778"
   kind: 1
   atk: 40
-  speed: 0
+  speed: 5
   zone_id: 1
   zone_name: "\uC124\uC0B0"
   drop_id: 25034
@@ -31,5 +31,5 @@ MonoBehaviour:
   behaviourGraph: {fileID: -8369483795943858381, guid: 548c8a7dfd53fe743900d6e6d4467ff2, type: 2}
   enemyPrefab: {fileID: 8411471230040761270, guid: 7b4808a3a88a4744bba0ca1e728c0f5e, type: 3}
   normalAttackPattern: {fileID: 11400000, guid: c2cb23d454adc324e974eb77199e07f4, type: 2}
-  groggySound: {fileID: 0}
-  dieSound: {fileID: 0}
+  groggySound: {fileID: 11400000, guid: b2e50b731eacda84c8d85dadc99dc2b0, type: 2}
+  dieSound: {fileID: 11400000, guid: 694e1d6b067416448bd57930e8db90f0, type: 2}

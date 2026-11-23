@@ -24,7 +24,7 @@ public class Enemy : Entity, IWorldRPC, IHealable
     [SerializeField] private EnemyDetector detector;
     [SerializeField] private float knockbackDistance;
     [SerializeField] private float detectRangeBonus = 10f; // 피격 시 추가되는 감지 범위
-    [SerializeField] private float chaseSpeedMultiplier = 2.5f; // 추적 시 이동속도 배율
+    [SerializeField] private float chaseSpeedMultiplier = 2f; // 추적 시 이동속도 배율
 
     private bool IsDamageBlock => IsInvincible || CheckDie();
     private NavMeshAgent agent;
