@@ -16,17 +16,18 @@ MonoBehaviour:
   monsterName: "\uD0A4\uBA54\uB77C"
   monsterId: 42002
   patternName: "\uD0A4\uBA54\uB77C_\uC7AC\uC0DD"
-  telegraph: 1.5
+  skillEffect: 1
+  telegraph: 4.5
   value: 444
   recovery: 1
   interval: 25
-  patternWeight: 0
-  animatorTrigger: 2
+  patternWeight: 1
+  animatorTrigger: 3
   useRange: 99
   attackArea:
-    shape: 0
+    shape: 1
     anchor: 0
-    radius: 0
+    radius: 1
     angle: 360
     width: 0
     length: 0
@@ -36,8 +37,8 @@ MonoBehaviour:
   skillParticleOffset: {x: 0, y: 0, z: 0}
   skillParticleRotation: {x: 0, y: 0, z: 0}
   scaleSkillParticleWithArea: 1
-  telegraphSound: {fileID: 0}
-  attackSound: {fileID: 0}
+  telegraphSound: {fileID: 11400000, guid: b04107b9b577640408e5001bd8890a16, type: 2}
+  attackSound: {fileID: 11400000, guid: 299ef2f3a4ec41e4f970f4bf7a862a1b, type: 2}
   note: "\uC0DD\uBA85\uB825\uC744 \uBAA8\uB450 \uD68C\uBCF5\uD568. \uC815\uC2E0\uC9D1\uC911\uC744
     \uB04A\uC5B4\uBC84\uB9AC\uB294 \uD3EC\uC158\uC774\uB098 \uD68C\uBCF5 \uD6A8\uC728\uC744
     \uC904\uC774\uB294 \uB3C5 \uD3EC\uC158\uC73C\uB85C \uB300\uC751\uD574\uC57C\uD568"
