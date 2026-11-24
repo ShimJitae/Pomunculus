@@ -25,7 +25,7 @@ public class RegionSpawner : Singleton<RegionSpawner>
             {
                 GetPoints = (registry, region) => registry.GetNormalMobPoints(region),
                 GetRecords = data => data.RegionMobs,
-                Pick = region => m_table.PickMob(region),
+                Pick = region => m_table.PickMob(MobTableRegion(region)),
             },
             new Category
             {
@@ -232,6 +232,19 @@ public class RegionSpawner : Singleton<RegionSpawner>
     private static bool IsAlive(int id) => id != -1 && IsAlive(WorldManager.Instance.Find(id));
     // 채집물이 WorldManager를 거치지 않고 Destroy되는 경우가 있어 목록에 남아 있어도 파괴 여부를 확인
     private static bool IsAlive(IWorldObj obj) => obj is Object o ? o != null : obj != null;
+
+    // 숲의 일반 몬스터는 계절에 따라 다른 지역의 몬스터 목록에서 고른다 (봄: 숲, 여름: 화산, 가을: 독늪, 겨울: 설산)
+    private static RegionType MobTableRegion(RegionType region)
+    {
+        if (region != RegionType.Forest) return region;
+        return WorldManager.Instance.CurSeason switch
+        {
+            Season.Summer => RegionType.Volcano,
+            Season.Autumn => RegionType.Swamp,
+            Season.Winter => RegionType.SnowyMountain,
+            _ => RegionType.Forest,
+        };
+    }
 
     // 보스 포인트는 지역마다 하나라서 다른 카테고리와 같은 목록 형태로 맞춘다
     private static IReadOnlyList<Transform> SinglePoint(Transform point) =>
