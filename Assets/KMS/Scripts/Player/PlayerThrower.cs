@@ -1,4 +1,5 @@
 using Pomunculus.Items;
+using System;
 using UnityEngine;
 
 // 목표 지점에 포물선으로 떨어지는 투사체를 던진다
@@ -16,6 +17,9 @@ public class PlayerThrower : MonoBehaviour
 
     private const int EmptyBottleId = -1;   // 포션 없이 던지는 빈 병
     private PlayerFSM owner;
+
+    // 투사체를 던진 직후 모든 클라이언트에서 호출된다 (origin, velocity, gravity, 포션. 빈 병이면 null)
+    public event Action<Vector3, Vector3, Vector3, PotionData> OnProjectileSpawned;
 
     void Awake()
     {
@@ -78,21 +82,29 @@ public class PlayerThrower : MonoBehaviour
     public ThrownProjectile GetProjectilePrefab(PotionData potion)
         => potion != null && potion.ProjectilePrefab != null ? potion.ProjectilePrefab : emptyBottlePrefab;
 
-    // RPC로 받은 값 그대로 투사체를 만든다 (모든 클라이언트에서 실행)
+    // RPC로 받은 값 그대로 투사체를 만들고, 따라 던지는 쪽(분신 등)에 알린다 (모든 클라이언트에서 실행)
     public void SpawnProjectile(Vector3 origin, Vector3 velocity, Vector3 gravity, int potionId)
     {
         PotionData potion = FindPotion(potionId);
+        if (LaunchProjectile(origin, velocity, gravity, potion) == null) return;
 
+        OnProjectileSpawned?.Invoke(origin, velocity, gravity, potion);
+    }
+
+    // 이 플레이어가 던진 것으로 투사체 하나를 만든다. 분신도 이걸로 따라 던진다
+    public ThrownProjectile LaunchProjectile(Vector3 origin, Vector3 velocity, Vector3 gravity, PotionData potion)
+    {
         ThrownProjectile prefab = GetProjectilePrefab(potion);
 
         if (prefab == null)
         {
             Debug.LogWarning("[PlayerThrower] 던질 프리팹이 없습니다.");
-            return;
+            return null;
         }
 
         ThrownProjectile projectile = Instantiate(prefab, origin, Quaternion.identity);
         projectile.Launch(velocity, gravity, hitLayers, gameObject, potion, attackDamage);
+        return projectile;
     }
 
     // Id로 포션을 찾는다. 빈 병이거나 목록에 없으면 null
