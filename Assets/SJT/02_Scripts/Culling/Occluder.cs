@@ -119,4 +119,29 @@ public sealed class Occluder : MonoBehaviour
         targetRenderer.sharedMaterial = originalMaterial;
         fadeMaterial = null;
     }
+
+#if UNITY_EDITOR
+    // 투명해지는 물체라 그림자를 남기지 않는다. 컴포넌트를 붙이는 순간 하위 렌더러(LOD 포함)의 그림자를 끈다
+    private void Reset()
+    {
+        DisableShadows();
+    }
+
+    /// <summary>하위 렌더러의 그림자 투사를 모두 끈다</summary>
+    [ContextMenu("그림자 끄기")]
+    private void DisableShadows()
+    {
+        foreach (Renderer r in GetComponentsInChildren<Renderer>(true))
+        {
+            if (r.shadowCastingMode == UnityEngine.Rendering.ShadowCastingMode.Off)
+            {
+                continue;
+            }
+
+            // Undo에 기록해야 프리팹 인스턴스에서도 변경이 오버라이드로 저장된다
+            UnityEditor.Undo.RecordObject(r, "Disable Occluder Shadows");
+            r.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+        }
+    }
+#endif
 }
