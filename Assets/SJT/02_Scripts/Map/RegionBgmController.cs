@@ -5,6 +5,8 @@ using UnityEngine;
 // 플레이어는 나중에 스폰되므로 WorldManager.OnSpawnedEvent로 내 플레이어의 트래커를 찾아 구독한다
 public class RegionBgmController : MonoBehaviour
 {
+    private PlayerRegionTracker m_tracker;
+
     private void Start()
     {
         WorldManager.Instance.OnSpawnedEvent += OnWorldObjSpawned;
@@ -48,13 +50,9 @@ public class RegionBgmController : MonoBehaviour
 
     private void ChangeBgm(RegionType region)
     {
-        // 같은 지역에 다시 들어와도 곡이 처음부터 다시 재생되지 않게 막음
-        if (region == m_playingRegion) return;
-        m_playingRegion = region;
-        // TODO 지역별 클립 조회와 실제 재생은 다음 단계에서 구현
-        Debug.Log($"[RegionBgmController] BGM 변경 → {region}");
+        // 타이틀을 거치지 않고 월드 씬을 바로 실행하면 AudioManager가 없을 수 있음
+        if (AudioManager.Instance == null) return;
+        // 같은 BGM 재요청, 미등록 지역(None) 처리는 AudioManager가 담당
+        AudioManager.Instance.PlayBgm(region);
     }
-
-    private PlayerRegionTracker m_tracker;
-    private RegionType m_playingRegion = RegionType.None;
 }
