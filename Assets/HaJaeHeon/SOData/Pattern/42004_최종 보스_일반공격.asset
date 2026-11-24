@@ -15,29 +15,30 @@ MonoBehaviour:
   patternId: 47030
   monsterName: "\uCD5C\uC885 \uBCF4\uC2A4"
   monsterId: 42004
-  patternName: "\uCD5C\uC885 \uBCF4\uC2A4_\uC77C\uBC18\uACF5\uACA9"
-  telegraph: 0.7
-  value: 70
-  recovery: 1
+  patternName: "\uCD5C\uC885 \uBCF4\uC2A4_\uC77C\uBC18\uACF5\uACA92"
+  skillEffect: 0
+  telegraph: 0.01
+  value: 10
+  recovery: 0.01
   interval: 3
   patternWeight: 1
-  animatorTrigger: 0
-  useRange: 7
+  animatorTrigger: 2
+  useRange: 3
   attackArea:
-    shape: 2
-    anchor: 0
-    radius: 10
-    angle: 266
+    shape: 1
+    anchor: 1
+    radius: 5
+    angle: 360
     width: 0
     length: 0
     offset: {x: 0, y: 0, z: 0}
-  skillParticle: {fileID: 0}
+  skillParticle: {fileID: 3374902658756203735, guid: 7c7970f71a6bcf94a97f2bb1e715bb02, type: 3}
   hitParticle: {fileID: 0}
   skillParticleOffset: {x: 0, y: 0, z: 0}
   skillParticleRotation: {x: 0, y: 0, z: 0}
   scaleSkillParticleWithArea: 1
-  telegraphSound: {fileID: 11400000, guid: 2e44566fa2efa274e9c60cfc141cbeb0, type: 2}
-  attackSound: {fileID: 11400000, guid: 6e19debe79b8c8f47bd21ab5b53461f1, type: 2}
+  telegraphSound: {fileID: 0}
+  attackSound: {fileID: 0}
   note: "\uCD5C\uC885 \uBCF4\uC2A4\uC758 \uC784\uC2DC \uC77C\uBC18 \uACF5\uACA9 \uAE30\uC900\uAC12.
     \uAE30\uC874 \uC801 \uC815\uC758\uC758 \uACF5\uACA9\uB825 70\uC744 \uC0AC\uC6A9\uD558\uBA70,
     \uAD6C\uCCB4\uC801\uC778 \uACF5\uACA9 \uBC29\uC2DD\uC740 \uD589\uB3D9 \uAE30\uD68D
