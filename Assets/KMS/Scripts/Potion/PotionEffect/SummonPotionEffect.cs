@@ -27,14 +27,28 @@ public class SummonPotionEffect : SpawnPotionEffect
         if (!CanSummon()) return;
 
         Quaternion rotation = GetThrowDirectionRotation(context);
-        GameObject summoner = context.Thrower;
+        PotionImpactContext impact = context;   // in 매개변수는 람다에서 쓸 수 없어 복사한다
         foreach (Vector3 point in GetSpawnPoints(context.ImpactPoint, count, spreadRadius))
         {
             if (!NavMesh.SamplePosition(point, out NavMeshHit hit, NavMeshSearchDistance, NavMesh.AllAreas)) continue;
 
             WorldManager.Instance.Spawn(monsterPrefab.name, hit.position, rotation,
-                summoned => AttachLifetime(summoned, summoner));
+                summoned => InitializeSummoned(summoned, impact));
         }
+    }
+
+    // 이 효과가 T 컴포넌트를 가진 프리팹을 소환하는지 확인한다 (분신이 분신을 만드는 것 방지 등)
+    public bool SpawnsComponent<T>() => monsterPrefab != null && monsterPrefab.GetComponentInChildren<T>(true) != null;
+
+    // 다른 화면에 전파되기 전에 소환물에 던진 사람 정보와 수명 타이머를 넣는다 (방장에서만 실행)
+    private void InitializeSummoned(IWorldObj summoned, PotionImpactContext impact)
+    {
+        if (summoned == null) return;
+
+        foreach (IPotionSpawned receiver in summoned.gameObject.GetComponentsInChildren<IPotionSpawned>(true))
+            receiver.OnSpawnedByPotion(impact);
+
+        summoned.gameObject.AddComponent<PotionSummonLifetime>().Initialize(lifetime, impact.Thrower);
     }
 
     // 소환 가능한 프리팹인지 확인하고, 아니면 이유를 경고로 남긴다
@@ -44,7 +58,7 @@ public class SummonPotionEffect : SpawnPotionEffect
 
         if (monsterPrefab.GetComponent<IPlayerObj>() != null)
         {
-            Debug.LogWarning($"[SummonPotionEffect] 플레이어 프리팹은 소환할 수 없습니다: {monsterPrefab.name}. 분신은 SpawnObjectPotionEffect + PlayerClone을 쓰세요.");
+            Debug.LogWarning($"[SummonPotionEffect] 플레이어 프리팹은 소환할 수 없습니다: {monsterPrefab.name}. 분신은 PlayerClone 프리팹을 소환하세요.");
             return false;
         }
         if (monsterPrefab.GetComponent<IWorldObj>() == null)
@@ -55,10 +69,4 @@ public class SummonPotionEffect : SpawnPotionEffect
         return true;
     }
 
-    // 방장 쪽 소환물에 수명 타이머와 소환자 확인을 붙인다 (소환자가 나가면 같이 사라진다)
-    private void AttachLifetime(IWorldObj summoned, GameObject summoner)
-    {
-        if (summoned == null) return;
-        summoned.gameObject.AddComponent<PotionSummonLifetime>().Initialize(lifetime, summoner);
-    }
 }

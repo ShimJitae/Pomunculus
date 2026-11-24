@@ -1,11 +1,12 @@
-// 착탄 지점에 아무 프리팹(장애물, 이펙트, 분신 등)을 만든다. 모든 클라이언트가 각자 로컬로 생성한다
+// 착탄 지점에 아무 프리팹(장애물, 이펙트 등)을 만든다. 모든 클라이언트가 각자 로컬로 생성한다
+// 네트워크 오브젝트(IWorldObj: 몬스터, 분신 등)는 SummonPotionEffect로 소환해야 한다
 using System;
 using UnityEngine;
 
 [Serializable]
 public class SpawnObjectPotionEffect : SpawnPotionEffect
 {
-    [Tooltip("생성할 프리팹. 네트워크 동기화 없이 각 클라이언트에 로컬로 만든다")]
+    [Tooltip("생성할 프리팹. 네트워크 동기화 없이 각 클라이언트에 로컬로 만든다. IWorldObj 프리팹은 SummonPotionEffect를 쓴다")]
     [SerializeField] private GameObject prefab;
     [Min(1)][SerializeField] private int count = 1;
     [Tooltip("2개 이상일 때 착탄 지점을 중심으로 둘러 놓을 반경")]
@@ -18,13 +19,11 @@ public class SpawnObjectPotionEffect : SpawnPotionEffect
     // 조준 원에 배치 범위를 보여 준다
     public override float AreaRadius => count > 1 ? spreadRadius : 0f;
 
-    // 이 효과가 T 컴포넌트를 가진 프리팹을 만드는지 확인한다 (분신이 분신을 만드는 것 방지 등)
-    public bool SpawnsComponent<T>() => prefab != null && prefab.GetComponentInChildren<T>(true) != null;
-
     // 배치 위치마다 프리팹을 만들고 던진 사람 정보를 넘긴다
     public override void OnImpact(in PotionImpactContext context)
     {
         if (prefab == null) return;
+        if (IsNetworkPrefab()) return;
 
         Quaternion rotation = alignToThrowDirection ? GetThrowDirectionRotation(context) : prefab.transform.rotation;
         foreach (Vector3 point in GetSpawnPoints(context.ImpactPoint, count, spreadRadius))
@@ -35,5 +34,14 @@ public class SpawnObjectPotionEffect : SpawnPotionEffect
 
             if (lifetime > 0f) UnityEngine.Object.Destroy(spawned, lifetime);
         }
+    }
+
+    // 로컬 생성하면 월드 ID·소유자 없이 클라이언트마다 따로 노는 네트워크 프리팹인지 확인하고, 맞으면 경고를 남긴다
+    private bool IsNetworkPrefab()
+    {
+        if (prefab.GetComponentInChildren<IWorldObj>(true) == null) return false;
+
+        Debug.LogWarning($"[SpawnObjectPotionEffect] 네트워크 오브젝트(IWorldObj)는 로컬로 만들 수 없습니다: {prefab.name}. SummonPotionEffect로 소환하세요.");
+        return true;
     }
 }

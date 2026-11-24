@@ -18,8 +18,8 @@ public class PlayerThrower : MonoBehaviour
     private const int EmptyBottleId = -1;   // 포션 없이 던지는 빈 병
     private PlayerFSM owner;
 
-    // 투사체를 던진 직후 모든 클라이언트에서 호출된다 (origin, velocity, gravity, 포션. 빈 병이면 null)
-    public event Action<Vector3, Vector3, Vector3, PotionData> OnProjectileSpawned;
+    // 투사체를 던진 직후 모든 클라이언트에서 호출된다 (발사 위치, 목표 지점, 포션. 빈 병이면 null)
+    public event Action<Vector3, Vector3, PotionData> OnProjectileSpawned;
 
     void Awake()
     {
@@ -27,13 +27,16 @@ public class PlayerThrower : MonoBehaviour
     }
 
     // 목표 지점이 최대 사거리 밖이면 같은 방향의 사거리 끝으로 당긴다 (높이는 유지)
-    public Vector3 ClampToThrowRange(Vector3 target)
+    public Vector3 ClampToThrowRange(Vector3 target) => ClampToThrowRange(transform.position, target);
+
+    // from 위치 기준으로 같은 사거리를 적용한다. 분신이 자기 위치에서 던질 때 쓴다
+    public Vector3 ClampToThrowRange(Vector3 from, Vector3 target)
     {
-        Vector3 flat = target - transform.position;
+        Vector3 flat = target - from;
         flat.y = 0f;
         if (flat.magnitude <= maxThrowRange) return target;
 
-        Vector3 clamped = transform.position + flat.normalized * maxThrowRange;
+        Vector3 clamped = from + flat.normalized * maxThrowRange;
         clamped.y = target.y;
         return clamped;
     }
@@ -69,13 +72,18 @@ public class PlayerThrower : MonoBehaviour
     // 궤적을 계산해 모든 클라이언트에 발사를 알린다 (소유자만 호출)
     public void ThrowProjectile(Vector3 target, PotionData potion)
     {
-
         Vector3 origin = GetThrowOrigin();
-        Vector3 velocity = CalculateLaunchVelocity(origin, target, out _, out Vector3 gravity);
-        velocity -= 0.5f * Time.fixedDeltaTime * gravity;
+        Vector3 velocity = CalculateThrowVelocity(origin, target, out Vector3 gravity);
         int potionId = potion != null ? potion.Id : EmptyBottleId;
 
-        owner.SendThrow(origin, velocity, gravity, potionId);
+        owner.SendThrow(origin, velocity, gravity, target, potionId);
+    }
+
+    // 실제 투사체에 넣을 초기 속도. 첫 물리 프레임의 중력 적분 오차를 미리 보정한다
+    public Vector3 CalculateThrowVelocity(Vector3 origin, Vector3 target, out Vector3 gravity)
+    {
+        Vector3 velocity = CalculateLaunchVelocity(origin, target, out _, out gravity);
+        return velocity - 0.5f * Time.fixedDeltaTime * gravity;
     }
 
     // 포션에 맞는 투사체 프리팹. 포션이 없거나 프리팹이 비어 있으면 빈 병
@@ -83,12 +91,19 @@ public class PlayerThrower : MonoBehaviour
         => potion != null && potion.ProjectilePrefab != null ? potion.ProjectilePrefab : emptyBottlePrefab;
 
     // RPC로 받은 값 그대로 투사체를 만들고, 따라 던지는 쪽(분신 등)에 알린다 (모든 클라이언트에서 실행)
-    public void SpawnProjectile(Vector3 origin, Vector3 velocity, Vector3 gravity, int potionId)
+    public void SpawnProjectile(Vector3 origin, Vector3 velocity, Vector3 gravity, Vector3 target, int potionId)
     {
         PotionData potion = FindPotion(potionId);
         if (LaunchProjectile(origin, velocity, gravity, potion) == null) return;
 
-        OnProjectileSpawned?.Invoke(origin, velocity, gravity, potion);
+        OnProjectileSpawned?.Invoke(origin, target, potion);
+    }
+
+    // 다른 발사 위치(분신 등)에서 같은 목표 지점으로 이 플레이어가 던진 투사체를 만든다. 네트워크 전송 없이 로컬에서만 생성
+    public ThrownProjectile ThrowFrom(Vector3 origin, Vector3 target, PotionData potion)
+    {
+        Vector3 velocity = CalculateThrowVelocity(origin, target, out Vector3 gravity);
+        return LaunchProjectile(origin, velocity, gravity, potion);
     }
 
     // 이 플레이어가 던진 것으로 투사체 하나를 만든다. 분신도 이걸로 따라 던진다

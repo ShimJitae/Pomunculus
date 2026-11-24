@@ -8,6 +8,10 @@ public class PotionKnockbackMover : MonoBehaviour
     private Vector3 velocity;
     private float remainingTime;
 
+    // 이번 프레임에 넉백으로 민 양. 분신이 소환자의 넉백만큼 따라가지 않도록 뺄 때 쓴다
+    public Vector3 LastStepDisplacement { get; private set; }
+    public int LastStepFrame { get; private set; } = -1;   // LastStepDisplacement를 기록한 프레임
+
     void Awake() => agent = GetComponent<NavMeshAgent>();
 
     // 새 넉백으로 교체한다 (장판 틱이 겹쳐 누적되며 날아가는 것 방지)
@@ -27,7 +31,9 @@ public class PotionKnockbackMover : MonoBehaviour
         }
 
         float step = Mathf.Min(Time.deltaTime, remainingTime);
-        agent.Move(velocity * step);
+        LastStepDisplacement = velocity * step;
+        LastStepFrame = Time.frameCount;
+        agent.Move(LastStepDisplacement);
         remainingTime -= step;
     }
 }
