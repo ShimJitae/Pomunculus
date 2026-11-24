@@ -23,3 +23,32 @@ MonoBehaviour:
   WindElement: 2
   projectilePrefab: {fileID: 6398676829056186882, guid: b79f8f46e34d37ce95d4d976bbfed26d, type: 3}
   pickupPrefab: {fileID: 3321244018119135130, guid: d457cf88dc5085a81896082caa96a404, type: 3}
+  effects:
+  - rid: 3760827200000000001
+  - rid: 3760827200000000002
+  references:
+    version: 2
+    RefIds:
+    - rid: 3760827200000000001
+      type: {class: DamagePotionEffect, ns: , asm: Assembly-CSharp}
+      data:
+        affectedTargets: -1
+        amount: 20
+    - rid: 3760827200000000002
+      type: {class: ZonePotionEffect, ns: , asm: Assembly-CSharp}
+      data:
+        affectedTargets: -1
+        zonePrefab: {fileID: 0}
+        radius: 5
+        duration: 1
+        tickInterval: 1
+        groundLayers:
+          serializedVersion: 2
+          m_Bits: 64
+        tickEffects:
+        - rid: 3760827200000000003
+    - rid: 3760827200000000003
+      type: {class: DamagePotionEffect, ns: , asm: Assembly-CSharp}
+      data:
+        affectedTargets: -1
+        amount: 30
