@@ -498,7 +498,7 @@ MeshRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 90189923625489906}
   m_Enabled: 1
-  m_CastShadows: 1
+  m_CastShadows: 0
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0
@@ -2914,6 +2914,7 @@ GameObject:
   - component: {fileID: 7486839068672850478}
   - component: {fileID: 388699960417461937}
   - component: {fileID: 255969523933007137}
+  - component: {fileID: 2739693471330097807}
   m_Layer: 0
   m_Name: World_PurePoly
   m_TagString: Untagged
@@ -3046,6 +3047,18 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 56762fe96d82d9841b839708ff37053b, type: 2}
   - {fileID: 2100000, guid: 98eea2403f18628489d2877ce3fef649, type: 2}
   - {fileID: 2100000, guid: a33969581294ffd4f88fc7f76e6f8440, type: 2}
+--- !u!114 &2739693471330097807
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1062197608283547737}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 600e336aff62d6d49ac94320385a2133, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RegionBgmController
 --- !u!1 &1063586890801637088
 GameObject:
   m_ObjectHideFlags: 0
@@ -9191,7 +9204,7 @@ MeshRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3218764697393537036}
   m_Enabled: 1
-  m_CastShadows: 1
+  m_CastShadows: 0
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0
@@ -10445,7 +10458,7 @@ MeshRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3816289254596819524}
   m_Enabled: 1
-  m_CastShadows: 1
+  m_CastShadows: 0
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0
@@ -11458,7 +11471,7 @@ MeshRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4095041120240903110}
   m_Enabled: 1
-  m_CastShadows: 1
+  m_CastShadows: 0
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0
@@ -15140,7 +15153,7 @@ MeshRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5687562805982082291}
   m_Enabled: 1
-  m_CastShadows: 1
+  m_CastShadows: 0
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0
@@ -19431,7 +19444,7 @@ MeshRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7344075440015403527}
   m_Enabled: 1
-  m_CastShadows: 1
+  m_CastShadows: 0
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0
@@ -21039,7 +21052,7 @@ MeshRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7826413304768402935}
   m_Enabled: 1
-  m_CastShadows: 1
+  m_CastShadows: 0
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0
@@ -22872,7 +22885,7 @@ MeshRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8045894450595350091}
   m_Enabled: 1
-  m_CastShadows: 1
+  m_CastShadows: 0
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0
@@ -27121,6 +27134,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 8038711176457487913}
     m_Modifications:
+    - target: {fileID: 8005883492053948919, guid: 5ec5c9a429039aa4ebedd38708bfade8, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8366105834448861218, guid: 5ec5c9a429039aa4ebedd38708bfade8, type: 3}
       propertyPath: m_Name
       value: PP_Fir_Tree_Long_Snow_02
@@ -27215,6 +27232,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 6870902661642586542}
     m_Modifications:
+    - target: {fileID: 491507566443391957, guid: 4a0f81398f932174a83fe1d78bec7cbd, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1628336432371830970, guid: 4a0f81398f932174a83fe1d78bec7cbd, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.6311449
@@ -27546,6 +27567,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 8330130871832180854}
     m_Modifications:
+    - target: {fileID: 7912568466573781098, guid: df9c09cef606e674480fd64758cdd472, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8561320253692955071, guid: df9c09cef606e674480fd64758cdd472, type: 3}
       propertyPath: m_Name
       value: PP_Volcano_Dead_09
@@ -27721,6 +27746,10 @@ PrefabInstance:
     - target: {fileID: 3083730388076681309, guid: 516be1ee41400604dae5596be5f5e45a, type: 3}
       propertyPath: m_Name
       value: PP_Ice_Plateau_04
+      objectReference: {fileID: 0}
+    - target: {fileID: 3588067094849976712, guid: 516be1ee41400604dae5596be5f5e45a, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 6865384260801352154, guid: 516be1ee41400604dae5596be5f5e45a, type: 3}
@@ -28713,6 +28742,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6442574673210917870, guid: 3fc697cb1b7e06c45a8cd0d9eb886d09, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 6724356833166006068, guid: 3fc697cb1b7e06c45a8cd0d9eb886d09, type: 3}
     m_RemovedGameObjects: []
@@ -28914,6 +28947,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1975489710584684217}
     m_Modifications:
+    - target: {fileID: 7118963163690183729, guid: e0d943225aaee7447a646162944ec371, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8250752413775419230, guid: e0d943225aaee7447a646162944ec371, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.6125557
@@ -29088,6 +29125,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 707308012498864961, guid: 4598c6ade5d0d034788a3f580334b962, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1845332627387035694, guid: 4598c6ade5d0d034788a3f580334b962, type: 3}
+      propertyPath: m_CastShadows
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:
@@ -30401,6 +30442,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 3060466034371130555}
     m_Modifications:
+    - target: {fileID: 7174186289561252635, guid: b62231e091ec71e47a09bc7ac157e622, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8342065878180382836, guid: b62231e091ec71e47a09bc7ac157e622, type: 3}
       propertyPath: m_LocalScale.x
       value: 2.9563613
@@ -32926,6 +32971,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: PP_Tree_Spooky_08
       objectReference: {fileID: 0}
+    - target: {fileID: 1627949633497825400, guid: 28a8e2bf4d60c1849a855ea5b6437a2f, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -33323,6 +33372,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1975489710584684217}
     m_Modifications:
+    - target: {fileID: 7507240395250505251, guid: f7c314e8cbe3f584c96b890bdc7817c7, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8300115616915863542, guid: f7c314e8cbe3f584c96b890bdc7817c7, type: 3}
       propertyPath: m_Name
       value: PP_Forest_Mountain_Moss_08
@@ -33580,6 +33633,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 7021199362694423736}
     m_Modifications:
+    - target: {fileID: 491507566443391957, guid: 4a0f81398f932174a83fe1d78bec7cbd, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1628336432371830970, guid: 4a0f81398f932174a83fe1d78bec7cbd, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.95963347
@@ -33775,6 +33832,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 6950849277344613340}
     m_Modifications:
+    - target: {fileID: 7118963163690183729, guid: e0d943225aaee7447a646162944ec371, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8250752413775419230, guid: e0d943225aaee7447a646162944ec371, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.7788948
@@ -35977,6 +36038,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8722397841025853250, guid: 824d877700163a1498a2430171f80988, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 7953839326600315560, guid: 824d877700163a1498a2430171f80988, type: 3}
     m_RemovedGameObjects: []
@@ -36819,6 +36884,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: PP_Tree_Spooky_05
       objectReference: {fileID: 0}
+    - target: {fileID: 6122059738459790360, guid: 1d7009439ccfe914fb0112b16206b250, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -37560,6 +37629,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: PP_Forest_Mountain_Moss_03
       objectReference: {fileID: 0}
+    - target: {fileID: 5875569279579975056, guid: 9cbc564d39824e74ea789df0581528fe, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 6088833553814903634, guid: 9cbc564d39824e74ea789df0581528fe, type: 3}
     m_RemovedGameObjects: []
@@ -38179,6 +38252,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 7021199362694423736}
     m_Modifications:
+    - target: {fileID: 7118963163690183729, guid: e0d943225aaee7447a646162944ec371, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8250752413775419230, guid: e0d943225aaee7447a646162944ec371, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.9456934
@@ -38428,6 +38505,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1019174569738978700, guid: c0a9dcad43d5d4d439ed42b61e8e3ccf, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2193245338011746019, guid: c0a9dcad43d5d4d439ed42b61e8e3ccf, type: 3}
+      propertyPath: m_CastShadows
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:
@@ -39531,6 +39612,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6515872277640574524, guid: 25d62ce1eb396c64d9744bdb1dd986f8, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -39685,6 +39770,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5443579035804558574, guid: c62047ab5f0b54941a9a7939d25ae413, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6611379455291760513, guid: c62047ab5f0b54941a9a7939d25ae413, type: 3}
+      propertyPath: m_CastShadows
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -39930,6 +40019,10 @@ PrefabInstance:
     - target: {fileID: 2986062911559896408, guid: ba76b75f042c66c49a674e1eb2e2f2b4, type: 3}
       propertyPath: m_Name
       value: PP_Fir_Tree_Long_06
+      objectReference: {fileID: 0}
+    - target: {fileID: 3634506146813881485, guid: ba76b75f042c66c49a674e1eb2e2f2b4, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -40933,6 +41026,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 4717464683965362413}
     m_Modifications:
+    - target: {fileID: 2990111839182292224, guid: fc33a023a18e73f4791670fd713c9f40, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3638906919097803989, guid: fc33a023a18e73f4791670fd713c9f40, type: 3}
       propertyPath: m_Name
       value: PP_Mountain_Plateau_Snow_02
@@ -41276,6 +41373,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 4717464683965362413}
     m_Modifications:
+    - target: {fileID: 985595441245063647, guid: 1f04e3f1737541f408f1f4b2e600a0db, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1634091590278948874, guid: 1f04e3f1737541f408f1f4b2e600a0db, type: 3}
       propertyPath: m_Name
       value: PP_Mountain_Plateau_Snow_06
@@ -41774,6 +41875,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 8797783085756163184}
     m_Modifications:
+    - target: {fileID: 7783741980907325881, guid: 60c5260efc4a8844d9a090f8eda7a746, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8576424236672444524, guid: 60c5260efc4a8844d9a090f8eda7a746, type: 3}
       propertyPath: m_Name
       value: PP_Tree_05
@@ -41943,6 +42048,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 3060466034371130555}
     m_Modifications:
+    - target: {fileID: 2684854301569948873, guid: a272ba4521fe1eb4684ff2bb6983b343, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3821770612227860390, guid: a272ba4521fe1eb4684ff2bb6983b343, type: 3}
       propertyPath: m_LocalScale.x
       value: 3.2205532
@@ -42111,6 +42220,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 8330130871832180854}
     m_Modifications:
+    - target: {fileID: 7912568466573781098, guid: df9c09cef606e674480fd64758cdd472, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8561320253692955071, guid: df9c09cef606e674480fd64758cdd472, type: 3}
       propertyPath: m_Name
       value: PP_Volcano_Dead_09
@@ -42573,6 +42686,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: PP_Fir_Tree_Long_06
       objectReference: {fileID: 0}
+    - target: {fileID: 3634506146813881485, guid: ba76b75f042c66c49a674e1eb2e2f2b4, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -42665,6 +42782,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7684339136793480189, guid: 118b1c6311c35cd4782b8271e299fad7, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8858419285138796690, guid: 118b1c6311c35cd4782b8271e299fad7, type: 3}
+      propertyPath: m_CastShadows
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:
@@ -43018,6 +43139,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 5907823428412731628}
     m_Modifications:
+    - target: {fileID: 3063393690866013361, guid: 325e96a28cd7a304a9f2635580251cf6, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3567871410473956708, guid: 325e96a28cd7a304a9f2635580251cf6, type: 3}
       propertyPath: m_Name
       value: PP_Hill_Snow_25
@@ -43889,6 +44014,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 6870902661642586542}
     m_Modifications:
+    - target: {fileID: 788984110247452914, guid: 8378dae0143241b4188afc79175b4648, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1293646546383241511, guid: 8378dae0143241b4188afc79175b4648, type: 3}
       propertyPath: m_Name
       value: PP_Hill_Forest_Moss_08
@@ -44139,6 +44268,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: PP_Ice_Plateau_04
       objectReference: {fileID: 0}
+    - target: {fileID: 3588067094849976712, guid: 516be1ee41400604dae5596be5f5e45a, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 6865384260801352154, guid: 516be1ee41400604dae5596be5f5e45a, type: 3}
     m_RemovedGameObjects: []
@@ -44352,6 +44485,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 4717464683965362413}
     m_Modifications:
+    - target: {fileID: 7845955393435907775, guid: 9057e20a83066a942a4d68f7f2d60318, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8638628304357758826, guid: 9057e20a83066a942a4d68f7f2d60318, type: 3}
       propertyPath: m_Name
       value: PP_Mountain_Plateau_Snow_01
@@ -44528,6 +44665,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6552839228229809944, guid: 1304c27845d72bf4f9c0eb08134ac36c, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -44620,6 +44761,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5343005892286287187, guid: 25d62ce1eb396c64d9744bdb1dd986f8, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6515872277640574524, guid: 25d62ce1eb396c64d9744bdb1dd986f8, type: 3}
+      propertyPath: m_CastShadows
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -45037,6 +45182,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 8330130871832180854}
     m_Modifications:
+    - target: {fileID: 141329650645966036, guid: f1b23b633659ce84e90c777da55df6fd, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1278237574303082427, guid: f1b23b633659ce84e90c777da55df6fd, type: 3}
       propertyPath: m_LocalScale.x
       value: 1.116885
@@ -45519,6 +45668,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 6870902661642586542}
     m_Modifications:
+    - target: {fileID: 491507566443391957, guid: 4a0f81398f932174a83fe1d78bec7cbd, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1628336432371830970, guid: 4a0f81398f932174a83fe1d78bec7cbd, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.59214556
@@ -46001,6 +46154,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 7021199362694423736}
     m_Modifications:
+    - target: {fileID: 5140831416204852627, guid: 5f73b48e91b60c44bbb34f605cf9bb2c, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6277114301594535676, guid: 5f73b48e91b60c44bbb34f605cf9bb2c, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.86636364
@@ -46177,6 +46334,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4367840628265816823, guid: be97f7a914081224aa993ce6a66232a0, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -46289,6 +46450,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 361696617448812938}
     m_Modifications:
+    - target: {fileID: 2500203781529046706, guid: df61e88df262f3f41a78b2ec3902f944, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3673159158338647517, guid: df61e88df262f3f41a78b2ec3902f944, type: 3}
       propertyPath: m_LocalScale.x
       value: 1.0979725
@@ -46686,6 +46851,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: PP_Forest_Mountain_Moss_07
       objectReference: {fileID: 0}
+    - target: {fileID: 3920640953318649638, guid: 32de14771d856864c8f6aa3e7868aac0, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 7480181387721073591, guid: 32de14771d856864c8f6aa3e7868aac0, type: 3}
     m_RemovedGameObjects: []
@@ -46824,6 +46993,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 8891106552256520201}
     m_Modifications:
+    - target: {fileID: 7118963163690183729, guid: e0d943225aaee7447a646162944ec371, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8250752413775419230, guid: e0d943225aaee7447a646162944ec371, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.52627665
@@ -47273,6 +47446,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 3060466034371130555}
     m_Modifications:
+    - target: {fileID: 7160987897213968542, guid: 4759423026cc59747a8a69b5b92fa1d3, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8298968982607666161, guid: 4759423026cc59747a8a69b5b92fa1d3, type: 3}
       propertyPath: m_LocalScale.x
       value: 3.5310361
@@ -47367,6 +47544,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 3060466034371130555}
     m_Modifications:
+    - target: {fileID: 383846500749135109, guid: ac98494f32b2fcf479554b76722e9e4d, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1520139178932844138, guid: ac98494f32b2fcf479554b76722e9e4d, type: 3}
       propertyPath: m_LocalScale.x
       value: 3.122554
@@ -47715,6 +47896,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 7021199362694423736}
     m_Modifications:
+    - target: {fileID: 491507566443391957, guid: 4a0f81398f932174a83fe1d78bec7cbd, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1628336432371830970, guid: 4a0f81398f932174a83fe1d78bec7cbd, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.77837986
@@ -48191,6 +48376,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: PP_Hill_Forest_Moss_01
       objectReference: {fileID: 0}
+    - target: {fileID: 8420454586450153487, guid: 7b405aef70efdba46b5e706cf52c9c6f, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 3801091840156177624, guid: 7b405aef70efdba46b5e706cf52c9c6f, type: 3}
     m_RemovedGameObjects: []
@@ -48379,6 +48568,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 7021199362694423736}
     m_Modifications:
+    - target: {fileID: 4995042741476251623, guid: 5d94fbbff54cd904396ef47190fe54e7, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6132451561534270600, guid: 5d94fbbff54cd904396ef47190fe54e7, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.93891215
@@ -49779,6 +49972,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 3060466034371130555}
     m_Modifications:
+    - target: {fileID: 703368449490019392, guid: 23d853e8d62155c4d94d8d5f46a4b6b0, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1351679744361252245, guid: 23d853e8d62155c4d94d8d5f46a4b6b0, type: 3}
       propertyPath: m_Name
       value: PP_Fir_Tree_Long_09
@@ -50083,6 +50280,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: PP_Volcano_Dead_01
       objectReference: {fileID: 0}
+    - target: {fileID: 1163501262557764253, guid: 2a4afe854379e2f4d8c3039d5eab614d, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 5118314160725774193, guid: 2a4afe854379e2f4d8c3039d5eab614d, type: 3}
     m_RemovedGameObjects: []
@@ -50338,6 +50539,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 707308012498864961, guid: 4598c6ade5d0d034788a3f580334b962, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1845332627387035694, guid: 4598c6ade5d0d034788a3f580334b962, type: 3}
+      propertyPath: m_CastShadows
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:
@@ -50788,6 +50993,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: PP_Fir_Tree_Long_04
       objectReference: {fileID: 0}
+    - target: {fileID: 6202572647346188941, guid: eefb088f8189e344faa3c74b4c11c833, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -51175,6 +51384,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2235181895564883442}
     m_Modifications:
+    - target: {fileID: 2332511915948441943, guid: d8cd48026b22f08409a70633e6be46e8, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3464838104725518904, guid: d8cd48026b22f08409a70633e6be46e8, type: 3}
       propertyPath: m_LocalScale.x
       value: 4.309438
@@ -51481,6 +51694,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 361696617448812938}
     m_Modifications:
+    - target: {fileID: 7068662073071161744, guid: 3e5967037b1b0f64b96526c6bccbc441, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8238141897784240895, guid: 3e5967037b1b0f64b96526c6bccbc441, type: 3}
       propertyPath: m_LocalScale.x
       value: 1.2456671
@@ -52277,6 +52494,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 5907823428412731628}
     m_Modifications:
+    - target: {fileID: 7310236748328471219, guid: 4da889aead3da0b4eb60938f540246d7, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8446502526194282972, guid: 4da889aead3da0b4eb60938f540246d7, type: 3}
       propertyPath: m_LocalScale.x
       value: 1.1091015
@@ -52866,6 +53087,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 8330130871832180854}
     m_Modifications:
+    - target: {fileID: 351345838258529967, guid: b70a5c9ff6c761b468d70728551c7d84, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1489310425742433728, guid: b70a5c9ff6c761b468d70728551c7d84, type: 3}
       propertyPath: m_LocalScale.x
       value: 1.0221734
@@ -52986,6 +53211,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 5907823428412731628}
     m_Modifications:
+    - target: {fileID: 2818244953114374060, guid: 91ca285506a3da4408d036bca2cbe8b1, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3987732989939586243, guid: 91ca285506a3da4408d036bca2cbe8b1, type: 3}
       propertyPath: m_LocalScale.x
       value: 1.055122
@@ -54571,6 +54800,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6398849754718264419, guid: f8028d9423878274ea220de80feed92d, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 2447322412269519981, guid: f8028d9423878274ea220de80feed92d, type: 3}
     m_RemovedGameObjects: []
@@ -54689,6 +54922,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5718961687219610752, guid: 80543b4bbfb089b4e82f2824fc036f8f, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6851938237126336495, guid: 80543b4bbfb089b4e82f2824fc036f8f, type: 3}
+      propertyPath: m_CastShadows
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:
@@ -55265,6 +55502,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 8891106552256520201}
     m_Modifications:
+    - target: {fileID: 7118963163690183729, guid: e0d943225aaee7447a646162944ec371, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8250752413775419230, guid: e0d943225aaee7447a646162944ec371, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.51221913
@@ -56108,6 +56349,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 8797783085756163184}
     m_Modifications:
+    - target: {fileID: 5513932775867632215, guid: 0ac0dfd5075786c4e9e83c1558844848, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6306606099622980482, guid: 0ac0dfd5075786c4e9e83c1558844848, type: 3}
       propertyPath: m_Name
       value: PP_Fir_Tree_Long_08
@@ -56730,6 +56975,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 6870902661642586542}
     m_Modifications:
+    - target: {fileID: 5140831416204852627, guid: 5f73b48e91b60c44bbb34f605cf9bb2c, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6277114301594535676, guid: 5f73b48e91b60c44bbb34f605cf9bb2c, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.58138317
@@ -57000,6 +57249,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 6606910244685090356}
     m_Modifications:
+    - target: {fileID: 3389491068829257401, guid: 26fcabb13bef48f4e8e6e689ec1640e4, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3749554943888125804, guid: 26fcabb13bef48f4e8e6e689ec1640e4, type: 3}
       propertyPath: m_Name
       value: PP_Tree_Spooky_14
@@ -57243,6 +57496,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 6606910244685090356}
     m_Modifications:
+    - target: {fileID: 7046871994715293726, guid: 763c45346ac163e42b4d29628fd58791, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8178722066103055217, guid: 763c45346ac163e42b4d29628fd58791, type: 3}
       propertyPath: m_LocalScale.x
       value: 3.8297215
@@ -57468,6 +57725,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1780966067190946368, guid: a685c752455cb6c46b38ed1fe8ec20c7, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -57686,6 +57947,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 3060466034371130555}
     m_Modifications:
+    - target: {fileID: 703368449490019392, guid: 23d853e8d62155c4d94d8d5f46a4b6b0, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1351679744361252245, guid: 23d853e8d62155c4d94d8d5f46a4b6b0, type: 3}
       propertyPath: m_Name
       value: PP_Fir_Tree_Long_09
@@ -57929,6 +58194,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 361696617448812938}
     m_Modifications:
+    - target: {fileID: 975248214860859651, guid: 853b87a43615d9f49b4bec80e1fa5f5f, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1623612973332441302, guid: 853b87a43615d9f49b4bec80e1fa5f5f, type: 3}
       propertyPath: m_Name
       value: PP_Hill_Forest_Moss_15
@@ -58124,6 +58393,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 361696617448812938}
     m_Modifications:
+    - target: {fileID: 405124671929409300, guid: 2a049a57d6436334c8c451ddc1cbfa04, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1572994743301219451, guid: 2a049a57d6436334c8c451ddc1cbfa04, type: 3}
       propertyPath: m_LocalScale.x
       value: 1.134164
@@ -58360,6 +58633,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5470763903472641151, guid: bd314edc325ea0a47a6f8220e093bdd6, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6604284848940769040, guid: bd314edc325ea0a47a6f8220e093bdd6, type: 3}
+      propertyPath: m_CastShadows
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -58611,6 +58888,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 8797783085756163184}
     m_Modifications:
+    - target: {fileID: 290318193811140865, guid: a252dd3d860618c4b824015303a15bcf, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1462620975973386862, guid: a252dd3d860618c4b824015303a15bcf, type: 3}
       propertyPath: m_LocalScale.x
       value: 2.5487814
@@ -58992,6 +59273,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1975489710584684217}
     m_Modifications:
+    - target: {fileID: 491507566443391957, guid: 4a0f81398f932174a83fe1d78bec7cbd, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1628336432371830970, guid: 4a0f81398f932174a83fe1d78bec7cbd, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.64666724
@@ -61083,6 +61368,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 8797783085756163184}
     m_Modifications:
+    - target: {fileID: 703368449490019392, guid: 23d853e8d62155c4d94d8d5f46a4b6b0, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1351679744361252245, guid: 23d853e8d62155c4d94d8d5f46a4b6b0, type: 3}
       propertyPath: m_Name
       value: PP_Fir_Tree_Long_09
@@ -61306,6 +61595,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 647515519056814383, guid: a685c752455cb6c46b38ed1fe8ec20c7, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1780966067190946368, guid: a685c752455cb6c46b38ed1fe8ec20c7, type: 3}
+      propertyPath: m_CastShadows
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -61823,6 +62116,10 @@ PrefabInstance:
     - target: {fileID: 754292280307037945, guid: 8ef3590045d5d2249baef2f5a8b6c90d, type: 3}
       propertyPath: m_Name
       value: PP_Forest_Mountain_Moss_06
+      objectReference: {fileID: 0}
+    - target: {fileID: 1258532504519481132, guid: 8ef3590045d5d2249baef2f5a8b6c90d, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 826535447202956148, guid: 8ef3590045d5d2249baef2f5a8b6c90d, type: 3}
@@ -62472,6 +62769,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6442574673210917870, guid: 3fc697cb1b7e06c45a8cd0d9eb886d09, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 6724356833166006068, guid: 3fc697cb1b7e06c45a8cd0d9eb886d09, type: 3}
     m_RemovedGameObjects: []
@@ -62591,6 +62892,10 @@ PrefabInstance:
     - target: {fileID: 803164982884105032, guid: 2a4afe854379e2f4d8c3039d5eab614d, type: 3}
       propertyPath: m_Name
       value: PP_Volcano_Dead_01
+      objectReference: {fileID: 0}
+    - target: {fileID: 1163501262557764253, guid: 2a4afe854379e2f4d8c3039d5eab614d, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 5118314160725774193, guid: 2a4afe854379e2f4d8c3039d5eab614d, type: 3}
@@ -62936,6 +63241,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: PP_Forest_Mountain_Moss_06
       objectReference: {fileID: 0}
+    - target: {fileID: 1258532504519481132, guid: 8ef3590045d5d2249baef2f5a8b6c90d, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 826535447202956148, guid: 8ef3590045d5d2249baef2f5a8b6c90d, type: 3}
     m_RemovedGameObjects: []
@@ -63054,6 +63363,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3030730131244326132, guid: 5271c0a74f0aea64baaae0637fb6e447, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4198617245049153435, guid: 5271c0a74f0aea64baaae0637fb6e447, type: 3}
+      propertyPath: m_CastShadows
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -63783,6 +64096,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: PP_Tree_Spooky_10
       objectReference: {fileID: 0}
+    - target: {fileID: 8088289108811525972, guid: 3f38c3a67de2a55449be576f15db9992, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -64388,6 +64705,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6552839228229809944, guid: 1304c27845d72bf4f9c0eb08134ac36c, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -64576,6 +64897,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 7021199362694423736}
     m_Modifications:
+    - target: {fileID: 491507566443391957, guid: 4a0f81398f932174a83fe1d78bec7cbd, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1628336432371830970, guid: 4a0f81398f932174a83fe1d78bec7cbd, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.9534076
@@ -64825,6 +65150,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5504302820343777102, guid: bda9a68a2c20f4a418604d07da6ce977, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6640586908593978401, guid: bda9a68a2c20f4a418604d07da6ce977, type: 3}
+      propertyPath: m_CastShadows
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:
@@ -65418,6 +65747,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: PP_Forest_Mountain_Moss_03
       objectReference: {fileID: 0}
+    - target: {fileID: 5875569279579975056, guid: 9cbc564d39824e74ea789df0581528fe, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 6088833553814903634, guid: 9cbc564d39824e74ea789df0581528fe, type: 3}
     m_RemovedGameObjects: []
@@ -65736,6 +66069,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 7021199362694423736}
     m_Modifications:
+    - target: {fileID: 5140831416204852627, guid: 5f73b48e91b60c44bbb34f605cf9bb2c, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6277114301594535676, guid: 5f73b48e91b60c44bbb34f605cf9bb2c, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.96285677
@@ -65918,6 +66255,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 3060466034371130555}
     m_Modifications:
+    - target: {fileID: 2684854301569948873, guid: a272ba4521fe1eb4684ff2bb6983b343, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3821770612227860390, guid: a272ba4521fe1eb4684ff2bb6983b343, type: 3}
       propertyPath: m_LocalScale.x
       value: 3.1110473
@@ -67014,6 +67355,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: PP_Birch_Tree_09
       objectReference: {fileID: 0}
+    - target: {fileID: 8094111116607434611, guid: 253405f37cf74564d800b3532893e73a, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -67698,6 +68043,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 361696617448812938}
     m_Modifications:
+    - target: {fileID: 5289229801873461739, guid: 650943a7ee757bf4b80c4cf42cfca6f2, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5937963170629709886, guid: 650943a7ee757bf4b80c4cf42cfca6f2, type: 3}
       propertyPath: m_Name
       value: PP_Hill_Forest_Moss_03
@@ -68640,6 +68989,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: PP_Forest_Mountain_Moss_07
       objectReference: {fileID: 0}
+    - target: {fileID: 3920640953318649638, guid: 32de14771d856864c8f6aa3e7868aac0, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 7480181387721073591, guid: 32de14771d856864c8f6aa3e7868aac0, type: 3}
     m_RemovedGameObjects: []
@@ -68933,6 +69286,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 3060466034371130555}
     m_Modifications:
+    - target: {fileID: 7294380515525492059, guid: 79a9f0eaf056cc6499c6f6665a071a69, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8462814223644395060, guid: 79a9f0eaf056cc6499c6f6665a071a69, type: 3}
       propertyPath: m_LocalScale.x
       value: 3.4878736
@@ -69465,6 +69822,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: PP_Hill_Snow_18
       objectReference: {fileID: 0}
+    - target: {fileID: 1201183595788848585, guid: 241309d2eeb363f4ebbb88ee20696093, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 803051354417515068, guid: 241309d2eeb363f4ebbb88ee20696093, type: 3}
     m_RemovedGameObjects: []
@@ -69659,6 +70020,10 @@ PrefabInstance:
     - target: {fileID: 754292280307037945, guid: 8ef3590045d5d2249baef2f5a8b6c90d, type: 3}
       propertyPath: m_Name
       value: PP_Forest_Mountain_Moss_06
+      objectReference: {fileID: 0}
+    - target: {fileID: 1258532504519481132, guid: 8ef3590045d5d2249baef2f5a8b6c90d, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 826535447202956148, guid: 8ef3590045d5d2249baef2f5a8b6c90d, type: 3}
@@ -71565,6 +71930,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6604284848940769040, guid: bd314edc325ea0a47a6f8220e093bdd6, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -72169,6 +72538,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2193245338011746019, guid: c0a9dcad43d5d4d439ed42b61e8e3ccf, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 7696062291001381817, guid: c0a9dcad43d5d4d439ed42b61e8e3ccf, type: 3}
     m_RemovedGameObjects: []
@@ -72618,6 +72991,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: PP_Ice_Plateau_03
       objectReference: {fileID: 0}
+    - target: {fileID: 6134906209408857778, guid: 3eeaf7e3db2728f4bbbff564bbe1337d, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 4350506164805100694, guid: 3eeaf7e3db2728f4bbbff564bbe1337d, type: 3}
     m_RemovedGameObjects: []
@@ -72682,6 +73059,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 6606910244685090356}
     m_Modifications:
+    - target: {fileID: 3389491068829257401, guid: 26fcabb13bef48f4e8e6e689ec1640e4, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3749554943888125804, guid: 26fcabb13bef48f4e8e6e689ec1640e4, type: 3}
       propertyPath: m_Name
       value: PP_Tree_Spooky_14
@@ -72907,6 +73288,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: PP_Fir_Tree_Long_06
       objectReference: {fileID: 0}
+    - target: {fileID: 3634506146813881485, guid: ba76b75f042c66c49a674e1eb2e2f2b4, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -73007,6 +73392,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 8797783085756163184}
     m_Modifications:
+    - target: {fileID: 601405987995436575, guid: 68e3c534a3f2ff4438c32cb46040ede7, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1393974033668466634, guid: 68e3c534a3f2ff4438c32cb46040ede7, type: 3}
       propertyPath: m_Name
       value: PP_Birch_Tree_05
@@ -73795,6 +74184,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: PP_Forest_Mountain_04
       objectReference: {fileID: 0}
+    - target: {fileID: 1605259038821246428, guid: 81fda9740d93eef4882498f0b0d9901a, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 3087205526847426404, guid: 81fda9740d93eef4882498f0b0d9901a, type: 3}
     m_RemovedGameObjects: []
@@ -74454,6 +74847,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6442574673210917870, guid: 3fc697cb1b7e06c45a8cd0d9eb886d09, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 6724356833166006068, guid: 3fc697cb1b7e06c45a8cd0d9eb886d09, type: 3}
     m_RemovedGameObjects: []
@@ -74773,6 +75170,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 7021199362694423736}
     m_Modifications:
+    - target: {fileID: 7507240395250505251, guid: f7c314e8cbe3f584c96b890bdc7817c7, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8300115616915863542, guid: f7c314e8cbe3f584c96b890bdc7817c7, type: 3}
       propertyPath: m_Name
       value: PP_Forest_Mountain_Moss_08
@@ -75451,6 +75852,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6531443940162501373, guid: fd63994b6c0e19941a0509a21bb7b683, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 5533191442214133843, guid: fd63994b6c0e19941a0509a21bb7b683, type: 3}
     m_RemovedGameObjects: []
@@ -75664,6 +76069,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 361696617448812938}
     m_Modifications:
+    - target: {fileID: 405124671929409300, guid: 2a049a57d6436334c8c451ddc1cbfa04, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1572994743301219451, guid: 2a049a57d6436334c8c451ddc1cbfa04, type: 3}
       propertyPath: m_LocalScale.x
       value: 1.275671
@@ -75784,6 +76193,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2235181895564883442}
     m_Modifications:
+    - target: {fileID: 5401396598871440730, guid: fce9f5768c7af074f969dd94bb6de3ea, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5905734129119632527, guid: fce9f5768c7af074f969dd94bb6de3ea, type: 3}
       propertyPath: m_Name
       value: PP_Skeleton_02
@@ -76099,6 +76512,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7923773605859842398, guid: 4ec58e1caaebf554a844686d9558b827, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9060620953435480625, guid: 4ec58e1caaebf554a844686d9558b827, type: 3}
+      propertyPath: m_CastShadows
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:
@@ -77772,6 +78189,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: PP_Ice_Plateau_03
       objectReference: {fileID: 0}
+    - target: {fileID: 6134906209408857778, guid: 3eeaf7e3db2728f4bbbff564bbe1337d, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 4350506164805100694, guid: 3eeaf7e3db2728f4bbbff564bbe1337d, type: 3}
     m_RemovedGameObjects: []
@@ -78570,6 +78991,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4054271673454890363, guid: 1187a2989adbd914fb7d248e6daece64, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 4133320219770144222, guid: 1187a2989adbd914fb7d248e6daece64, type: 3}
     m_RemovedGameObjects: []
@@ -79159,6 +79584,10 @@ PrefabInstance:
     - target: {fileID: 917927406839714566, guid: bba6199c506858948b778cc214e8487f, type: 3}
       propertyPath: m_Name
       value: PP_Hill_Snow_01
+      objectReference: {fileID: 0}
+    - target: {fileID: 1710767992145015507, guid: bba6199c506858948b778cc214e8487f, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 3044841524988599584, guid: bba6199c506858948b778cc214e8487f, type: 3}
@@ -80348,6 +80777,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1894924806159483034, guid: 6da5b77915db79243b9c353e974416fa, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 6143277658312748521, guid: 6da5b77915db79243b9c353e974416fa, type: 3}
     m_RemovedGameObjects: []
@@ -80754,6 +81187,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: PP_Hill_Snow_18
       objectReference: {fileID: 0}
+    - target: {fileID: 1201183595788848585, guid: 241309d2eeb363f4ebbb88ee20696093, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 803051354417515068, guid: 241309d2eeb363f4ebbb88ee20696093, type: 3}
     m_RemovedGameObjects: []
@@ -80818,6 +81255,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 8330130871832180854}
     m_Modifications:
+    - target: {fileID: 7912568466573781098, guid: df9c09cef606e674480fd64758cdd472, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8561320253692955071, guid: df9c09cef606e674480fd64758cdd472, type: 3}
       propertyPath: m_Name
       value: PP_Volcano_Dead_09
@@ -82020,6 +82461,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 8797783085756163184}
     m_Modifications:
+    - target: {fileID: 5036416700520785620, guid: 028bf54ce999c9a45ad290ccbecdf4d4, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6174398335940369851, guid: 028bf54ce999c9a45ad290ccbecdf4d4, type: 3}
       propertyPath: m_LocalScale.x
       value: 2.78838
@@ -83043,6 +83488,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2021944044296176669, guid: 604dd70826cdbee488c3d35471f4ad30, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -83081,6 +83530,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 8797783085756163184}
     m_Modifications:
+    - target: {fileID: 7294380515525492059, guid: 79a9f0eaf056cc6499c6f6665a071a69, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8462814223644395060, guid: 79a9f0eaf056cc6499c6f6665a071a69, type: 3}
       propertyPath: m_LocalScale.x
       value: 2.8523726
@@ -83304,6 +83757,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5511717731867646144, guid: 7b56242a81c22a74f8e422baa473f940, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6644677312491987887, guid: 7b56242a81c22a74f8e422baa473f940, type: 3}
+      propertyPath: m_CastShadows
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:
@@ -84552,6 +85009,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8932636594727300628, guid: 4d190e7346ea6634c9c175f5e68a850d, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 6463500184400943021, guid: 4d190e7346ea6634c9c175f5e68a850d, type: 3}
     m_RemovedGameObjects: []
@@ -84821,6 +85282,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: PP_Hill_Snow_18
       objectReference: {fileID: 0}
+    - target: {fileID: 1201183595788848585, guid: 241309d2eeb363f4ebbb88ee20696093, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 803051354417515068, guid: 241309d2eeb363f4ebbb88ee20696093, type: 3}
     m_RemovedGameObjects: []
@@ -85014,6 +85479,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5511717731867646144, guid: 7b56242a81c22a74f8e422baa473f940, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6644677312491987887, guid: 7b56242a81c22a74f8e422baa473f940, type: 3}
+      propertyPath: m_CastShadows
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:
@@ -86174,6 +86643,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 8797783085756163184}
     m_Modifications:
+    - target: {fileID: 5683995195177671802, guid: 83fedbc0e00136d4db517a313331128d, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6188341660237708719, guid: 83fedbc0e00136d4db517a313331128d, type: 3}
       propertyPath: m_Name
       value: PP_Tree_02
@@ -87332,6 +87805,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6498366732457250060, guid: cd18b94b1d166a542aeec5de6eb5b190, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -87425,6 +87902,10 @@ PrefabInstance:
     - target: {fileID: 911110176836501712, guid: 1ae216039605393449bf099e2c60f02e, type: 3}
       propertyPath: m_Name
       value: PP_Hill_Snow_10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1703510271017541893, guid: 1ae216039605393449bf099e2c60f02e, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 8105934918154851069, guid: 1ae216039605393449bf099e2c60f02e, type: 3}
@@ -87640,6 +88121,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 3060466034371130555}
     m_Modifications:
+    - target: {fileID: 7294380515525492059, guid: 79a9f0eaf056cc6499c6f6665a071a69, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8462814223644395060, guid: 79a9f0eaf056cc6499c6f6665a071a69, type: 3}
       propertyPath: m_LocalScale.x
       value: 2.6907551
@@ -87808,6 +88293,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 8797783085756163184}
     m_Modifications:
+    - target: {fileID: 290318193811140865, guid: a252dd3d860618c4b824015303a15bcf, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1462620975973386862, guid: a252dd3d860618c4b824015303a15bcf, type: 3}
       propertyPath: m_LocalScale.x
       value: 2.8299038
@@ -89130,6 +89619,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: PP_Hill_Snow_01
       objectReference: {fileID: 0}
+    - target: {fileID: 1710767992145015507, guid: bba6199c506858948b778cc214e8487f, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 3044841524988599584, guid: bba6199c506858948b778cc214e8487f, type: 3}
     m_RemovedGameObjects: []
@@ -89249,6 +89742,10 @@ PrefabInstance:
     - target: {fileID: 5371329054414752837, guid: 9cbc564d39824e74ea789df0581528fe, type: 3}
       propertyPath: m_Name
       value: PP_Forest_Mountain_Moss_03
+      objectReference: {fileID: 0}
+    - target: {fileID: 5875569279579975056, guid: 9cbc564d39824e74ea789df0581528fe, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 6088833553814903634, guid: 9cbc564d39824e74ea789df0581528fe, type: 3}
@@ -90050,6 +90547,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: PP_Forest_Mountain_Moss_07
       objectReference: {fileID: 0}
+    - target: {fileID: 3920640953318649638, guid: 32de14771d856864c8f6aa3e7868aac0, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 7480181387721073591, guid: 32de14771d856864c8f6aa3e7868aac0, type: 3}
     m_RemovedGameObjects: []
@@ -90381,6 +90882,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2172190265138138395, guid: 56374133bad1fc74ab11cd40862bb84f, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 5889783268420131637, guid: 56374133bad1fc74ab11cd40862bb84f, type: 3}
     m_RemovedGameObjects: []
@@ -90687,6 +91192,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 361696617448812938}
     m_Modifications:
+    - target: {fileID: 7068662073071161744, guid: 3e5967037b1b0f64b96526c6bccbc441, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8238141897784240895, guid: 3e5967037b1b0f64b96526c6bccbc441, type: 3}
       propertyPath: m_LocalScale.x
       value: 1.2947967
@@ -91401,6 +91910,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2980489152465704646, guid: 35061b8c1375fac4486a31a71052e07a, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4114038033739705769, guid: 35061b8c1375fac4486a31a71052e07a, type: 3}
+      propertyPath: m_CastShadows
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:
@@ -92120,6 +92633,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 6606910244685090356}
     m_Modifications:
+    - target: {fileID: 5391424695587620999, guid: 0dc016fadd25a304fa3f32da0f4a1b4d, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5895999446615550290, guid: 0dc016fadd25a304fa3f32da0f4a1b4d, type: 3}
       propertyPath: m_Name
       value: PP_Tree_Spooky_07
@@ -92364,6 +92881,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 5907823428412731628}
     m_Modifications:
+    - target: {fileID: 417579146112712611, guid: 3110a2ca4cf7acd46a9d9bdbe1dcc49f, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1549421726808884428, guid: 3110a2ca4cf7acd46a9d9bdbe1dcc49f, type: 3}
       propertyPath: m_LocalScale.x
       value: 1.1341364
@@ -93280,6 +93801,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 3060466034371130555}
     m_Modifications:
+    - target: {fileID: 3393908934217651715, guid: 0bac9a9d18d20944fbf26887b4de2794, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3754148594458752982, guid: 0bac9a9d18d20944fbf26887b4de2794, type: 3}
       propertyPath: m_Name
       value: PP_Fir_Tree_Long_03
@@ -93815,6 +94340,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 5907823428412731628}
     m_Modifications:
+    - target: {fileID: 820366637634449250, guid: d2b37f23b16f20d46b782e496768483e, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1180641758047358647, guid: d2b37f23b16f20d46b782e496768483e, type: 3}
       propertyPath: m_Name
       value: PP_Hill_Snow_13
@@ -94886,6 +95415,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1975489710584684217}
     m_Modifications:
+    - target: {fileID: 491507566443391957, guid: 4a0f81398f932174a83fe1d78bec7cbd, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1628336432371830970, guid: 4a0f81398f932174a83fe1d78bec7cbd, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.58569974
@@ -95006,6 +95539,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 6606910244685090356}
     m_Modifications:
+    - target: {fileID: 3389491068829257401, guid: 26fcabb13bef48f4e8e6e689ec1640e4, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3749554943888125804, guid: 26fcabb13bef48f4e8e6e689ec1640e4, type: 3}
       propertyPath: m_Name
       value: PP_Tree_Spooky_14
@@ -95454,6 +95991,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6552839228229809944, guid: 1304c27845d72bf4f9c0eb08134ac36c, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -95492,6 +96033,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 8891106552256520201}
     m_Modifications:
+    - target: {fileID: 7507240395250505251, guid: f7c314e8cbe3f584c96b890bdc7817c7, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8300115616915863542, guid: f7c314e8cbe3f584c96b890bdc7817c7, type: 3}
       propertyPath: m_Name
       value: PP_Forest_Mountain_Moss_08
@@ -96436,6 +96981,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1746437911086306886, guid: 9d7a50a81080af14abb70db55eccc110, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 7756803926335943065, guid: 9d7a50a81080af14abb70db55eccc110, type: 3}
     m_RemovedGameObjects: []
@@ -96886,6 +97435,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: PP_Ice_Plateau_04
       objectReference: {fileID: 0}
+    - target: {fileID: 3588067094849976712, guid: 516be1ee41400604dae5596be5f5e45a, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 6865384260801352154, guid: 516be1ee41400604dae5596be5f5e45a, type: 3}
     m_RemovedGameObjects: []
@@ -97004,6 +97557,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5470763903472641151, guid: bd314edc325ea0a47a6f8220e093bdd6, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6604284848940769040, guid: bd314edc325ea0a47a6f8220e093bdd6, type: 3}
+      propertyPath: m_CastShadows
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -97181,6 +97738,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 7021199362694423736}
     m_Modifications:
+    - target: {fileID: 491507566443391957, guid: 4a0f81398f932174a83fe1d78bec7cbd, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1628336432371830970, guid: 4a0f81398f932174a83fe1d78bec7cbd, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.81509846
@@ -97356,6 +97917,10 @@ PrefabInstance:
     - target: {fileID: 5371329054414752837, guid: 9cbc564d39824e74ea789df0581528fe, type: 3}
       propertyPath: m_Name
       value: PP_Forest_Mountain_Moss_03
+      objectReference: {fileID: 0}
+    - target: {fileID: 5875569279579975056, guid: 9cbc564d39824e74ea789df0581528fe, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 6088833553814903634, guid: 9cbc564d39824e74ea789df0581528fe, type: 3}
@@ -97762,6 +98327,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5443579035804558574, guid: c62047ab5f0b54941a9a7939d25ae413, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6611379455291760513, guid: c62047ab5f0b54941a9a7939d25ae413, type: 3}
+      propertyPath: m_CastShadows
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -98273,6 +98842,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 6870902661642586542}
     m_Modifications:
+    - target: {fileID: 788984110247452914, guid: 8378dae0143241b4188afc79175b4648, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1293646546383241511, guid: 8378dae0143241b4188afc79175b4648, type: 3}
       propertyPath: m_Name
       value: PP_Hill_Forest_Moss_08
@@ -98977,6 +99550,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 361696617448812938}
     m_Modifications:
+    - target: {fileID: 5289229801873461739, guid: 650943a7ee757bf4b80c4cf42cfca6f2, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5937963170629709886, guid: 650943a7ee757bf4b80c4cf42cfca6f2, type: 3}
       propertyPath: m_Name
       value: PP_Hill_Forest_Moss_03
@@ -99251,6 +99828,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 361696617448812938}
     m_Modifications:
+    - target: {fileID: 4973965734920465285, guid: 3befb463240afdb47a8efb2e7ea1725c, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6146357579002532074, guid: 3befb463240afdb47a8efb2e7ea1725c, type: 3}
       propertyPath: m_LocalScale.x
       value: 1.2428325
@@ -99754,6 +100335,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5575138865271476086, guid: f0e802c4e935db741a4841ba7279d35b, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6707535083624264729, guid: f0e802c4e935db741a4841ba7279d35b, type: 3}
+      propertyPath: m_CastShadows
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:
@@ -100311,6 +100896,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 4717464683965362413}
     m_Modifications:
+    - target: {fileID: 985595441245063647, guid: 1f04e3f1737541f408f1f4b2e600a0db, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1634091590278948874, guid: 1f04e3f1737541f408f1f4b2e600a0db, type: 3}
       propertyPath: m_Name
       value: PP_Mountain_Plateau_Snow_06
@@ -100637,6 +101226,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1780966067190946368, guid: a685c752455cb6c46b38ed1fe8ec20c7, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -100675,6 +101268,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 5907823428412731628}
     m_Modifications:
+    - target: {fileID: 2818244953114374060, guid: 91ca285506a3da4408d036bca2cbe8b1, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3987732989939586243, guid: 91ca285506a3da4408d036bca2cbe8b1, type: 3}
       propertyPath: m_LocalScale.x
       value: 1.0813519
@@ -101470,6 +102067,10 @@ PrefabInstance:
     - target: {fileID: 7544515650649084126, guid: 8364eff4d220d6545b028072770d5504, type: 3}
       propertyPath: m_Name
       value: PP_Tree_09
+      objectReference: {fileID: 0}
+    - target: {fileID: 8337145267161657611, guid: 8364eff4d220d6545b028072770d5504, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -102450,6 +103051,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: PP_Tree_Spooky_06
       objectReference: {fileID: 0}
+    - target: {fileID: 3589536361823846811, guid: 75a50b25b6841e446aaa4ec4f7c95a28, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -102542,6 +103147,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7607950805491179023, guid: f81a993955cbaf1408bda794917edd39, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8782004078884234592, guid: f81a993955cbaf1408bda794917edd39, type: 3}
+      propertyPath: m_CastShadows
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:
@@ -102663,6 +103272,10 @@ PrefabInstance:
     - target: {fileID: 3249285091845303160, guid: 6f8089c41ddb18840b2bfe797ea9b49f, type: 3}
       propertyPath: m_Name
       value: PP_Hill_Snow_23
+      objectReference: {fileID: 0}
+    - target: {fileID: 3897649850531367597, guid: 6f8089c41ddb18840b2bfe797ea9b49f, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 992314449346930217, guid: 6f8089c41ddb18840b2bfe797ea9b49f, type: 3}
@@ -102865,6 +103478,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 7021199362694423736}
     m_Modifications:
+    - target: {fileID: 2553530430957648233, guid: 6271afeecbdd38640a85d9bbe5998f5f, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3685310885221270022, guid: 6271afeecbdd38640a85d9bbe5998f5f, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.7966979
@@ -103368,6 +103985,10 @@ PrefabInstance:
     - target: {fileID: 917927406839714566, guid: bba6199c506858948b778cc214e8487f, type: 3}
       propertyPath: m_Name
       value: PP_Hill_Snow_01
+      objectReference: {fileID: 0}
+    - target: {fileID: 1710767992145015507, guid: bba6199c506858948b778cc214e8487f, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 3044841524988599584, guid: bba6199c506858948b778cc214e8487f, type: 3}
@@ -103879,6 +104500,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7592016623843925057, guid: ba8a0ae4167ef4440a8d9fe8a161a260, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8725563996377982766, guid: ba8a0ae4167ef4440a8d9fe8a161a260, type: 3}
+      propertyPath: m_CastShadows
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -104397,6 +105022,10 @@ PrefabInstance:
     - target: {fileID: 5371329054414752837, guid: 9cbc564d39824e74ea789df0581528fe, type: 3}
       propertyPath: m_Name
       value: PP_Forest_Mountain_Moss_03
+      objectReference: {fileID: 0}
+    - target: {fileID: 5875569279579975056, guid: 9cbc564d39824e74ea789df0581528fe, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 6088833553814903634, guid: 9cbc564d39824e74ea789df0581528fe, type: 3}
@@ -105232,6 +105861,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 4717464683965362413}
     m_Modifications:
+    - target: {fileID: 7609402865652134299, guid: 1c261e126cc6a9847a3e4736f78cec98, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8258189837344395342, guid: 1c261e126cc6a9847a3e4736f78cec98, type: 3}
       propertyPath: m_Name
       value: PP_Mountain_Plateau_Snow_05
@@ -105406,6 +106039,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5385021285145119863, guid: 1304c27845d72bf4f9c0eb08134ac36c, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6552839228229809944, guid: 1304c27845d72bf4f9c0eb08134ac36c, type: 3}
+      propertyPath: m_CastShadows
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -106104,6 +106741,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 15.486
       objectReference: {fileID: 0}
+    - target: {fileID: 6531190967582984772, guid: 581a6dc0f18568b4eb0e049c1f4ecbd4, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -106197,6 +106838,10 @@ PrefabInstance:
     - target: {fileID: 3271889715905138419, guid: 32de14771d856864c8f6aa3e7868aac0, type: 3}
       propertyPath: m_Name
       value: PP_Forest_Mountain_Moss_07
+      objectReference: {fileID: 0}
+    - target: {fileID: 3920640953318649638, guid: 32de14771d856864c8f6aa3e7868aac0, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 7480181387721073591, guid: 32de14771d856864c8f6aa3e7868aac0, type: 3}
@@ -106473,6 +107118,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 8797783085756163184}
     m_Modifications:
+    - target: {fileID: 5683995195177671802, guid: 83fedbc0e00136d4db517a313331128d, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6188341660237708719, guid: 83fedbc0e00136d4db517a313331128d, type: 3}
       propertyPath: m_Name
       value: PP_Tree_02
@@ -106835,6 +107484,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: PP_Ice_Plateau_03
       objectReference: {fileID: 0}
+    - target: {fileID: 6134906209408857778, guid: 3eeaf7e3db2728f4bbbff564bbe1337d, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 4350506164805100694, guid: 3eeaf7e3db2728f4bbbff564bbe1337d, type: 3}
     m_RemovedGameObjects: []
@@ -106961,6 +107614,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 3060466034371130555}
     m_Modifications:
+    - target: {fileID: 5513932775867632215, guid: 0ac0dfd5075786c4e9e83c1558844848, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6306606099622980482, guid: 0ac0dfd5075786c4e9e83c1558844848, type: 3}
       propertyPath: m_Name
       value: PP_Fir_Tree_Long_08
@@ -107893,6 +108550,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2067075280851525939, guid: ad46a593d999e9b4bb7e5bf8b2957ede, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -108006,6 +108667,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 361696617448812938}
     m_Modifications:
+    - target: {fileID: 788984110247452914, guid: 8378dae0143241b4188afc79175b4648, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1293646546383241511, guid: 8378dae0143241b4188afc79175b4648, type: 3}
       propertyPath: m_Name
       value: PP_Hill_Forest_Moss_08
@@ -108894,6 +109559,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 8797783085756163184}
     m_Modifications:
+    - target: {fileID: 5513932775867632215, guid: 0ac0dfd5075786c4e9e83c1558844848, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6306606099622980482, guid: 0ac0dfd5075786c4e9e83c1558844848, type: 3}
       propertyPath: m_Name
       value: PP_Fir_Tree_Long_08
@@ -109982,6 +110651,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1975489710584684217}
     m_Modifications:
+    - target: {fileID: 7118963163690183729, guid: e0d943225aaee7447a646162944ec371, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8250752413775419230, guid: e0d943225aaee7447a646162944ec371, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.5773013
@@ -111689,6 +112362,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 361696617448812938}
     m_Modifications:
+    - target: {fileID: 975248214860859651, guid: 853b87a43615d9f49b4bec80e1fa5f5f, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1623612973332441302, guid: 853b87a43615d9f49b4bec80e1fa5f5f, type: 3}
       propertyPath: m_Name
       value: PP_Hill_Forest_Moss_15
@@ -112033,6 +112710,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 8797783085756163184}
     m_Modifications:
+    - target: {fileID: 290318193811140865, guid: a252dd3d860618c4b824015303a15bcf, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1462620975973386862, guid: a252dd3d860618c4b824015303a15bcf, type: 3}
       propertyPath: m_LocalScale.x
       value: 3.0061312
@@ -112181,6 +112862,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7586034584851389485, guid: 824d877700163a1498a2430171f80988, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8722397841025853250, guid: 824d877700163a1498a2430171f80988, type: 3}
+      propertyPath: m_CastShadows
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:
@@ -112600,6 +113285,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2980489152465704646, guid: 35061b8c1375fac4486a31a71052e07a, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4114038033739705769, guid: 35061b8c1375fac4486a31a71052e07a, type: 3}
+      propertyPath: m_CastShadows
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:
@@ -113656,6 +114345,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2235181895564883442}
     m_Modifications:
+    - target: {fileID: 182794605555470508, guid: 2d1d4e35022b5f5408c2a854ed5a8798, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1351720237885696963, guid: 2d1d4e35022b5f5408c2a854ed5a8798, type: 3}
       propertyPath: m_LocalScale.x
       value: 4.3417487
@@ -114049,6 +114742,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 8797783085756163184}
     m_Modifications:
+    - target: {fileID: 2573041118614731933, guid: e8a767e5d5976fb4cb75fb06ba31d542, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3746550272401262578, guid: e8a767e5d5976fb4cb75fb06ba31d542, type: 3}
       propertyPath: m_LocalScale.x
       value: 3.1570387
@@ -114727,6 +115424,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6611379455291760513, guid: c62047ab5f0b54941a9a7939d25ae413, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -114894,6 +115595,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 610155124480601385, guid: 9d7a50a81080af14abb70db55eccc110, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1746437911086306886, guid: 9d7a50a81080af14abb70db55eccc110, type: 3}
+      propertyPath: m_CastShadows
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:
@@ -115831,6 +116536,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2980489152465704646, guid: 35061b8c1375fac4486a31a71052e07a, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4114038033739705769, guid: 35061b8c1375fac4486a31a71052e07a, type: 3}
+      propertyPath: m_CastShadows
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:
