@@ -248,8 +248,11 @@ public class EnemySkill : MonoBehaviour
         if (attackIndicator != null)
             attackIndicator.Hide();
 
-        // 예고음이 아직 재생중이라면 판정 순간에 끊고 공격음으로 넘어감(다단히트는 첫 타격에서만 정지됨)
-        if (AudioManager.Instance != null)
+        // 공격음이 있을 때만 예고음을 끊고 공격음으로 넘어감(다단히트는 첫 타격에서만 정지됨)
+        // 공격음이 없는 패턴은 예고음이 끝까지 재생되도록 둔다
+        bool hasAttackSound = CurrentAttackPattern != null && CurrentAttackPattern.AttackSound != null;
+
+        if (hasAttackSound && AudioManager.Instance != null)
             AudioManager.Instance.StopSfx(telegraphSoundHandle);
 
         telegraphSoundHandle = default;
