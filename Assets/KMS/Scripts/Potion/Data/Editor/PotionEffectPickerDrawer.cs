@@ -55,7 +55,7 @@ namespace Pomunculus.Items.Editor
             foreach (Type type in TypeCache.GetTypesDerivedFrom<PotionEffect>())
             {
                 if (type.IsAbstract) continue;
-                if (!picker.AllowZone && type == typeof(ZonePotionEffect)) continue;
+                if (!picker.AllowSpawn && typeof(SpawnPotionEffect).IsAssignableFrom(type)) continue;
 
                 menu.AddItem(new GUIContent(ObjectNames.NicifyVariableName(type.Name)), type == currentType,
                     () => SetEffect(serializedObject, propertyPath, type));

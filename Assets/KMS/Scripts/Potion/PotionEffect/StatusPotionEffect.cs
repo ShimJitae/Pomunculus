@@ -1,5 +1,4 @@
 using System;
-using Unity.VisualScripting;
 using UnityEngine;
 
 [Serializable]
@@ -20,6 +19,6 @@ public class StatusPotionEffect : PotionEffect
             {
                 controller.RegisterStatusEffect(statusType);
             }
-            
+
     }
 }
