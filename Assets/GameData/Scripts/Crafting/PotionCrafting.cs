@@ -31,17 +31,23 @@ namespace Pomunculus.Items
         [SerializeField] private float windElement;
         [Header("투입한 재료 개수")]
         [SerializeField] private int insertedMaterialCount;
-        private const int ResultAmount = 3;
+        //ResultAmount 결과로 나오는 포션 수
+        private const int ResultAmount = 5;
         private const int EmptyBottleId = 10001;
         private const int MaxMaterialCount = 3;
         [Header("투입한 재료 아이콘")]
         [SerializeField] private Image[] insertedMaterialIcons = new Image[3];
         private readonly List<MaterialData> insertedMaterials = new List<MaterialData>();
+        private readonly List<MaterialData> copyInsertedMaterials = new List<MaterialData>();
         [Header("제작 결과 미리보기")]
         [SerializeField] private Image resultPreviewImage;
         [SerializeField] private Sprite unknownIcon;
         [Header("아이템 툴팁")]
         [SerializeField] private ItemTooltipUI tooltip;
+        [Header("제작 기록")]
+        [SerializeField] private PotionCraftHistory craftHistory;
+        [Header("재료 부족 알림")]
+        [SerializeField] private GameObject message;
         private int hoveredMaterialIndex = -1;
         private bool isResultHovered;
         private void OnEnable()
@@ -95,11 +101,18 @@ namespace Pomunculus.Items
             windElement = 0;
             insertedMaterialCount = 0;
 
+            copyInsertedMaterials.Clear();
+            copyInsertedMaterials.AddRange(insertedMaterials);
+            if (succeeded && craftHistory != null)
+                craftHistory.Record(resultPotion.Id, insertedMaterials);
+
             insertedMaterials.Clear();
 
             RefreshUI();
             if (succeeded && recipeBook != null)
                 recipeBook.DiscoverPotion(resultPotion.Id);
+
+            AddPreviousMaterials();
 
             Debug.Log($"제작 결과: {resultPotion.ItemName} × {ResultAmount}", this);
         }
@@ -346,6 +359,77 @@ namespace Pomunculus.Items
                 potion.ColdElement,
                 potion.WindElement
             );
+        }
+        public void AddPreviousMaterials()
+        {
+            if (inventory == null || copyInsertedMaterials.Count == 0)
+                return;
+
+            foreach (MaterialData material in copyInsertedMaterials)
+            {
+                AddMaterial(material);
+            }
+        }
+        public bool TryLoadMaterials(IReadOnlyList<int> materialIds)
+        {
+            if (inventory == null || materialIds == null ||
+                materialIds.Count == 0 ||
+                materialIds.Count > MaxMaterialCount)
+                return false;
+
+            MaterialDatabase database = MaterialDatabase.Instance;
+
+            if (database == null)
+                return false;
+
+            List<MaterialData> materials = new List<MaterialData>();
+            Dictionary<int, int> requiredCounts = new Dictionary<int, int>();
+
+            // 사용할 재료와 필요한 개수 확인
+            foreach (int id in materialIds)
+            {
+                MaterialData material = database.Find(id);
+
+                if (material == null)
+                    return false;
+
+                materials.Add(material);
+
+                requiredCounts.TryGetValue(id, out int count);
+                requiredCounts[id] = count + 1;
+            }
+
+            foreach (var pair in requiredCounts)
+            {
+                int available = inventory.GetItemCount(pair.Key);
+
+                // 현재 제작창에 있는 재료는 반환받을 수 있으므로 포함
+                foreach (MaterialData material in insertedMaterials)
+                {
+                    if (material.Id == pair.Key)
+                        available++;
+                }
+
+                if (available < pair.Value)
+                {
+                    if (message != null)
+                    {
+                        message.SetActive(true);
+                        message.transform.SetAsLastSibling();
+                    }
+
+                    return false;
+                }
+            }
+
+            // 기존 재료를 반환하고 제작창 초기화
+            ResetUi();
+
+            // 선택한 조합 투입
+            foreach (MaterialData material in materials)
+                AddMaterial(material);
+
+            return true;
         }
     }
 }
