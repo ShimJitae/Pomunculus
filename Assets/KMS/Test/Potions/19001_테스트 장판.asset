@@ -1,0 +1,48 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3694866bf932c8a4bb919bc39b77c2ab, type: 3}
+  m_Name: "19001_\uD14C\uC2A4\uD2B8 \uC7A5\uD310"
+  m_EditorClassIdentifier: Assembly-CSharp::Pomunculus.Items.PotionData
+  Id: 19001
+  ItemName: "\uD14C\uC2A4\uD2B8 \uC7A5\uD310"
+  Description: "\uBC18\uACBD 3 \uC7A5\uD310. 6\uCD08 \uB3D9\uC548 1\uCD08\uB9C8\uB2E4
+    \uD53C\uD574 5."
+  Icon: {fileID: 21300000, guid: 602ac8357f54e8149823b80af916f59a, type: 3}
+  PhysicsElement: 0
+  FireElement: 0
+  ColdElement: 0
+  WindElement: 0
+  pickupPrefab: {fileID: -8275113470682067266, guid: d6f261ab8ec75f44eae879db75ddb732, type: 3}
+  projectilePrefab: {fileID: -8461069969775478643, guid: cf8181d87ceb11a4b8964fcbbe4dbae5, type: 3}
+  effects:
+  - rid: 3760827290688946262
+  references:
+    version: 2
+    RefIds:
+    - rid: 3760827290688946262
+      type: {class: ZonePotionEffect, ns: , asm: Assembly-CSharp}
+      data:
+        affectedTargets: -1
+        groundLayers:
+          serializedVersion: 2
+          m_Bits: 64
+        zonePrefab: {fileID: 1517372964487785447, guid: 5a7d66538b9bdea438b753300633eb99, type: 3}
+        radius: 3
+        duration: 6
+        tickInterval: 1
+        tickEffects:
+        - rid: 3760827290688946263
+    - rid: 3760827290688946263
+      type: {class: DamagePotionEffect, ns: , asm: Assembly-CSharp}
+      data:
+        affectedTargets: -1
+        amount: 5

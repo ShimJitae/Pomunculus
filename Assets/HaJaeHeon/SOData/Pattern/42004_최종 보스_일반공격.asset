@@ -1,0 +1,47 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2622a819b824cf64292e2f07625f2fa7, type: 3}
+  m_Name: "42004_\uCD5C\uC885 \uBCF4\uC2A4_\uC77C\uBC18\uACF5\uACA9"
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyPatternDataSO
+  patternId: 47030
+  monsterName: "\uCD5C\uC885 \uBCF4\uC2A4"
+  monsterId: 42004
+  patternName: "\uCD5C\uC885 \uBCF4\uC2A4_\uC77C\uBC18\uACF5\uACA92"
+  skillEffect: 0
+  telegraph: 0.01
+  value: 10
+  recovery: 0.01
+  interval: 3
+  patternWeight: 1
+  animatorTrigger: 2
+  useRange: 3
+  attackArea:
+    shape: 1
+    anchor: 1
+    radius: 5
+    angle: 360
+    width: 0
+    length: 0
+    offset: {x: 0, y: 0, z: 0}
+  skillParticle: {fileID: 3374902658756203735, guid: 7c7970f71a6bcf94a97f2bb1e715bb02, type: 3}
+  hitParticle: {fileID: 0}
+  skillParticleOffset: {x: 0, y: 0, z: 0}
+  skillParticleRotation: {x: 0, y: 0, z: 0}
+  scaleSkillParticleWithArea: 1
+  telegraphSound: {fileID: 0}
+  attackSound: {fileID: 0}
+  note: "\uCD5C\uC885 \uBCF4\uC2A4\uC758 \uC784\uC2DC \uC77C\uBC18 \uACF5\uACA9 \uAE30\uC900\uAC12.
+    \uAE30\uC874 \uC801 \uC815\uC758\uC758 \uACF5\uACA9\uB825 70\uC744 \uC0AC\uC6A9\uD558\uBA70,
+    \uAD6C\uCCB4\uC801\uC778 \uACF5\uACA9 \uBC29\uC2DD\uC740 \uD589\uB3D9 \uAE30\uD68D
+    \uD655\uC815 \uD6C4 \uC870\uC815\uD55C\uB2E4. \uC2DC\uAC04 \uAC12\uC740 \uCD08\uAE30
+    \uC870\uC815\uAC12\uC774\uBA70 \uC2E4\uC81C \uACF5\uACA9 \uB3D9\uC791\uC5D0 \uB9DE\uCDB0
+    \uC870\uC815\uD55C\uB2E4."

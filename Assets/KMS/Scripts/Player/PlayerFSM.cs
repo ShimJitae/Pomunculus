@@ -14,7 +14,7 @@ using UnityEngine.AI;
 /// </summary>
 [RequireComponent(typeof(NavMeshAgent))]
 [RequireComponent(typeof(PlayerInputReader), typeof(PlayerMotor), typeof(PlayerThrower))]
-[RequireComponent(typeof(PotionLoadout), typeof(Inventory), typeof(PlayerAnimator))]
+[RequireComponent(typeof(Inventory), typeof(PlayerAnimator))]
 public class PlayerFSM : Entity, IPlayerObj, IHealable, IShieldable, IWorldRPC
 {
     [SerializeField] private PlayerTuningSO tuning;
@@ -40,7 +40,8 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IShieldable, IWorldRPC
     public PlayerThrower Thrower { get; private set; }
     public PlayerInteractor Interactor { get; private set; }   // 없을 수 있음 (null 허용)
     public Inventory Inventory { get; private set; }
-    public PotionLoadout Loadout { get; private set; }
+    public PotionLoadout Loadout { get; } = new PotionLoadout();
+    public RecipeJournal Recipes { get; } = new RecipeJournal();
     public PlayerAnimator Animator { get; private set; }
     public PlayerActionGate Actions { get; private set; }
 
@@ -68,6 +69,7 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IShieldable, IWorldRPC
     public event Action OnDied;
     public event Action OnRevived;
     public event Action OnRespawnRequested;
+    public event Action<int, int> OnItemGranted;   // 방장이 확정한 아이템 지급 (itemId, amount). 내 플레이어에서만 발생
 
     //public void RequestRespawn()
     //{
@@ -89,12 +91,7 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IShieldable, IWorldRPC
         Thrower = GetComponent<PlayerThrower>();
         Interactor = GetComponent<PlayerInteractor>();
         Inventory = GetComponentInChildren<Inventory>();
-        Loadout = GetComponent<PotionLoadout>();
         itemGiver = GetComponentInChildren<TestItemGiver>();
-
-        Inventory.Changed += SendInventorySync;
-        Loadout.OnEquipChanged += HandleLoadoutEquipChanged;
-
         Animator = GetComponent<PlayerAnimator>();
 
         Motor.Initialize(Tuning, Data.GetSpeed());
@@ -102,6 +99,9 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IShieldable, IWorldRPC
         Actions = new PlayerActionGate(this);
 
         Stats.OnShieldChanged += HandleShieldChanged;
+        Inventory.Changed += SendInventorySync;
+        Loadout.OnEquipChanged += HandleLoadoutEquipChanged;
+        Recipes.OnChanged += SendRecipeSync;
 
         startPos = transform.position;
 
@@ -139,7 +139,16 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IShieldable, IWorldRPC
         skinnedMeshRenderer.material.color = IsMine ? Color.red : Color.green;
     }
 
-    void Start() => SetState(IsDead ? PlayerStateType.Dead : PlayerStateType.Idle);
+    private void Start()
+    {
+        if (!IsMine && TryGetComponent(out AudioListener listener))
+        {
+            listener.enabled = false;
+            Destroy(listener);
+        }
+
+        SetState(IsDead ? PlayerStateType.Dead : PlayerStateType.Idle);
+    }
 
     void Update()
     {
@@ -168,7 +177,7 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IShieldable, IWorldRPC
             worldMapUI = FindAnyObjectByType<WorldMapUI>(FindObjectsInactive.Include);
         if (worldMapUI == null) return;
 
-        if (worldMapUI.gameObject.activeSelf) worldMapUI.Close();
+        if (worldMapUI.IsOpen) worldMapUI.Close();
         else worldMapUI.Open();
     }
 
@@ -298,7 +307,8 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IShieldable, IWorldRPC
 
             Item = Inventory.Slots,
             PotionSlotIds = Loadout.GetSlotIds(),
-            SelectedPotionSlot = Loadout.SelectedIndex
+            SelectedPotionSlot = Loadout.SelectedIndex,
+            DiscoveredPotionIds = Recipes.GetDiscoveredIds()
         };
 
         _data.SetData(state);
@@ -326,6 +336,9 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IShieldable, IWorldRPC
 
             if (state.PotionSlotIds != null)
                 Loadout.Restore(state.PotionSlotIds, state.SelectedPotionSlot);
+
+            if (state.DiscoveredPotionIds != null)   // 레시피 기록이 없는 예전 세이브면 null
+                Recipes.Restore(state.DiscoveredPotionIds);
         }
         finally
         {
@@ -349,6 +362,7 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IShieldable, IWorldRPC
         RequestShield,
         SyncShield,
         SyncInventory,
+        SyncRecipes,
         RegisterStatusEffect = RpcRegisterStatusEffect, // Entity에서 정의한 하위 RPC enum과 겹치지 않는 공용 번호.
     }
 
@@ -388,6 +402,20 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IShieldable, IWorldRPC
         this.SendRPC(packet, WorldRPCTarget.MasterClient);
     }
 
+    // 발견한 레시피 목록 전체를 방장 사본에 보낸다
+    private void SendRecipeSync()
+    {
+        if (!ShouldSyncToMaster || isLoadingState) return;
+
+        List<int> potionIds = Recipes.GetDiscoveredIds();
+        PacketData packet = new();
+        packet.Write((byte)PlayerRPCType.SyncRecipes);
+        packet.Write(potionIds.Count);                  // 받는 쪽이 읽을 개수
+        foreach (int potionId in potionIds)
+            packet.Write(potionId);
+        this.SendRPC(packet, WorldRPCTarget.MasterClient);
+    }
+
     // 장착이 바뀌면 전체 장착 상태를 다른 클라이언트에 보낸다
     private void HandleLoadoutEquipChanged(int slotIndex, PotionData potion) => SendLoadoutSync();
 
@@ -405,14 +433,15 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IShieldable, IWorldRPC
         this.SendRPC(packet, WorldRPCTarget.MasterClient);
     }
 
-    // 던지기 정보를 모든 클라이언트에 보낸다 (내 화면은 즉시 실행)
-    public void SendThrow(Vector3 origin, Vector3 velocity, Vector3 gravity, int potionId)
+    // 던지기 정보를 모든 클라이언트에 보낸다 (내 화면은 즉시 실행). 목표 지점은 분신이 같은 곳을 따라 던질 때 쓴다
+    public void SendThrow(Vector3 origin, Vector3 velocity, Vector3 gravity, Vector3 target, int potionId)
     {
         PacketData packet = new();
         packet.Write((byte)PlayerRPCType.Throw);
         packet.Write(origin);
         packet.Write(velocity);
         packet.Write(gravity);
+        packet.Write(target);
         packet.Write(potionId);
         this.SendRPC(packet, WorldRPCTarget.All);   // 확장 메서드라 this. 필요
     }
@@ -466,8 +495,9 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IShieldable, IWorldRPC
                 Vector3 origin = packet.ReadVector3();
                 Vector3 velocity = packet.ReadVector3();
                 Vector3 gravity = packet.ReadVector3();
+                Vector3 target = packet.ReadVector3();
                 int potionId = packet.ReadInt();
-                Thrower.SpawnProjectile(origin, velocity, gravity, potionId);
+                Thrower.SpawnProjectile(origin, velocity, gravity, target, potionId);
                 break;
             case PlayerRPCType.SyncHp:
                 ApplyHp(packet.ReadInt());
@@ -484,7 +514,11 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IShieldable, IWorldRPC
             case PlayerRPCType.GrantItem:
                 int itemId = packet.ReadInt();
                 int amount = packet.ReadInt();
-                if (IsMine) Inventory.AddItem(itemId, amount);
+                if (IsMine)
+                {
+                    Inventory.AddItem(itemId, amount);
+                    OnItemGranted?.Invoke(itemId, amount);
+                }
                 break;
             case PlayerRPCType.SyncLoadout:
                 int[] ids = new int[PotionLoadout.SlotCount];
@@ -507,6 +541,13 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IShieldable, IWorldRPC
                 for (int i = 0; i < count; i++)
                     items.Add(new InventorySlot(packet.ReadInt(), packet.ReadInt()));
                 if (!IsMine) RestoreInventory(items);
+                break;
+            case PlayerRPCType.SyncRecipes:
+                int recipeCount = packet.ReadInt();
+                var recipeIds = new List<int>(recipeCount);
+                for (int i = 0; i < recipeCount; i++)
+                    recipeIds.Add(packet.ReadInt());
+                if (!IsMine) Recipes.Restore(recipeIds);
                 break;
             case PlayerRPCType.RegisterStatusEffect:
                 ReceiveRegisterStatusEffect(packet);   // 소유자 여부와 상관없이 모두 적용
@@ -541,8 +582,8 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IShieldable, IWorldRPC
     private void OnDestroy()
     {
         Stats.OnShieldChanged -= HandleShieldChanged;
-        if (Loadout == null) return;
         Loadout.OnEquipChanged -= HandleLoadoutEquipChanged;
+        Recipes.OnChanged -= SendRecipeSync;
     }
 
     #endregion

@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3694866bf932c8a4bb919bc39b77c2ab, type: 3}
+  m_Name: "19006_\uD14C\uC2A4\uD2B8 \uB04C\uC5B4\uB2F9\uAE30\uAE30"
+  m_EditorClassIdentifier: Assembly-CSharp::Pomunculus.Items.PotionData
+  Id: 19006
+  ItemName: "\uD14C\uC2A4\uD2B8 \uB04C\uC5B4\uB2F9\uAE30\uAE30"
+  Description: "\uCC29\uD0C4 \uC9C0\uC810 \uCABD\uC73C\uB85C \uCD5C\uB300 4m \uB04C\uC5B4\uB2F9\uAE34\uB2E4."
+  Icon: {fileID: 21300000, guid: 602ac8357f54e8149823b80af916f59a, type: 3}
+  PhysicsElement: 0
+  FireElement: 0
+  ColdElement: 0
+  WindElement: 0
+  pickupPrefab: {fileID: -8275113470682067266, guid: d6f261ab8ec75f44eae879db75ddb732, type: 3}
+  projectilePrefab: {fileID: -8461069969775478643, guid: cf8181d87ceb11a4b8964fcbbe4dbae5, type: 3}
+  effects:
+  - rid: 3760827290688946268
+  references:
+    version: 2
+    RefIds:
+    - rid: 3760827290688946268
+      type: {class: KnockbackPotionEffect, ns: , asm: Assembly-CSharp}
+      data:
+        affectedTargets: -1
+        distance: -4
+        duration: 0.25
+        affectPickups: 1
+        pickupRadius: 2
+        pickupLayers:
+          serializedVersion: 2
+          m_Bits: 768
+        groundLayers:
+          serializedVersion: 2
+          m_Bits: 64

@@ -456,9 +456,6 @@ PrefabInstance:
       addedObject: {fileID: 8045316640126951250}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f4f75312eb965614dab993c80e2de8f6, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1344962481701826794}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f4f75312eb965614dab993c80e2de8f6, type: 3}
-      insertIndex: -1
       addedObject: {fileID: 6398455313700555120}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f4f75312eb965614dab993c80e2de8f6, type: 3}
       insertIndex: -1
@@ -487,6 +484,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f4f75312eb965614dab993c80e2de8f6, type: 3}
       insertIndex: -1
       addedObject: {fileID: 6395502337418687732}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f4f75312eb965614dab993c80e2de8f6, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -2829640441345976765}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f4f75312eb965614dab993c80e2de8f6, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8209130685197056867}
   m_SourcePrefab: {fileID: 100100000, guid: f4f75312eb965614dab993c80e2de8f6, type: 3}
 --- !u!4 &3732879745415184430 stripped
 Transform:
@@ -590,7 +593,7 @@ MonoBehaviour:
   attackDamage: 10
   hitLayers:
     serializedVersion: 2
-    m_Bits: 136
+    m_Bits: 2184
 --- !u!114 &8441542970358718260
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -711,22 +714,6 @@ MonoBehaviour:
   m_changeThreshold: 0.001
   m_keyframeInterval: 1
   m_stateLayers: 00000000
---- !u!114 &1344962481701826794
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4072954961796356756}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 221a0025dd238ba4f9f44405e9cad2c3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Pomunculus.Items.PotionLoadout
-  slots:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
 --- !u!114 &6398455313700555120
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -740,6 +727,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Pomunculus.Items.Inventory
   slots: []
+  dropScatterRadius: 0.7
+  dropHeight: 0.5
 --- !u!114 &9132846027103135592
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -796,14 +785,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a8b89827073727147a945a2f5ffe9e12, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ThrowAimIndicator
-  trajectoryLine: {fileID: 53851817405265651}
-  rangeCircle: {fileID: 3444046469883556801}
-  trajectorySegmentCount: 30
-  circleSegmentCount: 40
-  obstacleLayers:
-    serializedVersion: 2
-    m_Bits: 65
-  circleHeightOffset: 0.05
 --- !u!114 &4318981986115598492
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -889,6 +870,34 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerAnimator
   defaultFade: 0.08
   speedDampTime: 0.1
+--- !u!81 &-2829640441345976765
+AudioListener:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4072954961796356756}
+  m_Enabled: 1
+--- !u!114 &8209130685197056867
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4072954961796356756}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7e4cb78a7b999aa49b7fb47a697c9ffb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ThrowTrajectoryPreview
+  trajectoryLine: {fileID: 53851817405265651}
+  rangeCircle: {fileID: 3444046469883556801}
+  trajectorySegmentCount: 30
+  circleSegmentCount: 40
+  obstacleLayers:
+    serializedVersion: 2
+    m_Bits: 65
+  circleHeightOffset: 0.05
 --- !u!137 &5388229385665870493 stripped
 SkinnedMeshRenderer:
   m_CorrespondingSourceObject: {fileID: -107605695281816232, guid: f4f75312eb965614dab993c80e2de8f6, type: 3}

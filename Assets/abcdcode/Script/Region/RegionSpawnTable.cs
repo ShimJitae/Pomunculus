@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-// 지역별로 채집/몬스터 포인트에 소환할 프리팹 목록. Resources/RegionSpawnTable 에 두면 RegionSpawner가 불러온다
-// 포인트마다 목록에서 하나를 무작위로 골라 하루 동안 유지한다
+// 지역별로 채집/몬스터/보스 포인트에 소환할 프리팹 목록. Resources/RegionSpawnTable 에 두면 RegionSpawner가 불러온다
+// 포인트마다 목록에서 하나를 무작위로 골라 하루 동안 유지한다. 필드 보스는 처치될 때까지 유지하고, 처치 후 10일 뒤 다시 고른다
 [CreateAssetMenu(menuName = "Pomunculus/RegionSpawnTable")]
 public class RegionSpawnTable : ScriptableObject
 {

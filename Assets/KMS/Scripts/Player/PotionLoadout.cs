@@ -1,15 +1,13 @@
 using System;
-using UnityEngine;
-
 
 namespace Pomunculus.Items
 {
-    public class PotionLoadout : MonoBehaviour
+    public class PotionLoadout
     {
         public const int SlotCount = 3;
         public const int EmptySlotId = -1;
 
-        [SerializeField] private PotionData[] slots = new PotionData[SlotCount];
+        private readonly PotionData[] slots = new PotionData[SlotCount];
         private int selectedIndex;
 
         public event Action<int> OnSelectChanged; // 슬롯 선택 변경시
