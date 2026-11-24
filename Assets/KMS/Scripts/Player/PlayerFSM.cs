@@ -433,14 +433,15 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IShieldable, IWorldRPC
         this.SendRPC(packet, WorldRPCTarget.MasterClient);
     }
 
-    // 던지기 정보를 모든 클라이언트에 보낸다 (내 화면은 즉시 실행)
-    public void SendThrow(Vector3 origin, Vector3 velocity, Vector3 gravity, int potionId)
+    // 던지기 정보를 모든 클라이언트에 보낸다 (내 화면은 즉시 실행). 목표 지점은 분신이 같은 곳을 따라 던질 때 쓴다
+    public void SendThrow(Vector3 origin, Vector3 velocity, Vector3 gravity, Vector3 target, int potionId)
     {
         PacketData packet = new();
         packet.Write((byte)PlayerRPCType.Throw);
         packet.Write(origin);
         packet.Write(velocity);
         packet.Write(gravity);
+        packet.Write(target);
         packet.Write(potionId);
         this.SendRPC(packet, WorldRPCTarget.All);   // 확장 메서드라 this. 필요
     }
@@ -494,8 +495,9 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IShieldable, IWorldRPC
                 Vector3 origin = packet.ReadVector3();
                 Vector3 velocity = packet.ReadVector3();
                 Vector3 gravity = packet.ReadVector3();
+                Vector3 target = packet.ReadVector3();
                 int potionId = packet.ReadInt();
-                Thrower.SpawnProjectile(origin, velocity, gravity, potionId);
+                Thrower.SpawnProjectile(origin, velocity, gravity, target, potionId);
                 break;
             case PlayerRPCType.SyncHp:
                 ApplyHp(packet.ReadInt());
