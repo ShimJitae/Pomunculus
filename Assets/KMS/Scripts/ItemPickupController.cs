@@ -13,7 +13,7 @@ public class ItemPickupController : MonoBehaviour
     public float scanInterval = 0.1f;
 
     // 주울 아이템 및 포션 -> TODO 이 후 각 스크립트에 IPickupable 같은 인터페이스로 관리하기
-    event Action<WorldItemPickup> OnItemPickedUp;
+    public event Action<WorldItemPickup> OnItemPickedUp;
 
     readonly Collider[] buffer = new Collider[16];
     private PlayerFSM owner;
@@ -64,6 +64,7 @@ public class ItemPickupController : MonoBehaviour
         }
         item.gameObject.SetActive(false);   // 다음 스캔에서 다시 요청하지 않도록
         item.RequestPickup(owner.Owner);
+        OnItemPickedUp?.Invoke(item);
     }
 
     void OnDrawGizmosSelected()

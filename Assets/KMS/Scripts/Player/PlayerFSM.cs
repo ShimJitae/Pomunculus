@@ -69,6 +69,7 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IShieldable, IWorldRPC
     public event Action OnDied;
     public event Action OnRevived;
     public event Action OnRespawnRequested;
+    public event Action<int, int> OnItemGranted;   // 방장이 확정한 아이템 지급 (itemId, amount). 내 플레이어에서만 발생
 
     //public void RequestRespawn()
     //{
@@ -511,7 +512,11 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IShieldable, IWorldRPC
             case PlayerRPCType.GrantItem:
                 int itemId = packet.ReadInt();
                 int amount = packet.ReadInt();
-                if (IsMine) Inventory.AddItem(itemId, amount);
+                if (IsMine)
+                {
+                    Inventory.AddItem(itemId, amount);
+                    OnItemGranted?.Invoke(itemId, amount);
+                }
                 break;
             case PlayerRPCType.SyncLoadout:
                 int[] ids = new int[PotionLoadout.SlotCount];

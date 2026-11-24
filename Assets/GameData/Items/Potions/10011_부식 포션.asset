@@ -23,3 +23,14 @@ MonoBehaviour:
   WindElement: 0
   projectilePrefab: {fileID: 6398676829056186882, guid: 9165475fd3de1afd884205802185f37e, type: 3}
   pickupPrefab: {fileID: 3321244018119135130, guid: 2b91f05f0ada2d6ff2b579a586fd9bf3, type: 3}
+  effects:
+  - rid: 3760827200000000004
+  references:
+    version: 2
+    RefIds:
+    - rid: 3760827200000000004
+      type: {class: StatusPotionEffect, ns: , asm: Assembly-CSharp}
+      data:
+        affectedTargets: -1
+        statusType: 9
+        stackCount: 1
