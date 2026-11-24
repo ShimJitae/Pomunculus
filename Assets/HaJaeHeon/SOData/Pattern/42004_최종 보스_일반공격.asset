@@ -16,6 +16,7 @@ MonoBehaviour:
   monsterName: "\uCD5C\uC885 \uBCF4\uC2A4"
   monsterId: 42004
   patternName: "\uCD5C\uC885 \uBCF4\uC2A4_\uC77C\uBC18\uACF5\uACA9"
+  skillEffect: 0
   telegraph: 0.7
   value: 70
   recovery: 1
@@ -24,10 +25,10 @@ MonoBehaviour:
   animatorTrigger: 0
   useRange: 7
   attackArea:
-    shape: 2
-    anchor: 0
-    radius: 10
-    angle: 266
+    shape: 1
+    anchor: 1
+    radius: 5
+    angle: 360
     width: 0
     length: 0
     offset: {x: 0, y: 0, z: 0}
