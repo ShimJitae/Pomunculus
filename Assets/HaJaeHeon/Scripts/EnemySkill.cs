@@ -239,15 +239,20 @@ public class EnemySkill : MonoBehaviour
         bool hasNextHit = attackHitEvent.intParameter == 1;
 
         // 예고 중에 들어온 이벤트 = 기절로 멈췄다가 다시 재생된 이전 공격 모션의 것 → 표시·판정 모두 건드리지 않음
-        if (Time.time < hitAcceptStartTime)
+        // 예고 종료와 같은 프레임에 들어온 이벤트는 받아들인다
+        const float hitAcceptTolerance = 0.1f;
+        if (Time.time < hitAcceptStartTime - hitAcceptTolerance)
             return;
 
         // Animator는 모든 클라이언트에서 재생되므로, 표시 숨김은 판정 권한과 상관없이 모두 처리
         if (attackIndicator != null)
             attackIndicator.Hide();
 
-        // 예고음이 아직 재생중이라면 판정 순간에 끊고 공격음으로 넘어감(다단히트는 첫 타격에서만 정지됨)
-        if (AudioManager.Instance != null)
+        // 공격음이 있을 때만 예고음을 끊고 공격음으로 넘어감(다단히트는 첫 타격에서만 정지됨)
+        // 공격음이 없는 패턴은 예고음이 끝까지 재생되도록 둔다
+        bool hasAttackSound = CurrentAttackPattern != null && CurrentAttackPattern.AttackSound != null;
+
+        if (hasAttackSound && AudioManager.Instance != null)
             AudioManager.Instance.StopSfx(telegraphSoundHandle);
 
         telegraphSoundHandle = default;
@@ -266,7 +271,18 @@ public class EnemySkill : MonoBehaviour
         if (!hasNextHit)
             SetAttackActive(false);
 
-        if (!enemy.CanDoAttack || CurrentAttackPattern == null || CurrentAttackPattern.AttackArea.shape == AttackAreaShape.None)
+        if (!enemy.CanDoAttack || CurrentAttackPattern == null)
+            return;
+
+        // 자기 회복 패턴은 범위 판정 없이 자신의 HP만 회복한다 (HP 동기화는 Enemy.Heal이 처리)
+        if (CurrentAttackPattern.SkillEffect == SkillEffectType.SelfHeal)
+        {
+            int healAmount = Mathf.RoundToInt(CurrentAttackPattern.Value * damagePercent / 100f);
+            enemy.Heal(healAmount);
+            return;
+        }
+
+        if (CurrentAttackPattern.AttackArea.shape == AttackAreaShape.None)
             return;
 
         AttackAreaData area = CurrentAttackPattern.AttackArea;

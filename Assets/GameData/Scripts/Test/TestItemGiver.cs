@@ -5,6 +5,10 @@ namespace Pomunculus.Items
     [RequireComponent(typeof(Inventory))]
     public class TestItemGiver : MonoBehaviour
     {
+        private const int TestPotionFirstId = 19001;   // Assets/KMS/Test/Potions 테스트 포션 ID 범위
+        private const int TestPotionLastId = 19007;
+        private const int TestPotionAmount = 50;
+
         [Header("추가할 아이템")]
         [SerializeField] private int itemId = 25001;
 
@@ -76,18 +80,45 @@ namespace Pomunculus.Items
 
             Debug.Log("모든 포션 22종을 각각 50개씩 추가했습니다.", this);
         }
+
+        // 효과 확인용 테스트 포션(19001~19007)을 50개씩 추가한다
+        [ContextMenu("테스트 포션 50개씩 추가")]
+        public void GiveTestPotions()
+        {
+            if (!Application.isPlaying)
+            {
+                Debug.Log("플레이 모드에서 사용해 주세요.");
+                return;
+            }
+
+            Inventory inventory = GetComponent<Inventory>();
+
+            for (int id = TestPotionFirstId; id <= TestPotionLastId; id++)
+            {
+                inventory.AddItem(id, TestPotionAmount);
+            }
+
+            Debug.Log($"테스트 포션 {TestPotionLastId - TestPotionFirstId + 1}종을 각각 {TestPotionAmount}개씩 추가했습니다.", this);
+        }
+        // 채팅 명령으로 아이템을 지급한다. ChatManager는 첫 단어만 command로, 나머지는 args로 나눠 주므로 다시 이어 붙여 비교한다
         private void OnCommand(string command, string[] args)
         {
             PlayerFSM player = GetComponentInParent<PlayerFSM>();
             if (player == null || !player.IsMine)
                 return;
-            if (command == "give all materials" || command == "wofy")
+
+            string fullCommand = args.Length > 0 ? $"{command} {string.Join(" ", args).ToLowerInvariant()}" : command;
+            if (fullCommand == "give all materials" || fullCommand == "wofy")
             {
                 GiveAllMaterials();
             }
-            else if (command == "give all potion" || command == "vhtus")
+            else if (fullCommand == "give all potion" || fullCommand == "vhtus")
             {
                 GiveAllPotion();
+            }
+            else if (fullCommand == "give test potion" || fullCommand == "testpotion")
+            {
+                GiveTestPotions();
             }
         }
     }

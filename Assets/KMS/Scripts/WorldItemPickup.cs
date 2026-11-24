@@ -20,10 +20,19 @@ namespace Pomunculus.Items
 
         private enum PickupRPCType : byte
         {
-            Pickup
+            Pickup,
+            Displace
         }
 
         private bool isPickedUp;   // 방장 화면에서 이미 누군가에게 지급했는지 (중복 지급 방지)
+        private Rigidbody body;
+        private Vector3 displaceStart;
+        private Vector3 displaceEnd;
+        private float displaceDuration;
+        private float displaceElapsed;
+        private bool isDisplacing;
+
+        void Awake() => body = GetComponent<Rigidbody>();
 
         // WorldManager가 생성 직후 네트워크 ID를 넣어준다
         public void InitWorldObj(int id, string prefabId)
@@ -66,6 +75,9 @@ namespace Pomunculus.Items
                 case PickupRPCType.Pickup:
                     HandlePickupRequest(packet.ReadInt());
                     break;
+                case PickupRPCType.Displace:
+                    StartDisplace(packet.ReadVector3(), packet.ReadVector3(), packet.ReadFloat());
+                    break;
             }
         }
 
@@ -82,6 +94,48 @@ namespace Pomunculus.Items
             isPickedUp = true;
             picker.SendGrantItem(ItemId, amount);
             this.Despawn();
+        }
+
+        // 방장 전용. 시작·도착 지점을 모든 클라이언트에 보내 같은 경로로 옮기게 한다
+        public void SendDisplace(Vector3 destination, float duration)
+        {
+            PacketData packet = new();
+            packet.Write((byte)PickupRPCType.Displace);
+            packet.Write(transform.position);   // 시작 위치도 방장 기준으로 맞춘다
+            packet.Write(destination);
+            packet.Write(duration);
+            this.SendRPC(packet, WorldRPCTarget.All);   // 방장 화면은 즉시 실행
+        }
+
+        // 받은 시작점에서 도착점까지 일정 시간 동안 옮긴다. 이동 중에는 물리를 끈다
+        private void StartDisplace(Vector3 start, Vector3 end, float duration)
+        {
+            displaceStart = start;
+            displaceEnd = end;
+            displaceDuration = Mathf.Max(0.01f, duration);
+            displaceElapsed = 0f;
+            isDisplacing = true;
+
+            if (body != null)
+            {
+                body.linearVelocity = Vector3.zero;
+                body.isKinematic = true;
+            }
+            transform.position = start;
+        }
+
+        void Update()
+        {
+            if (!isDisplacing) return;
+
+            displaceElapsed += Time.deltaTime;
+            float t = Mathf.Clamp01(displaceElapsed / displaceDuration);
+            transform.position = Vector3.Lerp(displaceStart, displaceEnd, t);
+            if (t < 1f) return;
+
+            isDisplacing = false;
+            transform.position = displaceEnd;               // 모든 화면에서 같은 자리로 확정
+            if (body != null) body.isKinematic = false;
         }
 
         // ActorNumber로 플레이어를 찾는다

@@ -15,13 +15,19 @@ namespace Pomunculus.Items
         [Header("점프")]
         [SerializeField] private float jumpHeight = 1.5f;
         [SerializeField] private float gravity = -20f;
-
+        [Header("테스트 레시피북")]
+        [SerializeField] private RecipeBookUI recipeBook;
         private CharacterController controller;
         private float verticalVelocity;
 
         private void Awake()
         {
             controller = GetComponent<CharacterController>();
+        }
+        private void Start()
+        {
+            if (recipeBook != null)
+                recipeBook.Bind(new RecipeJournal());
         }
 
         private void Update()
