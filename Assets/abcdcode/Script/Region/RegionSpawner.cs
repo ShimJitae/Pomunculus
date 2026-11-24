@@ -13,6 +13,12 @@ public class RegionSpawner : Singleton<RegionSpawner>
 {
     public RegionSpawner()
     {
+        m_mobCategory = new Category
+        {
+            GetPoints = (registry, region) => registry.GetNormalMobPoints(region),
+            GetRecords = data => data.RegionMobs,
+            Pick = region => m_table.PickMob(MobTableRegion(region)),
+        };
         m_categories = new[]
         {
             new Category
@@ -21,12 +27,7 @@ public class RegionSpawner : Singleton<RegionSpawner>
                 GetRecords = data => data.RegionGathers,
                 Pick = region => m_table.PickGather(region),
             },
-            new Category
-            {
-                GetPoints = (registry, region) => registry.GetNormalMobPoints(region),
-                GetRecords = data => data.RegionMobs,
-                Pick = region => m_table.PickMob(MobTableRegion(region)),
-            },
+            m_mobCategory,
             new Category
             {
                 GetPoints = (registry, region) => SinglePoint(registry.GetBossPoint(region)),
@@ -45,12 +46,44 @@ public class RegionSpawner : Singleton<RegionSpawner>
         if (m_table == null) Debug.LogWarning("[RegionSpawner] Resources/RegionSpawnTable 이 없어 지역 오브젝트를 소환하지 않음");
         m_emptyTime.Clear();
         m_checkTimer = 0f;
+        WorldManager.Instance.OnSeasonChangedEvent -= OnSeasonChanged;
+        WorldManager.Instance.OnSeasonChangedEvent += OnSeasonChanged;
     }
     // WorldManager.Release에서 호출. 월드 오브젝트는 WorldManager가 정리하고, 기록은 WorldData에 저장된 상태로 남는다
     public void Release()
     {
+        WorldManager.Instance.OnSeasonChangedEvent -= OnSeasonChanged;
         m_table = null;
         m_emptyTime.Clear();
+    }
+
+    // 계절이 바뀌면 계절마다 몬스터 목록이 달라지는 지역의 일반 몬스터를 전부 정리하고 새 계절 몬스터로 다시 채운다
+    // 플레이어가 있는 지역은 바로 다시 소환하고, 비어 있는 지역은 기록만 바꿔 두었다가 다음 입장 때 소환
+    private void OnSeasonChanged(Season season)
+    {
+        var data = WorldManager.Instance.CurWorldData;
+        if (m_table == null || !IsMaster || data == null) return;
+        var registry = SpawnPointRegistry.Instance;
+        foreach (RegionType region in Regions)
+        {
+            if (!HasSeasonalMobs(region)) continue;
+            if (!m_mobCategory.GetRecords(data).TryGetValue(region, out var rec)) continue;
+            bool active = rec.Active;
+            foreach (var p in rec.Points)
+            {
+                // 사망 연출 중인 개체도 같이 정리
+                if (IsAlive(p.ObjectId)) WorldManager.Instance.Find(p.ObjectId).Despawn();
+                p.PrefabId = m_mobCategory.Pick(region);
+                p.ObjectId = -1;
+                p.Consumed = false;
+                p.State = null;
+            }
+            rec.Active = false;
+            rec.Day = data.Day; // 같은 날 RefreshDay에서 다시 고르지 않도록
+            if (!active || registry == null) continue;
+            var points = m_mobCategory.GetPoints(registry, region);
+            if (points.Count == rec.Points.Count) Activate(rec, points);
+        }
     }
 
     // GameManager.Update에서 매 프레임 호출
@@ -233,10 +266,12 @@ public class RegionSpawner : Singleton<RegionSpawner>
     // 채집물이 WorldManager를 거치지 않고 Destroy되는 경우가 있어 목록에 남아 있어도 파괴 여부를 확인
     private static bool IsAlive(IWorldObj obj) => obj is Object o ? o != null : obj != null;
 
+    private static bool HasSeasonalMobs(RegionType region) => region == RegionType.Forest;
+
     // 숲의 일반 몬스터는 계절에 따라 다른 지역의 몬스터 목록에서 고른다 (봄: 숲, 여름: 화산, 가을: 독늪, 겨울: 설산)
     private static RegionType MobTableRegion(RegionType region)
     {
-        if (region != RegionType.Forest) return region;
+        if (!HasSeasonalMobs(region)) return region;
         return WorldManager.Instance.CurSeason switch
         {
             Season.Summer => RegionType.Volcano,
@@ -267,6 +302,7 @@ public class RegionSpawner : Singleton<RegionSpawner>
     private const int BossRespawnDays = 10; // 필드 보스는 처치 후 10일이 지나야 다시 소환
 
     private readonly Category[] m_categories;
+    private readonly Category m_mobCategory; // 계절이 바뀔 때 따로 다시 채우는 일반 몬스터
     private RegionSpawnTable m_table;
     private float m_checkTimer;
     private readonly HashSet<RegionType> m_occupied = new();
