@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3448945e6c1eacf46a71570d7118e484, type: 3}
+  m_Name: "\uC6A9\uC554\uD1A0\uB8E1_\uC2DC\uC804\uC18C\uB9AC"
+  m_EditorClassIdentifier: Assembly-CSharp::AudioSO
+  clipList:
+  - {fileID: 8300000, guid: 483148f51792b11478e484f683caa975, type: 3}
+  - {fileID: 8300000, guid: ddd68f8f7c5c64c4c82dd12c73709631, type: 3}
+  audioMixerGroup: {fileID: -3927623908766064136, guid: 6058d7a2104c32a4e8818dffa6b02dac, type: 2}
+  volume: 1
+  pitchMin: 1
+  pitchMax: 1
+  priority: 128
+  loop: 0
+  spatialBlend: 1
+  minDistance: 1
+  maxDistance: 20
+  rolloffMode: 1
+  minInterval: 0.05

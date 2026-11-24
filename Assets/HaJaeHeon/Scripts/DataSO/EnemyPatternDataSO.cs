@@ -2,6 +2,12 @@ using System;
 using UnityEngine;
 using UnityEngine.Serialization;
 
+public enum SkillEffectType
+{
+    Attack,
+    SelfHeal,
+}
+
 public enum AttackAreaShape
 {
     None,       // 범위 없음(버프, 소환, 이동 등)
@@ -45,6 +51,7 @@ public class EnemyPatternDataSO : ScriptableObject
     [SerializeField] private string monsterName;
     [SerializeField] private int monsterId;
     [SerializeField] private string patternName;
+    [SerializeField] private SkillEffectType skillEffect;
 
 
     [Header("행동 수치")]
@@ -81,6 +88,7 @@ public class EnemyPatternDataSO : ScriptableObject
     public string MonsterName => monsterName;
     public int MonsterId => monsterId;
     public string PatternName => patternName;
+    public SkillEffectType SkillEffect => skillEffect; 
     public float Telegraph => telegraph;
     public int Value => value;
     public float Recovery => recovery;
