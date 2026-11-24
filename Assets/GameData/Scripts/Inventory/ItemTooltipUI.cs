@@ -29,7 +29,7 @@ namespace Pomunculus.Items
         private Component owner;
 
         public void Show(Component slot, string itemName, string description,Sprite sprite, int amount, Vector2 screenPosition,
-            float physics, float fire, float cold, float wind)
+            float physics, float fire, float cold, float wind,bool showAmount = true)
         {
             tooltipRect = GetComponent<RectTransform>();
             rootCanvas = GetComponentInParent<Canvas>().rootCanvas;
@@ -43,7 +43,8 @@ namespace Pomunculus.Items
 
             nameText.text = itemName;
             descriptionText.text = description;
-            amountText.text = $"보유 수량: {amount}개";
+            amountText.gameObject.SetActive(showAmount);
+            amountText.text = $"보유 수량 : {amount}개";
             physicsText.text = $"×{physics:0.##}";
             fireText.text = $"×{fire:0.##}";
             coldText.text = $"×{cold:0.##}";
