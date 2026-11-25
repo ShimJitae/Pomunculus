@@ -498,7 +498,7 @@ MeshRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 90189923625489906}
   m_Enabled: 1
-  m_CastShadows: 1
+  m_CastShadows: 0
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0
@@ -2914,6 +2914,7 @@ GameObject:
   - component: {fileID: 7486839068672850478}
   - component: {fileID: 388699960417461937}
   - component: {fileID: 255969523933007137}
+  - component: {fileID: 2739693471330097807}
   m_Layer: 0
   m_Name: World_PurePoly
   m_TagString: Untagged
@@ -2944,7 +2945,6 @@ Transform:
   - {fileID: 3486753270692762797}
   - {fileID: 419044462897392327}
   - {fileID: 6590654040450782809}
-  - {fileID: 8904927247385177003}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &7486839068672850478
@@ -3046,6 +3046,18 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 56762fe96d82d9841b839708ff37053b, type: 2}
   - {fileID: 2100000, guid: 98eea2403f18628489d2877ce3fef649, type: 2}
   - {fileID: 2100000, guid: a33969581294ffd4f88fc7f76e6f8440, type: 2}
+--- !u!114 &2739693471330097807
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1062197608283547737}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 600e336aff62d6d49ac94320385a2133, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RegionBgmController
 --- !u!1 &1063586890801637088
 GameObject:
   m_ObjectHideFlags: 0
@@ -3917,7 +3929,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8699424356000926423}
-  - {fileID: 1248876741227018637}
   - {fileID: 2158984359988717069}
   - {fileID: 8181926152884970489}
   m_Father: {fileID: 7276533842416305681}
@@ -7658,7 +7669,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7136629206839139568}
-  - {fileID: 562961371642977750}
   - {fileID: 1346627734593537264}
   - {fileID: 2949357634681454602}
   m_Father: {fileID: 6749211468829163093}
@@ -9191,7 +9201,7 @@ MeshRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3218764697393537036}
   m_Enabled: 1
-  m_CastShadows: 1
+  m_CastShadows: 0
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0
@@ -10445,7 +10455,7 @@ MeshRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3816289254596819524}
   m_Enabled: 1
-  m_CastShadows: 1
+  m_CastShadows: 0
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0
@@ -11458,7 +11468,7 @@ MeshRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4095041120240903110}
   m_Enabled: 1
-  m_CastShadows: 1
+  m_CastShadows: 0
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0
@@ -15140,7 +15150,7 @@ MeshRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5687562805982082291}
   m_Enabled: 1
-  m_CastShadows: 1
+  m_CastShadows: 0
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0
@@ -17550,7 +17560,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1927399236297186890}
-  - {fileID: 27017684068642490}
   - {fileID: 7174837314075172531}
   - {fileID: 110977554018130686}
   m_Father: {fileID: 3558959875988029827}
@@ -19431,7 +19440,7 @@ MeshRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7344075440015403527}
   m_Enabled: 1
-  m_CastShadows: 1
+  m_CastShadows: 0
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0
@@ -20861,77 +20870,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 6647459194320363924}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &7821118448780038462
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 8904927247385177003}
-  - component: {fileID: 1021851344558172344}
-  m_Layer: 0
-  m_Name: SeasonalLayers
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &8904927247385177003
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7821118448780038462}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 9173483715141810696}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1021851344558172344
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7821118448780038462}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 52d79676794a25c4a9e6986d86465f53, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::SeasonalLayerController
-  layers:
-  - m_AssetGUID: 484d62b7a2a3cca4c88211ca266136d5
-    m_SubObjectName: 
-    m_SubObjectType: 
-    m_SubObjectGUID: 
-    m_EditorAssetChanged: 0
-  - m_AssetGUID: 3782540693e02c04eaadd2302702450d
-    m_SubObjectName: 
-    m_SubObjectType: 
-    m_SubObjectGUID: 
-    m_EditorAssetChanged: 0
-  - m_AssetGUID: 9fef9d1cad07ae741be585518bd1519f
-    m_SubObjectName: 
-    m_SubObjectType: 
-    m_SubObjectGUID: 
-    m_EditorAssetChanged: 0
-  - m_AssetGUID: da711074692d0b14aa77f624139cf759
-    m_SubObjectName: 
-    m_SubObjectType: 
-    m_SubObjectGUID: 
-    m_EditorAssetChanged: 0
-  fadeDuration: 2
-  groundFadeMaterials:
-  - {fileID: 2100000, guid: a34f13caca822fc4885b2fb88d54be32, type: 2}
-  - {fileID: 2100000, guid: 56762fe96d82d9841b839708ff37053b, type: 2}
-  - {fileID: 2100000, guid: 98eea2403f18628489d2877ce3fef649, type: 2}
-  - {fileID: 2100000, guid: a33969581294ffd4f88fc7f76e6f8440, type: 2}
 --- !u!1 &7826413304768402935
 GameObject:
   m_ObjectHideFlags: 0
@@ -21039,7 +20977,7 @@ MeshRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7826413304768402935}
   m_Enabled: 1
-  m_CastShadows: 1
+  m_CastShadows: 0
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0
@@ -22872,7 +22810,7 @@ MeshRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8045894450595350091}
   m_Enabled: 1
-  m_CastShadows: 1
+  m_CastShadows: 0
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0
@@ -26903,20 +26841,8 @@ PrefabInstance:
       value: "10015_\uBB3C \uBCD1 RecipeHint"
       objectReference: {fileID: 0}
     - target: {fileID: 4623728125297894083, guid: 60e58ba63f9915e458bdf598a92e97cf, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 4623728125297894083, guid: 60e58ba63f9915e458bdf598a92e97cf, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 4623728125297894083, guid: 60e58ba63f9915e458bdf598a92e97cf, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 4623728125297894083, guid: 60e58ba63f9915e458bdf598a92e97cf, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 304.7
+      value: 291.37
       objectReference: {fileID: 0}
     - target: {fileID: 4623728125297894083, guid: 60e58ba63f9915e458bdf598a92e97cf, type: 3}
       propertyPath: m_LocalPosition.y
@@ -26924,7 +26850,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4623728125297894083, guid: 60e58ba63f9915e458bdf598a92e97cf, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -33.1
+      value: -12.74
       objectReference: {fileID: 0}
     - target: {fileID: 4623728125297894083, guid: 60e58ba63f9915e458bdf598a92e97cf, type: 3}
       propertyPath: m_LocalRotation.w
@@ -27121,6 +27047,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 8038711176457487913}
     m_Modifications:
+    - target: {fileID: 8005883492053948919, guid: 5ec5c9a429039aa4ebedd38708bfade8, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8366105834448861218, guid: 5ec5c9a429039aa4ebedd38708bfade8, type: 3}
       propertyPath: m_Name
       value: PP_Fir_Tree_Long_Snow_02
@@ -27215,6 +27145,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 6870902661642586542}
     m_Modifications:
+    - target: {fileID: 491507566443391957, guid: 4a0f81398f932174a83fe1d78bec7cbd, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1628336432371830970, guid: 4a0f81398f932174a83fe1d78bec7cbd, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.6311449
@@ -27546,6 +27480,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 8330130871832180854}
     m_Modifications:
+    - target: {fileID: 7912568466573781098, guid: df9c09cef606e674480fd64758cdd472, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8561320253692955071, guid: df9c09cef606e674480fd64758cdd472, type: 3}
       propertyPath: m_Name
       value: PP_Volcano_Dead_09
@@ -27721,6 +27659,10 @@ PrefabInstance:
     - target: {fileID: 3083730388076681309, guid: 516be1ee41400604dae5596be5f5e45a, type: 3}
       propertyPath: m_Name
       value: PP_Ice_Plateau_04
+      objectReference: {fileID: 0}
+    - target: {fileID: 3588067094849976712, guid: 516be1ee41400604dae5596be5f5e45a, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 6865384260801352154, guid: 516be1ee41400604dae5596be5f5e45a, type: 3}
@@ -28713,6 +28655,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6442574673210917870, guid: 3fc697cb1b7e06c45a8cd0d9eb886d09, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 6724356833166006068, guid: 3fc697cb1b7e06c45a8cd0d9eb886d09, type: 3}
     m_RemovedGameObjects: []
@@ -28914,6 +28860,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1975489710584684217}
     m_Modifications:
+    - target: {fileID: 7118963163690183729, guid: e0d943225aaee7447a646162944ec371, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8250752413775419230, guid: e0d943225aaee7447a646162944ec371, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.6125557
@@ -29088,6 +29038,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 707308012498864961, guid: 4598c6ade5d0d034788a3f580334b962, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1845332627387035694, guid: 4598c6ade5d0d034788a3f580334b962, type: 3}
+      propertyPath: m_CastShadows
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:
@@ -30401,6 +30355,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 3060466034371130555}
     m_Modifications:
+    - target: {fileID: 7174186289561252635, guid: b62231e091ec71e47a09bc7ac157e622, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8342065878180382836, guid: b62231e091ec71e47a09bc7ac157e622, type: 3}
       propertyPath: m_LocalScale.x
       value: 2.9563613
@@ -32926,6 +32884,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: PP_Tree_Spooky_08
       objectReference: {fileID: 0}
+    - target: {fileID: 1627949633497825400, guid: 28a8e2bf4d60c1849a855ea5b6437a2f, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -33323,6 +33285,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1975489710584684217}
     m_Modifications:
+    - target: {fileID: 7507240395250505251, guid: f7c314e8cbe3f584c96b890bdc7817c7, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8300115616915863542, guid: f7c314e8cbe3f584c96b890bdc7817c7, type: 3}
       propertyPath: m_Name
       value: PP_Forest_Mountain_Moss_08
@@ -33435,68 +33401,6 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 5778416528792845930, guid: 2f4e31442ee34514bbef0dcdde59c82d, type: 3}
---- !u!1001 &706839380515525967
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 4940335505096812263}
-    m_Modifications:
-    - target: {fileID: 689278183676197877, guid: 6869805afc5ef5c4fa3b7b506eea27e5, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 309
-      objectReference: {fileID: 0}
-    - target: {fileID: 689278183676197877, guid: 6869805afc5ef5c4fa3b7b506eea27e5, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 4.8369164
-      objectReference: {fileID: 0}
-    - target: {fileID: 689278183676197877, guid: 6869805afc5ef5c4fa3b7b506eea27e5, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 40
-      objectReference: {fileID: 0}
-    - target: {fileID: 689278183676197877, guid: 6869805afc5ef5c4fa3b7b506eea27e5, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 689278183676197877, guid: 6869805afc5ef5c4fa3b7b506eea27e5, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 689278183676197877, guid: 6869805afc5ef5c4fa3b7b506eea27e5, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 689278183676197877, guid: 6869805afc5ef5c4fa3b7b506eea27e5, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 689278183676197877, guid: 6869805afc5ef5c4fa3b7b506eea27e5, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 689278183676197877, guid: 6869805afc5ef5c4fa3b7b506eea27e5, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 689278183676197877, guid: 6869805afc5ef5c4fa3b7b506eea27e5, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7751199814359466297, guid: 6869805afc5ef5c4fa3b7b506eea27e5, type: 3}
-      propertyPath: m_Name
-      value: SESourceProximity_SwampBoss
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 6869805afc5ef5c4fa3b7b506eea27e5, type: 3}
---- !u!4 &27017684068642490 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 689278183676197877, guid: 6869805afc5ef5c4fa3b7b506eea27e5, type: 3}
-  m_PrefabInstance: {fileID: 706839380515525967}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &719604168019465266
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -33580,6 +33484,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 7021199362694423736}
     m_Modifications:
+    - target: {fileID: 491507566443391957, guid: 4a0f81398f932174a83fe1d78bec7cbd, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1628336432371830970, guid: 4a0f81398f932174a83fe1d78bec7cbd, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.95963347
@@ -33775,6 +33683,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 6950849277344613340}
     m_Modifications:
+    - target: {fileID: 7118963163690183729, guid: e0d943225aaee7447a646162944ec371, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8250752413775419230, guid: e0d943225aaee7447a646162944ec371, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.7788948
@@ -35977,6 +35889,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8722397841025853250, guid: 824d877700163a1498a2430171f80988, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 7953839326600315560, guid: 824d877700163a1498a2430171f80988, type: 3}
     m_RemovedGameObjects: []
@@ -36319,68 +36235,6 @@ PrefabInstance:
 Transform:
   m_CorrespondingSourceObject: {fileID: 3215261517882562962, guid: 2412ac153f996ac42b3d7b37b7e8656f, type: 3}
   m_PrefabInstance: {fileID: 1024599553136120787}
-  m_PrefabAsset: {fileID: 0}
---- !u!1001 &1027037016748582435
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 2025550005747149697}
-    m_Modifications:
-    - target: {fileID: 689278183676197877, guid: 13aa887220aaeec4cbb41c7d3b87964b, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 689278183676197877, guid: 13aa887220aaeec4cbb41c7d3b87964b, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 5.362955
-      objectReference: {fileID: 0}
-    - target: {fileID: 689278183676197877, guid: 13aa887220aaeec4cbb41c7d3b87964b, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 307
-      objectReference: {fileID: 0}
-    - target: {fileID: 689278183676197877, guid: 13aa887220aaeec4cbb41c7d3b87964b, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 689278183676197877, guid: 13aa887220aaeec4cbb41c7d3b87964b, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 689278183676197877, guid: 13aa887220aaeec4cbb41c7d3b87964b, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 689278183676197877, guid: 13aa887220aaeec4cbb41c7d3b87964b, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 689278183676197877, guid: 13aa887220aaeec4cbb41c7d3b87964b, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 689278183676197877, guid: 13aa887220aaeec4cbb41c7d3b87964b, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 689278183676197877, guid: 13aa887220aaeec4cbb41c7d3b87964b, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7751199814359466297, guid: 13aa887220aaeec4cbb41c7d3b87964b, type: 3}
-      propertyPath: m_Name
-      value: SESourceProximity_SnowyBoss
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 13aa887220aaeec4cbb41c7d3b87964b, type: 3}
---- !u!4 &562961371642977750 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 689278183676197877, guid: 13aa887220aaeec4cbb41c7d3b87964b, type: 3}
-  m_PrefabInstance: {fileID: 1027037016748582435}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1032781315202889887
 PrefabInstance:
@@ -36818,6 +36672,10 @@ PrefabInstance:
     - target: {fileID: 5761529531805629901, guid: 1d7009439ccfe914fb0112b16206b250, type: 3}
       propertyPath: m_Name
       value: PP_Tree_Spooky_05
+      objectReference: {fileID: 0}
+    - target: {fileID: 6122059738459790360, guid: 1d7009439ccfe914fb0112b16206b250, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -37560,6 +37418,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: PP_Forest_Mountain_Moss_03
       objectReference: {fileID: 0}
+    - target: {fileID: 5875569279579975056, guid: 9cbc564d39824e74ea789df0581528fe, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 6088833553814903634, guid: 9cbc564d39824e74ea789df0581528fe, type: 3}
     m_RemovedGameObjects: []
@@ -38179,6 +38041,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 7021199362694423736}
     m_Modifications:
+    - target: {fileID: 7118963163690183729, guid: e0d943225aaee7447a646162944ec371, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8250752413775419230, guid: e0d943225aaee7447a646162944ec371, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.9456934
@@ -38428,6 +38294,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1019174569738978700, guid: c0a9dcad43d5d4d439ed42b61e8e3ccf, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2193245338011746019, guid: c0a9dcad43d5d4d439ed42b61e8e3ccf, type: 3}
+      propertyPath: m_CastShadows
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:
@@ -39531,6 +39401,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6515872277640574524, guid: 25d62ce1eb396c64d9744bdb1dd986f8, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -39685,6 +39559,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5443579035804558574, guid: c62047ab5f0b54941a9a7939d25ae413, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6611379455291760513, guid: c62047ab5f0b54941a9a7939d25ae413, type: 3}
+      propertyPath: m_CastShadows
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -39930,6 +39808,10 @@ PrefabInstance:
     - target: {fileID: 2986062911559896408, guid: ba76b75f042c66c49a674e1eb2e2f2b4, type: 3}
       propertyPath: m_Name
       value: PP_Fir_Tree_Long_06
+      objectReference: {fileID: 0}
+    - target: {fileID: 3634506146813881485, guid: ba76b75f042c66c49a674e1eb2e2f2b4, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -40933,6 +40815,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 4717464683965362413}
     m_Modifications:
+    - target: {fileID: 2990111839182292224, guid: fc33a023a18e73f4791670fd713c9f40, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3638906919097803989, guid: fc33a023a18e73f4791670fd713c9f40, type: 3}
       propertyPath: m_Name
       value: PP_Mountain_Plateau_Snow_02
@@ -41133,28 +41019,16 @@ PrefabInstance:
       value: "10019_\uBC14\uC704 \uD3EC\uC158 RecipeHint"
       objectReference: {fileID: 0}
     - target: {fileID: 8061621473638182047, guid: b08882ff185a15248bf6941f12315470, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 8061621473638182047, guid: b08882ff185a15248bf6941f12315470, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 8061621473638182047, guid: b08882ff185a15248bf6941f12315470, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 8061621473638182047, guid: b08882ff185a15248bf6941f12315470, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -238.62921
+      value: -238.02
       objectReference: {fileID: 0}
     - target: {fileID: 8061621473638182047, guid: b08882ff185a15248bf6941f12315470, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.2222399
+      value: 1.35
       objectReference: {fileID: 0}
     - target: {fileID: 8061621473638182047, guid: b08882ff185a15248bf6941f12315470, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 43.311127
+      value: 47.42
       objectReference: {fileID: 0}
     - target: {fileID: 8061621473638182047, guid: b08882ff185a15248bf6941f12315470, type: 3}
       propertyPath: m_LocalRotation.w
@@ -41276,6 +41150,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 4717464683965362413}
     m_Modifications:
+    - target: {fileID: 985595441245063647, guid: 1f04e3f1737541f408f1f4b2e600a0db, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1634091590278948874, guid: 1f04e3f1737541f408f1f4b2e600a0db, type: 3}
       propertyPath: m_Name
       value: PP_Mountain_Plateau_Snow_06
@@ -41774,6 +41652,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 8797783085756163184}
     m_Modifications:
+    - target: {fileID: 7783741980907325881, guid: 60c5260efc4a8844d9a090f8eda7a746, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8576424236672444524, guid: 60c5260efc4a8844d9a090f8eda7a746, type: 3}
       propertyPath: m_Name
       value: PP_Tree_05
@@ -41943,6 +41825,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 3060466034371130555}
     m_Modifications:
+    - target: {fileID: 2684854301569948873, guid: a272ba4521fe1eb4684ff2bb6983b343, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3821770612227860390, guid: a272ba4521fe1eb4684ff2bb6983b343, type: 3}
       propertyPath: m_LocalScale.x
       value: 3.2205532
@@ -42111,6 +41997,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 8330130871832180854}
     m_Modifications:
+    - target: {fileID: 7912568466573781098, guid: df9c09cef606e674480fd64758cdd472, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8561320253692955071, guid: df9c09cef606e674480fd64758cdd472, type: 3}
       propertyPath: m_Name
       value: PP_Volcano_Dead_09
@@ -42573,6 +42463,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: PP_Fir_Tree_Long_06
       objectReference: {fileID: 0}
+    - target: {fileID: 3634506146813881485, guid: ba76b75f042c66c49a674e1eb2e2f2b4, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -42665,6 +42559,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7684339136793480189, guid: 118b1c6311c35cd4782b8271e299fad7, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8858419285138796690, guid: 118b1c6311c35cd4782b8271e299fad7, type: 3}
+      propertyPath: m_CastShadows
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:
@@ -42873,68 +42771,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 8712885830571778801, guid: ff2ffe0399a004c478b8f6670c5037b6, type: 3}
   m_PrefabInstance: {fileID: 1748915133694902413}
   m_PrefabAsset: {fileID: 0}
---- !u!1001 &1784595455895093880
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 3953770819910608675}
-    m_Modifications:
-    - target: {fileID: 689278183676197877, guid: 9657c974cf87f19489d3df2e5403122d, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -309
-      objectReference: {fileID: 0}
-    - target: {fileID: 689278183676197877, guid: 9657c974cf87f19489d3df2e5403122d, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 9.738813
-      objectReference: {fileID: 0}
-    - target: {fileID: 689278183676197877, guid: 9657c974cf87f19489d3df2e5403122d, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 40
-      objectReference: {fileID: 0}
-    - target: {fileID: 689278183676197877, guid: 9657c974cf87f19489d3df2e5403122d, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 689278183676197877, guid: 9657c974cf87f19489d3df2e5403122d, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 689278183676197877, guid: 9657c974cf87f19489d3df2e5403122d, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 689278183676197877, guid: 9657c974cf87f19489d3df2e5403122d, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 689278183676197877, guid: 9657c974cf87f19489d3df2e5403122d, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 689278183676197877, guid: 9657c974cf87f19489d3df2e5403122d, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 689278183676197877, guid: 9657c974cf87f19489d3df2e5403122d, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7751199814359466297, guid: 9657c974cf87f19489d3df2e5403122d, type: 3}
-      propertyPath: m_Name
-      value: SESourceProximity_VolcanoBoss
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 9657c974cf87f19489d3df2e5403122d, type: 3}
---- !u!4 &1248876741227018637 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 689278183676197877, guid: 9657c974cf87f19489d3df2e5403122d, type: 3}
-  m_PrefabInstance: {fileID: 1784595455895093880}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1788561483501604407
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -43018,6 +42854,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 5907823428412731628}
     m_Modifications:
+    - target: {fileID: 3063393690866013361, guid: 325e96a28cd7a304a9f2635580251cf6, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3567871410473956708, guid: 325e96a28cd7a304a9f2635580251cf6, type: 3}
       propertyPath: m_Name
       value: PP_Hill_Snow_25
@@ -43889,6 +43729,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 6870902661642586542}
     m_Modifications:
+    - target: {fileID: 788984110247452914, guid: 8378dae0143241b4188afc79175b4648, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1293646546383241511, guid: 8378dae0143241b4188afc79175b4648, type: 3}
       propertyPath: m_Name
       value: PP_Hill_Forest_Moss_08
@@ -44139,6 +43983,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: PP_Ice_Plateau_04
       objectReference: {fileID: 0}
+    - target: {fileID: 3588067094849976712, guid: 516be1ee41400604dae5596be5f5e45a, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 6865384260801352154, guid: 516be1ee41400604dae5596be5f5e45a, type: 3}
     m_RemovedGameObjects: []
@@ -44279,20 +44127,8 @@ PrefabInstance:
     m_TransformParent: {fileID: 161783458410411454}
     m_Modifications:
     - target: {fileID: 5360488594477277016, guid: e499ed7e8fac6004385f9d0f54d0ad9d, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 5360488594477277016, guid: e499ed7e8fac6004385f9d0f54d0ad9d, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 5360488594477277016, guid: e499ed7e8fac6004385f9d0f54d0ad9d, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 5360488594477277016, guid: e499ed7e8fac6004385f9d0f54d0ad9d, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -299.9
+      value: -300.59
       objectReference: {fileID: 0}
     - target: {fileID: 5360488594477277016, guid: e499ed7e8fac6004385f9d0f54d0ad9d, type: 3}
       propertyPath: m_LocalPosition.y
@@ -44300,7 +44136,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5360488594477277016, guid: e499ed7e8fac6004385f9d0f54d0ad9d, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -40.1
+      value: -45.75
       objectReference: {fileID: 0}
     - target: {fileID: 5360488594477277016, guid: e499ed7e8fac6004385f9d0f54d0ad9d, type: 3}
       propertyPath: m_LocalRotation.w
@@ -44352,6 +44188,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 4717464683965362413}
     m_Modifications:
+    - target: {fileID: 7845955393435907775, guid: 9057e20a83066a942a4d68f7f2d60318, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8638628304357758826, guid: 9057e20a83066a942a4d68f7f2d60318, type: 3}
       propertyPath: m_Name
       value: PP_Mountain_Plateau_Snow_01
@@ -44528,6 +44368,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6552839228229809944, guid: 1304c27845d72bf4f9c0eb08134ac36c, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -44622,6 +44466,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6515872277640574524, guid: 25d62ce1eb396c64d9744bdb1dd986f8, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -44665,28 +44513,16 @@ PrefabInstance:
       value: "10002_\uD654\uC5FC \uBB3C\uC57D RecipeHint"
       objectReference: {fileID: 0}
     - target: {fileID: 6347179151010665808, guid: 92b04404389dcfe41b76334198b149a7, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 6347179151010665808, guid: 92b04404389dcfe41b76334198b149a7, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 6347179151010665808, guid: 92b04404389dcfe41b76334198b149a7, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 6347179151010665808, guid: 92b04404389dcfe41b76334198b149a7, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 35.6
+      value: 42.9
       objectReference: {fileID: 0}
     - target: {fileID: 6347179151010665808, guid: 92b04404389dcfe41b76334198b149a7, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.83777785
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6347179151010665808, guid: 92b04404389dcfe41b76334198b149a7, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -19.1
+      value: -60.6
       objectReference: {fileID: 0}
     - target: {fileID: 6347179151010665808, guid: 92b04404389dcfe41b76334198b149a7, type: 3}
       propertyPath: m_LocalRotation.w
@@ -45037,6 +44873,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 8330130871832180854}
     m_Modifications:
+    - target: {fileID: 141329650645966036, guid: f1b23b633659ce84e90c777da55df6fd, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1278237574303082427, guid: f1b23b633659ce84e90c777da55df6fd, type: 3}
       propertyPath: m_LocalScale.x
       value: 1.116885
@@ -45519,6 +45359,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 6870902661642586542}
     m_Modifications:
+    - target: {fileID: 491507566443391957, guid: 4a0f81398f932174a83fe1d78bec7cbd, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1628336432371830970, guid: 4a0f81398f932174a83fe1d78bec7cbd, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.59214556
@@ -46001,6 +45845,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 7021199362694423736}
     m_Modifications:
+    - target: {fileID: 5140831416204852627, guid: 5f73b48e91b60c44bbb34f605cf9bb2c, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6277114301594535676, guid: 5f73b48e91b60c44bbb34f605cf9bb2c, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.86636364
@@ -46177,6 +46025,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4367840628265816823, guid: be97f7a914081224aa993ce6a66232a0, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -46289,6 +46141,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 361696617448812938}
     m_Modifications:
+    - target: {fileID: 2500203781529046706, guid: df61e88df262f3f41a78b2ec3902f944, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3673159158338647517, guid: df61e88df262f3f41a78b2ec3902f944, type: 3}
       propertyPath: m_LocalScale.x
       value: 1.0979725
@@ -46686,6 +46542,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: PP_Forest_Mountain_Moss_07
       objectReference: {fileID: 0}
+    - target: {fileID: 3920640953318649638, guid: 32de14771d856864c8f6aa3e7868aac0, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 7480181387721073591, guid: 32de14771d856864c8f6aa3e7868aac0, type: 3}
     m_RemovedGameObjects: []
@@ -46824,6 +46684,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 8891106552256520201}
     m_Modifications:
+    - target: {fileID: 7118963163690183729, guid: e0d943225aaee7447a646162944ec371, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8250752413775419230, guid: e0d943225aaee7447a646162944ec371, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.52627665
@@ -47273,6 +47137,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 3060466034371130555}
     m_Modifications:
+    - target: {fileID: 7160987897213968542, guid: 4759423026cc59747a8a69b5b92fa1d3, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8298968982607666161, guid: 4759423026cc59747a8a69b5b92fa1d3, type: 3}
       propertyPath: m_LocalScale.x
       value: 3.5310361
@@ -47367,6 +47235,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 3060466034371130555}
     m_Modifications:
+    - target: {fileID: 383846500749135109, guid: ac98494f32b2fcf479554b76722e9e4d, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1520139178932844138, guid: ac98494f32b2fcf479554b76722e9e4d, type: 3}
       propertyPath: m_LocalScale.x
       value: 3.122554
@@ -47715,6 +47587,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 7021199362694423736}
     m_Modifications:
+    - target: {fileID: 491507566443391957, guid: 4a0f81398f932174a83fe1d78bec7cbd, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1628336432371830970, guid: 4a0f81398f932174a83fe1d78bec7cbd, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.77837986
@@ -48191,6 +48067,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: PP_Hill_Forest_Moss_01
       objectReference: {fileID: 0}
+    - target: {fileID: 8420454586450153487, guid: 7b405aef70efdba46b5e706cf52c9c6f, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 3801091840156177624, guid: 7b405aef70efdba46b5e706cf52c9c6f, type: 3}
     m_RemovedGameObjects: []
@@ -48379,6 +48259,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 7021199362694423736}
     m_Modifications:
+    - target: {fileID: 4995042741476251623, guid: 5d94fbbff54cd904396ef47190fe54e7, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6132451561534270600, guid: 5d94fbbff54cd904396ef47190fe54e7, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.93891215
@@ -49779,6 +49663,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 3060466034371130555}
     m_Modifications:
+    - target: {fileID: 703368449490019392, guid: 23d853e8d62155c4d94d8d5f46a4b6b0, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1351679744361252245, guid: 23d853e8d62155c4d94d8d5f46a4b6b0, type: 3}
       propertyPath: m_Name
       value: PP_Fir_Tree_Long_09
@@ -50083,6 +49971,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: PP_Volcano_Dead_01
       objectReference: {fileID: 0}
+    - target: {fileID: 1163501262557764253, guid: 2a4afe854379e2f4d8c3039d5eab614d, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 5118314160725774193, guid: 2a4afe854379e2f4d8c3039d5eab614d, type: 3}
     m_RemovedGameObjects: []
@@ -50338,6 +50230,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 707308012498864961, guid: 4598c6ade5d0d034788a3f580334b962, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1845332627387035694, guid: 4598c6ade5d0d034788a3f580334b962, type: 3}
+      propertyPath: m_CastShadows
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:
@@ -50788,6 +50684,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: PP_Fir_Tree_Long_04
       objectReference: {fileID: 0}
+    - target: {fileID: 6202572647346188941, guid: eefb088f8189e344faa3c74b4c11c833, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -51175,6 +51075,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2235181895564883442}
     m_Modifications:
+    - target: {fileID: 2332511915948441943, guid: d8cd48026b22f08409a70633e6be46e8, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3464838104725518904, guid: d8cd48026b22f08409a70633e6be46e8, type: 3}
       propertyPath: m_LocalScale.x
       value: 4.309438
@@ -51481,6 +51385,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 361696617448812938}
     m_Modifications:
+    - target: {fileID: 7068662073071161744, guid: 3e5967037b1b0f64b96526c6bccbc441, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8238141897784240895, guid: 3e5967037b1b0f64b96526c6bccbc441, type: 3}
       propertyPath: m_LocalScale.x
       value: 1.2456671
@@ -51677,28 +51585,16 @@ PrefabInstance:
     m_TransformParent: {fileID: 4831607795070634816}
     m_Modifications:
     - target: {fileID: 3961298626215757451, guid: 4b9abbf54583c7a4db7ad343ee4fdcf1, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 3961298626215757451, guid: 4b9abbf54583c7a4db7ad343ee4fdcf1, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 3961298626215757451, guid: 4b9abbf54583c7a4db7ad343ee4fdcf1, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 3961298626215757451, guid: 4b9abbf54583c7a4db7ad343ee4fdcf1, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 312.03
+      value: 313.33
       objectReference: {fileID: 0}
     - target: {fileID: 3961298626215757451, guid: 4b9abbf54583c7a4db7ad343ee4fdcf1, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.7909788
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3961298626215757451, guid: 4b9abbf54583c7a4db7ad343ee4fdcf1, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 93.73
+      value: 84.87
       objectReference: {fileID: 0}
     - target: {fileID: 3961298626215757451, guid: 4b9abbf54583c7a4db7ad343ee4fdcf1, type: 3}
       propertyPath: m_LocalRotation.w
@@ -52277,6 +52173,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 5907823428412731628}
     m_Modifications:
+    - target: {fileID: 7310236748328471219, guid: 4da889aead3da0b4eb60938f540246d7, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8446502526194282972, guid: 4da889aead3da0b4eb60938f540246d7, type: 3}
       propertyPath: m_LocalScale.x
       value: 1.1091015
@@ -52866,6 +52766,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 8330130871832180854}
     m_Modifications:
+    - target: {fileID: 351345838258529967, guid: b70a5c9ff6c761b468d70728551c7d84, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1489310425742433728, guid: b70a5c9ff6c761b468d70728551c7d84, type: 3}
       propertyPath: m_LocalScale.x
       value: 1.0221734
@@ -52986,6 +52890,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 5907823428412731628}
     m_Modifications:
+    - target: {fileID: 2818244953114374060, guid: 91ca285506a3da4408d036bca2cbe8b1, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3987732989939586243, guid: 91ca285506a3da4408d036bca2cbe8b1, type: 3}
       propertyPath: m_LocalScale.x
       value: 1.055122
@@ -54571,6 +54479,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6398849754718264419, guid: f8028d9423878274ea220de80feed92d, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 2447322412269519981, guid: f8028d9423878274ea220de80feed92d, type: 3}
     m_RemovedGameObjects: []
@@ -54689,6 +54601,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5718961687219610752, guid: 80543b4bbfb089b4e82f2824fc036f8f, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6851938237126336495, guid: 80543b4bbfb089b4e82f2824fc036f8f, type: 3}
+      propertyPath: m_CastShadows
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:
@@ -55265,6 +55181,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 8891106552256520201}
     m_Modifications:
+    - target: {fileID: 7118963163690183729, guid: e0d943225aaee7447a646162944ec371, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8250752413775419230, guid: e0d943225aaee7447a646162944ec371, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.51221913
@@ -56108,6 +56028,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 8797783085756163184}
     m_Modifications:
+    - target: {fileID: 5513932775867632215, guid: 0ac0dfd5075786c4e9e83c1558844848, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6306606099622980482, guid: 0ac0dfd5075786c4e9e83c1558844848, type: 3}
       propertyPath: m_Name
       value: PP_Fir_Tree_Long_08
@@ -56730,6 +56654,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 6870902661642586542}
     m_Modifications:
+    - target: {fileID: 5140831416204852627, guid: 5f73b48e91b60c44bbb34f605cf9bb2c, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6277114301594535676, guid: 5f73b48e91b60c44bbb34f605cf9bb2c, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.58138317
@@ -57000,6 +56928,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 6606910244685090356}
     m_Modifications:
+    - target: {fileID: 3389491068829257401, guid: 26fcabb13bef48f4e8e6e689ec1640e4, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3749554943888125804, guid: 26fcabb13bef48f4e8e6e689ec1640e4, type: 3}
       propertyPath: m_Name
       value: PP_Tree_Spooky_14
@@ -57243,6 +57175,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 6606910244685090356}
     m_Modifications:
+    - target: {fileID: 7046871994715293726, guid: 763c45346ac163e42b4d29628fd58791, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8178722066103055217, guid: 763c45346ac163e42b4d29628fd58791, type: 3}
       propertyPath: m_LocalScale.x
       value: 3.8297215
@@ -57468,6 +57404,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1780966067190946368, guid: a685c752455cb6c46b38ed1fe8ec20c7, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -57686,6 +57626,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 3060466034371130555}
     m_Modifications:
+    - target: {fileID: 703368449490019392, guid: 23d853e8d62155c4d94d8d5f46a4b6b0, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1351679744361252245, guid: 23d853e8d62155c4d94d8d5f46a4b6b0, type: 3}
       propertyPath: m_Name
       value: PP_Fir_Tree_Long_09
@@ -57929,6 +57873,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 361696617448812938}
     m_Modifications:
+    - target: {fileID: 975248214860859651, guid: 853b87a43615d9f49b4bec80e1fa5f5f, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1623612973332441302, guid: 853b87a43615d9f49b4bec80e1fa5f5f, type: 3}
       propertyPath: m_Name
       value: PP_Hill_Forest_Moss_15
@@ -58124,6 +58072,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 361696617448812938}
     m_Modifications:
+    - target: {fileID: 405124671929409300, guid: 2a049a57d6436334c8c451ddc1cbfa04, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1572994743301219451, guid: 2a049a57d6436334c8c451ddc1cbfa04, type: 3}
       propertyPath: m_LocalScale.x
       value: 1.134164
@@ -58360,6 +58312,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5470763903472641151, guid: bd314edc325ea0a47a6f8220e093bdd6, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6604284848940769040, guid: bd314edc325ea0a47a6f8220e093bdd6, type: 3}
+      propertyPath: m_CastShadows
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -58611,6 +58567,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 8797783085756163184}
     m_Modifications:
+    - target: {fileID: 290318193811140865, guid: a252dd3d860618c4b824015303a15bcf, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1462620975973386862, guid: a252dd3d860618c4b824015303a15bcf, type: 3}
       propertyPath: m_LocalScale.x
       value: 2.5487814
@@ -58992,6 +58952,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1975489710584684217}
     m_Modifications:
+    - target: {fileID: 491507566443391957, guid: 4a0f81398f932174a83fe1d78bec7cbd, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1628336432371830970, guid: 4a0f81398f932174a83fe1d78bec7cbd, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.64666724
@@ -60066,20 +60030,8 @@ PrefabInstance:
     m_TransformParent: {fileID: 7817975522937530979}
     m_Modifications:
     - target: {fileID: 1123685418327208713, guid: dcff813de060f28438aa2cdb9d79b20f, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 1123685418327208713, guid: dcff813de060f28438aa2cdb9d79b20f, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 1123685418327208713, guid: dcff813de060f28438aa2cdb9d79b20f, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 1123685418327208713, guid: dcff813de060f28438aa2cdb9d79b20f, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 35.5
+      value: 33.96
       objectReference: {fileID: 0}
     - target: {fileID: 1123685418327208713, guid: dcff813de060f28438aa2cdb9d79b20f, type: 3}
       propertyPath: m_LocalPosition.y
@@ -60087,7 +60039,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1123685418327208713, guid: dcff813de060f28438aa2cdb9d79b20f, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 69.4
+      value: 64.82
       objectReference: {fileID: 0}
     - target: {fileID: 1123685418327208713, guid: dcff813de060f28438aa2cdb9d79b20f, type: 3}
       propertyPath: m_LocalRotation.w
@@ -61083,6 +61035,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 8797783085756163184}
     m_Modifications:
+    - target: {fileID: 703368449490019392, guid: 23d853e8d62155c4d94d8d5f46a4b6b0, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1351679744361252245, guid: 23d853e8d62155c4d94d8d5f46a4b6b0, type: 3}
       propertyPath: m_Name
       value: PP_Fir_Tree_Long_09
@@ -61306,6 +61262,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 647515519056814383, guid: a685c752455cb6c46b38ed1fe8ec20c7, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1780966067190946368, guid: a685c752455cb6c46b38ed1fe8ec20c7, type: 3}
+      propertyPath: m_CastShadows
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -61823,6 +61783,10 @@ PrefabInstance:
     - target: {fileID: 754292280307037945, guid: 8ef3590045d5d2249baef2f5a8b6c90d, type: 3}
       propertyPath: m_Name
       value: PP_Forest_Mountain_Moss_06
+      objectReference: {fileID: 0}
+    - target: {fileID: 1258532504519481132, guid: 8ef3590045d5d2249baef2f5a8b6c90d, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 826535447202956148, guid: 8ef3590045d5d2249baef2f5a8b6c90d, type: 3}
@@ -62472,6 +62436,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6442574673210917870, guid: 3fc697cb1b7e06c45a8cd0d9eb886d09, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 6724356833166006068, guid: 3fc697cb1b7e06c45a8cd0d9eb886d09, type: 3}
     m_RemovedGameObjects: []
@@ -62591,6 +62559,10 @@ PrefabInstance:
     - target: {fileID: 803164982884105032, guid: 2a4afe854379e2f4d8c3039d5eab614d, type: 3}
       propertyPath: m_Name
       value: PP_Volcano_Dead_01
+      objectReference: {fileID: 0}
+    - target: {fileID: 1163501262557764253, guid: 2a4afe854379e2f4d8c3039d5eab614d, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 5118314160725774193, guid: 2a4afe854379e2f4d8c3039d5eab614d, type: 3}
@@ -62936,6 +62908,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: PP_Forest_Mountain_Moss_06
       objectReference: {fileID: 0}
+    - target: {fileID: 1258532504519481132, guid: 8ef3590045d5d2249baef2f5a8b6c90d, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 826535447202956148, guid: 8ef3590045d5d2249baef2f5a8b6c90d, type: 3}
     m_RemovedGameObjects: []
@@ -63054,6 +63030,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3030730131244326132, guid: 5271c0a74f0aea64baaae0637fb6e447, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4198617245049153435, guid: 5271c0a74f0aea64baaae0637fb6e447, type: 3}
+      propertyPath: m_CastShadows
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -63783,6 +63763,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: PP_Tree_Spooky_10
       objectReference: {fileID: 0}
+    - target: {fileID: 8088289108811525972, guid: 3f38c3a67de2a55449be576f15db9992, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -64201,20 +64185,8 @@ PrefabInstance:
       value: "10006_\uC9C8\uBCD1 \uC800\uD56D \uD3EC\uC158 RecipeHint"
       objectReference: {fileID: 0}
     - target: {fileID: 4680342326820580386, guid: a3ab8d61ea7105f4190c49cc65a05274, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 4680342326820580386, guid: a3ab8d61ea7105f4190c49cc65a05274, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 4680342326820580386, guid: a3ab8d61ea7105f4190c49cc65a05274, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 4680342326820580386, guid: a3ab8d61ea7105f4190c49cc65a05274, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 73.9
+      value: 65.63
       objectReference: {fileID: 0}
     - target: {fileID: 4680342326820580386, guid: a3ab8d61ea7105f4190c49cc65a05274, type: 3}
       propertyPath: m_LocalPosition.y
@@ -64222,7 +64194,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4680342326820580386, guid: a3ab8d61ea7105f4190c49cc65a05274, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 17
+      value: 3.25
       objectReference: {fileID: 0}
     - target: {fileID: 4680342326820580386, guid: a3ab8d61ea7105f4190c49cc65a05274, type: 3}
       propertyPath: m_LocalRotation.w
@@ -64386,6 +64358,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5385021285145119863, guid: 1304c27845d72bf4f9c0eb08134ac36c, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6552839228229809944, guid: 1304c27845d72bf4f9c0eb08134ac36c, type: 3}
+      propertyPath: m_CastShadows
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -64576,6 +64552,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 7021199362694423736}
     m_Modifications:
+    - target: {fileID: 491507566443391957, guid: 4a0f81398f932174a83fe1d78bec7cbd, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1628336432371830970, guid: 4a0f81398f932174a83fe1d78bec7cbd, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.9534076
@@ -64827,6 +64807,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6640586908593978401, guid: bda9a68a2c20f4a418604d07da6ce977, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 8163614860608201927, guid: bda9a68a2c20f4a418604d07da6ce977, type: 3}
     m_RemovedGameObjects: []
@@ -64967,20 +64951,8 @@ PrefabInstance:
     m_TransformParent: {fileID: 161783458410411454}
     m_Modifications:
     - target: {fileID: 3229541815577031203, guid: 409b098e695c6654290812359ef5c8b3, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 3229541815577031203, guid: 409b098e695c6654290812359ef5c8b3, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 3229541815577031203, guid: 409b098e695c6654290812359ef5c8b3, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 3229541815577031203, guid: 409b098e695c6654290812359ef5c8b3, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -241.5
+      value: -231.06
       objectReference: {fileID: 0}
     - target: {fileID: 3229541815577031203, guid: 409b098e695c6654290812359ef5c8b3, type: 3}
       propertyPath: m_LocalPosition.y
@@ -64988,7 +64960,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3229541815577031203, guid: 409b098e695c6654290812359ef5c8b3, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -30.2
+      value: -29.96
       objectReference: {fileID: 0}
     - target: {fileID: 3229541815577031203, guid: 409b098e695c6654290812359ef5c8b3, type: 3}
       propertyPath: m_LocalRotation.w
@@ -65418,6 +65390,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: PP_Forest_Mountain_Moss_03
       objectReference: {fileID: 0}
+    - target: {fileID: 5875569279579975056, guid: 9cbc564d39824e74ea789df0581528fe, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 6088833553814903634, guid: 9cbc564d39824e74ea789df0581528fe, type: 3}
     m_RemovedGameObjects: []
@@ -65736,6 +65712,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 7021199362694423736}
     m_Modifications:
+    - target: {fileID: 5140831416204852627, guid: 5f73b48e91b60c44bbb34f605cf9bb2c, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6277114301594535676, guid: 5f73b48e91b60c44bbb34f605cf9bb2c, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.96285677
@@ -65918,6 +65898,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 3060466034371130555}
     m_Modifications:
+    - target: {fileID: 2684854301569948873, guid: a272ba4521fe1eb4684ff2bb6983b343, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3821770612227860390, guid: a272ba4521fe1eb4684ff2bb6983b343, type: 3}
       propertyPath: m_LocalScale.x
       value: 3.1110473
@@ -67014,6 +66998,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: PP_Birch_Tree_09
       objectReference: {fileID: 0}
+    - target: {fileID: 8094111116607434611, guid: 253405f37cf74564d800b3532893e73a, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -67344,20 +67332,8 @@ PrefabInstance:
       value: "10008_\uBC14\uB78C \uD3EC\uC158 RecipeHint"
       objectReference: {fileID: 0}
     - target: {fileID: 7753479085554970036, guid: 0a1b7622ca4d3a34a93263255912994a, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 7753479085554970036, guid: 0a1b7622ca4d3a34a93263255912994a, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 7753479085554970036, guid: 0a1b7622ca4d3a34a93263255912994a, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 7753479085554970036, guid: 0a1b7622ca4d3a34a93263255912994a, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -7.2
+      value: -30.75
       objectReference: {fileID: 0}
     - target: {fileID: 7753479085554970036, guid: 0a1b7622ca4d3a34a93263255912994a, type: 3}
       propertyPath: m_LocalPosition.y
@@ -67365,7 +67341,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7753479085554970036, guid: 0a1b7622ca4d3a34a93263255912994a, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 252.8
+      value: 268.65
       objectReference: {fileID: 0}
     - target: {fileID: 7753479085554970036, guid: 0a1b7622ca4d3a34a93263255912994a, type: 3}
       propertyPath: m_LocalRotation.w
@@ -67563,28 +67539,16 @@ PrefabInstance:
     m_TransformParent: {fileID: 4831607795070634816}
     m_Modifications:
     - target: {fileID: 1368388346583420966, guid: 9a1b345e7dc16694798b53872e7dbefa, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 1368388346583420966, guid: 9a1b345e7dc16694798b53872e7dbefa, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 1368388346583420966, guid: 9a1b345e7dc16694798b53872e7dbefa, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 1368388346583420966, guid: 9a1b345e7dc16694798b53872e7dbefa, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 206.92
+      value: 206.16
       objectReference: {fileID: 0}
     - target: {fileID: 1368388346583420966, guid: 9a1b345e7dc16694798b53872e7dbefa, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.59123886
+      value: 0.65
       objectReference: {fileID: 0}
     - target: {fileID: 1368388346583420966, guid: 9a1b345e7dc16694798b53872e7dbefa, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 134.34
+      value: 125.87
       objectReference: {fileID: 0}
     - target: {fileID: 1368388346583420966, guid: 9a1b345e7dc16694798b53872e7dbefa, type: 3}
       propertyPath: m_LocalRotation.w
@@ -67698,6 +67662,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 361696617448812938}
     m_Modifications:
+    - target: {fileID: 5289229801873461739, guid: 650943a7ee757bf4b80c4cf42cfca6f2, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5937963170629709886, guid: 650943a7ee757bf4b80c4cf42cfca6f2, type: 3}
       propertyPath: m_Name
       value: PP_Hill_Forest_Moss_03
@@ -68640,6 +68608,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: PP_Forest_Mountain_Moss_07
       objectReference: {fileID: 0}
+    - target: {fileID: 3920640953318649638, guid: 32de14771d856864c8f6aa3e7868aac0, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 7480181387721073591, guid: 32de14771d856864c8f6aa3e7868aac0, type: 3}
     m_RemovedGameObjects: []
@@ -68933,6 +68905,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 3060466034371130555}
     m_Modifications:
+    - target: {fileID: 7294380515525492059, guid: 79a9f0eaf056cc6499c6f6665a071a69, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8462814223644395060, guid: 79a9f0eaf056cc6499c6f6665a071a69, type: 3}
       propertyPath: m_LocalScale.x
       value: 3.4878736
@@ -69465,6 +69441,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: PP_Hill_Snow_18
       objectReference: {fileID: 0}
+    - target: {fileID: 1201183595788848585, guid: 241309d2eeb363f4ebbb88ee20696093, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 803051354417515068, guid: 241309d2eeb363f4ebbb88ee20696093, type: 3}
     m_RemovedGameObjects: []
@@ -69659,6 +69639,10 @@ PrefabInstance:
     - target: {fileID: 754292280307037945, guid: 8ef3590045d5d2249baef2f5a8b6c90d, type: 3}
       propertyPath: m_Name
       value: PP_Forest_Mountain_Moss_06
+      objectReference: {fileID: 0}
+    - target: {fileID: 1258532504519481132, guid: 8ef3590045d5d2249baef2f5a8b6c90d, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 826535447202956148, guid: 8ef3590045d5d2249baef2f5a8b6c90d, type: 3}
@@ -70024,20 +70008,8 @@ PrefabInstance:
     m_TransformParent: {fileID: 4998861411820921774}
     m_Modifications:
     - target: {fileID: 2925836456882156916, guid: af3b535a4c4282444b349380d0d0336b, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 2925836456882156916, guid: af3b535a4c4282444b349380d0d0336b, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 2925836456882156916, guid: af3b535a4c4282444b349380d0d0336b, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 2925836456882156916, guid: af3b535a4c4282444b349380d0d0336b, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -72.4
+      value: -61.7
       objectReference: {fileID: 0}
     - target: {fileID: 2925836456882156916, guid: af3b535a4c4282444b349380d0d0336b, type: 3}
       propertyPath: m_LocalPosition.y
@@ -70045,7 +70017,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2925836456882156916, guid: af3b535a4c4282444b349380d0d0336b, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 259.5
+      value: 260.1
       objectReference: {fileID: 0}
     - target: {fileID: 2925836456882156916, guid: af3b535a4c4282444b349380d0d0336b, type: 3}
       propertyPath: m_LocalRotation.w
@@ -71565,6 +71537,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6604284848940769040, guid: bd314edc325ea0a47a6f8220e093bdd6, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -72169,6 +72145,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2193245338011746019, guid: c0a9dcad43d5d4d439ed42b61e8e3ccf, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 7696062291001381817, guid: c0a9dcad43d5d4d439ed42b61e8e3ccf, type: 3}
     m_RemovedGameObjects: []
@@ -72618,6 +72598,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: PP_Ice_Plateau_03
       objectReference: {fileID: 0}
+    - target: {fileID: 6134906209408857778, guid: 3eeaf7e3db2728f4bbbff564bbe1337d, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 4350506164805100694, guid: 3eeaf7e3db2728f4bbbff564bbe1337d, type: 3}
     m_RemovedGameObjects: []
@@ -72682,6 +72666,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 6606910244685090356}
     m_Modifications:
+    - target: {fileID: 3389491068829257401, guid: 26fcabb13bef48f4e8e6e689ec1640e4, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3749554943888125804, guid: 26fcabb13bef48f4e8e6e689ec1640e4, type: 3}
       propertyPath: m_Name
       value: PP_Tree_Spooky_14
@@ -72907,6 +72895,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: PP_Fir_Tree_Long_06
       objectReference: {fileID: 0}
+    - target: {fileID: 3634506146813881485, guid: ba76b75f042c66c49a674e1eb2e2f2b4, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -73007,6 +72999,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 8797783085756163184}
     m_Modifications:
+    - target: {fileID: 601405987995436575, guid: 68e3c534a3f2ff4438c32cb46040ede7, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1393974033668466634, guid: 68e3c534a3f2ff4438c32cb46040ede7, type: 3}
       propertyPath: m_Name
       value: PP_Birch_Tree_05
@@ -73795,6 +73791,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: PP_Forest_Mountain_04
       objectReference: {fileID: 0}
+    - target: {fileID: 1605259038821246428, guid: 81fda9740d93eef4882498f0b0d9901a, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 3087205526847426404, guid: 81fda9740d93eef4882498f0b0d9901a, type: 3}
     m_RemovedGameObjects: []
@@ -74325,20 +74325,8 @@ PrefabInstance:
     m_TransformParent: {fileID: 7817975522937530979}
     m_Modifications:
     - target: {fileID: 4564015763438912679, guid: 2f93de36cb719ca408b6008d5779440c, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 4564015763438912679, guid: 2f93de36cb719ca408b6008d5779440c, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 4564015763438912679, guid: 2f93de36cb719ca408b6008d5779440c, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 4564015763438912679, guid: 2f93de36cb719ca408b6008d5779440c, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -69.1
+      value: -75.83
       objectReference: {fileID: 0}
     - target: {fileID: 4564015763438912679, guid: 2f93de36cb719ca408b6008d5779440c, type: 3}
       propertyPath: m_LocalPosition.y
@@ -74346,7 +74334,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4564015763438912679, guid: 2f93de36cb719ca408b6008d5779440c, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 52.4
+      value: 42.86
       objectReference: {fileID: 0}
     - target: {fileID: 4564015763438912679, guid: 2f93de36cb719ca408b6008d5779440c, type: 3}
       propertyPath: m_LocalRotation.w
@@ -74452,6 +74440,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5270253193982752897, guid: 3fc697cb1b7e06c45a8cd0d9eb886d09, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6442574673210917870, guid: 3fc697cb1b7e06c45a8cd0d9eb886d09, type: 3}
+      propertyPath: m_CastShadows
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:
@@ -74773,6 +74765,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 7021199362694423736}
     m_Modifications:
+    - target: {fileID: 7507240395250505251, guid: f7c314e8cbe3f584c96b890bdc7817c7, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8300115616915863542, guid: f7c314e8cbe3f584c96b890bdc7817c7, type: 3}
       propertyPath: m_Name
       value: PP_Forest_Mountain_Moss_08
@@ -75451,6 +75447,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6531443940162501373, guid: fd63994b6c0e19941a0509a21bb7b683, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 5533191442214133843, guid: fd63994b6c0e19941a0509a21bb7b683, type: 3}
     m_RemovedGameObjects: []
@@ -75664,6 +75664,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 361696617448812938}
     m_Modifications:
+    - target: {fileID: 405124671929409300, guid: 2a049a57d6436334c8c451ddc1cbfa04, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1572994743301219451, guid: 2a049a57d6436334c8c451ddc1cbfa04, type: 3}
       propertyPath: m_LocalScale.x
       value: 1.275671
@@ -75784,6 +75788,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2235181895564883442}
     m_Modifications:
+    - target: {fileID: 5401396598871440730, guid: fce9f5768c7af074f969dd94bb6de3ea, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5905734129119632527, guid: fce9f5768c7af074f969dd94bb6de3ea, type: 3}
       propertyPath: m_Name
       value: PP_Skeleton_02
@@ -76099,6 +76107,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7923773605859842398, guid: 4ec58e1caaebf554a844686d9558b827, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9060620953435480625, guid: 4ec58e1caaebf554a844686d9558b827, type: 3}
+      propertyPath: m_CastShadows
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:
@@ -77772,6 +77784,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: PP_Ice_Plateau_03
       objectReference: {fileID: 0}
+    - target: {fileID: 6134906209408857778, guid: 3eeaf7e3db2728f4bbbff564bbe1337d, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 4350506164805100694, guid: 3eeaf7e3db2728f4bbbff564bbe1337d, type: 3}
     m_RemovedGameObjects: []
@@ -78570,6 +78586,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4054271673454890363, guid: 1187a2989adbd914fb7d248e6daece64, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 4133320219770144222, guid: 1187a2989adbd914fb7d248e6daece64, type: 3}
     m_RemovedGameObjects: []
@@ -78885,24 +78905,12 @@ PrefabInstance:
       value: "10007_\uB3CC\uAC00\uC8FD \uD3EC\uC158 RecipeHint"
       objectReference: {fileID: 0}
     - target: {fileID: 1845596248844573594, guid: a593501576f47ea4886219b53c79a7f5, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 1845596248844573594, guid: a593501576f47ea4886219b53c79a7f5, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 1845596248844573594, guid: a593501576f47ea4886219b53c79a7f5, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 1845596248844573594, guid: a593501576f47ea4886219b53c79a7f5, type: 3}
       propertyPath: m_LocalPosition.x
       value: 17.4
       objectReference: {fileID: 0}
     - target: {fileID: 1845596248844573594, guid: a593501576f47ea4886219b53c79a7f5, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.39947438
+      value: 1.1
       objectReference: {fileID: 0}
     - target: {fileID: 1845596248844573594, guid: a593501576f47ea4886219b53c79a7f5, type: 3}
       propertyPath: m_LocalPosition.z
@@ -78910,19 +78918,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1845596248844573594, guid: a593501576f47ea4886219b53c79a7f5, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.9921519
+      value: 0.9987251
       objectReference: {fileID: 0}
     - target: {fileID: 1845596248844573594, guid: a593501576f47ea4886219b53c79a7f5, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.07698649
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1845596248844573594, guid: a593501576f47ea4886219b53c79a7f5, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.043413784
+      value: 0.050479684
       objectReference: {fileID: 0}
     - target: {fileID: 1845596248844573594, guid: a593501576f47ea4886219b53c79a7f5, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.08844735
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1845596248844573594, guid: a593501576f47ea4886219b53c79a7f5, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -78930,7 +78938,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1845596248844573594, guid: a593501576f47ea4886219b53c79a7f5, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
+      value: 5.787
       objectReference: {fileID: 0}
     - target: {fileID: 1845596248844573594, guid: a593501576f47ea4886219b53c79a7f5, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
@@ -79159,6 +79167,10 @@ PrefabInstance:
     - target: {fileID: 917927406839714566, guid: bba6199c506858948b778cc214e8487f, type: 3}
       propertyPath: m_Name
       value: PP_Hill_Snow_01
+      objectReference: {fileID: 0}
+    - target: {fileID: 1710767992145015507, guid: bba6199c506858948b778cc214e8487f, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 3044841524988599584, guid: bba6199c506858948b778cc214e8487f, type: 3}
@@ -79774,20 +79786,8 @@ PrefabInstance:
     m_TransformParent: {fileID: 4998861411820921774}
     m_Modifications:
     - target: {fileID: 3071901638163193059, guid: df67aa14d62fa804c97104a8f35a5ff3, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 3071901638163193059, guid: df67aa14d62fa804c97104a8f35a5ff3, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 3071901638163193059, guid: df67aa14d62fa804c97104a8f35a5ff3, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 3071901638163193059, guid: df67aa14d62fa804c97104a8f35a5ff3, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -88.8
+      value: -58.94
       objectReference: {fileID: 0}
     - target: {fileID: 3071901638163193059, guid: df67aa14d62fa804c97104a8f35a5ff3, type: 3}
       propertyPath: m_LocalPosition.y
@@ -79795,7 +79795,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3071901638163193059, guid: df67aa14d62fa804c97104a8f35a5ff3, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 215.1
+      value: 218.44
       objectReference: {fileID: 0}
     - target: {fileID: 3071901638163193059, guid: df67aa14d62fa804c97104a8f35a5ff3, type: 3}
       propertyPath: m_LocalRotation.w
@@ -80348,6 +80348,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1894924806159483034, guid: 6da5b77915db79243b9c353e974416fa, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 6143277658312748521, guid: 6da5b77915db79243b9c353e974416fa, type: 3}
     m_RemovedGameObjects: []
@@ -80625,28 +80629,16 @@ PrefabInstance:
     m_TransformParent: {fileID: 4831607795070634816}
     m_Modifications:
     - target: {fileID: 2679582721759075975, guid: 0800c0a5305d87548991b930a3fb20a7, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 2679582721759075975, guid: 0800c0a5305d87548991b930a3fb20a7, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 2679582721759075975, guid: 0800c0a5305d87548991b930a3fb20a7, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 2679582721759075975, guid: 0800c0a5305d87548991b930a3fb20a7, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 163.6
+      value: 164.19
       objectReference: {fileID: 0}
     - target: {fileID: 2679582721759075975, guid: 0800c0a5305d87548991b930a3fb20a7, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.45474744
+      value: 0.55
       objectReference: {fileID: 0}
     - target: {fileID: 2679582721759075975, guid: 0800c0a5305d87548991b930a3fb20a7, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 5
+      value: 15.48
       objectReference: {fileID: 0}
     - target: {fileID: 2679582721759075975, guid: 0800c0a5305d87548991b930a3fb20a7, type: 3}
       propertyPath: m_LocalRotation.w
@@ -80754,6 +80746,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: PP_Hill_Snow_18
       objectReference: {fileID: 0}
+    - target: {fileID: 1201183595788848585, guid: 241309d2eeb363f4ebbb88ee20696093, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 803051354417515068, guid: 241309d2eeb363f4ebbb88ee20696093, type: 3}
     m_RemovedGameObjects: []
@@ -80818,6 +80814,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 8330130871832180854}
     m_Modifications:
+    - target: {fileID: 7912568466573781098, guid: df9c09cef606e674480fd64758cdd472, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8561320253692955071, guid: df9c09cef606e674480fd64758cdd472, type: 3}
       propertyPath: m_Name
       value: PP_Volcano_Dead_09
@@ -82020,6 +82020,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 8797783085756163184}
     m_Modifications:
+    - target: {fileID: 5036416700520785620, guid: 028bf54ce999c9a45ad290ccbecdf4d4, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6174398335940369851, guid: 028bf54ce999c9a45ad290ccbecdf4d4, type: 3}
       propertyPath: m_LocalScale.x
       value: 2.78838
@@ -83043,6 +83047,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2021944044296176669, guid: 604dd70826cdbee488c3d35471f4ad30, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -83081,6 +83089,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 8797783085756163184}
     m_Modifications:
+    - target: {fileID: 7294380515525492059, guid: 79a9f0eaf056cc6499c6f6665a071a69, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8462814223644395060, guid: 79a9f0eaf056cc6499c6f6665a071a69, type: 3}
       propertyPath: m_LocalScale.x
       value: 2.8523726
@@ -83304,6 +83316,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5511717731867646144, guid: 7b56242a81c22a74f8e422baa473f940, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6644677312491987887, guid: 7b56242a81c22a74f8e422baa473f940, type: 3}
+      propertyPath: m_CastShadows
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:
@@ -84199,24 +84215,12 @@ PrefabInstance:
     m_TransformParent: {fileID: 4831607795070634816}
     m_Modifications:
     - target: {fileID: 2794320640746888614, guid: 57125e26eaf1b61469954be1b0ff514f, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 2794320640746888614, guid: 57125e26eaf1b61469954be1b0ff514f, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 2794320640746888614, guid: 57125e26eaf1b61469954be1b0ff514f, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 2794320640746888614, guid: 57125e26eaf1b61469954be1b0ff514f, type: 3}
       propertyPath: m_LocalPosition.x
       value: 231.14986
       objectReference: {fileID: 0}
     - target: {fileID: 2794320640746888614, guid: 57125e26eaf1b61469954be1b0ff514f, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.88660485
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2794320640746888614, guid: 57125e26eaf1b61469954be1b0ff514f, type: 3}
       propertyPath: m_LocalPosition.z
@@ -84552,6 +84556,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8932636594727300628, guid: 4d190e7346ea6634c9c175f5e68a850d, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 6463500184400943021, guid: 4d190e7346ea6634c9c175f5e68a850d, type: 3}
     m_RemovedGameObjects: []
@@ -84696,20 +84704,8 @@ PrefabInstance:
       value: "10011_\uBD80\uC2DD \uD3EC\uC158 RecipeHint"
       objectReference: {fileID: 0}
     - target: {fileID: 1496818603654768840, guid: 4ad4ba21729d230448ba765c36f8c9f4, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 1496818603654768840, guid: 4ad4ba21729d230448ba765c36f8c9f4, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 1496818603654768840, guid: 4ad4ba21729d230448ba765c36f8c9f4, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 1496818603654768840, guid: 4ad4ba21729d230448ba765c36f8c9f4, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 83.5
+      value: 81.89
       objectReference: {fileID: 0}
     - target: {fileID: 1496818603654768840, guid: 4ad4ba21729d230448ba765c36f8c9f4, type: 3}
       propertyPath: m_LocalPosition.y
@@ -84717,7 +84713,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1496818603654768840, guid: 4ad4ba21729d230448ba765c36f8c9f4, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 280.3
+      value: 273.25
       objectReference: {fileID: 0}
     - target: {fileID: 1496818603654768840, guid: 4ad4ba21729d230448ba765c36f8c9f4, type: 3}
       propertyPath: m_LocalRotation.w
@@ -84820,6 +84816,10 @@ PrefabInstance:
     - target: {fileID: 840917960345971740, guid: 241309d2eeb363f4ebbb88ee20696093, type: 3}
       propertyPath: m_Name
       value: PP_Hill_Snow_18
+      objectReference: {fileID: 0}
+    - target: {fileID: 1201183595788848585, guid: 241309d2eeb363f4ebbb88ee20696093, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 803051354417515068, guid: 241309d2eeb363f4ebbb88ee20696093, type: 3}
@@ -85014,6 +85014,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5511717731867646144, guid: 7b56242a81c22a74f8e422baa473f940, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6644677312491987887, guid: 7b56242a81c22a74f8e422baa473f940, type: 3}
+      propertyPath: m_CastShadows
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:
@@ -85517,20 +85521,8 @@ PrefabInstance:
     m_TransformParent: {fileID: 7817975522937530979}
     m_Modifications:
     - target: {fileID: 1702881605667374695, guid: e218dd94218763f4c92815dc8d06bb89, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 1702881605667374695, guid: e218dd94218763f4c92815dc8d06bb89, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 1702881605667374695, guid: e218dd94218763f4c92815dc8d06bb89, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 1702881605667374695, guid: e218dd94218763f4c92815dc8d06bb89, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -60.8
+      value: -51.17
       objectReference: {fileID: 0}
     - target: {fileID: 1702881605667374695, guid: e218dd94218763f4c92815dc8d06bb89, type: 3}
       propertyPath: m_LocalPosition.y
@@ -85538,7 +85530,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1702881605667374695, guid: e218dd94218763f4c92815dc8d06bb89, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -52.4
+      value: -60.89
       objectReference: {fileID: 0}
     - target: {fileID: 1702881605667374695, guid: e218dd94218763f4c92815dc8d06bb89, type: 3}
       propertyPath: m_LocalRotation.w
@@ -86174,6 +86166,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 8797783085756163184}
     m_Modifications:
+    - target: {fileID: 5683995195177671802, guid: 83fedbc0e00136d4db517a313331128d, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6188341660237708719, guid: 83fedbc0e00136d4db517a313331128d, type: 3}
       propertyPath: m_Name
       value: PP_Tree_02
@@ -86348,20 +86344,8 @@ PrefabInstance:
       value: "10010_\uBC88\uAC1C \uD3EC\uC158 RecipeHint"
       objectReference: {fileID: 0}
     - target: {fileID: 8312727276578586352, guid: 6da0f5c563a15b74082d06dad52fecba, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 8312727276578586352, guid: 6da0f5c563a15b74082d06dad52fecba, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 8312727276578586352, guid: 6da0f5c563a15b74082d06dad52fecba, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 8312727276578586352, guid: 6da0f5c563a15b74082d06dad52fecba, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -29.4
+      value: -13.45
       objectReference: {fileID: 0}
     - target: {fileID: 8312727276578586352, guid: 6da0f5c563a15b74082d06dad52fecba, type: 3}
       propertyPath: m_LocalPosition.y
@@ -86369,7 +86353,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8312727276578586352, guid: 6da0f5c563a15b74082d06dad52fecba, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 152.6
+      value: 157.48
       objectReference: {fileID: 0}
     - target: {fileID: 8312727276578586352, guid: 6da0f5c563a15b74082d06dad52fecba, type: 3}
       propertyPath: m_LocalRotation.w
@@ -87332,6 +87316,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6498366732457250060, guid: cd18b94b1d166a542aeec5de6eb5b190, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -87425,6 +87413,10 @@ PrefabInstance:
     - target: {fileID: 911110176836501712, guid: 1ae216039605393449bf099e2c60f02e, type: 3}
       propertyPath: m_Name
       value: PP_Hill_Snow_10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1703510271017541893, guid: 1ae216039605393449bf099e2c60f02e, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 8105934918154851069, guid: 1ae216039605393449bf099e2c60f02e, type: 3}
@@ -87640,6 +87632,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 3060466034371130555}
     m_Modifications:
+    - target: {fileID: 7294380515525492059, guid: 79a9f0eaf056cc6499c6f6665a071a69, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8462814223644395060, guid: 79a9f0eaf056cc6499c6f6665a071a69, type: 3}
       propertyPath: m_LocalScale.x
       value: 2.6907551
@@ -87808,6 +87804,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 8797783085756163184}
     m_Modifications:
+    - target: {fileID: 290318193811140865, guid: a252dd3d860618c4b824015303a15bcf, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1462620975973386862, guid: a252dd3d860618c4b824015303a15bcf, type: 3}
       propertyPath: m_LocalScale.x
       value: 2.8299038
@@ -89130,6 +89130,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: PP_Hill_Snow_01
       objectReference: {fileID: 0}
+    - target: {fileID: 1710767992145015507, guid: bba6199c506858948b778cc214e8487f, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 3044841524988599584, guid: bba6199c506858948b778cc214e8487f, type: 3}
     m_RemovedGameObjects: []
@@ -89249,6 +89253,10 @@ PrefabInstance:
     - target: {fileID: 5371329054414752837, guid: 9cbc564d39824e74ea789df0581528fe, type: 3}
       propertyPath: m_Name
       value: PP_Forest_Mountain_Moss_03
+      objectReference: {fileID: 0}
+    - target: {fileID: 5875569279579975056, guid: 9cbc564d39824e74ea789df0581528fe, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 6088833553814903634, guid: 9cbc564d39824e74ea789df0581528fe, type: 3}
@@ -90050,6 +90058,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: PP_Forest_Mountain_Moss_07
       objectReference: {fileID: 0}
+    - target: {fileID: 3920640953318649638, guid: 32de14771d856864c8f6aa3e7868aac0, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 7480181387721073591, guid: 32de14771d856864c8f6aa3e7868aac0, type: 3}
     m_RemovedGameObjects: []
@@ -90381,6 +90393,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2172190265138138395, guid: 56374133bad1fc74ab11cd40862bb84f, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 5889783268420131637, guid: 56374133bad1fc74ab11cd40862bb84f, type: 3}
     m_RemovedGameObjects: []
@@ -90687,6 +90703,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 361696617448812938}
     m_Modifications:
+    - target: {fileID: 7068662073071161744, guid: 3e5967037b1b0f64b96526c6bccbc441, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8238141897784240895, guid: 3e5967037b1b0f64b96526c6bccbc441, type: 3}
       propertyPath: m_LocalScale.x
       value: 1.2947967
@@ -91401,6 +91421,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2980489152465704646, guid: 35061b8c1375fac4486a31a71052e07a, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4114038033739705769, guid: 35061b8c1375fac4486a31a71052e07a, type: 3}
+      propertyPath: m_CastShadows
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:
@@ -92120,6 +92144,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 6606910244685090356}
     m_Modifications:
+    - target: {fileID: 5391424695587620999, guid: 0dc016fadd25a304fa3f32da0f4a1b4d, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5895999446615550290, guid: 0dc016fadd25a304fa3f32da0f4a1b4d, type: 3}
       propertyPath: m_Name
       value: PP_Tree_Spooky_07
@@ -92364,6 +92392,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 5907823428412731628}
     m_Modifications:
+    - target: {fileID: 417579146112712611, guid: 3110a2ca4cf7acd46a9d9bdbe1dcc49f, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1549421726808884428, guid: 3110a2ca4cf7acd46a9d9bdbe1dcc49f, type: 3}
       propertyPath: m_LocalScale.x
       value: 1.1341364
@@ -93280,6 +93312,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 3060466034371130555}
     m_Modifications:
+    - target: {fileID: 3393908934217651715, guid: 0bac9a9d18d20944fbf26887b4de2794, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3754148594458752982, guid: 0bac9a9d18d20944fbf26887b4de2794, type: 3}
       propertyPath: m_Name
       value: PP_Fir_Tree_Long_03
@@ -93815,6 +93851,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 5907823428412731628}
     m_Modifications:
+    - target: {fileID: 820366637634449250, guid: d2b37f23b16f20d46b782e496768483e, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1180641758047358647, guid: d2b37f23b16f20d46b782e496768483e, type: 3}
       propertyPath: m_Name
       value: PP_Hill_Snow_13
@@ -94886,6 +94926,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1975489710584684217}
     m_Modifications:
+    - target: {fileID: 491507566443391957, guid: 4a0f81398f932174a83fe1d78bec7cbd, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1628336432371830970, guid: 4a0f81398f932174a83fe1d78bec7cbd, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.58569974
@@ -95006,6 +95050,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 6606910244685090356}
     m_Modifications:
+    - target: {fileID: 3389491068829257401, guid: 26fcabb13bef48f4e8e6e689ec1640e4, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3749554943888125804, guid: 26fcabb13bef48f4e8e6e689ec1640e4, type: 3}
       propertyPath: m_Name
       value: PP_Tree_Spooky_14
@@ -95454,6 +95502,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6552839228229809944, guid: 1304c27845d72bf4f9c0eb08134ac36c, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -95492,6 +95544,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 8891106552256520201}
     m_Modifications:
+    - target: {fileID: 7507240395250505251, guid: f7c314e8cbe3f584c96b890bdc7817c7, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8300115616915863542, guid: f7c314e8cbe3f584c96b890bdc7817c7, type: 3}
       propertyPath: m_Name
       value: PP_Forest_Mountain_Moss_08
@@ -96436,6 +96492,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1746437911086306886, guid: 9d7a50a81080af14abb70db55eccc110, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 7756803926335943065, guid: 9d7a50a81080af14abb70db55eccc110, type: 3}
     m_RemovedGameObjects: []
@@ -96886,6 +96946,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: PP_Ice_Plateau_04
       objectReference: {fileID: 0}
+    - target: {fileID: 3588067094849976712, guid: 516be1ee41400604dae5596be5f5e45a, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 6865384260801352154, guid: 516be1ee41400604dae5596be5f5e45a, type: 3}
     m_RemovedGameObjects: []
@@ -97004,6 +97068,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5470763903472641151, guid: bd314edc325ea0a47a6f8220e093bdd6, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6604284848940769040, guid: bd314edc325ea0a47a6f8220e093bdd6, type: 3}
+      propertyPath: m_CastShadows
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -97181,6 +97249,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 7021199362694423736}
     m_Modifications:
+    - target: {fileID: 491507566443391957, guid: 4a0f81398f932174a83fe1d78bec7cbd, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1628336432371830970, guid: 4a0f81398f932174a83fe1d78bec7cbd, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.81509846
@@ -97356,6 +97428,10 @@ PrefabInstance:
     - target: {fileID: 5371329054414752837, guid: 9cbc564d39824e74ea789df0581528fe, type: 3}
       propertyPath: m_Name
       value: PP_Forest_Mountain_Moss_03
+      objectReference: {fileID: 0}
+    - target: {fileID: 5875569279579975056, guid: 9cbc564d39824e74ea789df0581528fe, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 6088833553814903634, guid: 9cbc564d39824e74ea789df0581528fe, type: 3}
@@ -97762,6 +97838,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5443579035804558574, guid: c62047ab5f0b54941a9a7939d25ae413, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6611379455291760513, guid: c62047ab5f0b54941a9a7939d25ae413, type: 3}
+      propertyPath: m_CastShadows
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -98273,6 +98353,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 6870902661642586542}
     m_Modifications:
+    - target: {fileID: 788984110247452914, guid: 8378dae0143241b4188afc79175b4648, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1293646546383241511, guid: 8378dae0143241b4188afc79175b4648, type: 3}
       propertyPath: m_Name
       value: PP_Hill_Forest_Moss_08
@@ -98977,6 +99061,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 361696617448812938}
     m_Modifications:
+    - target: {fileID: 5289229801873461739, guid: 650943a7ee757bf4b80c4cf42cfca6f2, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5937963170629709886, guid: 650943a7ee757bf4b80c4cf42cfca6f2, type: 3}
       propertyPath: m_Name
       value: PP_Hill_Forest_Moss_03
@@ -99251,6 +99339,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 361696617448812938}
     m_Modifications:
+    - target: {fileID: 4973965734920465285, guid: 3befb463240afdb47a8efb2e7ea1725c, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6146357579002532074, guid: 3befb463240afdb47a8efb2e7ea1725c, type: 3}
       propertyPath: m_LocalScale.x
       value: 1.2428325
@@ -99754,6 +99846,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5575138865271476086, guid: f0e802c4e935db741a4841ba7279d35b, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6707535083624264729, guid: f0e802c4e935db741a4841ba7279d35b, type: 3}
+      propertyPath: m_CastShadows
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:
@@ -100311,6 +100407,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 4717464683965362413}
     m_Modifications:
+    - target: {fileID: 985595441245063647, guid: 1f04e3f1737541f408f1f4b2e600a0db, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1634091590278948874, guid: 1f04e3f1737541f408f1f4b2e600a0db, type: 3}
       propertyPath: m_Name
       value: PP_Mountain_Plateau_Snow_06
@@ -100637,6 +100737,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1780966067190946368, guid: a685c752455cb6c46b38ed1fe8ec20c7, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -100675,6 +100779,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 5907823428412731628}
     m_Modifications:
+    - target: {fileID: 2818244953114374060, guid: 91ca285506a3da4408d036bca2cbe8b1, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3987732989939586243, guid: 91ca285506a3da4408d036bca2cbe8b1, type: 3}
       propertyPath: m_LocalScale.x
       value: 1.0813519
@@ -101470,6 +101578,10 @@ PrefabInstance:
     - target: {fileID: 7544515650649084126, guid: 8364eff4d220d6545b028072770d5504, type: 3}
       propertyPath: m_Name
       value: PP_Tree_09
+      objectReference: {fileID: 0}
+    - target: {fileID: 8337145267161657611, guid: 8364eff4d220d6545b028072770d5504, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -102325,28 +102437,16 @@ PrefabInstance:
       value: "10023_\uC815\uD654 \uD3EC\uC158 RecipeHint"
       objectReference: {fileID: 0}
     - target: {fileID: 6713000169795123394, guid: 380a43c1d5c51bb4485cf2a5a07b3aee, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 6713000169795123394, guid: 380a43c1d5c51bb4485cf2a5a07b3aee, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 6713000169795123394, guid: 380a43c1d5c51bb4485cf2a5a07b3aee, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 6713000169795123394, guid: 380a43c1d5c51bb4485cf2a5a07b3aee, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -164.2
+      value: -163.8
       objectReference: {fileID: 0}
     - target: {fileID: 6713000169795123394, guid: 380a43c1d5c51bb4485cf2a5a07b3aee, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.981933
+      value: 1.29
       objectReference: {fileID: 0}
     - target: {fileID: 6713000169795123394, guid: 380a43c1d5c51bb4485cf2a5a07b3aee, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 80.5
+      value: 77.5
       objectReference: {fileID: 0}
     - target: {fileID: 6713000169795123394, guid: 380a43c1d5c51bb4485cf2a5a07b3aee, type: 3}
       propertyPath: m_LocalRotation.w
@@ -102450,6 +102550,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: PP_Tree_Spooky_06
       objectReference: {fileID: 0}
+    - target: {fileID: 3589536361823846811, guid: 75a50b25b6841e446aaa4ec4f7c95a28, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -102542,6 +102646,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7607950805491179023, guid: f81a993955cbaf1408bda794917edd39, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8782004078884234592, guid: f81a993955cbaf1408bda794917edd39, type: 3}
+      propertyPath: m_CastShadows
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:
@@ -102663,6 +102771,10 @@ PrefabInstance:
     - target: {fileID: 3249285091845303160, guid: 6f8089c41ddb18840b2bfe797ea9b49f, type: 3}
       propertyPath: m_Name
       value: PP_Hill_Snow_23
+      objectReference: {fileID: 0}
+    - target: {fileID: 3897649850531367597, guid: 6f8089c41ddb18840b2bfe797ea9b49f, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 992314449346930217, guid: 6f8089c41ddb18840b2bfe797ea9b49f, type: 3}
@@ -102865,6 +102977,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 7021199362694423736}
     m_Modifications:
+    - target: {fileID: 2553530430957648233, guid: 6271afeecbdd38640a85d9bbe5998f5f, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3685310885221270022, guid: 6271afeecbdd38640a85d9bbe5998f5f, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.7966979
@@ -103368,6 +103484,10 @@ PrefabInstance:
     - target: {fileID: 917927406839714566, guid: bba6199c506858948b778cc214e8487f, type: 3}
       propertyPath: m_Name
       value: PP_Hill_Snow_01
+      objectReference: {fileID: 0}
+    - target: {fileID: 1710767992145015507, guid: bba6199c506858948b778cc214e8487f, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 3044841524988599584, guid: bba6199c506858948b778cc214e8487f, type: 3}
@@ -103879,6 +103999,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7592016623843925057, guid: ba8a0ae4167ef4440a8d9fe8a161a260, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8725563996377982766, guid: ba8a0ae4167ef4440a8d9fe8a161a260, type: 3}
+      propertyPath: m_CastShadows
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -104397,6 +104521,10 @@ PrefabInstance:
     - target: {fileID: 5371329054414752837, guid: 9cbc564d39824e74ea789df0581528fe, type: 3}
       propertyPath: m_Name
       value: PP_Forest_Mountain_Moss_03
+      objectReference: {fileID: 0}
+    - target: {fileID: 5875569279579975056, guid: 9cbc564d39824e74ea789df0581528fe, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 6088833553814903634, guid: 9cbc564d39824e74ea789df0581528fe, type: 3}
@@ -105232,6 +105360,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 4717464683965362413}
     m_Modifications:
+    - target: {fileID: 7609402865652134299, guid: 1c261e126cc6a9847a3e4736f78cec98, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8258189837344395342, guid: 1c261e126cc6a9847a3e4736f78cec98, type: 3}
       propertyPath: m_Name
       value: PP_Mountain_Plateau_Snow_05
@@ -105406,6 +105538,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5385021285145119863, guid: 1304c27845d72bf4f9c0eb08134ac36c, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6552839228229809944, guid: 1304c27845d72bf4f9c0eb08134ac36c, type: 3}
+      propertyPath: m_CastShadows
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -106104,6 +106240,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 15.486
       objectReference: {fileID: 0}
+    - target: {fileID: 6531190967582984772, guid: 581a6dc0f18568b4eb0e049c1f4ecbd4, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -106197,6 +106337,10 @@ PrefabInstance:
     - target: {fileID: 3271889715905138419, guid: 32de14771d856864c8f6aa3e7868aac0, type: 3}
       propertyPath: m_Name
       value: PP_Forest_Mountain_Moss_07
+      objectReference: {fileID: 0}
+    - target: {fileID: 3920640953318649638, guid: 32de14771d856864c8f6aa3e7868aac0, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 7480181387721073591, guid: 32de14771d856864c8f6aa3e7868aac0, type: 3}
@@ -106473,6 +106617,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 8797783085756163184}
     m_Modifications:
+    - target: {fileID: 5683995195177671802, guid: 83fedbc0e00136d4db517a313331128d, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6188341660237708719, guid: 83fedbc0e00136d4db517a313331128d, type: 3}
       propertyPath: m_Name
       value: PP_Tree_02
@@ -106835,6 +106983,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: PP_Ice_Plateau_03
       objectReference: {fileID: 0}
+    - target: {fileID: 6134906209408857778, guid: 3eeaf7e3db2728f4bbbff564bbe1337d, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 4350506164805100694, guid: 3eeaf7e3db2728f4bbbff564bbe1337d, type: 3}
     m_RemovedGameObjects: []
@@ -106961,6 +107113,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 3060466034371130555}
     m_Modifications:
+    - target: {fileID: 5513932775867632215, guid: 0ac0dfd5075786c4e9e83c1558844848, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6306606099622980482, guid: 0ac0dfd5075786c4e9e83c1558844848, type: 3}
       propertyPath: m_Name
       value: PP_Fir_Tree_Long_08
@@ -107893,6 +108049,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2067075280851525939, guid: ad46a593d999e9b4bb7e5bf8b2957ede, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -108006,6 +108166,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 361696617448812938}
     m_Modifications:
+    - target: {fileID: 788984110247452914, guid: 8378dae0143241b4188afc79175b4648, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1293646546383241511, guid: 8378dae0143241b4188afc79175b4648, type: 3}
       propertyPath: m_Name
       value: PP_Hill_Forest_Moss_08
@@ -108894,6 +109058,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 8797783085756163184}
     m_Modifications:
+    - target: {fileID: 5513932775867632215, guid: 0ac0dfd5075786c4e9e83c1558844848, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6306606099622980482, guid: 0ac0dfd5075786c4e9e83c1558844848, type: 3}
       propertyPath: m_Name
       value: PP_Fir_Tree_Long_08
@@ -109982,6 +110150,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1975489710584684217}
     m_Modifications:
+    - target: {fileID: 7118963163690183729, guid: e0d943225aaee7447a646162944ec371, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8250752413775419230, guid: e0d943225aaee7447a646162944ec371, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.5773013
@@ -110283,20 +110455,8 @@ PrefabInstance:
     m_TransformParent: {fileID: 4998861411820921774}
     m_Modifications:
     - target: {fileID: 7066658976833672232, guid: bb4bf497fcc82044aaa018cf14c3bc7c, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 7066658976833672232, guid: bb4bf497fcc82044aaa018cf14c3bc7c, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 7066658976833672232, guid: bb4bf497fcc82044aaa018cf14c3bc7c, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 7066658976833672232, guid: bb4bf497fcc82044aaa018cf14c3bc7c, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 91.1
+      value: 79.01
       objectReference: {fileID: 0}
     - target: {fileID: 7066658976833672232, guid: bb4bf497fcc82044aaa018cf14c3bc7c, type: 3}
       propertyPath: m_LocalPosition.y
@@ -110304,7 +110464,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7066658976833672232, guid: bb4bf497fcc82044aaa018cf14c3bc7c, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 197.7
+      value: 192.25
       objectReference: {fileID: 0}
     - target: {fileID: 7066658976833672232, guid: bb4bf497fcc82044aaa018cf14c3bc7c, type: 3}
       propertyPath: m_LocalRotation.w
@@ -110644,24 +110804,12 @@ PrefabInstance:
     m_TransformParent: {fileID: 161783458410411454}
     m_Modifications:
     - target: {fileID: 3684570001480356718, guid: 7cdbdffbdcd29514bb0b855489eec7a1, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 3684570001480356718, guid: 7cdbdffbdcd29514bb0b855489eec7a1, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 3684570001480356718, guid: 7cdbdffbdcd29514bb0b855489eec7a1, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 3684570001480356718, guid: 7cdbdffbdcd29514bb0b855489eec7a1, type: 3}
       propertyPath: m_LocalPosition.x
       value: -188.2
       objectReference: {fileID: 0}
     - target: {fileID: 3684570001480356718, guid: 7cdbdffbdcd29514bb0b855489eec7a1, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.28173983
+      value: 1.25
       objectReference: {fileID: 0}
     - target: {fileID: 3684570001480356718, guid: 7cdbdffbdcd29514bb0b855489eec7a1, type: 3}
       propertyPath: m_LocalPosition.z
@@ -111689,6 +111837,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 361696617448812938}
     m_Modifications:
+    - target: {fileID: 975248214860859651, guid: 853b87a43615d9f49b4bec80e1fa5f5f, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1623612973332441302, guid: 853b87a43615d9f49b4bec80e1fa5f5f, type: 3}
       propertyPath: m_Name
       value: PP_Hill_Forest_Moss_15
@@ -112033,6 +112185,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 8797783085756163184}
     m_Modifications:
+    - target: {fileID: 290318193811140865, guid: a252dd3d860618c4b824015303a15bcf, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1462620975973386862, guid: a252dd3d860618c4b824015303a15bcf, type: 3}
       propertyPath: m_LocalScale.x
       value: 3.0061312
@@ -112181,6 +112337,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7586034584851389485, guid: 824d877700163a1498a2430171f80988, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8722397841025853250, guid: 824d877700163a1498a2430171f80988, type: 3}
+      propertyPath: m_CastShadows
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:
@@ -112600,6 +112760,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2980489152465704646, guid: 35061b8c1375fac4486a31a71052e07a, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4114038033739705769, guid: 35061b8c1375fac4486a31a71052e07a, type: 3}
+      propertyPath: m_CastShadows
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:
@@ -113656,6 +113820,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2235181895564883442}
     m_Modifications:
+    - target: {fileID: 182794605555470508, guid: 2d1d4e35022b5f5408c2a854ed5a8798, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1351720237885696963, guid: 2d1d4e35022b5f5408c2a854ed5a8798, type: 3}
       propertyPath: m_LocalScale.x
       value: 4.3417487
@@ -114049,6 +114217,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 8797783085756163184}
     m_Modifications:
+    - target: {fileID: 2573041118614731933, guid: e8a767e5d5976fb4cb75fb06ba31d542, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3746550272401262578, guid: e8a767e5d5976fb4cb75fb06ba31d542, type: 3}
       propertyPath: m_LocalScale.x
       value: 3.1570387
@@ -114727,6 +114899,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6611379455291760513, guid: c62047ab5f0b54941a9a7939d25ae413, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -114894,6 +115070,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 610155124480601385, guid: 9d7a50a81080af14abb70db55eccc110, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1746437911086306886, guid: 9d7a50a81080af14abb70db55eccc110, type: 3}
+      propertyPath: m_CastShadows
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:
@@ -115831,6 +116011,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2980489152465704646, guid: 35061b8c1375fac4486a31a71052e07a, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4114038033739705769, guid: 35061b8c1375fac4486a31a71052e07a, type: 3}
+      propertyPath: m_CastShadows
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:

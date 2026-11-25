@@ -159,10 +159,38 @@ public class GameManager : SingletonBehavior<GameManager>
         // TODO 테스트용. Player 프리팹에 PlayerRegionTracker가 추가되면 제거
         // 풀에서 재사용되는 경우 이미 붙어 있으므로 없을 때만 추가
         if (!obj.gameObject.TryGetComponent(out PlayerRegionTracker _)) obj.gameObject.AddComponent<PlayerRegionTracker>();
+        AttachPlayerName(obj, p.Owner);
 
         if (p.Owner != PhotonNetwork.LocalPlayer.ActorNumber) return;
         var cam = PlayerCameraController.Instance;
         if (cam != null) cam.SetPlayer(obj);
+    }
+    // 플레이어 오브젝트 하위에 이름 캔버스를 붙이고 소유자 이름을 표시
+    // 풀에서 재사용되는 경우 이미 붙어 있으므로 없을 때만 생성
+    private void AttachPlayerName(IWorldObj obj, int ownerActor)
+    {
+        if (m_PlayerNameCanvas == null) return;
+        var nameUI = obj.gameObject.GetComponentInChildren<PlayerNameUI>(true);
+        if (nameUI == null)
+        {
+            var canvas = Instantiate(m_PlayerNameCanvas, obj.gameObject.transform);
+            nameUI = canvas.GetComponent<PlayerNameUI>();
+            if (nameUI == null) nameUI = canvas.GetComponentInChildren<PlayerNameUI>(true);
+            if (nameUI == null)
+            {
+                Debug.LogWarning("[GameManager] PlayerNameCanvas에 PlayerNameUI가 없습니다.");
+                return;
+            }
+        }
+        nameUI.PlayerName = GetPlayerName(ownerActor);
+    }
+    private string GetPlayerName(int ownerActor)
+    {
+        // 내 플레이어(오프라인 포함)는 프로필 이름 사용
+        if (ownerActor == OfflineActor || ownerActor == PhotonNetwork.LocalPlayer.ActorNumber)
+            return LocalUserProfile.UserName;
+        var player = PhotonNetwork.CurrentRoom?.GetPlayer(ownerActor);
+        return player != null ? player.NickName : string.Empty;
     }
     // 다른 플레이어가 나가면 방장이 그 플레이어 소유의 오브젝트를 제거
     private void OnPlayerLeftRoom(Player player)
@@ -250,7 +278,7 @@ public class GameManager : SingletonBehavior<GameManager>
         var d = SaveData.CreateSaveData(LocalUserProfile);
         SaveManager.Instance.Save(UserProfile,d);
     }
-
+    [SerializeField]private GameObject m_PlayerNameCanvas;
     [SerializeField]private int m_version;
     private UserProfile m_profile;
     public UserProfile LocalUserProfile

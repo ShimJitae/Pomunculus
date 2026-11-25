@@ -31,8 +31,12 @@ public class RecipeHintInteractable : MonoBehaviour
     }
     private void OnTriggerExit(Collider other)
     {
-        if (nearbyColliders.Remove(other) && nearbyColliders.Count == 0 && hintUI != null)
-            hintUI.SetInteractionText(this, false);
+        if (!nearbyColliders.Remove(other) || nearbyColliders.Count > 0)
+            return;
+        if (hintUI == null)
+            return;
+        hintUI.SetInteractionText(this, false);
+        hintUI.Close();
     }
     private void OnDisable()
     {
