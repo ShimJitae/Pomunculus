@@ -42,6 +42,7 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IShieldable, IWorldRPC
     public Inventory Inventory { get; private set; }
     public PotionLoadout Loadout { get; } = new PotionLoadout();
     public RecipeJournal Recipes { get; } = new RecipeJournal();
+    public PotionCraftHistory CraftHistory { get; } = new PotionCraftHistory();
     public PlayerAnimator Animator { get; private set; }
     public PlayerActionGate Actions { get; private set; }
 
@@ -102,6 +103,7 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IShieldable, IWorldRPC
         Inventory.Changed += SendInventorySync;
         Loadout.OnEquipChanged += HandleLoadoutEquipChanged;
         Recipes.OnChanged += SendRecipeSync;
+        CraftHistory.OnChanged += SendCraftHistorySync;
 
         startPos = transform.position;
 
@@ -328,7 +330,8 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IShieldable, IWorldRPC
             Item = Inventory.Slots,
             PotionSlotIds = Loadout.GetSlotIds(),
             SelectedPotionSlot = Loadout.SelectedIndex,
-            DiscoveredPotionIds = Recipes.GetDiscoveredIds()
+            DiscoveredPotionIds = Recipes.GetDiscoveredIds(),
+            CraftHistory = CraftHistory.GetRecords()
         };
 
         _data.SetData(state);
@@ -359,6 +362,9 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IShieldable, IWorldRPC
 
             if (state.DiscoveredPotionIds != null)   // 레시피 기록이 없는 예전 세이브면 null
                 Recipes.Restore(state.DiscoveredPotionIds);
+
+            if (state.CraftHistory != null) 
+                CraftHistory.Restore(state.CraftHistory);
         }
         finally
         {
@@ -383,7 +389,9 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IShieldable, IWorldRPC
         SyncShield,
         SyncInventory,
         SyncRecipes,
-        RegisterStatusEffect = RpcRegisterStatusEffect, // Entity에서 정의한 하위 RPC enum과 겹치지 않는 공용 번호.
+        SyncCraftHistory,
+        RegisterStatusEffect = RpcRegisterStatusEffect // Entity에서 정의한 하위 RPC enum과 겹치지 않는 공용 번호.
+        
     }
 
     // 소유자가 확정한 HP를 다른 플레이어에게 전송
@@ -434,6 +442,29 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IShieldable, IWorldRPC
         foreach (int potionId in potionIds)
             packet.Write(potionId);
         this.SendRPC(packet, WorldRPCTarget.MasterClient);
+    }
+
+    private void SendCraftHistorySync()
+    {
+        if (!ShouldSyncToMaster || isLoadingState) return;
+        Dictionary<int, List<List<int>>> records = CraftHistory.GetRecords();
+        PacketData packet = new();
+        packet.Write((byte)PlayerRPCType.SyncCraftHistory);
+        packet.Write(records.Count);
+        foreach (var pair in records)
+        {
+            packet.Write(pair.Key);                             // 포션 ID
+            packet.Write(pair.Value.Count);                     // 이 포션의 조합 수
+            foreach (List<int> combination in pair.Value)
+            {
+                packet.Write(combination.Count);                // 조합의 재료 수
+                foreach (int materialId in combination)
+                    packet.Write(materialId);
+            }
+        }
+        this.SendRPC(packet, WorldRPCTarget.MasterClient);
+
+
     }
 
     // 장착이 바뀌면 전체 장착 상태를 다른 클라이언트에 보낸다
@@ -569,6 +600,26 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IShieldable, IWorldRPC
                     recipeIds.Add(packet.ReadInt());
                 if (!IsMine) Recipes.Restore(recipeIds);
                 break;
+            case PlayerRPCType.SyncCraftHistory:
+                int potionKindCount = packet.ReadInt();
+                var craftRecords = new Dictionary<int, List<List<int>>>(potionKindCount);
+                for (int i = 0; i < potionKindCount; i++)
+                {
+                    int craftedPotionId = packet.ReadInt();
+                    int combinationCount = packet.ReadInt();
+                    var combinations = new List<List<int>>(combinationCount);
+                    for (int j = 0; j < combinationCount; j++)
+                    {
+                        int materialCount = packet.ReadInt();
+                        var materialIds = new List<int>(materialCount);
+                        for (int k = 0; k < materialCount; k++)
+                            materialIds.Add(packet.ReadInt());
+                        combinations.Add(materialIds);
+                    }
+                    craftRecords[craftedPotionId] = combinations;
+                }
+                if (!IsMine) CraftHistory.Restore(craftRecords);
+                break;
             case PlayerRPCType.RegisterStatusEffect:
                 ReceiveRegisterStatusEffect(packet);   // 소유자 여부와 상관없이 모두 적용
                 break;
@@ -608,6 +659,8 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IShieldable, IWorldRPC
         Stats.OnShieldChanged -= HandleShieldChanged;
         Loadout.OnEquipChanged -= HandleLoadoutEquipChanged;
         Recipes.OnChanged -= SendRecipeSync;
+        CraftHistory.OnChanged -= SendCraftHistorySync;
+
     }
 
     #endregion

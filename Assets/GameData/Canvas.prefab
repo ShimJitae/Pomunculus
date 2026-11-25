@@ -6332,7 +6332,6 @@ GameObject:
   - component: {fileID: 5055347523990898889}
   - component: {fileID: 3109681520908637889}
   - component: {fileID: 1579313457997397452}
-  - component: {fileID: 7001352159175258955}
   m_Layer: 5
   m_Name: CraftingUI
   m_TagString: Untagged
@@ -6442,7 +6441,6 @@ MonoBehaviour:
   resultPreviewImage: {fileID: 7599859321719718519}
   unknownIcon: {fileID: 21300000, guid: e494113864f7c8249a808dbab3380390, type: 3}
   tooltip: {fileID: 1494322986871691911}
-  craftHistory: {fileID: 7001352159175258955}
   message: {fileID: 6191626519207633616}
 --- !u!114 &1579313457997397452
 MonoBehaviour:
@@ -6458,18 +6456,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PopupUI
   bringToFrontOnOpen: 1
   blocksOtherPopups: 0
---- !u!114 &7001352159175258955
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2476204662579601951}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fab1ce22a42ab484d8faee4389a69b60, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Pomunculus.Items.PotionCraftHistory
 --- !u!1 &2484061262317950888
 GameObject:
   m_ObjectHideFlags: 0
@@ -9620,6 +9606,7 @@ MonoBehaviour:
   potionCrafting: {fileID: 3109681520908637889}
   potionSlotSelector: {fileID: 1540001707537812468}
   recipeBookUI: {fileID: 8780604730450413726}
+  craftHistoryUI: {fileID: 7528958292086843270}
 --- !u!114 &6541410054778530098
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9638,8 +9625,8 @@ MonoBehaviour:
   craftingKey: 17
   inventoryUI: {fileID: 6159162303472420831}
   inventoryKey: 23
-  inventoryOpenSound: {fileID: 11400000, guid: db83cebf12897964d94b1c27b767f54c, type: 2}
-  CreatingOpenSound: {fileID: 11400000, guid: bab16bd7454a75f44b2516b99b924ab0, type: 2}
+  inventoryOpenSound: {fileID: 0}
+  CreatingOpenSound: {fileID: 0}
   craftingInteractionText: {fileID: 6505892977671053821}
 --- !u!114 &7035277795027794009
 MonoBehaviour:
@@ -12327,7 +12314,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 13e8ced9575db5b4ea2eafb7cab3c1ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Pomunculus.Items.PotionCraftHistoryUI
-  craftHistory: {fileID: 7001352159175258955}
   rows:
   - {fileID: 7646204831677969919}
   - {fileID: 8026227088836333853}
@@ -15895,7 +15881,7 @@ MonoBehaviour:
   slotPrefab: {fileID: 152448964971317975, guid: 03aab6d6872d3c3498be906cc940a6fc, type: 3}
   scrollRect: {fileID: 6545095768592187022}
   potionSlotSelector: {fileID: 1540001707537812468}
-  inventoryCloseSound: {fileID: 11400000, guid: db83cebf12897964d94b1c27b767f54c, type: 2}
+  inventoryCloseSound: {fileID: 0}
 --- !u!114 &3356579590879509328
 MonoBehaviour:
   m_ObjectHideFlags: 0

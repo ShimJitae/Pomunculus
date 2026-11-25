@@ -11,6 +11,7 @@ namespace Pomunculus.Items
         [SerializeField] private PotionCrafting potionCrafting;
         [SerializeField] private PotionSlotSelector potionSlotSelector;
         [SerializeField] private RecipeBookUI recipeBookUI;
+        [SerializeField] private PotionCraftHistoryUI craftHistoryUI;
         private WorldManager world;
         private void OnEnable()
         {
@@ -59,6 +60,11 @@ namespace Pomunculus.Items
             // 레시피북에 내 플레이어의 발견 레시피 목록 연결
             if (recipeBookUI != null)
                 recipeBookUI.Bind(player.Recipes);
+            // 제조 기록 UI에 내 플레이어의 제조 기록 연결
+            if (craftHistoryUI != null)
+                craftHistoryUI.Bind(player.CraftHistory);
+            if (potionCrafting != null)
+                potionCrafting.BindCraftHistory(player.CraftHistory);
             return true;
         }
         private void BindInventory(Inventory inventory, PotionLoadout loadout)
