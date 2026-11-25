@@ -14,14 +14,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Pomunculus.Items.PotionData
   Id: 10022
   ItemName: "\uD3ED\uD48D \uD3EC\uC158"
-  Description: "\uAC70\uC13C \uB3CC\uD48D\uC744 \uC555\uCD95\uD574 \uB2F4\uC740 \uD3EC\uC158."
+  Description: "\uAC15\uB825\uD55C \uBC14\uB78C\uC73C\uB85C \uBA85\uC911 \uD53C\uD574\uC640
+    \uC8FC\uBCC0 \uBC94\uC704 \uD53C\uD574. \uBAA8\uC5EC \uC788\uB294 \uC801\uC5D0\uAC8C
+    \uD6A8\uACFC\uC801."
+  Details: "\uBA85\uC911 \uC2DC {damage}\uC758 \uD53C\uD574\uB97C \uC90D\uB2C8\uB2E4.\n\uCC29\uD0C4
+    \uC9C0\uC810\uC5D0\uC11C \uD3ED\uD48D\uC774 \uC77C\uC5B4\uB098 \uBC18\uACBD {zoneRadius}m
+    \uC548\uC758 \uB300\uC0C1\uC5D0\uAC8C \uCD94\uAC00 \uD53C\uD574\uB97C \uC90D\uB2C8\uB2E4."
   Icon: {fileID: 21300000, guid: 40586d52b1b8ef845a12fdc06c571cfa, type: 3}
   PhysicsElement: 0
   FireElement: 0
   ColdElement: -4
   WindElement: 6
-  projectilePrefab: {fileID: 6398676829056186882, guid: 6cf6cc54d19d6543b98880f584b1f149, type: 3}
   pickupPrefab: {fileID: 3321244018119135130, guid: 18016ba3b5a9583772d25dd0824df6ae, type: 3}
+  projectilePrefab: {fileID: 6398676829056186882, guid: 6cf6cc54d19d6543b98880f584b1f149, type: 3}
   effects:
   - rid: 3760827200000000016
   - rid: 3760827200000000017
@@ -37,11 +42,11 @@ MonoBehaviour:
       type: {class: ZonePotionEffect, ns: , asm: Assembly-CSharp}
       data:
         affectedTargets: -1
+        groundLayers:
+          serializedVersion: 2
+          m_Bits: 64
         zonePrefab: {fileID: 0}
         radius: 5
         duration: 1
         tickInterval: 1
-        groundLayers:
-          serializedVersion: 2
-          m_Bits: 64
         tickEffects: []

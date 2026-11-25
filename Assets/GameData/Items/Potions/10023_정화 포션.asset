@@ -14,15 +14,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Pomunculus.Items.PotionData
   Id: 10023
   ItemName: "\uC815\uD654 \uD3EC\uC158"
-  Description: "\uADE0\uD615 \uC7A1\uD78C \uB124 \uC18D\uC131\uC73C\uB85C \uBD88\uC21C\uD55C
-    \uAE30\uC6B4\uC744 \uC53B\uC5B4\uB0B4\uB294 \uD3EC\uC158."
+  Description: "\uC5F4\uAE30\xB7\uD639\uD55C\xB7\uC9C8\uBCD1 \uC800\uC8FC\uB97C \uD574\uC81C\uD558\uACE0
+    \uC138 \uAC00\uC9C0 \uC800\uD56D\uC744 \uB3D9\uC2DC\uC5D0 \uBD80\uC5EC. \uC800\uC8FC\uB85C
+    \uBC1C\uC0DD\uD558\uB294 \uD654\uC0C1\xB7\uB0C9\uAE30\xB7\uB3C5 \uC608\uBC29."
+  Details: "\uD604\uC7AC \uAC78\uB9B0 \uC5F4\uAE30\xB7\uD639\uD55C\xB7\uC9C8\uBCD1
+    \uC800\uC8FC\uB97C \uD574\uC81C\uD569\uB2C8\uB2E4.\n\uC5F4\uAE30 \uC800\uD56D\uC744
+    {heatDuration}\uCD08 \uB3D9\uC548 {heatStacks}\uC911\uCCA9 \uBD80\uC5EC\uD569\uB2C8\uB2E4.\n\uD639\uD55C
+    \uC800\uD56D\uC744 {coldDuration}\uCD08 \uB3D9\uC548 {coldStacks}\uC911\uCCA9
+    \uBD80\uC5EC\uD569\uB2C8\uB2E4.\n\uC9C8\uBCD1 \uC800\uD56D\uC744 {diseaseDuration}\uCD08
+    \uB3D9\uC548 {diseaseStacks}\uC911\uCCA9 \uBD80\uC5EC\uD569\uB2C8\uB2E4.\n\uAC01
+    \uC800\uD56D\uC740 \uD574\uB2F9 \uC800\uC8FC\uB97C \uD55C \uBC88 \uB9C9\uC744
+    \uB54C\uB9C8\uB2E4 1\uC911\uCCA9\uC744 \uC18C\uBAA8\uD569\uB2C8\uB2E4."
   Icon: {fileID: 21300000, guid: 7e8202afd2ca2c945b12feea000443c8, type: 3}
   PhysicsElement: 1
   FireElement: 1
   ColdElement: 1
   WindElement: 1
-  projectilePrefab: {fileID: 6398676829056186882, guid: 3084af7b58d1238acd1804df1842b3ef, type: 3}
   pickupPrefab: {fileID: 3321244018119135130, guid: dc4630791208caa2e8fbc708e65cbf7e, type: 3}
+  projectilePrefab: {fileID: 6398676829056186882, guid: 3084af7b58d1238acd1804df1842b3ef, type: 3}
   effects:
   - rid: 3760827200000000018
   - rid: 3760827200000000019

@@ -85,11 +85,13 @@ namespace Pomunculus.Items
         {
             if (!hasItem || tooltip == null)
                 return;
+
             if (potionSlotSelector != null && potionSlotSelector.IsSelecting)
                 return;
 
-            tooltip.Show(this, itemName, description, icon.sprite, itemAmount, pointerPosition,
-                physicsElement, fireElement, coldElement, windElement);
+            tooltip.Show(
+                this, itemName, description, icon.sprite,itemAmount, pointerPosition,physicsElement, fireElement, 
+                coldElement, windElement,details: potionData != null ? potionData.GetDetails() : "");
         }
 
         private void OnDisable()

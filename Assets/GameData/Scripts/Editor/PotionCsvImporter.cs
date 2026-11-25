@@ -19,6 +19,7 @@ namespace Pomunculus.Items.Editor
             public int Id;
             public string Name;
             public string Description;
+            public string Details;
             public Sprite Icon;
             public float PhysicsElement;
             public float FireElement;
@@ -72,6 +73,7 @@ namespace Pomunculus.Items.Editor
                     potion.Id = row.Id;
                     potion.ItemName = row.Name;
                     potion.Description = row.Description;
+                    potion.Details = row.Details;
                     potion.Icon = row.Icon;
                     potion.PhysicsElement = row.PhysicsElement;
                     potion.FireElement = row.FireElement;
@@ -173,7 +175,7 @@ namespace Pomunculus.Items.Editor
                 columns.Add(column, i);
             }
 
-            foreach (string required in new[] { "Id", "Name", "Desc", "icon_path", "PhysicsElement", "FireElement", "ColdElement", "WindElement" })
+            foreach (string required in new[] { "Id", "Name", "Desc", "Details", "icon_path", "PhysicsElement", "FireElement", "ColdElement", "WindElement" })
             {
                 if (!columns.ContainsKey(required))
                     throw new Exception($"필수 열이 없습니다: {required}");
@@ -235,6 +237,7 @@ namespace Pomunculus.Items.Editor
                     Id = id,
                     Name = itemName,
                     Description = cells[columns["Desc"]].Trim(),
+                    Details = cells[columns["Details"]].Trim(),
                     Icon = icon,
                     PhysicsElement = Number("PhysicsElement"),
                     FireElement = Number("FireElement"),
