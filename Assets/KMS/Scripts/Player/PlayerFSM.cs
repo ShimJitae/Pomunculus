@@ -280,6 +280,25 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IShieldable, IWorldRPC
         OnRevived?.Invoke();
     }
 
+    /// <summary>
+    /// 살아 있는 내 플레이어를 destination으로 바로 옮긴다 (순간이동·귀환 포션).
+    /// 이전 이동 목표와 진행 중인 포션 넉백을 없애고, 다른 화면에는 WorldTransformSync가 위치를 전한다.
+    /// </summary>
+    public void Teleport(Vector3 destination)
+    {
+        if (!IsMine || IsDead) return;
+
+        Motor.StopMoving();
+        Input.ClearMoveCommand();
+        if (TryGetComponent(out PotionKnockbackMover knockback)) knockback.Stop();
+
+        Motor.SetAgentEnabled(false);
+        transform.position = destination;
+        Motor.SetAgentEnabled(true);   // 켤 때 새 위치로 Warp한다
+
+        if (CurrentStateType == PlayerStateType.Move) SetState(PlayerStateType.Idle);
+    }
+
     #region 데이터
 
     // ═════════════════════ Save & Load ═══════════════════════

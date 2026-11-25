@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3694866bf932c8a4bb919bc39b77c2ab, type: 3}
+  m_Name: "19011_\uD14C\uC2A4\uD2B8 \uCC44\uC9D1 \uAC15\uD654"
+  m_EditorClassIdentifier: Assembly-CSharp::Pomunculus.Items.PotionData
+  Id: 19011
+  ItemName: "\uD14C\uC2A4\uD2B8 \uCC44\uC9D1 \uAC15\uD654"
+  Description: "\uB9DE\uC740 \uCC44\uC9D1\uBB3C\uC744 \uBC14\uB85C \uCC44\uC9D1\uD558\uACE0
+    \uC7AC\uB8CC\uB97C 3\uBC30\uB85C \uB5A8\uC5B4\uB728\uB9B0\uB2E4."
+  Icon: {fileID: 21300000, guid: 602ac8357f54e8149823b80af916f59a, type: 3}
+  PhysicsElement: 0
+  FireElement: 0
+  ColdElement: 0
+  WindElement: 0
+  pickupPrefab: {fileID: -8275113470682067266, guid: d6f261ab8ec75f44eae879db75ddb732, type: 3}
+  projectilePrefab: {fileID: -8461069969775478643, guid: cf8181d87ceb11a4b8964fcbbe4dbae5, type: 3}
+  effects:
+  - rid: 3760827290688946276
+  references:
+    version: 2
+    RefIds:
+    - rid: 3760827290688946276
+      type: {class: GatherBoostPotionEffect, ns: , asm: Assembly-CSharp}
+      data:
+        affectedTargets: 8
+        yieldMultiplier: 3
+        harvestInstantly: 1
