@@ -11,7 +11,7 @@ using UnityEngine.AI;
 /// </summary>
 public class PlayerClone : Entity, ITMPWorldObj, IWorldRPC, IPotionSpawned
 {
-    private const float MaxFollowStep = 3f;         // 한 프레임에 이보다 많이 움직이면 순간이동으로 보고 따라가지 않는다
+    private const float MaxFollowStep = 3f;         // 한 프레임에 이보다 많이 움직이면 순간이동으로 보고 같은 거리만큼 바로 옮긴다
     private const float MinThrowFacingTime = 0.2f;  // 던진 뒤 목표를 바라보는 최소 시간
     private const int EmptyBottleId = -1;           // 포션 없이 던진 빈 병
     private const string SummonerIdKey = "summoner";
@@ -164,12 +164,30 @@ public class PlayerClone : Entity, ITMPWorldObj, IWorldRPC, IPotionSpawned
         lastSummonerPosition = summonerPosition;
         transform.rotation = Time.time < throwFacingEndTime ? throwFacingRotation : summoner.transform.rotation;
 
+        // 순간이동·귀환처럼 크게 점프하면 같은 거리만큼 옮겨 상대 위치를 유지한다
+        if (step.magnitude > MaxFollowStep)
+        {
+            JumpBy(step);
+            return;
+        }
+
         if (summoner.CurrentStateType == PlayerStateType.Hit) return;
         step -= GetSummonerKnockbackStep();
-        if (step.sqrMagnitude < 0.000001f || step.magnitude > MaxFollowStep) return;
+        if (step.sqrMagnitude < 0.000001f) return;
 
         if (agent != null && agent.enabled && agent.isOnNavMesh) agent.Move(step);
         else transform.position += step;
+    }
+
+    // offset만큼 바로 옮긴다. NavMesh 위로 내리고, 못 찾으면 소환자 위치로 옮긴다
+    private void JumpBy(Vector3 offset)
+    {
+        Vector3 destination = transform.position + offset;
+        if (NavMesh.SamplePosition(destination, out NavMeshHit hit, MaxFollowStep, NavMesh.AllAreas)) destination = hit.position;
+        else destination = summoner.transform.position;
+
+        if (agent != null && agent.enabled) agent.Warp(destination);
+        else transform.position = destination;
     }
 
     // 소환자가 이번 프레임 포션 넉백으로 밀린 양. 없으면 0
@@ -224,11 +242,11 @@ public class PlayerClone : Entity, ITMPWorldObj, IWorldRPC, IPotionSpawned
     /// <summary>
     /// 소환자가 던지면(모든 화면에서 호출됨) 소유자 화면만 분신의 발사 정보를 계산해 모두에게 보낸다.
     /// 목표가 분신 사거리 밖이면 같은 사거리 끝으로 당기고, 던지기 동작이 끝날 때까지 목표를 바라본다.
-    /// 분신을 소환하는 포션은 따라 던지지 않는다.
+    /// 분신을 소환하는 포션과 순간이동 포션(던진 사람이 소환자라 두 번 이동함)은 따라 던지지 않는다.
     /// </summary>
     private void MirrorThrow(Vector3 origin, Vector3 target, PotionData potion)
     {
-        if (!IsMine || summoner == null || SpawnsClone(potion)) return;
+        if (!IsMine || summoner == null || SpawnsClone(potion) || HasEffect<TeleportPotionEffect>(potion)) return;
 
         Vector3 clampedTarget = summonerThrower.ClampToThrowRange(transform.position, target);
         FaceTarget(clampedTarget, GetRemainingThrowTime());
@@ -304,6 +322,18 @@ public class PlayerClone : Entity, ITMPWorldObj, IWorldRPC, IPotionSpawned
         foreach (PotionEffect effect in potion.Effects)
         {
             if (effect is SummonPotionEffect summon && summon.SpawnsComponent<PlayerClone>()) return true;
+        }
+        return false;
+    }
+
+    // 이 포션이 T 효과를 가졌는지 확인한다
+    private static bool HasEffect<T>(PotionData potion) where T : PotionEffect
+    {
+        if (potion == null) return false;
+
+        foreach (PotionEffect effect in potion.Effects)
+        {
+            if (effect is T) return true;
         }
         return false;
     }
