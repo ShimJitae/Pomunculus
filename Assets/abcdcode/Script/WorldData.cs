@@ -26,6 +26,7 @@ public class WorldData
     public Dictionary<RegionType, RegionSpawnRecord> RegionGathers{get;set;} = new();
     public Dictionary<RegionType, RegionSpawnRecord> RegionMobs{get;set;} = new();
     public Dictionary<RegionType, RegionSpawnRecord> RegionBosses{get;set;} = new();
+    public FinalBossRecord FinalBoss{get;set;} = new(); // 결계 -> 최종보스 진행 기록
 
     public void SavePlayer(string uid, IWorldObj player)
     {
@@ -93,6 +94,21 @@ public class SpawnPointRecord
     public bool Consumed{get;set;} // 이미 채집/처치되어 사라짐. 재소환 주기가 지나기 전까지 비어 있다
     public int ConsumedDay{get;set;} // 사라진 날. Consumed일 때만 의미 있음
     public SaveData State{get;set;} // 디스폰할 때 보관한 상태. 다시 소환할 때 적용
+}
+
+// 최종보스 진행 단계. 결계와 최종보스는 일반 소환 규칙(디스폰/재소환)을 따르지 않고 이 기록대로만 관리한다
+public enum FinalBossStage
+{
+    None = 0,     // 아직 결계를 소환하지 않음
+    Barrier = 1,  // 결계가 서 있음
+    Boss = 2,     // 결계가 풀리고 최종보스가 나와 있음
+    Defeated = 3, // 최종보스 처치
+}
+// 결계/최종보스는 디스폰하지 않으므로 월드 엔티티로 같이 저장되고, 불러오면 같은 ID로 다시 생성된다
+public class FinalBossRecord
+{
+    public FinalBossStage Stage{get;set;}
+    public int ObjectId{get;set;} = -1; // 지금 나와 있는 결계 또는 최종보스 ID. 없으면 -1
 }
 
 // 입장한 플레이어에게 보내는 현재 월드 상태. 플레이어별 저장 정보(WorldData.Players)는 보내지 않는다

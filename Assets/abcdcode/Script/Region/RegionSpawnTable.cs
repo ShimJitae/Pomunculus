@@ -19,6 +19,11 @@ public class RegionSpawnTable : ScriptableObject
     // 지역에 플레이어가 없어진 뒤 디스폰하기까지 기다리는 시간. 경계에서 들락날락할 때 매번 다시 소환되지 않도록
     public float DespawnDelay => m_despawnDelay;
 
+    // 최종보스 : BarrierRegion의 보스 포인트에 결계를 한 번 소환하고, 결계가 풀리면 그 자리에 최종보스를 소환한다
+    public RegionType BarrierRegion => m_barrierRegion;
+    public string BarrierPrefabId => m_barrierPrefabId;
+    public string FinalBossPrefabId => m_finalBossPrefabId;
+
     // 목록이 비어 있으면 null
     public string PickGather(RegionType region) => Pick(region, e => e.GatherPrefabIds);
     public string PickMob(RegionType region) => Pick(region, e => e.MobPrefabIds);
@@ -38,4 +43,9 @@ public class RegionSpawnTable : ScriptableObject
 
     [SerializeField] private List<Entry> m_entries = new();
     [SerializeField] private float m_despawnDelay = 3f;
+
+    [Header("최종보스")]
+    [SerializeField] private RegionType m_barrierRegion = RegionType.Forest;
+    [SerializeField] private string m_barrierPrefabId = "Barrier"; // NetworkPrefabCatalog 이름
+    [SerializeField] private string m_finalBossPrefabId = "LastBoss"; // 임시 이름
 }
