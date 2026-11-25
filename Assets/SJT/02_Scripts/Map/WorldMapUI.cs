@@ -1,7 +1,7 @@
 using DG.Tweening;
 using UnityEngine;
 
-public sealed class WorldMapUI : MonoBehaviour
+public sealed class WorldMapUI : PopupUI
 {
     [SerializeField] private Transform worldRoot;
     [SerializeField] private Transform target;
@@ -17,15 +17,9 @@ public sealed class WorldMapUI : MonoBehaviour
     private Vector2 openedPosition;
     private Vector3 openedRotation;
     private Sequence transition;
-    private bool isOpen;
-
-    /// <summary>연출 완료 여부와 관계없이 현재 요청된 지도 열림 상태입니다.</summary>
-    public bool IsOpen => isOpen;
 
     private void Awake()
     {
-        isOpen = gameObject.activeSelf;
-
         if (mapBG == null)
         {
             return;
@@ -38,7 +32,6 @@ public sealed class WorldMapUI : MonoBehaviour
     private void OnDisable()
     {
         transition?.Kill();
-        isOpen = false;
 
         if (mapBG != null)
         {
@@ -48,20 +41,11 @@ public sealed class WorldMapUI : MonoBehaviour
     }
 
     [ContextMenu("Open 테스트")]
-    public void Open()
+    protected override void OnOpened()
     {
-        if (isOpen)
-        {
-            return;
-        }
-
-        bool wasActive = gameObject.activeSelf;
-        gameObject.SetActive(true);
-        isOpen = true;
-
         if (mapBG != null)
         {
-            if (!wasActive)
+            if (transition == null)
             {
                 mapBG.anchoredPosition = openedPosition + closedOffset;
                 mapBG.localEulerAngles = openedRotation + Vector3.forward * closedAngle;
@@ -73,18 +57,11 @@ public sealed class WorldMapUI : MonoBehaviour
         RefreshPlayerPin();
     }
 
-    public void Close()
+    protected override void PlayHideTransition()
     {
-        if (!isOpen)
-        {
-            return;
-        }
-
-        isOpen = false;
-
         if (mapBG == null)
         {
-            gameObject.SetActive(false);
+            FinishHide();
             return;
         }
 
