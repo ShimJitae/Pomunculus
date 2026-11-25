@@ -1,11 +1,11 @@
+using MoreMountains.Tools;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class EnemyHpBar : MonoBehaviour
 {
     [SerializeField] private Enemy owner;
     [SerializeField] private GameObject barObject;
-    [SerializeField] private Image fillImage;
+    [SerializeField] private MMProgressBar hpBar;
     [SerializeField] private bool hideWhenFullHp;
 
     private Transform cameraTransform;
@@ -18,13 +18,13 @@ public class EnemyHpBar : MonoBehaviour
 
     private void OnEnable()
     {
-        owner.OnHpChanged += RefreshBar;
-        RefreshBar(owner.CurrentHp, owner.MaxHp);
+        owner.OnHpChanged += HandleHpChanged;
+        RefreshBar(owner.CurrentHp, owner.MaxHp, false);   // 활성화·재사용 시 연출 없이 맞춘다
     }
 
     private void OnDisable()
     {
-        owner.OnHpChanged -= RefreshBar;
+        owner.OnHpChanged -= HandleHpChanged;
     }
 
     private void LateUpdate()
@@ -42,14 +42,28 @@ public class EnemyHpBar : MonoBehaviour
         transform.rotation = cameraTransform.rotation;
     }
 
-    private void RefreshBar(int currentHp, int maxHp)
+    private void HandleHpChanged(int currentHp, int maxHp)
+    {
+        RefreshBar(currentHp, maxHp, true);
+    }
+
+    // 숨겨져 있을 때나 사망 시에는 연출 없이 값만 맞춘다
+    private void RefreshBar(int currentHp, int maxHp, bool animate)
     {
         float hpRatio = maxHp > 0 ? (float)currentHp / maxHp : 0f;
-        fillImage.fillAmount = hpRatio;
 
         bool isFull = currentHp >= maxHp;
         bool canShow = currentHp > 0 && !(hideWhenFullHp && isFull);
 
-        barObject.SetActive(canShow);
+        barObject.SetActive(canShow);   // UpdateBar01은 코루틴을 쓰므로 먼저 켠다
+
+        if (animate && canShow)
+        {
+            hpBar.UpdateBar01(hpRatio);
+        }
+        else
+        {
+            hpBar.SetBar01(hpRatio);
+        }
     }
 }
