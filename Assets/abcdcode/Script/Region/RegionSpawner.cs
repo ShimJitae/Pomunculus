@@ -48,11 +48,19 @@ public class RegionSpawner : Singleton<RegionSpawner>
         m_checkTimer = 0f;
         WorldManager.Instance.OnSeasonChangedEvent -= OnSeasonChanged;
         WorldManager.Instance.OnSeasonChangedEvent += OnSeasonChanged;
+        var chat = ChatManager.Instance;
+        if (chat != null)
+        {
+            chat.OnCommandEvent -= OnCommand;
+            chat.OnCommandEvent += OnCommand;
+        }
     }
     // WorldManager.Release에서 호출. 월드 오브젝트는 WorldManager가 정리하고, 기록은 WorldData에 저장된 상태로 남는다
     public void Release()
     {
         WorldManager.Instance.OnSeasonChangedEvent -= OnSeasonChanged;
+        var chat = ChatManager.Instance;
+        if (chat != null) chat.OnCommandEvent -= OnCommand;
         m_table = null;
         m_emptyTime.Clear();
     }
@@ -101,6 +109,7 @@ public class RegionSpawner : Singleton<RegionSpawner>
 
         CollectOccupied();
         var data = world.CurWorldData;
+        UpdateFinalBoss(data, registry);
         foreach (RegionType region in Regions)
         {
             if (m_occupied.Contains(region))
@@ -131,6 +140,120 @@ public class RegionSpawner : Singleton<RegionSpawner>
             }
         }
     }
+
+    #region 최종보스
+    // 결계와 최종보스는 카테고리 기록에 넣지 않으므로 지역이 비거나 날짜가 지나도 디스폰/재소환되지 않는다
+    // 결계 : 결계 지역에 플레이어가 처음 들어왔을 때 보스 포인트에 소환. 어떤 이유로든 사라졌으면 다시 세운다
+    // 최종보스 : 결계가 풀릴 때 SummonFinalBoss로 소환. 처치되면 기록만 남기고 다시 소환하지 않는다
+    private void UpdateFinalBoss(WorldData data, SpawnPointRegistry registry)
+    {
+        var rec = data.FinalBoss ??= new FinalBossRecord();
+        switch (rec.Stage)
+        {
+            case FinalBossStage.None:
+            case FinalBossStage.Barrier:
+            {
+                if (IsAlive(rec.ObjectId)) return;
+                RegionType region = m_table.BarrierRegion;
+                if (!m_occupied.Contains(region)) return;
+                var point = registry.GetBossPoint(region);
+                if (point == null || string.IsNullOrEmpty(m_table.BarrierPrefabId)) return;
+                var obj = WorldManager.Instance.Spawn(m_table.BarrierPrefabId, point.position, point.rotation);
+                if (obj == null) return;
+                rec.ObjectId = obj.ID;
+                rec.Stage = FinalBossStage.Barrier;
+                break;
+            }
+            case FinalBossStage.Boss:
+            {
+                var boss = WorldManager.Instance.Find(rec.ObjectId);
+                if (IsAlive(boss) && !(boss is Entity entity && entity.CheckDie())) return;
+                // 사망 연출 중인 개체는 스스로 디스폰하므로 기록만 바꾼다
+                rec.Stage = FinalBossStage.Defeated;
+                rec.ObjectId = -1;
+                break;
+            }
+        }
+    }
+
+    // 방장 전용. 해제 조건을 확인한 결계가 호출. 결계 자리에 최종보스를 소환하고 기록을 바꾼다. 결계 디스폰은 호출한 쪽에서
+    // 이미 풀렸거나 기록과 다른 결계, 또는 최종보스 소환에 실패하면 false
+    public bool SummonFinalBoss(IWorldObj barrier)
+    {
+        var data = WorldManager.Instance.CurWorldData;
+        if (m_table == null || !IsMaster || data == null || barrier == null) return false;
+        var rec = data.FinalBoss ??= new FinalBossRecord();
+        if (rec.Stage != FinalBossStage.Barrier || rec.ObjectId != barrier.ID) return false;
+
+        var t = barrier.gameObject.transform;
+        var boss = WorldManager.Instance.Spawn(m_table.FinalBossPrefabId, t.position, t.rotation);
+        if (boss == null)
+        {
+            Debug.LogError($"[RegionSpawner] 최종보스 소환 실패 : {m_table.FinalBossPrefabId}");
+            return false;
+        }
+        rec.Stage = FinalBossStage.Boss;
+        rec.ObjectId = boss.ID;
+        return true;
+    }
+    #endregion
+
+    #region 테스트 명령어
+    // 채팅 명령어는 내 클라이언트에서만 실행되므로 방장이 아니어도 사용 가능
+    //  /barrieritems [개수] : 결계 해제에 필요한 아이템을 내 인벤토리에 개수만큼(기본 1) 추가
+    private void OnCommand(string command, string[] args)
+    {
+        switch (command)
+        {
+            case "barrieritems":
+                GiveBarrierItems(args);
+                break;
+        }
+    }
+
+    private void GiveBarrierItems(string[] args)
+    {
+        var chat = ChatManager.Instance;
+        int amount = 1;
+        if (args.Length > 0 && (!int.TryParse(args[0], out amount) || amount <= 0))
+        {
+            chat.Notify("사용법 : /barrieritems [개수]");
+            return;
+        }
+        PlayerFSM player = null;
+        foreach (var obj in WorldManager.Instance.Objects.GetList())
+        {
+            if (obj is PlayerFSM p && p != null && p.IsMine) { player = p; break; }
+        }
+        if (player == null || player.Inventory == null)
+        {
+            chat.Notify("내 플레이어를 찾을 수 없습니다.");
+            return;
+        }
+        var barrier = FindBarrierPrefab();
+        if (barrier == null)
+        {
+            chat.Notify($"결계 프리팹을 찾을 수 없습니다 : {(m_table != null ? m_table.BarrierPrefabId : "(스폰 테이블 없음)")}");
+            return;
+        }
+        // 인벤토리 소유자 쪽에서 추가하므로 SyncInventory로 방장 사본까지 맞춰진다
+        foreach (int itemId in barrier.RequiredItemIds) player.Inventory.AddItem(itemId, amount);
+        chat.Notify($"결계 해제 아이템을 {amount}개씩 추가했습니다.");
+    }
+
+    // 결계에 설정된 필요 아이템을 그대로 쓰기 위해 카탈로그에서 결계 프리팹을 찾는다
+    private Barrier FindBarrierPrefab()
+    {
+        if (m_table == null) return null;
+        var catalog = Resources.Load<NetworkPrefabCatalog>("NetworkPrefabCatalog");
+        if (catalog == null) return null;
+        foreach (var prefab in catalog.Entries)
+        {
+            if (prefab != null && prefab.name == m_table.BarrierPrefabId) return prefab.GetComponent<Barrier>();
+        }
+        return null;
+    }
+    #endregion
 
     // 플레이어가 한 명이라도 있는 지역. 원격 플레이어도 방장 쪽에서 동기화된 위치로 PlayerRegionTracker가 갱신됨
     private void CollectOccupied()

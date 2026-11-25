@@ -12,6 +12,9 @@ namespace Pomunculus.Items
         [SerializeField, Min(1)] private int amount = 1;
 
         public int Amount => amount;
+
+        // 드롭 수량을 바꾼다 (최소 1). 방장이 생성 직후, 전파 전에 호출해야 다른 화면에도 같은 수량이 간다
+        public void SetAmount(int value) => amount = Mathf.Max(1, value);
         public int ID { get; set; } = -1;
         public string PrefabId { get; set; }
 
@@ -24,15 +27,51 @@ namespace Pomunculus.Items
             Displace
         }
 
+        // 플레이어가 버린 아이템의 SaveData.Child 키
+        private const string DropFlightKey = "dropFlight";       // [도착 x, y, z, 비행 시간, 포물선 높이]
+        private const string DropperKey = "dropper";             // 버린 플레이어 ActorNumber
+        private const string DropperDelayKey = "dropperDelay";   // 버린 사람이 다시 주울 수 있을 때까지의 시간(초)
+
+        private const int NoDropper = int.MinValue;
+
         private bool isPickedUp;   // 방장 화면에서 이미 누군가에게 지급했는지 (중복 지급 방지)
         private Rigidbody body;
         private Vector3 displaceStart;
         private Vector3 displaceEnd;
         private float displaceDuration;
         private float displaceElapsed;
+        private float displaceArcHeight;
         private bool isDisplacing;
+        private bool isDropFlight;   // 플레이어가 버려서 튀어나가는 중인지 (넉백 이동과 구분, 이때만 줍기 불가)
+
+        private int dropperActor = NoDropper;   // 이 아이템을 버린 플레이어 (없으면 NoDropper)
+        private float dropperLockedUntil;       // 버린 플레이어가 이 시각 전까지는 줍지 못한다 (로컬 Time.time 기준)
 
         void Awake() => body = GetComponent<Rigidbody>();
+
+        /// <summary>
+        /// 플레이어가 버린 아이템의 생성 데이터를 만든다.
+        /// 수량은 기존과 같이 Data에, 튀어나가는 궤적과 버린 사람 정보는 Child에 담겨 생성과 함께 모든 화면에 전파된다.
+        /// </summary>
+        public static SaveData CreateDropData(int amount, Vector3 landingPoint, float duration, float arcHeight,
+            int dropperActor, float dropperDelay)
+        {
+            SaveData data = global::SaveData.CreateSaveData(Mathf.Max(1, amount));
+            data.Child[DropFlightKey] = global::SaveData.CreateSaveData(
+                new[] { landingPoint.x, landingPoint.y, landingPoint.z, duration, arcHeight });
+            data.Child[DropperKey] = global::SaveData.CreateSaveData(dropperActor);
+            data.Child[DropperDelayKey] = global::SaveData.CreateSaveData(dropperDelay);
+            return data;
+        }
+
+        // 지금 이 플레이어가 주울 수 있는지. 날아가는 중이거나, 버린 본인이 대기 시간 안이면 false
+        public bool CanBePickedUpBy(int actor)
+        {
+            if (isDropFlight)
+                return false;
+
+            return actor != dropperActor || Time.time >= dropperLockedUntil;
+        }
 
         // WorldManager가 생성 직후 네트워크 ID를 넣어준다
         public void InitWorldObj(int id, string prefabId)
@@ -41,19 +80,65 @@ namespace Pomunculus.Items
             PrefabId = prefabId;
         }
 
-        // 전파·스냅샷에 드롭 수량을 담는다
+        // 전파·스냅샷에 드롭 수량을 담는다.
+        // 날아가는 중이거나 버린 사람 잠금이 남아 있으면 그 정보도 담는다 (방장이 생성 직후 다른 화면에 전파할 때 이 값이 쓰임).
+        // 착지가 끝난 뒤에는 수량만 저장하므로, 늦게 들어온 사람에게는 착지한 상태로 보인다
         public void SaveData(SaveData data)
         {
             data.SetData(amount);
+
+            if (isDisplacing)
+            {
+                float remainingDuration = Mathf.Max(0.01f, displaceDuration - displaceElapsed);
+                float arcHeight = displaceElapsed <= 0f ? displaceArcHeight : 0f;   // 도중 합류면 남은 구간은 직선으로
+                data.Child[DropFlightKey] = global::SaveData.CreateSaveData(
+                    new[] { displaceEnd.x, displaceEnd.y, displaceEnd.z, remainingDuration, arcHeight });
+            }
+
+            float remainingLock = dropperLockedUntil - Time.time;
+            if (dropperActor != NoDropper && remainingLock > 0f)
+            {
+                data.Child[DropperKey] = global::SaveData.CreateSaveData(dropperActor);
+                data.Child[DropperDelayKey] = global::SaveData.CreateSaveData(remainingLock);
+            }
         }
 
-        // 받은 데이터로 드롭 수량을 복원한다 (데이터가 없으면 프리팹 기본값 유지)
+        // 받은 데이터로 드롭 수량을 복원한다 (데이터가 없으면 프리팹 기본값 유지).
+        // 플레이어가 버린 아이템이면 현재 위치(시작점)에서 착지점까지 튀어나가는 연출을 시작한다
         public void LoadData(SaveData data)
         {
             if (data?.Data == null)
                 return;
 
             amount = Mathf.Max(1, data.GetData<int>());
+            LoadDropData(data);
+        }
+
+        // 버린 사람 정보와 튀어나가는 궤적을 읽어 적용한다. Child가 없으면(일반 드롭) 아무것도 하지 않는다
+        private void LoadDropData(SaveData data)
+        {
+            if (data.Child == null)
+                return;
+
+            if (data.Child.TryGetValue(DropperKey, out SaveData dropper) && dropper?.Data != null)
+            {
+                dropperActor = dropper.GetData<int>();
+                float delay = 0f;
+                if (data.Child.TryGetValue(DropperDelayKey, out SaveData delayData) && delayData?.Data != null)
+                    delay = delayData.GetData<float>();
+                dropperLockedUntil = Time.time + delay;
+            }
+
+            if (data.Child.TryGetValue(DropFlightKey, out SaveData flight) && flight?.Data != null)
+            {
+                float[] values = flight.GetData<float[]>();
+                if (values != null && values.Length >= 5)
+                {
+                    Vector3 landingPoint = new Vector3(values[0], values[1], values[2]);
+                    StartDisplace(transform.position, landingPoint, values[3], values[4]);
+                    isDropFlight = true;
+                }
+            }
         }
 
         // 방장에게 이 아이템을 줍겠다고 요청한다 (방장·오프라인이면 바로 처리됨)
@@ -76,7 +161,7 @@ namespace Pomunculus.Items
                     HandlePickupRequest(packet.ReadInt());
                     break;
                 case PickupRPCType.Displace:
-                    StartDisplace(packet.ReadVector3(), packet.ReadVector3(), packet.ReadFloat());
+                    StartDisplace(packet.ReadVector3(), packet.ReadVector3(), packet.ReadFloat(), 0f);
                     break;
             }
         }
@@ -107,14 +192,16 @@ namespace Pomunculus.Items
             this.SendRPC(packet, WorldRPCTarget.All);   // 방장 화면은 즉시 실행
         }
 
-        // 받은 시작점에서 도착점까지 일정 시간 동안 옮긴다. 이동 중에는 물리를 끈다
-        private void StartDisplace(Vector3 start, Vector3 end, float duration)
+        // 받은 시작점에서 도착점까지 일정 시간 동안 옮긴다. arcHeight가 0보다 크면 포물선을 그린다. 이동 중에는 물리를 끈다
+        private void StartDisplace(Vector3 start, Vector3 end, float duration, float arcHeight)
         {
             displaceStart = start;
             displaceEnd = end;
             displaceDuration = Mathf.Max(0.01f, duration);
             displaceElapsed = 0f;
+            displaceArcHeight = Mathf.Max(0f, arcHeight);
             isDisplacing = true;
+            isDropFlight = false;   // 버리기 연출이면 호출한 쪽(LoadDropData)에서 다시 켠다
 
             if (body != null)
             {
@@ -130,10 +217,12 @@ namespace Pomunculus.Items
 
             displaceElapsed += Time.deltaTime;
             float t = Mathf.Clamp01(displaceElapsed / displaceDuration);
-            transform.position = Vector3.Lerp(displaceStart, displaceEnd, t);
+            float arcOffset = displaceArcHeight * 4f * t * (1f - t);   // t=0.5에서 최고점, 양 끝에서 0
+            transform.position = Vector3.Lerp(displaceStart, displaceEnd, t) + Vector3.up * arcOffset;
             if (t < 1f) return;
 
             isDisplacing = false;
+            isDropFlight = false;
             transform.position = displaceEnd;               // 모든 화면에서 같은 자리로 확정
             if (body != null) body.isKinematic = false;
         }

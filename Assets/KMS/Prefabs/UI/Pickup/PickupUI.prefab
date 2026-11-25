@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1063244579802603178}
   - component: {fileID: 1508225390260138923}
+  - component: {fileID: 6776407277814505049}
   m_Layer: 5
   m_Name: ToastContainer
   m_TagString: Untagged
@@ -62,6 +63,20 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!114 &6776407277814505049
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 112217566345725419}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3245ec927659c4140ac4f8d17403cc18, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.ContentSizeFitter
+  m_HorizontalFit: 0
+  m_VerticalFit: 2
 --- !u!1 &7415643916823467374
 GameObject:
   m_ObjectHideFlags: 0
@@ -164,6 +179,7 @@ MonoBehaviour:
   container: {fileID: 1063244579802603178}
   maxVisible: 5
   prewarmCount: 6
+  spawnInterval: 0.12
 --- !u!114 &2977718354752804940
 MonoBehaviour:
   m_ObjectHideFlags: 0

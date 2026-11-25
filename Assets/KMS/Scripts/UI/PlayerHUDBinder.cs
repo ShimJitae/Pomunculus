@@ -6,20 +6,34 @@ using UnityEngine;
 // 로컬 플레이어의 Model과 HUD 각 패널 View를 Presenter로 묶고 수명을 관리한다.
 public class PlayerHUDBinder : MonoBehaviour
 {
+    [SerializeField] private Canvas hudCanvas;
     [Header("View")]
     [SerializeField] private StatPanelView statPanelView;
     [SerializeField] private StatusPanelView statusPanelView;
     [SerializeField] private PotionSlotView potionSlotView;
     [SerializeField] private RespawnUIView respawnUIView;
-    //[SerializeField] private InventoryUI inventoryView;
+    [SerializeField] private InventoryUI inventoryView;
 
     private readonly List<IDisposable> presenters = new();
 
+    private void OnEnable()
+    {
+        LocalPlayerProvider.OnLocalPlayerChanged += Bind;
+        Bind(LocalPlayerProvider.Current);
+    }
+
+    private void OnDisable()
+    {
+        LocalPlayerProvider.OnLocalPlayerChanged -= Bind;
+        UnbindAll();
+    }
+
     // 플레이어와 HUD를 연결. 다시 호출하면 이전 연결을 해제하고 새로 묶는다 (부활·재접속 대비)
-    public void Bind(PlayerFSM localPlayer, InventoryUI inventoryView)
+    public void Bind(PlayerFSM localPlayer)
     {
         UnbindAll();
-        //this.inventoryView = inventoryView;
+        hudCanvas.enabled = localPlayer != null;
+        if (localPlayer == null) return;
 
         presenters.Add(new StatPanelPresenter(localPlayer.Stats, statPanelView));
         presenters.Add(new StatusPanelPresenter(localPlayer.GetComponent<StatusEffectController>(), statusPanelView));
@@ -30,7 +44,7 @@ public class PlayerHUDBinder : MonoBehaviour
     }
 
     // 모든 Presenter의 구독을 해제
-    public void UnbindAll()
+    private void UnbindAll()
     {
         for (int i = 0; i < presenters.Count; i++)
         {
@@ -38,10 +52,5 @@ public class PlayerHUDBinder : MonoBehaviour
         }
 
         presenters.Clear();
-    }
-
-    private void OnDestroy()
-    {
-        UnbindAll();
     }
 }

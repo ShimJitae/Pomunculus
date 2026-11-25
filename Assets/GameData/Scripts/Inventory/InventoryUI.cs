@@ -5,7 +5,8 @@ using UnityEngine.UI;
 
 namespace Pomunculus.Items
 {
-    public class InventoryUI : MonoBehaviour
+    // IRightClickConsumer : 인벤토리 창 위에서 우클릭해도 플레이어가 이동하지 않게 한다 (PlayerInputReader가 확인)
+    public class InventoryUI : MonoBehaviour, IRightClickConsumer
     {
         private enum InventoryTab
         {
@@ -98,6 +99,7 @@ namespace Pomunculus.Items
             while (slotViews.Count < requiredSlots)
             {
                 InventorySlotUI view = Instantiate(slotPrefab, content);
+                view.OnDropRequested += HandleDropRequested;
                 slotViews.Add(view);
             }
 
@@ -113,7 +115,7 @@ namespace Pomunculus.Items
 
                 if (i < items.Count)
                 {
-                    view.ShowItem(items[i].Icon, items[i].Amount, items[i].Name, items[i].Description, tooltip, 
+                    view.ShowItem(items[i].Id, items[i].Icon, items[i].Amount, items[i].Name, items[i].Description, tooltip, 
                         items[i].Physics, items[i].Fire, items[i].Cold, items[i].Wind);
                     view.SetPotionSelection(items[i].Potion, potionSlotSelector);
                 }
@@ -184,6 +186,16 @@ namespace Pomunculus.Items
             result.Sort((a, b) => a.Id.CompareTo(b.Id));
 
             return result;
+        }
+
+        // 슬롯 우클릭 시 아이템을 바닥에 버린다. dropAll이면 보유한 전부, 아니면 1개. 화면은 Inventory.Changed로 갱신된다
+        private void HandleDropRequested(int itemId, bool dropAll)
+        {
+            if (inventory == null)
+                return;
+
+            int amount = dropAll ? inventory.GetItemCount(itemId) : 1;
+            inventory.DropItem(itemId, amount);
         }
 
         public void ShowAll()

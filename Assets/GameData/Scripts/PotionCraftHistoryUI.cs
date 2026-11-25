@@ -6,9 +6,6 @@ namespace Pomunculus.Items
 {
     public class PotionCraftHistoryUI : MonoBehaviour
     {
-        [Header("제작 기록")]
-        [SerializeField] private PotionCraftHistory craftHistory;
-
         [Header("표시할 줄 — 위에서부터")]
         [SerializeField]
         private CraftHistoryRowUI[] rows
@@ -25,13 +22,41 @@ namespace Pomunculus.Items
 
         [Header("연결할 제작창")]
         [SerializeField] private PotionCrafting potionCrafting;
-         
+
+        private PotionCraftHistory craftHistory;   // 내 플레이어의 제조 기록. LocalPlayerUIBinder가 연결
         private int selectedPotionId = -1;
         private int currentPage;
 
         private void OnEnable()
         {
             Refresh();
+        }
+
+        private void OnDestroy()
+        {
+            if (craftHistory != null)
+                craftHistory.OnChanged -= HandleCraftHistoryChanged;
+        }
+
+        // 내 플레이어의 제조 기록을 연결한다. 다시 호출하면 이전 연결을 끊고 새로 묶는다
+        public void Bind(PotionCraftHistory newCraftHistory)
+        {
+            if (craftHistory != null)
+                craftHistory.OnChanged -= HandleCraftHistoryChanged;
+
+            craftHistory = newCraftHistory;
+
+            if (craftHistory != null)
+                craftHistory.OnChanged += HandleCraftHistoryChanged;
+
+            HandleCraftHistoryChanged();
+        }
+
+        // 제조 기록이 바뀌면 열려 있을 때만 다시 그린다. 닫혀 있으면 OnEnable에서 그린다
+        private void HandleCraftHistoryChanged()
+        {
+            if (isActiveAndEnabled)
+                Refresh();
         }
 
         // 포션 선택 버튼에서 호출
