@@ -164,7 +164,6 @@ GameObject:
   - component: {fileID: 3723587255098844072}
   - component: {fileID: 9094914324764411693}
   - component: {fileID: 5870979108193400306}
-  - component: {fileID: 9107443124664804264}
   m_Layer: 5
   m_Name: WorldMapUI
   m_TagString: Untagged
@@ -214,7 +213,7 @@ Canvas:
   m_AdditionalShaderChannelsFlag: 0
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 1
+  m_SortingOrder: 3
   m_TargetDisplay: 0
 --- !u!114 &3723587255098844072
 MonoBehaviour:
@@ -268,6 +267,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6ea5f66023c99e448bf18dbeafc699c3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::WorldMapUI
+  bringToFrontOnOpen: 1
+  blocksOtherPopups: 1
   worldRoot: {fileID: 0}
   target: {fileID: 0}
   playerPin: {fileID: 4523204576372487579}
@@ -277,20 +278,6 @@ MonoBehaviour:
   closeDuration: 0.2
   closedAngle: 8
   closedOffset: {x: 0, y: -1200}
---- !u!114 &9107443124664804264
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3486250514255595155}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 218ae671649f8164eb7902a6cace6ff8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PopupUI
-  bringToFrontOnOpen: 1
-  blocksOtherPopups: 0
 --- !u!1 &6259811538510891202
 GameObject:
   m_ObjectHideFlags: 0

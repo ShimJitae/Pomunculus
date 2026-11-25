@@ -179,8 +179,7 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IShieldable, IWorldRPC
             worldMapUI = FindAnyObjectByType<WorldMapUI>(FindObjectsInactive.Include);
         if (worldMapUI == null) return;
 
-        if (worldMapUI.IsOpen) worldMapUI.Close();
-        else worldMapUI.Open();
+        worldMapUI.Toggle();
     }
 
     // 테스트용 키: H = 10 피해(에디터 전용), F1 = 모든 재료 50개, F2 = 모든 포션 50개

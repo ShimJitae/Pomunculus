@@ -18,6 +18,8 @@ public class ZonePotionEffect : SpawnPotionEffect
     // 조준 원이 장판 크기를 보여 주도록 장판 반경을 알려 준다
     public override float AreaRadius => radius;
 
+    public IReadOnlyList<PotionEffect> TickEffects => tickEffects;
+
     // 착탄 지점에 장판을 하나 깐다
     public override void OnImpact(in PotionImpactContext context)
     {
