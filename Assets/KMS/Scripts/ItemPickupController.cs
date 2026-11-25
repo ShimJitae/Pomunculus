@@ -49,8 +49,14 @@ public class ItemPickupController : MonoBehaviour
         {
             Collider hitCollider = buffer[i];
             WorldItemPickup item = hitCollider.GetComponentInParent<WorldItemPickup>();
-            if (item != null && detectedThisScan.Add(item))
-                PickupItem(item);
+            if (item == null || !detectedThisScan.Add(item))
+                continue;
+
+            // 날아가는 중이거나 내가 방금 버린 아이템은 건너뛴다. 조건이 풀리면 다음 스캔에서 줍는다
+            if (!item.CanBePickedUpBy(owner.Owner))
+                continue;
+
+            PickupItem(item);
         }
     }
 
