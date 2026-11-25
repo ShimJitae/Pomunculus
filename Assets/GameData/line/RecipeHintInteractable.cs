@@ -1,3 +1,4 @@
+using Pomunculus.Items;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -5,6 +6,7 @@ using UnityEngine.InputSystem;
 public class RecipeHintInteractable : MonoBehaviour
 {
     [SerializeField] private Line note;
+    [SerializeField] private PotionData Data;
 
     private readonly HashSet<Collider> nearbyColliders = new HashSet<Collider>();
     private RecipeHintUI hintUI;
@@ -72,7 +74,7 @@ public class RecipeHintInteractable : MonoBehaviour
                 if (hintUI.IsOpen)
                     hintUI.Close();
                 else
-                    hintUI.Open(note);
+                    hintUI.Open(note, Data);
             }
             break;
         }

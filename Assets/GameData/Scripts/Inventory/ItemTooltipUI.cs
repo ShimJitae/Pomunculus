@@ -18,7 +18,6 @@ namespace Pomunculus.Items
         [SerializeField] private TMP_Text fireText;
         [SerializeField] private TMP_Text coldText;
         [SerializeField] private TMP_Text windText;
-
         [Header("위치")]
         [SerializeField] private Vector2 mouseOffset = new Vector2(20, 20);
         [SerializeField] private float edgePadding = 15;
@@ -27,9 +26,11 @@ namespace Pomunculus.Items
         private RectTransform canvasRect;
         private Canvas rootCanvas;
         private Component owner;
+        private string normalDescription;
+        private string detailDescription;
 
         public void Show(Component slot, string itemName, string description,Sprite sprite, int amount, Vector2 screenPosition,
-            float physics, float fire, float cold, float wind,bool showAmount = true)
+            float physics, float fire, float cold, float wind,bool showAmount = true, string details = "")
         {
             tooltipRect = GetComponent<RectTransform>();
             rootCanvas = GetComponentInParent<Canvas>().rootCanvas;
@@ -43,6 +44,9 @@ namespace Pomunculus.Items
 
             nameText.text = itemName;
             descriptionText.text = description;
+            normalDescription = description;
+            detailDescription = details;
+            RefreshDescription();
             amountText.gameObject.SetActive(showAmount);
             amountText.text = $"보유 수량 : {amount}개";
             physicsText.text = $"×{physics:0.##}";
@@ -63,6 +67,7 @@ namespace Pomunculus.Items
 
         private void LateUpdate()
         {
+            RefreshDescription();
             if (Mouse.current != null)
                 UpdatePosition(Mouse.current.position.ReadValue());
         }
@@ -100,17 +105,31 @@ namespace Pomunculus.Items
 
             tooltipRect.localPosition = new Vector3(x, y, 0);
         }
-
         public void HideFor(Component slot)
         {
             if (owner == slot)
                 Hide();
         }
-
         public void Hide()
         {
             owner = null;
             gameObject.SetActive(false);
+        }
+        private void RefreshDescription()
+        {
+            Keyboard keyboard = Keyboard.current;
+
+            bool holdingCtrl = keyboard != null &&
+                (keyboard.leftCtrlKey.isPressed ||
+                 keyboard.rightCtrlKey.isPressed);
+
+            string text = holdingCtrl &&
+                          !string.IsNullOrWhiteSpace(detailDescription)
+                ? detailDescription
+                : normalDescription;
+
+            if (descriptionText.text != text)
+                descriptionText.text = text;
         }
     }
 }
