@@ -47,5 +47,5 @@ public class RegionSpawnTable : ScriptableObject
     [Header("최종보스")]
     [SerializeField] private RegionType m_barrierRegion = RegionType.Forest;
     [SerializeField] private string m_barrierPrefabId = "Barrier"; // NetworkPrefabCatalog 이름
-    [SerializeField] private string m_finalBossPrefabId = "LastBoss"; // 임시 이름
+    [SerializeField] private string m_finalBossPrefabId = "Enemy_Slime"; // 임시 이름
 }
