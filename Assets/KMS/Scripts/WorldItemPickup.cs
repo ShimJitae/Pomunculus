@@ -12,6 +12,9 @@ namespace Pomunculus.Items
         [SerializeField, Min(1)] private int amount = 1;
 
         public int Amount => amount;
+
+        // 드롭 수량을 바꾼다 (최소 1). 방장이 생성 직후, 전파 전에 호출해야 다른 화면에도 같은 수량이 간다
+        public void SetAmount(int value) => amount = Mathf.Max(1, value);
         public int ID { get; set; } = -1;
         public string PrefabId { get; set; }
 

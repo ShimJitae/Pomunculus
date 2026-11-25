@@ -6,7 +6,7 @@ namespace Pomunculus.Items
     public class TestItemGiver : MonoBehaviour
     {
         private const int TestPotionFirstId = 19001;   // Assets/KMS/Test/Potions 테스트 포션 ID 범위
-        private const int TestPotionLastId = 19007;
+        private const int TestPotionLastId = 19011;
         private const int TestPotionAmount = 50;
 
         [Header("추가할 아이템")]

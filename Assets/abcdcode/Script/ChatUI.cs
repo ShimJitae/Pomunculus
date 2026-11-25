@@ -17,10 +17,12 @@ public class ChatUI : MonoBehaviour
 {
     // 채팅을 입력 중인지. 닫은 프레임에도 true라서, 같은 프레임에 Esc/Enter를 다른 스크립트가 다시 처리하지 않음
     public static bool IsTyping => s_isOpen || s_closedFrame == Time.frameCount;
-
+    private static ChatUI _instance;
     #region Unity
     private void Awake()
     {
+        if(_instance != null) Destroy(this.gameObject);
+        _instance = this;
         m_input.lineType = TMP_InputField.LineType.SingleLine;
         m_input.characterLimit = ChatManager.MaxLength;
         m_input.onValidateInput = ValidateChar;

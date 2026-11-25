@@ -21,6 +21,9 @@ public class PotionKnockbackMover : MonoBehaviour
         remainingTime = duration;
     }
 
+    // 진행 중인 넉백을 멈춘다 (순간이동 등)
+    public void Stop() => remainingTime = 0f;
+
     void Update()
     {
         if (remainingTime <= 0f) return;

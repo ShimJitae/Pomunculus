@@ -18,6 +18,11 @@ public class ItemDropper : MonoBehaviour
     [Header("아이템 사이 높이 간격")]
     [SerializeField, Min(0.01f)] private float heightGap = 0.5f;
     private bool hasDropped;
+    private int yieldMultiplier = 1;   // 채집 강화 포션이 건 드롭 수량 배수
+
+    // 드롭 수량 배수를 건다. 여러 번 걸리면 큰 값만 남긴다
+    public void ApplyYieldMultiplier(int multiplier) => yieldMultiplier = Mathf.Max(yieldMultiplier, multiplier);
+
     public void DropItems()
     {
         if (hasDropped)
@@ -34,7 +39,7 @@ public class ItemDropper : MonoBehaviour
                     continue;
 
                 Vector3 position = transform.position + Vector3.up * height;
-                WorldManager.Instance.Spawn(prefab.name, position, Quaternion.identity);
+                WorldManager.Instance.Spawn(prefab.name, position, Quaternion.identity, MultiplyAmount);
 
                 height += heightGap;
             }
@@ -42,6 +47,14 @@ public class ItemDropper : MonoBehaviour
         Entity entity = GetComponent<Entity>();
         WorldManager.Instance.Despawn(entity.ID);
     }
+    // 생성 직후(전파 전) 픽업 수량에 배수를 곱한다
+    private void MultiplyAmount(IWorldObj spawned)
+    {
+        if (yieldMultiplier <= 1 || spawned == null) return;
+        if (spawned.gameObject.TryGetComponent(out Pomunculus.Items.WorldItemPickup pickup))
+            pickup.SetAmount(pickup.Amount * yieldMultiplier);
+    }
+
     private GameObject[] GetDropPrefabs()
     {
         if (statusDropRules == null || statusDropRules.Length == 0)

@@ -12,4 +12,5 @@ public class PlayerWorldData
     public int[] PotionSlotIds { get; set; }
     public int SelectedPotionSlot { get; set; }
     public List<int> DiscoveredPotionIds { get; set; }
+    public Dictionary<int, List<List<int>>> CraftHistory { get; set; }
 }
