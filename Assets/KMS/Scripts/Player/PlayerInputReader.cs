@@ -120,8 +120,6 @@ public class PlayerInputReader : MonoBehaviour
 
         if (rightDown)
             isMoveBlockedByUI = IsPointerOverRightClickConsumer();
-        if (!rightHeld)
-            isMoveBlockedByUI = false;
 
         if (!isMoveBlockedByUI && (rightDown || (rightHeld && Time.time >= nextHoldRepathAt)))
         {
@@ -133,6 +131,10 @@ public class PlayerInputReader : MonoBehaviour
                 if (rightDown) ShowMoveMarker(dest);
             }
         }
+
+        // 버튼을 뗐으면 다음 클릭을 위해 차단을 푼다. 이동 판정 뒤에 풀어야 같은 프레임에 누르고 뗀 클릭도 막힌다
+        if (!rightHeld)
+            isMoveBlockedByUI = false;
 
         // 좌클릭: 던지기. 클릭한 순간의 마우스 위치를 목표로 저장
         if (!pointerOverUI && attackAction.WasPressedThisFrame() && TryGetMouseWorldPoint(out Vector3 target))
