@@ -272,6 +272,32 @@ public class Enemy : Entity, IWorldRPC, IHealable
             ResetDetectRange();
     }
 
+    // 스킬 사용 직전에 호출. 감지 범위 안에서 가장 가까운 플레이어로 타겟을 바꾼다 (방장에서만 실행)
+    public void RetargetToNearest()
+    {
+        GameObject nearestPlayer = detector.GetNearestPlayer();
+
+        // 후보가 없으면 기존 타겟 유지 (타겟 정리는 RefreshTarget이 담당)
+        if (nearestPlayer == null || nearestPlayer == target)
+            return;
+
+        SetTarget(nearestPlayer);
+    }
+
+    // 루트 모션이 있는 클립(드롭킥처럼 몸이 이동하는 공격)의 이동량을 NavMeshAgent 이동으로 반영해 루트(콜라이더)가 몸을 따라가게 한다
+    // Root Motion Node가 없는 다른 클립은 이동량이 0이라 영향 없음. 실행 권한이 있을 때만 이동하고 다른 플레이어는 위치 동기화를 따른다
+    private void OnAnimatorMove()
+    {
+        if (!IsMaster || !agent.enabled || !agent.isOnNavMesh)
+            return;
+
+        Vector3 rootMotionDelta = animator.deltaPosition;
+        rootMotionDelta.y = 0f;   // 높이는 NavMesh가 결정
+
+        if (rootMotionDelta.sqrMagnitude > 0f)
+            agent.Move(rootMotionDelta);
+    }
+
     protected override int GetId()
     {
         return EnemySo.GetEnemyId();
@@ -371,6 +397,10 @@ public class Enemy : Entity, IWorldRPC, IHealable
 
         if (!IsMaster)
             return;
+
+        // 스킬이 취소된 것도 스킬이 끝난 것으로 보고 다음 스킬 대상을 다시 정한다 (사망 시에는 제외)
+        if (!isDie)
+            RetargetToNearest();
 
         PacketData packet = new();
         packet.Write((byte)EnemyRPCType.CancelTelegraph);
