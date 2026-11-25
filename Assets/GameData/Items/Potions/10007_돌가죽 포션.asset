@@ -14,17 +14,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Pomunculus.Items.PotionData
   Id: 10007
   ItemName: "\uB3CC\uAC00\uC8FD \uD3EC\uC158"
-  Description: "\uD53C\uBD80\uB97C \uBC14\uC704\uCC98\uB7FC \uB2E8\uB2E8\uD558\uACE0
-    \uBB34\uAC81\uAC8C \uB9CC\uB4DC\uB294 \uD3EC\uC158."
+  Description: "\uC77C\uC815 \uC2DC\uAC04 \uD53C\uD574\uB97C \uD761\uC218\uD558\uB294
+    \uBCF4\uD638\uB9C9 \uBD80\uC5EC."
+  Details: "{shieldDuration}\uCD08 \uB3D9\uC548 {shieldAmount}\uC758 \uD53C\uD574\uB97C
+    \uD761\uC218\uD558\uB294 \uBCF4\uD638\uB9C9\uC744 \uBD80\uC5EC\uD569\uB2C8\uB2E4.\n\uBCF4\uD638\uB9C9\uC740
+    \uD53C\uD574\uB97C \uBC1B\uC73C\uBA74 \uAC10\uC18C\uD558\uBA70, \uC9C0\uC18D\uC2DC\uAC04\uC774
+    \uB05D\uB098\uBA74 \uC0AC\uB77C\uC9D1\uB2C8\uB2E4."
   Icon: {fileID: 21300000, guid: b9b140ada129c10408f200e3982f0b99, type: 3}
   PhysicsElement: 4
   FireElement: 0
   ColdElement: 1
   WindElement: 0
+  pickupPrefab: {fileID: 3321244018119135130, guid: e3315645994cf655ac5d2fa3530b2d33, type: 3}
   projectilePrefab: {fileID: 6398676829056186882, guid: f70214b1d2221d99b35aa4b378af3e80, type: 3}
   effects:
   - rid: 3760827132846276725
-  pickupPrefab: {fileID: 3321244018119135130, guid: e3315645994cf655ac5d2fa3530b2d33, type: 3}
   references:
     version: 2
     RefIds:
@@ -33,3 +37,4 @@ MonoBehaviour:
       data:
         affectedTargets: -1
         amount: 30
+        duration: 10

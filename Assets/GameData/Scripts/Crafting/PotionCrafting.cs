@@ -80,7 +80,6 @@ namespace Pomunculus.Items
 
             RefreshUI();
         }
-
         public void Craft()
         {
             if (inventory == null || insertedMaterialCount <= 0)

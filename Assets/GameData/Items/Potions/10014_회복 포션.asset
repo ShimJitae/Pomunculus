@@ -14,17 +14,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Pomunculus.Items.PotionData
   Id: 10014
   ItemName: "\uD68C\uBCF5 \uD3EC\uC158"
-  Description: "\uC0C1\uCC98\uC758 \uD68C\uBCF5\uC744 \uB3D5\uB294 \uC0DD\uBA85\uB825\uC774
-    \uB2F4\uAE34 \uD3EC\uC158."
+  Description: "\uB300\uC0C1\uC758 \uCCB4\uB825\uC744 \uC989\uC2DC \uD68C\uBCF5."
+  Details: "\uB300\uC0C1\uC758 \uCCB4\uB825\uC744 {healAmount}\uB9CC\uD07C \uC989\uC2DC
+    \uD68C\uBCF5\uD569\uB2C8\uB2E4.\n\uB3C5 \uB4F1 \uD68C\uBCF5\uB7C9 \uAC10\uC18C
+    \uD6A8\uACFC\uC5D0 \uB530\uB77C \uC2E4\uC81C \uD68C\uBCF5\uB7C9\uC774 \uC904\uC5B4\uB4E4
+    \uC218 \uC788\uC2B5\uB2C8\uB2E4."
   Icon: {fileID: 21300000, guid: b6765550efe9c77469b723bad343a9e3, type: 3}
   PhysicsElement: 0
   FireElement: 0
   ColdElement: 2
   WindElement: 2
+  pickupPrefab: {fileID: 3321244018119135130, guid: 8b27d61265fa88e5e04224f0621e84a6, type: 3}
   projectilePrefab: {fileID: 6398676829056186882, guid: 4377fe18fcf9242fa6c1d9899c3b356e, type: 3}
   effects:
   - rid: 3760827132846276719
-  pickupPrefab: {fileID: 3321244018119135130, guid: 8b27d61265fa88e5e04224f0621e84a6, type: 3}
   references:
     version: 2
     RefIds:
