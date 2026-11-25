@@ -268,6 +268,7 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IShieldable, IWorldRPC
     {
         CurrentHp = so.GetMaxHp();
         isDie = false;
+        ClearStatusEffectsLocal();
         Stats.RestoreAll();
         Stats.ClearShield();
         Input.ClearMoveCommand();
@@ -592,7 +593,11 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IShieldable, IWorldRPC
         if (!wasDead && isDie)
             OnDied?.Invoke();
         else if (wasDead && !isDie)
+        {
+            ClearStatusEffectsLocal();
             OnRevived?.Invoke();
+        }
+            
     }
 
     private void ApplyShield(int shield) => Stats.ApplySyncedShield(shield);
