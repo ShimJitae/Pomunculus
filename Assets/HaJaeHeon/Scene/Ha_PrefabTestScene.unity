@@ -1222,6 +1222,7 @@ GameObject:
   - component: {fileID: 1206763459}
   - component: {fileID: 1206763461}
   - component: {fileID: 1206763460}
+  - component: {fileID: 1206763462}
   m_Layer: 5
   m_Name: EndingCredit_Panel
   m_TagString: Untagged
@@ -1287,6 +1288,26 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1206763458}
   m_CullTransparentMesh: 1
+--- !u!114 &1206763462
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1206763458}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4747c6303a828a442bd67118712ffe5d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EndingCreditUI
+  creditScrollRect: {fileID: 1270105311}
+  endButtonCanvasGroupList:
+  - {fileID: 1054749978}
+  - {fileID: 828374959}
+  startDelay: 2
+  scrollSpeed: 60
+  fastScrollMultiplier: 4
+  buttonFadeDuration: 0.5
 --- !u!1 &1270105309
 GameObject:
   m_ObjectHideFlags: 0
@@ -1748,6 +1769,63 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1462708518}
   m_CullTransparentMesh: 1
+--- !u!1001 &1763169340
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 7327231014083462170, guid: 07a6db7acb8b4ad4cbf5b2b836ea23f5, type: 3}
+      propertyPath: m_Name
+      value: Enemy_MainBoss
+      objectReference: {fileID: 0}
+    - target: {fileID: 7327231014083500090, guid: 07a6db7acb8b4ad4cbf5b2b836ea23f5, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -3.5282762
+      objectReference: {fileID: 0}
+    - target: {fileID: 7327231014083500090, guid: 07a6db7acb8b4ad4cbf5b2b836ea23f5, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.00000029379282
+      objectReference: {fileID: 0}
+    - target: {fileID: 7327231014083500090, guid: 07a6db7acb8b4ad4cbf5b2b836ea23f5, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.44824436
+      objectReference: {fileID: 0}
+    - target: {fileID: 7327231014083500090, guid: 07a6db7acb8b4ad4cbf5b2b836ea23f5, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7327231014083500090, guid: 07a6db7acb8b4ad4cbf5b2b836ea23f5, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7327231014083500090, guid: 07a6db7acb8b4ad4cbf5b2b836ea23f5, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7327231014083500090, guid: 07a6db7acb8b4ad4cbf5b2b836ea23f5, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7327231014083500090, guid: 07a6db7acb8b4ad4cbf5b2b836ea23f5, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7327231014083500090, guid: 07a6db7acb8b4ad4cbf5b2b836ea23f5, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7327231014083500090, guid: 07a6db7acb8b4ad4cbf5b2b836ea23f5, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 07a6db7acb8b4ad4cbf5b2b836ea23f5, type: 3}
 --- !u!1 &1803103352
 GameObject:
   m_ObjectHideFlags: 0
@@ -2668,7 +2746,7 @@ GameObject:
   - component: {fileID: 2145506108}
   - component: {fileID: 2145506107}
   - component: {fileID: 2145506106}
-  - component: {fileID: 2145506105}
+  - component: {fileID: 2145506110}
   m_Layer: 5
   m_Name: Canvas_EndingCredit
   m_TagString: Untagged
@@ -2676,26 +2754,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &2145506105
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2145506104}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4747c6303a828a442bd67118712ffe5d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EndingCreditUI
-  creditScrollRect: {fileID: 1270105311}
-  endButtonCanvasGroupList:
-  - {fileID: 1054749978}
-  - {fileID: 828374959}
-  startDelay: 3
-  scrollSpeed: 60
-  fastScrollMultiplier: 4
-  buttonFadeDuration: 0.5
 --- !u!114 &2145506106
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2779,6 +2837,19 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &2145506110
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2145506104}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e051a04fea81b741baaeed81487df8d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Ending
+  endingPanel: {fileID: 1206763458}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -2791,3 +2862,4 @@ SceneRoots:
   - {fileID: 831127043}
   - {fileID: 2145506109}
   - {fileID: 1294231989}
+  - {fileID: 1763169340}
