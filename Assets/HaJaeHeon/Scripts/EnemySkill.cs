@@ -269,7 +269,12 @@ public class EnemySkill : MonoBehaviour
 
         // 마지막 타격에서만 공격 종료 (다단 히트는 중간 이벤트에서 상태를 유지)
         if (!hasNextHit)
+        {
             SetAttackActive(false);
+
+            // 이번 스킬을 끝냈으므로 다음 스킬을 사용할 대상을 지금 가장 가까운 플레이어로 정한다
+            enemy.RetargetToNearest();
+        }
 
         if (!enemy.CanDoAttack || CurrentAttackPattern == null)
             return;
