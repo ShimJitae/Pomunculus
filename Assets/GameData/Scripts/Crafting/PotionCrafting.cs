@@ -44,12 +44,15 @@ namespace Pomunculus.Items
         [SerializeField] private Sprite unknownIcon;
         [Header("아이템 툴팁")]
         [SerializeField] private ItemTooltipUI tooltip;
-        [Header("제작 기록")]
-        [SerializeField] private PotionCraftHistory craftHistory;
+        private PotionCraftHistory craftHistory;   // 내 플레이어의 제조 기록. LocalPlayerUIBinder가 연결
         [Header("재료 부족 알림")]
         [SerializeField] private GameObject message;
         private int hoveredMaterialIndex = -1;
         private bool isResultHovered;
+
+        // 내 플레이어의 제조 기록을 연결한다
+        public void BindCraftHistory(PotionCraftHistory history) => craftHistory = history;
+
         private void OnEnable()
         {
             RefreshUI();

@@ -209,6 +209,14 @@ public class StatusEffectController : MonoBehaviour, ISavable
         return false;
     }
 
+    // 걸려 있는 상태이상을 모두 해제한다. 부활 등에서 호출하며 해제 이벤트가 상태마다 발생한다.
+    public void ClearAllStatusEffects()
+    {
+        if (activeStatusEffects == null) return;
+        for (int i = activeStatusEffects.Count - 1; i >= 0; i--)
+            RemoveEffectAt(i);
+    }
+
     private void RemoveEffectAt(int index)
     {
         StatusEffect effect = activeStatusEffects[index];

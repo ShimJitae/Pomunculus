@@ -191,6 +191,9 @@ public class Entity : MonoBehaviour, IWorldObj, IDamageable
             statusEffectController.ApplyStatusEffectLocal(seType);
         }
     }
+
+    // 이 컴퓨터에서 걸려 있는 상태이상을 모두 해제한다.
+    protected void ClearStatusEffectsLocal() => statusEffectController?.ClearAllStatusEffects();
     #endregion
 
     protected virtual int GetId()

@@ -1,12 +1,76 @@
+using System;
 using System.Collections.Generic;
-using UnityEngine;
 
 namespace Pomunculus.Items
 {
-    public class PotionCraftHistory : MonoBehaviour
+    public class PotionCraftHistory
     {
         // 포션 ID별로 제작에 성공한 재료 조합 보관
         private readonly Dictionary<int, List<List<int>>> records = new Dictionary<int, List<List<int>>>();
+
+        public event Action OnChanged;
+
+        // 저장·동기화용으로 전체 기록의 깊은 복사본을 가져온다
+        public Dictionary<int, List<List<int>>> GetRecords()
+        {
+            var copiedRecords = new Dictionary<int, List<List<int>>>();
+
+            foreach (var pair in records)
+            {
+                var copiedCombinations = new List<List<int>>(pair.Value.Count);
+
+                foreach (List<int> combination in pair.Value)
+                    copiedCombinations.Add(new List<int>(combination));   // 조합 리스트도 새로 만든다
+
+                copiedRecords.Add(pair.Key, copiedCombinations);
+            }
+
+            return copiedRecords;
+        }
+
+        // 저장·동기화 데이터로 전체 기록을 덮어쓴다
+        public void Restore(Dictionary<int, List<List<int>>> savedRecords)
+        {
+            records.Clear();
+
+            if (savedRecords != null)
+            {
+                foreach (var pair in savedRecords)
+                {
+                    if (pair.Value == null)
+                        continue;
+
+                    var combinations = new List<List<int>>();
+
+                    foreach (List<int> savedCombination in pair.Value)
+                    {
+                        if (savedCombination == null || savedCombination.Count == 0)
+                            continue;
+
+                        var materialIds = new List<int>(savedCombination);   // 복사
+                        materialIds.Sort();                                  // Record와 같은 기준으로 정렬
+
+                        bool isDuplicate = false;
+                        foreach (List<int> combination in combinations)
+                        {
+                            if (IsSameCombination(combination, materialIds))
+                            {
+                                isDuplicate = true;
+                                break;
+                            }
+                        }
+
+                        if (!isDuplicate)
+                            combinations.Add(materialIds);
+                    }
+
+                    if (combinations.Count > 0)
+                        records.Add(pair.Key, combinations);
+                }
+            }
+
+            OnChanged?.Invoke();
+        }
 
         public void Record(int potionId, List<MaterialData> materials)
         {
@@ -39,6 +103,7 @@ namespace Pomunculus.Items
             }
 
             combinations.Add(materialIds);
+            OnChanged?.Invoke();
         }
 
         private bool IsSameCombination(List<int> a, List<int> b)
