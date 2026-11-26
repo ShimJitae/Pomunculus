@@ -32,6 +32,7 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 3310997344218916669}
   - {fileID: 8683434263779352691}
   - {fileID: 3812057914081793931}
   - {fileID: 7487640942521890150}
@@ -84,7 +85,7 @@ MonoBehaviour:
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
   m_ReferenceResolution: {x: 1920, y: 1080}
-  m_ScreenMatchMode: 0
+  m_ScreenMatchMode: 1
   m_MatchWidthOrHeight: 0.5
   m_PhysicalUnit: 3
   m_FallbackScreenDPI: 96
@@ -126,6 +127,61 @@ MonoBehaviour:
   potionSlotView: {fileID: 1573010702709064537}
   respawnUIView: {fileID: 4971076766489079494}
   inventoryView: {fileID: 0}
+--- !u!1 &6819243073185419374
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3310997344218916669}
+  - component: {fileID: 148423454204133271}
+  m_Layer: 5
+  m_Name: SafeFrame
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &3310997344218916669
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6819243073185419374}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 8683434263779352691}
+  - {fileID: 3812057914081793931}
+  - {fileID: 7487640942521890150}
+  - {fileID: 6724263068729263179}
+  - {fileID: 2766005594522133822}
+  m_Father: {fileID: 3295236804323904543}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &148423454204133271
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6819243073185419374}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86710e43de46f6f4bac7c8e50813a599, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.AspectRatioFitter
+  m_AspectMode: 3
+  m_AspectRatio: 1.7777778
 --- !u!1 &9023739933486309627
 GameObject:
   m_ObjectHideFlags: 0
@@ -156,7 +212,7 @@ RectTransform:
   m_LocalScale: {x: 1.1, y: 1.1, z: 1.1}
   m_ConstrainProportionsScale: 1
   m_Children: []
-  m_Father: {fileID: 3295236804323904543}
+  m_Father: {fileID: 3310997344218916669}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -207,7 +263,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 3295236804323904543}
+    m_TransformParent: {fileID: 3310997344218916669}
     m_Modifications:
     - target: {fileID: 1602067236751261925, guid: 1413d9c70798c5d47a84be82e3003cf9, type: 3}
       propertyPath: m_Name
@@ -613,7 +669,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 3295236804323904543}
+    m_TransformParent: {fileID: 3310997344218916669}
     m_Modifications:
     - target: {fileID: 4359247312268525077, guid: 30037b68480e771409b79a2389efb40a, type: 3}
       propertyPath: selectedFrame
@@ -730,7 +786,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 3295236804323904543}
+    m_TransformParent: {fileID: 3310997344218916669}
     m_Modifications:
     - target: {fileID: 756429627961771753, guid: 615a71155d3129742b7603aa17dc38e5, type: 3}
       propertyPath: m_Pivot.x
@@ -843,7 +899,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 3295236804323904543}
+    m_TransformParent: {fileID: 3310997344218916669}
     m_Modifications:
     - target: {fileID: 1707416027395872391, guid: f8d252a0a5074ee4bb73bb81af63da68, type: 3}
       propertyPath: m_Name

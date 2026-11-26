@@ -40,6 +40,11 @@ public sealed class WorldMapUI : PopupUI
         }
     }
 
+    private void LateUpdate()
+    {
+        RefreshPlayerPin();
+    }
+
     [ContextMenu("Open 테스트")]
     protected override void OnOpened()
     {
@@ -80,13 +85,29 @@ public sealed class WorldMapUI : PopupUI
 
     private void RefreshPlayerPin()
     {
-
         if (playerPin == null)
         {
             return;
         }
 
-        playerPin.gameObject.SetActive(false);
+        bool visible = TryGetPlayerUV(out Vector2 imageUV);
+
+        if (visible)
+        {
+            playerPin.anchorMin = imageUV;
+            playerPin.anchorMax = imageUV;
+            playerPin.anchoredPosition = Vector2.zero;
+        }
+
+        if (playerPin.gameObject.activeSelf != visible)
+        {
+            playerPin.gameObject.SetActive(visible);
+        }
+    }
+
+    private bool TryGetPlayerUV(out Vector2 imageUV)
+    {
+        imageUV = default;
 
         if (target == null)
         {
@@ -96,21 +117,11 @@ public sealed class WorldMapUI : PopupUI
         if (target == null || !target.gameObject.activeInHierarchy ||
             worldRoot == null || calibration == null)
         {
-            return;
+            return false;
         }
 
         Vector3 localPosition = worldRoot.InverseTransformPoint(target.position);
-        Vector2 worldXZ = new Vector2(localPosition.x, localPosition.z);
-
-        if (!calibration.TryGetMapUV(worldXZ, out Vector2 imageUV))
-        {
-            return;
-        }
-
-        playerPin.anchorMin = imageUV;
-        playerPin.anchorMax = imageUV;
-        playerPin.anchoredPosition = Vector2.zero;
-        playerPin.gameObject.SetActive(true);
+        return calibration.TryGetMapUV(new Vector2(localPosition.x, localPosition.z), out imageUV);
     }
 
     private static Transform FindLocalPlayer()
