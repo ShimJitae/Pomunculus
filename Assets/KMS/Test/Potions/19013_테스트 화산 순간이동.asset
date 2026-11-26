@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3694866bf932c8a4bb919bc39b77c2ab, type: 3}
+  m_Name: "19013_\uD14C\uC2A4\uD2B8 \uD654\uC0B0 \uC21C\uAC04\uC774\uB3D9"
+  m_EditorClassIdentifier: Assembly-CSharp::Pomunculus.Items.PotionData
+  Id: 19013
+  ItemName: "\uD14C\uC2A4\uD2B8 \uD654\uC0B0 \uC21C\uAC04\uC774\uB3D9"
+  Description: "\uB9DE\uC740 \uD50C\uB808\uC774\uC5B4(\uB098 \uD3EC\uD568)\uB97C
+    \uD654\uC0B0 \uC9C0\uC5ED \uD50C\uB808\uC774\uC5B4 \uC2A4\uD3F0 \uC704\uCE58\uB85C
+    \uBCF4\uB0B8\uB2E4."
+  Details: 
+  Icon: {fileID: 21300000, guid: 602ac8357f54e8149823b80af916f59a, type: 3}
+  PhysicsElement: 0
+  FireElement: 0
+  ColdElement: 0
+  WindElement: 0
+  pickupPrefab: {fileID: -8275113470682067266, guid: d6f261ab8ec75f44eae879db75ddb732, type: 3}
+  projectilePrefab: {fileID: -8461069969775478643, guid: cf8181d87ceb11a4b8964fcbbe4dbae5, type: 3}
+  effects:
+  - rid: 3760827335493288018
+  references:
+    version: 2
+    RefIds:
+    - rid: 3760827335493288018
+      type: {class: RecallPotionEffect, ns: , asm: Assembly-CSharp}
+      data:
+        affectedTargets: 5
+        destinationRegion: 2
