@@ -33,6 +33,8 @@ public class Enemy : Entity, IWorldRPC, IHealable
     private EnemySkill enemySkill;
     private bool hasDetectRangeExpanded;
 
+    private WorldAnimatorSync worldAnimatorSync;
+
     private float groggyHpRatio = 0.5f;
     private bool hasGroggyTriggered;
 
@@ -52,6 +54,7 @@ public class Enemy : Entity, IWorldRPC, IHealable
         animator = GetComponent<Animator>();
         movement = GetComponent<EnemyMovement>();
         enemySkill = GetComponentInChildren<EnemySkill>();
+        worldAnimatorSync = GetComponent<WorldAnimatorSync>();
     }
 
     // 적의 행동 그래프와 전투 상태를 초기화하고 실행 권한에 따라 감지와 공격 준비를 수행
@@ -348,6 +351,27 @@ public class Enemy : Entity, IWorldRPC, IHealable
 
         hasDetectRangeExpanded = false;
         detector.SetRadius(EnemySo.GetDetectRange());
+    }
+
+    // 패링당하면 그로기 상태이상을 걸고 튕겨나가는 모션을 재생한다 (방장만, 트리거는 다른 클라이언트에도 전송)
+    public void EnterParryGroggy()
+    {
+        if (!IsMaster)
+            return;
+
+        RegisterStatusEffect(StatusEffectType.ParryGroggy);
+        PlayParriedAnimation();
+    }
+
+    // WorldAnimatorSync가 있으면 트리거를 다른 클라이언트에도 보내고, 없으면 이 컴퓨터에서만 재생한다
+    private void PlayParriedAnimation()
+    {
+        const string parriedTrigger = "Parried";
+
+        if (worldAnimatorSync != null)
+            worldAnimatorSync.SetTrigger(parriedTrigger);
+        else
+            animator.SetTrigger(parriedTrigger);
     }
 
     #region 네트워크

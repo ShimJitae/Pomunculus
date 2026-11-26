@@ -14,6 +14,7 @@ public struct StatusModifiers : IEquatable<StatusModifiers>
     public bool CanDodge;           // 회피 가능 여부. 기본값 true
     public bool CanAttack;          // 공격 가능 여부. 기본값 true
     public bool IsInvincible;       // 무적 여부. 기본값 false
+    public bool CanParry;
 
     /// <summary>상태이상이 하나도 없을 때의 값이다.</summary>
     public static StatusModifiers Default => new StatusModifiers
@@ -25,6 +26,7 @@ public struct StatusModifiers : IEquatable<StatusModifiers>
         CanDodge = true,
         CanAttack = true,
         IsInvincible = false,
+        CanParry = false,
     };
 
     public bool Equals(StatusModifiers other)
@@ -35,13 +37,14 @@ public struct StatusModifiers : IEquatable<StatusModifiers>
             && CanMove == other.CanMove
             && CanDodge == other.CanDodge
             && CanAttack == other.CanAttack
-            && IsInvincible == other.IsInvincible;
+            && IsInvincible == other.IsInvincible
+            && CanParry == other.CanParry;
     }
 
     public override bool Equals(object obj) => obj is StatusModifiers other && Equals(other);
 
     // Approximately 비교와 어긋나지 않도록 float 필드는 해시에서 제외한다.
-    public override int GetHashCode() => HashCode.Combine(CanMove, CanDodge, CanAttack, IsInvincible);
+    public override int GetHashCode() => HashCode.Combine(CanMove, CanDodge, CanAttack, IsInvincible, CanParry);
 
     public static bool operator ==(StatusModifiers a, StatusModifiers b) => a.Equals(b);
     public static bool operator !=(StatusModifiers a, StatusModifiers b) => !a.Equals(b);

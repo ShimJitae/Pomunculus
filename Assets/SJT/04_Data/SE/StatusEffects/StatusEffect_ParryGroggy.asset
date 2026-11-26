@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f369f5ba453315b469543197edf9508a, type: 3}
+  m_Name: StatusEffect_ParryGroggy
+  m_EditorClassIdentifier: Assembly-CSharp::StatusEffectData
+  statusId: 25
+  statusEffectType: 25
+  effectCategory: 2
+  stateName: "\uD328\uB9C1 \uADF8\uB85C\uAE30"
+  description: "\uD328\uB9C1\uC73C\uB85C \uC778\uD55C \uADF8\uB85C\uAE30. \uADF8\uB85C\uAE30
+    \uC911 \uBC1B\uB294 \uD53C\uD574\uAC00 \uC99D\uAC00\uD569\uB2C8\uB2E4."
+  maxStackCount: 1
+  duration: 1.5
+  tickSec: 0.2
+  tickDamagePerStack: 0
+  valuePerStack: 0.5
+  blockedStatusEffect: {fileID: 0}
+  feedbackPrefab: {fileID: 4913592322876554016, guid: f95b0174d1a22e040b8134387d1619ff, type: 3}
+  icon: {fileID: 21300000, guid: 809c075e95a861c40a37307d4f88eb08, type: 3}
