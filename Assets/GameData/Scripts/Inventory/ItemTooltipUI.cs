@@ -34,7 +34,7 @@ namespace Pomunculus.Items
         {
             tooltipRect = GetComponent<RectTransform>();
             rootCanvas = GetComponentInParent<Canvas>().rootCanvas;
-            canvasRect = rootCanvas.GetComponent<RectTransform>();
+            canvasRect = (RectTransform)transform.parent;   // SafeFrame(16:9 영역) 안에서만 위치를 제한
 
             CanvasGroup group = GetComponent<CanvasGroup>();
             group.blocksRaycasts = false;
