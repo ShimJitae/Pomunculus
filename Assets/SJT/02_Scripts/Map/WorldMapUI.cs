@@ -1,4 +1,7 @@
+using System.Collections.Generic;
 using DG.Tweening;
+using Photon.Pun;
+using TMPro;
 using UnityEngine;
 
 public sealed class WorldMapUI : PopupUI
@@ -6,6 +9,8 @@ public sealed class WorldMapUI : PopupUI
     [SerializeField] private Transform worldRoot;
     [SerializeField] private Transform target;
     [SerializeField] private RectTransform playerPin;
+    [Tooltip("다른 플레이어 핀 원본입니다. 비활성 상태로 두고 자식에 닉네임 TMP를 둡니다.")]
+    [SerializeField] private RectTransform otherPinTemplate;
     [SerializeField] private WorldMapCalibration calibration;
     [SerializeField] private RectTransform mapBG;
     [SerializeField, Min(0f)] private float openDuration = 0.3f;
@@ -13,6 +18,8 @@ public sealed class WorldMapUI : PopupUI
     [SerializeField] private float closedAngle = 8f;
     [Tooltip("열린 위치에서 숨김 위치까지의 UI 좌표 오프셋입니다.")]
     [SerializeField] private Vector2 closedOffset = new Vector2(0f, -1200f);
+
+    private readonly List<(PlayerFSM player, RectTransform pin)> otherPins = new();
 
     private Vector2 openedPosition;
     private Vector3 openedRotation;
@@ -42,7 +49,7 @@ public sealed class WorldMapUI : PopupUI
 
     private void LateUpdate()
     {
-        RefreshPlayerPin();
+        RefreshPins();
     }
 
     [ContextMenu("Open 테스트")]
@@ -59,7 +66,8 @@ public sealed class WorldMapUI : PopupUI
             AnimateTo(openedPosition, openedRotation, openDuration, Ease.OutCubic);
         }
 
-        RefreshPlayerPin();
+        CreateOtherPins();
+        RefreshPins();
     }
 
     protected override void PlayHideTransition()
@@ -83,45 +91,79 @@ public sealed class WorldMapUI : PopupUI
         transition.Join(mapBG.DOLocalRotate(rotation, duration).SetEase(ease));
     }
 
-    private void RefreshPlayerPin()
+    // 지도를 열 때 다른 플레이어 핀을 새로 만든다. 열려 있는 동안 들어온 플레이어는 다음에 열 때 표시된다.
+    private void CreateOtherPins()
     {
-        if (playerPin == null)
+        foreach (var other in otherPins)
+        {
+            Destroy(other.pin.gameObject);
+        }
+        otherPins.Clear();
+
+        if (otherPinTemplate == null)
         {
             return;
         }
 
-        bool visible = TryGetPlayerUV(out Vector2 imageUV);
-
-        if (visible)
+        foreach (IWorldObj worldObject in WorldManager.Instance.Objects.GetList())
         {
-            playerPin.anchorMin = imageUV;
-            playerPin.anchorMax = imageUV;
-            playerPin.anchoredPosition = Vector2.zero;
-        }
+            if (worldObject is not PlayerFSM player || player == null || player.IsMine)
+            {
+                continue;
+            }
 
-        if (playerPin.gameObject.activeSelf != visible)
-        {
-            playerPin.gameObject.SetActive(visible);
+            RectTransform pin = Instantiate(otherPinTemplate, otherPinTemplate.parent);
+            var photonPlayer = PhotonNetwork.CurrentRoom?.GetPlayer(player.Owner);
+            pin.GetComponentInChildren<TMP_Text>(true).text = photonPlayer != null ? photonPlayer.NickName : string.Empty;
+            otherPins.Add((player, pin));
         }
     }
 
-    private bool TryGetPlayerUV(out Vector2 imageUV)
+    // 나간 플레이어는 오브젝트가 파괴되어 null이 되므로 핀이 꺼진다.
+    private void RefreshPins()
     {
-        imageUV = default;
-
         if (target == null)
         {
             target = FindLocalPlayer();
         }
 
-        if (target == null || !target.gameObject.activeInHierarchy ||
-            worldRoot == null || calibration == null)
+        PlacePin(playerPin, target);
+
+        foreach (var (player, pin) in otherPins)
         {
-            return false;
+            PlacePin(pin, player != null ? player.transform : null);
+        }
+    }
+
+    private void PlacePin(RectTransform pin, Transform worldTarget)
+    {
+        if (pin == null)
+        {
+            return;
         }
 
-        Vector3 localPosition = worldRoot.InverseTransformPoint(target.position);
-        return calibration.TryGetMapUV(new Vector2(localPosition.x, localPosition.z), out imageUV);
+        Vector2 imageUV = default;
+        bool visible = worldTarget != null && worldTarget.gameObject.activeInHierarchy &&
+                       worldRoot != null && calibration != null &&
+                       calibration.TryGetMapUV(ToWorldXZ(worldTarget), out imageUV);
+
+        if (visible)
+        {
+            pin.anchorMin = imageUV;
+            pin.anchorMax = imageUV;
+            pin.anchoredPosition = Vector2.zero;
+        }
+
+        if (pin.gameObject.activeSelf != visible)
+        {
+            pin.gameObject.SetActive(visible);
+        }
+    }
+
+    private Vector2 ToWorldXZ(Transform worldTarget)
+    {
+        Vector3 localPosition = worldRoot.InverseTransformPoint(worldTarget.position);
+        return new Vector2(localPosition.x, localPosition.z);
     }
 
     private static Transform FindLocalPlayer()
