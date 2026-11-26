@@ -2389,7 +2389,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Pomunculus.Items.Inventory
   slots: []
   dropScatterRadius: 0.7
-  dropHeight: 0.5
+  groundLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  dropStartHeight: 1
+  dropDistance: 1.3
+  dropArcHeight: 1
+  dropFlightDuration: 0.45
+  dropperPickupDelay: 2
+  dropSound: {fileID: 0}
 --- !u!1001 &1721202814
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3454,11 +3462,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4643167584034879471, guid: 98b45f03bc715c7499c52f898e1a8936, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.17
+      value: 0.62
       objectReference: {fileID: 0}
     - target: {fileID: 4643167584034879471, guid: 98b45f03bc715c7499c52f898e1a8936, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -1.7700005
+      value: -2.09
       objectReference: {fileID: 0}
     - target: {fileID: 4643167584034879471, guid: 98b45f03bc715c7499c52f898e1a8936, type: 3}
       propertyPath: m_LocalRotation.w
@@ -3878,11 +3886,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4643167584034879471, guid: 1dccb985b28de0b44bfddebab5677e57, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.17
+      value: 0.61
       objectReference: {fileID: 0}
     - target: {fileID: 4643167584034879471, guid: 1dccb985b28de0b44bfddebab5677e57, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -2.5769997
+      value: -2.87
       objectReference: {fileID: 0}
     - target: {fileID: 4643167584034879471, guid: 1dccb985b28de0b44bfddebab5677e57, type: 3}
       propertyPath: m_LocalRotation.w
