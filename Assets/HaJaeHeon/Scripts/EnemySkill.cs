@@ -301,9 +301,9 @@ public class EnemySkill : MonoBehaviour
         CollectHitTargets(hitCount, area, areaCenter, attackForward);
 
         // 패링 가능한 대상이 하나라도 맞았으면 이번 타격 전체를 취소하고 몬스터를 그로기 상태로 만든다
-        if (CurrentAttackPattern.CanBeParried && HasParryingTarget())
+        if (CurrentAttackPattern.CanBeParried && TryGetParryingTarget(out Entity parryingTarget))
         {
-            enemy.EnterParryGroggy();
+            enemy.EnterParryGroggy(parryingTarget.transform.position);
             return;
         }
 
@@ -353,15 +353,19 @@ public class EnemySkill : MonoBehaviour
         }
     }
 
-    // 맞은 대상 중 패링할 수 있는 상태(석화 등)인 대상이 있는지 확인한다
-    private bool HasParryingTarget()
+    // 맞은 대상 중 패링할 수 있는 상태(석화 등)인 첫 번째 대상을 찾는다
+    private bool TryGetParryingTarget(out Entity parryingTarget)
     {
         foreach (IDamageable damageTarget in hitTargets)
         {
             if (damageTarget is Entity entity && entity.CanParry && !entity.CheckDie())
+            {
+                parryingTarget = entity;
                 return true;
+            }
         }
 
+        parryingTarget = null;
         return false;
     }
 
