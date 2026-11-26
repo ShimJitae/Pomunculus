@@ -67,6 +67,10 @@ public sealed class WorldMapUI : PopupUI
         }
 
         CreateOtherPins();
+
+        TMP_Text myName = playerPin != null ? playerPin.GetComponentInChildren<TMP_Text>(true) : null;
+        if (myName != null && GameManager.Instance != null) myName.text = GameManager.Instance.LocalUserProfile.UserName;
+
         RefreshPins();
     }
 
