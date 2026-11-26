@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class CheckClearGame : SingletonBehavior<CheckClearGame>
 {
-    public static bool IsGameClear => IsGameClear;
+    public static bool IsGameClear { get; private set; }
     public static event Action OnChangeGameState;
 
     private Enemy bossEnemy;
@@ -30,7 +30,8 @@ public class CheckClearGame : SingletonBehavior<CheckClearGame>
             return;
 
         hasCleared = true;
+        IsGameClear = true;
         Debug.Log("보스 클리어");
-        OnChangeGameState.Invoke();
+        OnChangeGameState?.Invoke();
     }
 }
