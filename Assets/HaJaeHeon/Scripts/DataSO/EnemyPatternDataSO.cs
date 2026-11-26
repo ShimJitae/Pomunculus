@@ -84,6 +84,9 @@ public class EnemyPatternDataSO : ScriptableObject
     [Header("설명")]
     [SerializeField, TextArea(3, 8)] private string note;
 
+    [Header("패링 가능 여부")]
+    [SerializeField] private bool canBeParried = true;
+
     public int PatternId => patternId;
     public string MonsterName => monsterName;
     public int MonsterId => monsterId;
@@ -105,8 +108,7 @@ public class EnemyPatternDataSO : ScriptableObject
     public AudioSO TelegraphSound => telegraphSound;
     public AudioSO AttackSound => attackSound;
     public string Note => note;
-
-
+    public bool CanBeParried => canBeParried;
 
     public string GetPatternName()
     {

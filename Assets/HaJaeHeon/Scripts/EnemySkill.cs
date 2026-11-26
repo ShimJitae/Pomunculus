@@ -20,6 +20,7 @@ public class EnemySkill : MonoBehaviour
     
     private readonly Collider[] hitColliders = new Collider[16]; // 범위 검색 결과를 재사용하는 버퍼이며 한 번에 최대 16개의 콜라이더를 받는다. 추후 변경 할 수 도 있음
     private readonly HashSet<IDamageable> alreadyHitTargets = new(); // 하나의 대상에 여러 콜라이더가 있어도 한 번의 판정에서는 피해를 한 번만 적용한다.
+    private readonly List<IDamageable> hitTargets = new(); // 이번 타격에 맞은 대상. 패링 판정 뒤 피해를 준다
     private readonly List<Vector3> hitParticlePositions = new(); // 이번 타격에서 피격 파티클을 띄운 위치. 다른 플레이어에게 RPC로 보낸다.
     private bool isAttackActive;
     private float hitAcceptStartTime; // 이 시각 전의 판정 이벤트는 이전 공격 모션의 잔여 이벤트로 보고 무시
@@ -295,9 +296,42 @@ public class EnemySkill : MonoBehaviour
         Vector3 areaCenter = AttackOrigin + AttackRotation * area.offset;
 
         int hitCount = OverlapArea(area, areaCenter, attackForward);
-        int damage = Mathf.RoundToInt( CurrentAttackPattern.GetDamageValue() * damagePercent / 100f);
-        alreadyHitTargets.Clear();
+        int damage = Mathf.RoundToInt(CurrentAttackPattern.GetDamageValue() * damagePercent / 100f);
+
+        CollectHitTargets(hitCount, area, areaCenter, attackForward);
+
+        // 패링 가능한 대상이 하나라도 맞았으면 이번 타격 전체를 취소하고 몬스터를 그로기 상태로 만든다
+        if (CurrentAttackPattern.CanBeParried && HasParryingTarget())
+        {
+            enemy.EnterParryGroggy();
+            return;
+        }
+
         hitParticlePositions.Clear();
+
+        foreach (IDamageable damageTarget in hitTargets)
+        {
+            Component targetComponent = (Component)damageTarget;
+            damageTarget.TakeDamage(damage, AttackOrigin);
+
+            // 맞은 대상 위치에 피격 파티클. 방장은 바로 생성하고 다른 플레이어에게는 반복문이 끝난 뒤 한 번에 보낸다
+            if (CurrentAttackPattern.HitParticle != null)
+            {
+                Vector3 hitPosition = targetComponent.transform.position;
+                SpawnHitParticle(CurrentAttackPattern, hitPosition);
+                hitParticlePositions.Add(hitPosition);
+            }
+        }
+
+        if (hitParticlePositions.Count > 0)
+            enemy.SendShowHitParticle(CurrentAttackPattern.PatternId, hitParticlePositions);
+    }
+
+    // 범위 검색 결과에서 실제로 맞은 대상을 모은다. 자기 자신, 중복, 부채꼴 각도 밖의 대상은 제외한다
+    private void CollectHitTargets(int hitCount, AttackAreaData area, Vector3 areaCenter, Vector3 attackForward)
+    {
+        hitTargets.Clear();
+        alreadyHitTargets.Clear();
 
         for (int index = 0; index < hitCount; index++)
         {
@@ -315,18 +349,20 @@ public class EnemySkill : MonoBehaviour
                     continue;
             }
 
-            damageTarget.TakeDamage(damage, AttackOrigin);
-
-            // 맞은 대상 위치에 피격 파티클. 방장은 바로 생성하고 다른 플레이어에게는 반복문이 끝난 뒤 한 번에 보낸다
-            if (CurrentAttackPattern.HitParticle != null)
-            {
-                Vector3 hitPosition = targetComponent.transform.position;
-                SpawnHitParticle(CurrentAttackPattern, hitPosition);
-                hitParticlePositions.Add(hitPosition);
-            }
+            hitTargets.Add(damageTarget);
         }
-        if (hitParticlePositions.Count > 0)
-            enemy.SendShowHitParticle(CurrentAttackPattern.PatternId, hitParticlePositions);
+    }
+
+    // 맞은 대상 중 패링할 수 있는 상태(석화 등)인 대상이 있는지 확인한다
+    private bool HasParryingTarget()
+    {
+        foreach (IDamageable damageTarget in hitTargets)
+        {
+            if (damageTarget is Entity entity && entity.CanParry && !entity.CheckDie())
+                return true;
+        }
+
+        return false;
     }
 
     // 사각형은 박스로, 원과 부채꼴은 구로 후보를 수집하며 부채꼴 각도는 호출부에서 추가 검사한다.

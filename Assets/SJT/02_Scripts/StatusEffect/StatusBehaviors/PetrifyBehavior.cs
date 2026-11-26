@@ -24,5 +24,6 @@ public sealed class PetrifyBehavior : IStatusBehavior
         modifiers.CanDodge = false;
         modifiers.MoveSpeedRatio = 0f;
         modifiers.IsInvincible = true;
+        modifiers.CanParry = true;
     }
 }
