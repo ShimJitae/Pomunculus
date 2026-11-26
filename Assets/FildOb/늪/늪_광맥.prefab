@@ -16,6 +16,10 @@ PrefabInstance:
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: 5d1fc27c8b4ff3a4187312a1eb465975, type: 2}
+    - target: {fileID: 5322224465550122955, guid: f225fbfb3aa0b094eb5ce1cf97cc051b, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 5d1fc27c8b4ff3a4187312a1eb465975, type: 2}
     - target: {fileID: 5831376669294932044, guid: f225fbfb3aa0b094eb5ce1cf97cc051b, type: 3}
       propertyPath: itemPrefabs.Array.size
       value: 1
@@ -30,7 +34,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5969515048037495824, guid: f225fbfb3aa0b094eb5ce1cf97cc051b, type: 3}
       propertyPath: m_Name
-      value: "늪_광맥"
+      value: "\uB2AA_\uAD11\uB9E5"
       objectReference: {fileID: 0}
     - target: {fileID: 5969515048037495824, guid: f225fbfb3aa0b094eb5ce1cf97cc051b, type: 3}
       propertyPath: m_Layer
@@ -80,7 +84,13 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 7367968202912680762, guid: f225fbfb3aa0b094eb5ce1cf97cc051b, type: 3}
+      propertyPath: managedReferences[1175353209247498578].OriginalLabel
+      value: Squash and Stretch Spring
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 5320728351763076549, guid: f225fbfb3aa0b094eb5ce1cf97cc051b, type: 3}
+    - {fileID: 7940956062245511439, guid: f225fbfb3aa0b094eb5ce1cf97cc051b, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
