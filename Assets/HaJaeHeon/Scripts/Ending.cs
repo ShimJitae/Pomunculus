@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.Playables;
+using Unity.Cinemachine;
 
 public class Ending : MonoBehaviour
 {
@@ -66,9 +67,21 @@ public class Ending : MonoBehaviour
         // 엔딩 카메라, 모델 함께 꺼서 원래 플레이어 카메라 화면으로 돌아간다.
         stoppedDirector.gameObject.SetActive(false);
 
+        // 엔딩 카메라에서 플레이어 카메라로 블렌드(2초) 하지 않고 바로 전환
+        CutMainCameraBlend();
+
         EndingPanelOpen();
     }
 
+    // 메인 카메라 Brain의 진행 중인 블렌드를 취소해 다음 프레임에 컷으로 전환한다
+    private void CutMainCameraBlend()
+    {
+        Camera mainCamera = Camera.main;
+        if (mainCamera == null || !mainCamera.TryGetComponent(out CinemachineBrain mainCameraBrain))
+            return;
+
+        mainCameraBrain.ResetState();
+    }
 
     #region 버튼
 
