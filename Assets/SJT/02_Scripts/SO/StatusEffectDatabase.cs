@@ -97,7 +97,8 @@ public class StatusEffectDatabase : ScriptableObject
             [StatusEffectType.ResistCold] = new CurseResistanceBehavior(),
             [StatusEffectType.ResistDisease] = new CurseResistanceBehavior(),
             [StatusEffectType.Petrify] = new PetrifyBehavior(),
-            [StatusEffectType.Invincible] = new InvincibleBehavior()
+            [StatusEffectType.Invincible] = new InvincibleBehavior(),
+            [StatusEffectType.ParryGroggy] = new ParryGroggyBehavior()
         };
 
         // 등록된 모든 데이터에 대응하는 행동이 있는지 검사한다.

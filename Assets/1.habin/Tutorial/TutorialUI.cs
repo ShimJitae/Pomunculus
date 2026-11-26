@@ -28,18 +28,26 @@ public class TutorialUI : MonoBehaviour
     }
     public void NextPage()
     {
-        if (pages == null || currentPage >= pages.Length - 1)
+        if (pages == null || pages.Length == 0)
             return;
 
         currentPage++;
+
+        if (currentPage >= pages.Length)
+            currentPage = 0;
+
         RefreshPages();
     }
     public void BackPage()
     {
-        if (pages == null || currentPage <= 0)
+        if (pages == null || pages.Length == 0)
             return;
 
         currentPage--;
+
+        if (currentPage < 0)
+            currentPage = pages.Length - 1;
+
         RefreshPages();
     }
     private void RefreshPages()
@@ -51,12 +59,11 @@ public class TutorialUI : MonoBehaviour
             if (pages[i] != null)
                 pages[i].SetActive(i == currentPage);
         }
-
         if (backButton != null)
-            backButton.interactable = currentPage > 0;
+            backButton.interactable = pageCount > 1;
 
         if (nextButton != null)
-            nextButton.interactable = currentPage < pageCount - 1;
+            nextButton.interactable = pageCount > 1;
 
         if (pageText != null)
             pageText.text = $"{(pageCount > 0 ? currentPage + 1 : 0)} / {pageCount}";

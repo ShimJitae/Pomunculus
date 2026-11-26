@@ -27,8 +27,8 @@ public class StatusPanelPresenter : IDisposable
 
     // 새 상태이상 → 아이콘 추가
     private void HandleEffectRegistered(StatusEffect effect)
-        => view.AddStatusIcon(effect.Type, GetIcon(effect), effect.Category, effect.StackCount, effect.RemainingDuration, effect.Data.Duration);
-    
+        => view.AddStatusIcon(effect);
+
     // 중첩 → 스택·남은 시간 갱신
     private void HandleEffectReapplied(StatusEffect effect)
         => view.UpdateStatusIcon(effect.Type, effect.StackCount, effect.RemainingDuration, effect.Data.Duration);
@@ -36,9 +36,6 @@ public class StatusPanelPresenter : IDisposable
     // 종료 → 아이콘 제거 (풀 반납 전에 호출되므로 Type 읽기 안전)
     private void HandleEffectRemoved(StatusEffect effect)
         => view.RemoveStatusIcon(effect.Type);
-
-    // 아이콘 조회.
-    private Sprite GetIcon(StatusEffect effect) => effect.StatusIcon;
 
     // 구독 해제 + 아이콘 정리
     public void Dispose()

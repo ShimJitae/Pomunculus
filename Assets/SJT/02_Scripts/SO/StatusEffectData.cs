@@ -17,6 +17,10 @@ public class StatusEffectData : ScriptableObject
     [Tooltip("화상, 냉기 등 화면에 표시할 상태 이름")]
     [SerializeField] private string stateName;
 
+    [TextArea(2, 4)]
+    [Tooltip("HUD 툴팁에 표시할 상태 설명")]
+    [SerializeField] private string description;
+
     [Min(1)]
     [Tooltip("최대 중첩 수. 1 이상으로 설정")]
     [SerializeField] private int maxStackCount = 1;
@@ -54,6 +58,9 @@ public class StatusEffectData : ScriptableObject
     /// <summary>상태의 분류(버프·디버프·저주)를 반환한다.</summary>
     public EffectCategory EffectCategory => effectCategory;
     public string StateName => stateName;
+
+    /// <summary>HUD 툴팁에 표시할 상태 설명을 반환한다.</summary>
+    public string Description => description;
     public int MaxStackCount => maxStackCount;
 
     public float Duration => duration;

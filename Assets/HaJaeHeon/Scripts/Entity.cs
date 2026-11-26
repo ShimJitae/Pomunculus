@@ -16,6 +16,7 @@ public class Entity : MonoBehaviour, IWorldObj, IDamageable
     public bool CanDodge { get; private set; } = true; // 회피 가능 여부. 기본값은 true
     public bool CanAttack { get; private set; } = true; // 공격 가능 여부. 기본값은 true
     public bool IsInvincible { get; private set; } = false; // 무적 상태 여부. 기본값은 false
+    public bool CanParry {  get; private set; } = false;
 
     private StatusEffectController statusEffectController;
 
@@ -33,6 +34,7 @@ public class Entity : MonoBehaviour, IWorldObj, IDamageable
         CanDodge = m.CanDodge;
         CanAttack = m.CanAttack;
         IsInvincible = m.IsInvincible;
+        CanParry = m.CanParry;
         OnStatusModifiersChanged(m);
     }
 
