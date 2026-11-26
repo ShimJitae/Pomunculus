@@ -349,6 +349,8 @@ MonoBehaviour:
   knockbackDistance: 0
   detectRangeBonus: 10
   chaseSpeedMultiplier: 2
+  parryKnockbackDistance: 2
+  parryKnockbackDuration: 0.2
 --- !u!114 &451304765473268782
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -506,16 +508,16 @@ MonoBehaviour:
     SynchronizeType: 0
     Name: Attack1
   - Type: 9
-    SynchronizeType: 1
+    SynchronizeType: 0
     Name: Attack2
   - Type: 9
-    SynchronizeType: 1
+    SynchronizeType: 0
     Name: Attack3
   - Type: 9
-    SynchronizeType: 1
+    SynchronizeType: 0
     Name: Attack4
   - Type: 9
-    SynchronizeType: 1
+    SynchronizeType: 0
     Name: Attack5
   - Type: 9
     SynchronizeType: 0
@@ -527,7 +529,7 @@ MonoBehaviour:
     SynchronizeType: 1
     Name: MoveAnimSpeed
   - Type: 9
-    SynchronizeType: 1
+    SynchronizeType: 0
     Name: Parried
   m_sendRate: 10
   m_sampleRate: 30
