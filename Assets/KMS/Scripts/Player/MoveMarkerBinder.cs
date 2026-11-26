@@ -27,8 +27,6 @@ public class MoveMarkerBinder : MonoBehaviour
         if (player == null) return;
         boundInput = player.Input;
         boundInput.OnMoveCommandIssued += ShowMarker;
-        Debug.Log("무브마커 바인더 연결");
-
     }
 
     // boundInput 구독 해제, markerVisual 끄기
@@ -52,6 +50,5 @@ public class MoveMarkerBinder : MonoBehaviour
         markerVisual.transform.position = position;
         markerVisual.SetActive(false);   // 껐다 켜서 파티클 등을 다시 재생
         markerVisual.SetActive(true);
-        Debug.Log("무브마커 이벤트 짜잔");
     }
 }
