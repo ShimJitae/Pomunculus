@@ -43,7 +43,7 @@ public sealed class PlayerHitFeedback : MonoBehaviour
 
         Unbind();
         boundPlayer = player;
-        boundPlayer.OnDamaged += HandleDamaged;
+        boundPlayer.OnHit += HandleDamaged;
         return true;
     }
 
@@ -51,7 +51,7 @@ public sealed class PlayerHitFeedback : MonoBehaviour
     {
         if (boundPlayer != null)
         {
-            boundPlayer.OnDamaged -= HandleDamaged;
+            boundPlayer.OnHit -= HandleDamaged;
         }
 
         boundPlayer = null;
