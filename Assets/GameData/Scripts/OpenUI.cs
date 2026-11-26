@@ -19,6 +19,8 @@ namespace Pomunculus.Items
         [Header("사운드")]
         [SerializeField] private AudioSO inventoryOpenSound;
         [SerializeField] private AudioSO CreatingOpenSound;
+        [SerializeField] private AudioSO craftingCloseSound;
+
 
         [Header("텍스트")]
         [SerializeField] private GameObject craftingInteractionText;
@@ -67,6 +69,11 @@ namespace Pomunculus.Items
         {
             if (escPanel != null)
                 escPanel.HandlesEscapeKey = true;
+            if (Application.isPlaying && !gameObject.activeInHierarchy &&
+                craftingCloseSound != null && AudioManager.Instance != null)
+            {
+                AudioManager.Instance.PlaySound(craftingCloseSound);
+            }
         }
 
         // ESC 하나로 맨 위 팝업을 닫고, 열린 팝업이 없으면 ESC 패널을 연다
