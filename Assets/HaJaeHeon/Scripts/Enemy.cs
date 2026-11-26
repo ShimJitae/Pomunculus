@@ -236,10 +236,28 @@ public class Enemy : Entity, IWorldRPC, IHealable
                 GameObject dropItemPrefab = DataDBManager.Instance.ItemDatabase.GetItemPrefab(dropItemId);
 
                 if (dropItemPrefab != null)
-                    WorldManager.Instance.Spawn(dropItemPrefab.name, transform.position + DataDBManager.Instance.ItemDropOffset, Quaternion.identity);
+                    WorldManager.Instance.Spawn(dropItemPrefab.name, FindFreeDropPosition(transform.position + DataDBManager.Instance.ItemDropOffset), Quaternion.identity);
             }
             StartCoroutine(WaitDieAnimation());
         }
+    }
+
+    // 재료가 다른 콜라이더(장식품 등) 안에서 생기지 않도록, 겹치면 빈 자리가 나올 때까지 조금씩 위로 올린다
+    private static Vector3 FindFreeDropPosition(Vector3 start)
+    {
+        int ingredientLayer = LayerMask.NameToLayer("Ingredient");
+        int mask = 0;
+        for (int i = 0; i < 32; i++)
+        {
+            if (!Physics.GetIgnoreLayerCollision(ingredientLayer, i)) mask |= 1 << i;
+        }
+
+        Vector3 position = start;
+        for (int i = 0; i < 10 && Physics.CheckSphere(position, 0.3f, mask, QueryTriggerInteraction.Ignore); i++)
+        {
+            position += Vector3.up * 0.5f;
+        }
+        return position;
     }
 
     // 몬스터 죽고 1초 대기

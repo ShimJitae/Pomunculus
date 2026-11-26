@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.AI;
 
 namespace Pomunculus.Items
 {
@@ -10,6 +11,12 @@ namespace Pomunculus.Items
     {
         [Header("드롭 개수")]
         [SerializeField, Min(1)] private int amount = 1;
+
+        [Header("낙하 복구")]
+        [Tooltip("마지막으로 놓인 위치보다 이만큼 아래로 떨어지면 되돌린다")]
+        [SerializeField, Min(1f)] private float fallResetDistance = 5f;
+
+        private Vector3 restPosition;   // 마지막으로 놓인 위치 (생성 위치, 이동 연출이 끝난 위치)
 
         public int Amount => amount;
 
@@ -47,7 +54,11 @@ namespace Pomunculus.Items
         private int dropperActor = NoDropper;   // 이 아이템을 버린 플레이어 (없으면 NoDropper)
         private float dropperLockedUntil;       // 버린 플레이어가 이 시각 전까지는 줍지 못한다 (로컬 Time.time 기준)
 
-        void Awake() => body = GetComponent<Rigidbody>();
+        void Awake()
+        {
+            body = GetComponent<Rigidbody>();
+            restPosition = transform.position;   // Instantiate 시점의 생성 위치
+        }
 
         /// <summary>
         /// 플레이어가 버린 아이템의 생성 데이터를 만든다.
@@ -213,7 +224,7 @@ namespace Pomunculus.Items
 
         void Update()
         {
-            if (!isDisplacing) return;
+            if (!isDisplacing) { CheckFallReset(); return; }
 
             displaceElapsed += Time.deltaTime;
             float t = Mathf.Clamp01(displaceElapsed / displaceDuration);
@@ -224,7 +235,31 @@ namespace Pomunculus.Items
             isDisplacing = false;
             isDropFlight = false;
             transform.position = displaceEnd;               // 모든 화면에서 같은 자리로 확정
+            restPosition = displaceEnd;                     // 넉백·버리기 도착점을 새 기준으로
             if (body != null) body.isKinematic = false;
+        }
+
+        // 기준 위치보다 너무 아래로 떨어지면(바닥을 뚫음) 기준 위치의 땅 위로 되돌린다
+        private void CheckFallReset()
+        {
+            if (body == null || body.isKinematic) return;
+            if (transform.position.y > restPosition.y - fallResetDistance) return;
+
+            body.linearVelocity = Vector3.zero;
+            body.angularVelocity = Vector3.zero;
+
+            // 생성 위치가 장식품 때문에 최대 5m 올라갈 수 있으므로 그보다 넉넉하게 아래를 본다
+            if (Physics.Raycast(restPosition + Vector3.up, Vector3.down, out RaycastHit hit, 15f,
+                    Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore))
+            {
+                transform.position = hit.point + Vector3.up * 0.3f;   // 받쳐 줄 바닥이 있으면 그 위로
+                return;
+            }
+
+            // 맵에 구멍이 있어 받쳐 줄 바닥이 없는 예외 상황: 계속 떨어졌다 올라오기를 반복하지 않도록 길 지도 위에 고정
+            if (NavMesh.SamplePosition(restPosition, out NavMeshHit navHit, 3f, NavMesh.AllAreas))
+                transform.position = navHit.position;
+            body.isKinematic = true;
         }
 
         // ActorNumber로 플레이어를 찾는다
