@@ -71,6 +71,8 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IShieldable, IWorldRPC
     public event Action OnRevived;
     public event Action OnRespawnRequested;
     public event Action<int, int> OnItemGranted;   // 방장이 확정한 아이템 지급 (itemId, amount). 내 플레이어에서만 발생
+    public event Action<int> OnDamaged;            // 실제로 깎인 HP. 내 플레이어에서만 발생
+    public event Action<int> OnHit;                // 공격·투사체로 깎인 HP. 상태이상 피해는 제외
 
     //public void RequestRespawn()
     //{
@@ -179,8 +181,7 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IShieldable, IWorldRPC
             worldMapUI = FindAnyObjectByType<WorldMapUI>(FindObjectsInactive.Include);
         if (worldMapUI == null) return;
 
-        if (worldMapUI.IsOpen) worldMapUI.Close();
-        else worldMapUI.Open();
+        worldMapUI.Toggle();
     }
 
     // 테스트용 키: H = 10 피해(에디터 전용), F1 = 모든 재료 50개, F2 = 모든 포션 50개
@@ -212,6 +213,7 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IShieldable, IWorldRPC
         {
             SendHpSync();
             Stats.NotifyHpChanged();
+            OnDamaged?.Invoke(hpBefore - CurrentHp);
         }
     }
 
@@ -223,6 +225,7 @@ public class PlayerFSM : Entity, IPlayerObj, IHealable, IShieldable, IWorldRPC
 
         int hpBefore = CurrentHp;
         TakeDamage(damage);
+        if (CurrentHp < hpBefore) OnHit?.Invoke(hpBefore - CurrentHp);
         if (CurrentHp < hpBefore && !CheckDie())
         {
             LastHitSourcePosition = sourcePosition;

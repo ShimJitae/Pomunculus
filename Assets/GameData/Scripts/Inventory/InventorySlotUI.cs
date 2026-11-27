@@ -1,6 +1,8 @@
+using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 namespace Pomunculus.Items
@@ -10,7 +12,11 @@ namespace Pomunculus.Items
         [SerializeField] private Image icon;
         [SerializeField] private TMP_Text amountText;
 
+        // 우클릭으로 버리기를 요청 (itemId, 전부 버릴지). Alt를 누른 채 우클릭하면 전부
+        public event Action<int, bool> OnDropRequested;
+
         private ItemTooltipUI tooltip;
+        private int itemId;
         private string itemName;
         private string description;
         private int itemAmount;
@@ -26,9 +32,10 @@ namespace Pomunculus.Items
         private PotionData potionData;
         private PotionSlotSelector potionSlotSelector;
 
-        public void ShowItem(Sprite sprite, int amount, string name, string desc, ItemTooltipUI itemTooltip, 
+        public void ShowItem(int id, Sprite sprite, int amount, string name, string desc, ItemTooltipUI itemTooltip,
             float physics, float fire, float cold, float wind)
         {
+            itemId = id;
             tooltip = itemTooltip;
             itemName = name;
             description = desc;
@@ -56,6 +63,7 @@ namespace Pomunculus.Items
             if (tooltip != null)
                 tooltip.HideFor(this);
 
+            itemId = 0;
             hasItem = false;
 
             icon.sprite = null;
@@ -85,11 +93,13 @@ namespace Pomunculus.Items
         {
             if (!hasItem || tooltip == null)
                 return;
+
             if (potionSlotSelector != null && potionSlotSelector.IsSelecting)
                 return;
 
-            tooltip.Show(this, itemName, description, icon.sprite, itemAmount, pointerPosition,
-                physicsElement, fireElement, coldElement, windElement);
+            tooltip.Show(
+                this, itemName, description, icon.sprite,itemAmount, pointerPosition,physicsElement, fireElement, 
+                coldElement, windElement,details: potionData != null ? potionData.GetDetails() : "");
         }
 
         private void OnDisable()
@@ -109,7 +119,7 @@ namespace Pomunculus.Items
         {
             if (eventData.button == PointerEventData.InputButton.Right)
             {
-                LogItemInfo();
+                RequestDrop();
                 return;
             }
 
@@ -122,13 +132,16 @@ namespace Pomunculus.Items
             potionSlotSelector.BeginSelection(potionData);
         }
 
-        // 우클릭한 슬롯의 아이템 이름과 수량을 콘솔에 출력한다
-        private void LogItemInfo()
+        // 우클릭한 슬롯의 아이템 버리기를 요청한다. Alt를 누르고 있으면 전부, 아니면 1개. 포션 장착 선택 중에는 무시
+        private void RequestDrop()
         {
-            if (!hasItem)
+            if (!hasItem || itemId <= 0)
+                return;
+            if (potionSlotSelector != null && potionSlotSelector.IsSelecting)
                 return;
 
-            Debug.Log($"[Inventory] {itemName} x{itemAmount}", this);
+            bool dropAll = Keyboard.current != null && Keyboard.current.altKey.isPressed;
+            OnDropRequested?.Invoke(itemId, dropAll);
         }
     }
 }

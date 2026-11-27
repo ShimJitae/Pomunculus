@@ -1,24 +1,49 @@
-Id,Name,Desc,icon_path,PhysicsElement,FireElement,ColdElement,WindElement
-10001,빈 병,그냥 던지거나 액체를 담거나 물약을 제작할 때 사용하는 빈 병.,Assets/GameData/Icon/10001_빈 병_Icon.png,0,0,0,0
-10002,화염 물약,타오르는 불꽃을 담은 물약.,Assets/GameData/Icon/10002_화염 물약_Icon.png,0,4,0,0
-10003,폭발 물약,충격을 받으면 폭발하는 불안정한 물약.,Assets/GameData/Icon/10003_폭발 물약_Icon.png,2,2,0,0
-10004,열기 저항 포션,몸에 쌓이는 열기를 식혀 주는 물약. 용암에 직접 닿는 피해는 막지 못한다.,Assets/GameData/Icon/10004_더위 저항 물약_Icon.png,0,-2,3,0
-10005,혹한 저항 포션,몸을 따뜻하게 유지해 혹한을 견디게 하는 물약.,Assets/GameData/Icon/10005_냉기 저항 물약_Icon.png,0,3,-2,0
-10006,질병 저항 포션,독과 오염으로부터 몸을 보호하는 물약.,Assets/GameData/Icon/10006_질병 저항 포션_Icon.png,0,1,1,2
-10007,돌가죽 포션,피부를 바위처럼 단단하고 무겁게 만드는 포션.,Assets/GameData/Icon/10007_돌가죽 포션_Icon.png,4,0,1,0
-10008,바람 포션,몸을 가볍게 하고 거센 바람을 일으키는 포션.,Assets/GameData/Icon/10008_바람 포션_Icon.png,0,0,0,4
-10009,빛 포션,순간적인 빛으로 상대의 눈을 멀게 한다,Assets/GameData/Icon/10009_빛 포션_Icon.png,0,2,0,2
-10010,번개 포션,불꽃과 바람이 만나 전기를 띠게 된 포션,Assets/GameData/Icon/10010_번개 포션_Icon.png,2,0,0,2
-10011,부식 포션,단단한 금속도 서서히 녹이는 포션.,Assets/GameData/Icon/10011_부식 포션_Icon.png,1,-1,-1,0
-10012,끈끈이 포션,닿은 대상의 움직임을 붙잡는 끈적한 포션,Assets/GameData/Icon/10012_끈끈이 포션_Icon.png,0,2,0,-2
-10013,독 포션,생명력을 서서히 갉아먹는 독을 담은 포션.,Assets/GameData/Icon/10013_독 포션_Icon.png,0,-1,1,2
-10014,회복 포션,상처의 회복을 돕는 생명력이 담긴 포션.,Assets/GameData/Icon/10014_회복 포션_Icon.png,0,0,2,2
-10015,물 병,깨끗한 물을 담은 병. 불을 끄거나 물약의 재료로 사용한다.,Assets/GameData/Icon/10015_물 병_Icon.png,0,-2,1,0
-10016,짱돌 포션,돌의 무게와 충격을 담은 포션.,Assets/GameData/Icon/10016_짱돌 포션_Icon.png,4,0,0,0
-10017,냉기 포션,차가운 기운을 응축한 포션.,Assets/GameData/Icon/10017_냉기 포션_Icon.png,0,0,4,0
-10018,석화 포션,닿은 대상을 단단한 돌처럼 굳히는 포션.,Assets/GameData/Icon/10018_석화 포션_Icon.png,2,0,2,0
-10019,바위 포션,거대한 바위의 힘을 응축한 포션.,Assets/GameData/Icon/10019_바위 포션_Icon.png,6,0,-4,0
-10020,염화 포션,거센 열기를 품은 상위 화염 포션.,Assets/GameData/Icon/10020_염화 포션_Icon.png,0,7,0,0
-10021,빙결 포션,주변을 얼어붙게 하는 강력한 냉기를 담은 포션.,Assets/GameData/Icon/10021_빙결 포션_Icon.png,0,0,7,0
-10022,폭풍 포션,거센 돌풍을 압축해 담은 포션.,Assets/GameData/Icon/10022_폭풍 포션_Icon.png,0,0,-4,6
-10023,정화 포션,균형 잡힌 네 속성으로 불순한 기운을 씻어내는 포션.,Assets/GameData/Icon/10023_정화 포션_Icon.png,1,1,1,1
+Id,Name,Desc,icon_path,PhysicsElement,FireElement,ColdElement,WindElement,Details
+10001,빈 병,	던져서 대상에게 작은 피해를 주는 빈 병.,Assets/GameData/Icon/10001_빈 병_Icon.png,0,0,0,0,"명중한 대상에게 작은 피해를 줍니다.
+별도의 상태이상 효과는 없습니다."
+10002,화염 포션,	피해를 주고 화상 부여. 일부 나무를 화상 상태로 파괴하면 목재 대신 숯 획득.,Assets/GameData/Icon/10002_화염 물약_Icon.png,0,4,0,0,"명중 시 {damage}의 피해를 주고, {burnDuration}초 동안 화상 {burnStacks}중첩을 부여합니다.
+화상은 최초 적용 즉시 피해를 주며, 이후 {burnInterval}초마다 중첩당 {burnDamage}의 피해를 줍니다."
+10003,폭발 포션,	강한 폭발 피해와 화상 부여. 화염 물약보다 높은 충격 피해.,Assets/GameData/Icon/10003_폭발 물약_Icon.png,2,2,0,0,"폭발로 {damage}의 피해를 주고, {burnDuration}초 동안 화상 {burnStacks}중첩을 부여합니다. 화상은 최초 적용 즉시 피해를 주며, 이후 {burnInterval}초마다 중첩당 {burnDamage}의 피해를 줍니다."
+10004,열기 저항 포션,열기 저주를 해제하고 추가 부여를 차단. 열기 저주로 발생하는 화상 예방.,Assets/GameData/Icon/10004_더위 저항 물약_Icon.png,0,-2,3,0,"현재 걸린 열기 저주를 해제하고, 일정 시간 추가 부여를 차단합니다.
+열기 저주로 발생하는 화상을 예방하지만, 직접 부여되는 화상은 차단하지 않습니다."
+10005,혹한 저항 포션,	혹한 저주를 해제하고 추가 부여를 차단. 혹한 저주로 발생하는 냉기 예방.,Assets/GameData/Icon/10005_냉기 저항 물약_Icon.png,0,3,-2,0,"현재 걸린 혹한 저주를 해제하고, 일정 시간 추가 부여를 차단합니다.
+혹한 저주로 발생하는 냉기를 예방하지만, 직접 부여되는 냉기와 빙결은 차단하지 않습니다."
+10006,질병 저항 포션,질병 저주를 해제하고 추가 부여를 차단. 질병 저주로 발생하는 독 예방.,Assets/GameData/Icon/10006_질병 저항 포션_Icon.png,0,1,1,2,"현재 걸린 질병 저주를 해제하고, 일정 시간 추가 부여를 차단합니다.
+질병 저주로 발생하는 독을 예방하지만, 직접 부여되는 독은 차단하지 않습니다."
+10007,돌가죽 포션,일정 시간 피해를 흡수하는 보호막 부여.,Assets/GameData/Icon/10007_돌가죽 포션_Icon.png,4,0,1,0,"{shieldDuration}초 동안 {shieldAmount}의 피해를 흡수하는 보호막을 부여합니다.
+보호막은 피해를 받으면 감소하며, 지속시간이 끝나면 사라집니다."
+10008,바람 포션,	일정 시간 이동속도 증가. 빠른 이동과 적의 추격을 피할 때 유용.,Assets/GameData/Icon/10008_바람 포션_Icon.png,0,0,0,4,"{hasteDuration}초 동안 이동속도를 중첩당 {hasteSpeed}% 높이는 효과를 {hasteStacks}중첩 부여합니다.
+효과가 중첩될수록 이동속도가 증가합니다."
+10009,빛 포션,강렬한 빛으로 기절 부여. 일정 시간 이동·공격·구르기 불가.,Assets/GameData/Icon/10009_빛 포션_Icon.png,0,2,0,2,"대상을 {stunDuration}초 동안 기절시킵니다.
+기절한 대상은 이동하거나 공격하고 구를 수 없습니다."
+10010,번개 포션,명중 피해와 착탄 지점 주변의 추가 범위 피해. 모여 있는 적에게 효과적.,Assets/GameData/Icon/10010_번개 포션_Icon.png,2,0,0,2,"명중 시 {damage}의 피해를 줍니다.
+착탄 지점 주변 반경 {zoneRadius}m에 {zoneDamage}의 추가 피해를 가합니다."
+10011,부식 포션,취약 상태를 부여해 대상이 받는 피해 증가. 강한 공격 전에 사용하면 효과적.,Assets/GameData/Icon/10011_부식 포션_Icon.png,1,-1,-1,0,"{vulnerableDuration}초 동안 취약 상태를 {vulnerableStacks}중첩 부여합니다.
+취약 상태는 중첩당 받는 피해를 {vulnerablePercent}% 증가시킵니다."
+10012,끈끈이 포션,	점액으로 이동속도를 낮추고 구르기 차단. 빠르게 움직이는 대상에게 효과적.,Assets/GameData/Icon/10012_끈끈이 포션_Icon.png,0,2,0,-2,{slimeDuration}초 동안 대상의 이동속도를 {slimeSlow}% 감소시키고 구르기를 막습니다.
+10013,독 포션,	피해를 주고 독 부여. 독에 걸린 대상이 받는 회복량 감소.,Assets/GameData/Icon/10013_독 포션_Icon.png,0,-1,1,2,"명중 시 {damage}의 피해를 주고, {poisonDuration}초 동안 독 {poisonStacks}중첩을 부여합니다.
+독은 중첩당 받는 회복량을 {poisonReduction}% 감소시킵니다."
+10014,회복 포션,	대상의 체력을 즉시 회복.,Assets/GameData/Icon/10014_회복 포션_Icon.png,0,0,2,2,"대상의 체력을 {healAmount}만큼 즉시 회복합니다.
+독 등 회복량 감소 효과에 따라 실제 회복량이 줄어들 수 있습니다."
+10015,물 병,	젖음 상태를 부여해 일정 시간 이동속도 감소.,Assets/GameData/Icon/10015_물 병_Icon.png,0,-2,1,0,{wetDuration}초 동안 대상을 젖게 만들어 이동속도를 {wetSlow}% 감소시킵니다.
+10016,짱돌 포션,적에게 충격 피해. 자신과 아군에게는 잠시 보호막 부여.,Assets/GameData/Icon/10016_짱돌 포션_Icon.png,4,0,0,0,"적에게 명중하면 {damage}의 피해를 줍니다.
+자신과 아군에게는 {shieldDuration}초 동안 {shieldAmount}의 피해를 흡수하는 보호막을 부여합니다."
+10017,냉기 포션,	피해를 주고 냉기 부여. 냉기가 중첩될수록 이동속도 감소.,Assets/GameData/Icon/10017_냉기 포션_Icon.png,0,0,4,0,"명중 시 {damage}의 피해를 주고, {chillDuration}초 동안 냉기 {chillStacks}중첩을 부여합니다.
+냉기 1중첩마다 대상의 이동속도가 {chillSlow}% 감소합니다."
+10018,석화 포션,대상을 돌로 굳혀 이동·공격·구르기 차단. 석화 중에는 피해도 받지 않음.,Assets/GameData/Icon/10018_석화 포션_Icon.png,2,0,2,0,"대상을 {petrifyDuration}초 동안 돌로 굳힙니다.
+석화된 대상은 이동·공격·구르기를 할 수 없으며, 그동안 피해도 받지 않습니다."
+10019,바위 포션,        적에게 강한 충격 피해. 자신과 아군에게는 짱돌 포션보다 강한 보호막 부여.,Assets/GameData/Icon/10019_바위 포션_Icon.png,6,0,-4,0,"적에게 명중하면 {damage}의 피해를 줍니다.
+자신과 아군에게는 {shieldDuration}초 동안 {shieldAmount}의 피해를 흡수하는 보호막을 부여합니다."
+10020,염화 포션,큰 피해와 높은 중첩의 화상 부여. 일부 나무를 화상 상태로 파괴하면 목재 대신 숯 획득.,Assets/GameData/Icon/10020_염화 포션_Icon.png,0,7,0,0,"명중 시 {damage}의 피해를 주고, {burnDuration}초 동안 화상 {burnStacks}중첩을 부여합니다.
+화상은 최초 적용 즉시 피해를 주며, 이후 {burnInterval}초마다 중첩당 {burnDamage}의 피해를 줍니다."
+10021,빙결 포션,	큰 피해를 주고 빙결 부여. 일정 시간 이동·공격·구르기 불가. 일부 용암 덩어리를 빙결 상태로 파괴하면 얼음과 불꽃의 돌 획득.,Assets/GameData/Icon/10021_빙결 포션_Icon.png,0,0,7,0,"명중 시 {damage}의 피해를 주고, 대상을 {freezeDuration}초 동안 얼립니다.
+빙결된 대상은 이동·공격·구르기를 할 수 없습니다."
+10022,폭풍 포션,        강력한 바람으로 명중 피해와 주변 범위 피해. 모여 있는 적에게 효과적.,Assets/GameData/Icon/10022_폭풍 포션_Icon.png,0,0,-4,6,"명중 시 {damage}의 피해를 줍니다.
+착탄 지점에서 폭풍이 일어나 반경 {zoneRadius}m 안의 대상에게 추가 피해를 줍니다."
+10023,정화 포션,	열기·혹한·질병 저주를 해제하고 세 가지 저항을 동시에 부여. 저주로 발생하는 화상·냉기·독 예방.,Assets/GameData/Icon/10023_정화 포션_Icon.png,1,1,1,1,"현재 걸린 열기·혹한·질병 저주를 해제합니다.
+열기 저항을 {heatDuration}초 동안 {heatStacks}중첩 부여합니다.
+혹한 저항을 {coldDuration}초 동안 {coldStacks}중첩 부여합니다.
+질병 저항을 {diseaseDuration}초 동안 {diseaseStacks}중첩 부여합니다.
+각 저항은 해당 저주를 한 번 막을 때마다 1중첩을 소모합니다."
+10024,충격파 포션,충격파로 대상을 뒤로 밀어냄. 적과 거리를 벌릴 때 유용.,Assets/GameData/Icon/10024_충격파 포션_Icon.png,4,0,0,2,
+10025,곡괭이 포션,넓은 범위에 피해를 주고 주변 드롭 아이템을 중앙으로 모음. 여러 채집물을 한꺼번에 파괴하고 재료를 모을 때 유용.,Assets/GameData/Icon/10025_곡괭이 포션_Icon.png,5,1,0,-4,

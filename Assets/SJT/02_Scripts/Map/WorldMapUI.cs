@@ -1,11 +1,16 @@
+using System.Collections.Generic;
 using DG.Tweening;
+using Photon.Pun;
+using TMPro;
 using UnityEngine;
 
-public sealed class WorldMapUI : MonoBehaviour
+public sealed class WorldMapUI : PopupUI
 {
     [SerializeField] private Transform worldRoot;
     [SerializeField] private Transform target;
     [SerializeField] private RectTransform playerPin;
+    [Tooltip("다른 플레이어 핀 원본입니다. 비활성 상태로 두고 자식에 닉네임 TMP를 둡니다.")]
+    [SerializeField] private RectTransform otherPinTemplate;
     [SerializeField] private WorldMapCalibration calibration;
     [SerializeField] private RectTransform mapBG;
     [SerializeField, Min(0f)] private float openDuration = 0.3f;
@@ -14,18 +19,14 @@ public sealed class WorldMapUI : MonoBehaviour
     [Tooltip("열린 위치에서 숨김 위치까지의 UI 좌표 오프셋입니다.")]
     [SerializeField] private Vector2 closedOffset = new Vector2(0f, -1200f);
 
+    private readonly List<(PlayerFSM player, RectTransform pin)> otherPins = new();
+
     private Vector2 openedPosition;
     private Vector3 openedRotation;
     private Sequence transition;
-    private bool isOpen;
-
-    /// <summary>연출 완료 여부와 관계없이 현재 요청된 지도 열림 상태입니다.</summary>
-    public bool IsOpen => isOpen;
 
     private void Awake()
     {
-        isOpen = gameObject.activeSelf;
-
         if (mapBG == null)
         {
             return;
@@ -38,7 +39,6 @@ public sealed class WorldMapUI : MonoBehaviour
     private void OnDisable()
     {
         transition?.Kill();
-        isOpen = false;
 
         if (mapBG != null)
         {
@@ -47,21 +47,17 @@ public sealed class WorldMapUI : MonoBehaviour
         }
     }
 
-    [ContextMenu("Open 테스트")]
-    public void Open()
+    private void LateUpdate()
     {
-        if (isOpen)
-        {
-            return;
-        }
+        RefreshPins();
+    }
 
-        bool wasActive = gameObject.activeSelf;
-        gameObject.SetActive(true);
-        isOpen = true;
-
+    [ContextMenu("Open 테스트")]
+    protected override void OnOpened()
+    {
         if (mapBG != null)
         {
-            if (!wasActive)
+            if (transition == null)
             {
                 mapBG.anchoredPosition = openedPosition + closedOffset;
                 mapBG.localEulerAngles = openedRotation + Vector3.forward * closedAngle;
@@ -70,21 +66,19 @@ public sealed class WorldMapUI : MonoBehaviour
             AnimateTo(openedPosition, openedRotation, openDuration, Ease.OutCubic);
         }
 
-        RefreshPlayerPin();
+        CreateOtherPins();
+
+        TMP_Text myName = playerPin != null ? playerPin.GetComponentInChildren<TMP_Text>(true) : null;
+        if (myName != null && GameManager.Instance != null) myName.text = GameManager.Instance.LocalUserProfile.UserName;
+
+        RefreshPins();
     }
 
-    public void Close()
+    protected override void PlayHideTransition()
     {
-        if (!isOpen)
-        {
-            return;
-        }
-
-        isOpen = false;
-
         if (mapBG == null)
         {
-            gameObject.SetActive(false);
+            FinishHide();
             return;
         }
 
@@ -101,39 +95,79 @@ public sealed class WorldMapUI : MonoBehaviour
         transition.Join(mapBG.DOLocalRotate(rotation, duration).SetEase(ease));
     }
 
-    private void RefreshPlayerPin()
+    // 지도를 열 때 다른 플레이어 핀을 새로 만든다. 열려 있는 동안 들어온 플레이어는 다음에 열 때 표시된다.
+    private void CreateOtherPins()
     {
+        foreach (var other in otherPins)
+        {
+            Destroy(other.pin.gameObject);
+        }
+        otherPins.Clear();
 
-        if (playerPin == null)
+        if (otherPinTemplate == null)
         {
             return;
         }
 
-        playerPin.gameObject.SetActive(false);
+        foreach (IWorldObj worldObject in WorldManager.Instance.Objects.GetList())
+        {
+            if (worldObject is not PlayerFSM player || player == null || player.IsMine)
+            {
+                continue;
+            }
 
+            RectTransform pin = Instantiate(otherPinTemplate, otherPinTemplate.parent);
+            var photonPlayer = PhotonNetwork.CurrentRoom?.GetPlayer(player.Owner);
+            pin.GetComponentInChildren<TMP_Text>(true).text = photonPlayer != null ? photonPlayer.NickName : string.Empty;
+            otherPins.Add((player, pin));
+        }
+    }
+
+    // 나간 플레이어는 오브젝트가 파괴되어 null이 되므로 핀이 꺼진다.
+    private void RefreshPins()
+    {
         if (target == null)
         {
             target = FindLocalPlayer();
         }
 
-        if (target == null || !target.gameObject.activeInHierarchy ||
-            worldRoot == null || calibration == null)
+        PlacePin(playerPin, target);
+
+        foreach (var (player, pin) in otherPins)
+        {
+            PlacePin(pin, player != null ? player.transform : null);
+        }
+    }
+
+    private void PlacePin(RectTransform pin, Transform worldTarget)
+    {
+        if (pin == null)
         {
             return;
         }
 
-        Vector3 localPosition = worldRoot.InverseTransformPoint(target.position);
-        Vector2 worldXZ = new Vector2(localPosition.x, localPosition.z);
+        Vector2 imageUV = default;
+        bool visible = worldTarget != null && worldTarget.gameObject.activeInHierarchy &&
+                       worldRoot != null && calibration != null &&
+                       calibration.TryGetMapUV(ToWorldXZ(worldTarget), out imageUV);
 
-        if (!calibration.TryGetMapUV(worldXZ, out Vector2 imageUV))
+        if (visible)
         {
-            return;
+            pin.anchorMin = imageUV;
+            pin.anchorMax = imageUV;
+            pin.anchoredPosition = Vector2.zero;
         }
 
-        playerPin.anchorMin = imageUV;
-        playerPin.anchorMax = imageUV;
-        playerPin.anchoredPosition = Vector2.zero;
-        playerPin.gameObject.SetActive(true);
+        if (pin.gameObject.activeSelf != visible)
+        {
+            pin.gameObject.SetActive(visible);
+        }
+    }
+
+    private Vector2 ToWorldXZ(Transform worldTarget)
+    {
+        Vector3 localPosition = worldRoot.InverseTransformPoint(worldTarget.position);
+        return new Vector2(localPosition.x, localPosition.z);
     }
 
     private static Transform FindLocalPlayer()

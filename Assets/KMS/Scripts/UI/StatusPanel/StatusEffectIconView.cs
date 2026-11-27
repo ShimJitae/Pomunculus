@@ -1,8 +1,9 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class StatusEffectIconView : MonoBehaviour
+public class StatusEffectIconView : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     [SerializeField] private Image border;
 
@@ -19,9 +20,17 @@ public class StatusEffectIconView : MonoBehaviour
     [SerializeField] private Image durationOverlay;    // DurationOverlay (Image Type = Filled)
     [SerializeField] private TMP_Text durationText;    // DurationText
 
+    private StatusEffectTooltip tooltip;
+    private StatusEffectData data;      // 풀링되는 StatusEffect 대신 바뀌지 않는 SO만 보관
+
+    private int stackCount;
     private float remainingDuration;
     private float totalDuration;
     private int displayedSeconds = -1;
+
+    public Color BorderColor => border.color;
+    public int StackCount => stackCount;
+    public float RemainingDuration => remainingDuration;
 
     // 분류에 맞는 테두리 색 반환
     private Color GetBorderColor(EffectCategory category)
@@ -36,16 +45,20 @@ public class StatusEffectIconView : MonoBehaviour
     }
 
     // 아이콘 처음 생성 시 초기화
-    public void Setup(Sprite icon, EffectCategory category, int stackCount, float remainingDuration, float totalDuration)
+    public void Setup(StatusEffectTooltip tooltip, StatusEffectData data, int stackCount, float remainingDuration)
     {
-        iconImage.sprite = icon;
-        iconImage.enabled = icon != null;   // GetIcon이 아직 null이라 흰 사각형 방지
-        border.color = GetBorderColor(category);
-        Refresh(stackCount, remainingDuration, totalDuration);
+        this.tooltip = tooltip;
+        this.data = data;
+
+        iconImage.sprite = data.Icon;
+        iconImage.enabled = data.Icon != null;   // 아이콘이 비어 있으면 흰 사각형 방지
+        border.color = GetBorderColor(data.EffectCategory);
+        Refresh(stackCount, remainingDuration, data.Duration);
     }
 
     public void Refresh(int stackCount, float remainingDuration, float totalDuration)
     {
+        this.stackCount = stackCount;
         this.remainingDuration = remainingDuration;
         this.totalDuration = totalDuration;
         displayedSeconds = -1;
@@ -86,5 +99,17 @@ public class StatusEffectIconView : MonoBehaviour
         }
 
         durationOverlay.fillAmount = 1f - remainingDuration / totalDuration;
+    }
+
+    // 아이콘에 마우스가 들어오면 툴팁을 띄운다
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        tooltip.Show(this, data.Icon, data.StateName, data.EffectCategory, data.Description, eventData.position);
+    }
+
+    // 아이콘에서 마우스가 나가면 툴팁을 닫는다
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        tooltip.HideFor(this);
     }
 }

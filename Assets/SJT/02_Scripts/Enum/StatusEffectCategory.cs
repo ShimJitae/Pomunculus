@@ -41,4 +41,5 @@ public enum StatusEffectType
 
     Petrify = 23,           // 석화
     Invincible = 24,        // 무적
+    ParryGroggy = 25,
 }

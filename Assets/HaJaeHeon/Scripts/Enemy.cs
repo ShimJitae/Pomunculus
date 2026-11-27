@@ -25,6 +25,8 @@ public class Enemy : Entity, IWorldRPC, IHealable
     [SerializeField] private float knockbackDistance;
     [SerializeField] private float detectRangeBonus = 10f; // 피격 시 추가되는 감지 범위
     [SerializeField] private float chaseSpeedMultiplier = 2f; // 추적 시 이동속도 배율
+    [SerializeField] private float parryKnockbackDistance = 2f;    // 패링당했을 때 밀려나는 거리(m)
+    [SerializeField] private float parryKnockbackDuration = 0.2f;  // 그 거리를 밀려나는 데 걸리는 시간(초)
 
     private bool IsDamageBlock => IsInvincible || CheckDie();
     private NavMeshAgent agent;
@@ -32,6 +34,8 @@ public class Enemy : Entity, IWorldRPC, IHealable
     private EnemyMovement movement;
     private EnemySkill enemySkill;
     private bool hasDetectRangeExpanded;
+
+    private WorldAnimatorSync worldAnimatorSync;
 
     private float groggyHpRatio = 0.5f;
     private bool hasGroggyTriggered;
@@ -52,6 +56,7 @@ public class Enemy : Entity, IWorldRPC, IHealable
         animator = GetComponent<Animator>();
         movement = GetComponent<EnemyMovement>();
         enemySkill = GetComponentInChildren<EnemySkill>();
+        worldAnimatorSync = GetComponent<WorldAnimatorSync>();
     }
 
     // 적의 행동 그래프와 전투 상태를 초기화하고 실행 권한에 따라 감지와 공격 준비를 수행
@@ -236,10 +241,28 @@ public class Enemy : Entity, IWorldRPC, IHealable
                 GameObject dropItemPrefab = DataDBManager.Instance.ItemDatabase.GetItemPrefab(dropItemId);
 
                 if (dropItemPrefab != null)
-                    WorldManager.Instance.Spawn(dropItemPrefab.name, transform.position + DataDBManager.Instance.ItemDropOffset, Quaternion.identity);
+                    WorldManager.Instance.Spawn(dropItemPrefab.name, FindFreeDropPosition(transform.position + DataDBManager.Instance.ItemDropOffset), Quaternion.identity);
             }
             StartCoroutine(WaitDieAnimation());
         }
+    }
+
+    // 재료가 다른 콜라이더(장식품 등) 안에서 생기지 않도록, 겹치면 빈 자리가 나올 때까지 조금씩 위로 올린다
+    private static Vector3 FindFreeDropPosition(Vector3 start)
+    {
+        int ingredientLayer = LayerMask.NameToLayer("Ingredient");
+        int mask = 0;
+        for (int i = 0; i < 32; i++)
+        {
+            if (!Physics.GetIgnoreLayerCollision(ingredientLayer, i)) mask |= 1 << i;
+        }
+
+        Vector3 position = start;
+        for (int i = 0; i < 10 && Physics.CheckSphere(position, 0.3f, mask, QueryTriggerInteraction.Ignore); i++)
+        {
+            position += Vector3.up * 0.5f;
+        }
+        return position;
     }
 
     // 몬스터 죽고 1초 대기
@@ -270,6 +293,32 @@ public class Enemy : Entity, IWorldRPC, IHealable
         // 넓힌 범위 안에도 플레이어가 없으면 감지 범위로 복구
         if (target == null)
             ResetDetectRange();
+    }
+
+    // 스킬 사용 직전에 호출. 감지 범위 안에서 가장 가까운 플레이어로 타겟을 바꾼다 (방장에서만 실행)
+    public void RetargetToNearest()
+    {
+        GameObject nearestPlayer = detector.GetNearestPlayer();
+
+        // 후보가 없으면 기존 타겟 유지 (타겟 정리는 RefreshTarget이 담당)
+        if (nearestPlayer == null || nearestPlayer == target)
+            return;
+
+        SetTarget(nearestPlayer);
+    }
+
+    // 루트 모션이 있는 클립(드롭킥처럼 몸이 이동하는 공격)의 이동량을 NavMeshAgent 이동으로 반영해 루트(콜라이더)가 몸을 따라가게 한다
+    // Root Motion Node가 없는 다른 클립은 이동량이 0이라 영향 없음. 실행 권한이 있을 때만 이동하고 다른 플레이어는 위치 동기화를 따른다
+    private void OnAnimatorMove()
+    {
+        if (!IsMaster || !agent.enabled || !agent.isOnNavMesh)
+            return;
+
+        Vector3 rootMotionDelta = animator.deltaPosition;
+        rootMotionDelta.y = 0f;   // 높이는 NavMesh가 결정
+
+        if (rootMotionDelta.sqrMagnitude > 0f)
+            agent.Move(rootMotionDelta);
     }
 
     protected override int GetId()
@@ -324,6 +373,44 @@ public class Enemy : Entity, IWorldRPC, IHealable
         detector.SetRadius(EnemySo.GetDetectRange());
     }
 
+    // 패링당하면 그로기 상태이상을 걸고, 패링한 대상 반대쪽으로 밀려나며 튕겨나가는 모션을 재생한다 (방장만)
+    public void EnterParryGroggy(Vector3 parrySourcePosition)
+    {
+        if (!IsMaster)
+            return;
+
+        RegisterStatusEffect(StatusEffectType.ParryGroggy);
+        PlayParriedAnimation();
+        ApplyParryKnockback(parrySourcePosition);
+    }
+
+    // 패링한 대상 반대 방향으로 NavMesh 위에서 밀어낸다. 위치는 WorldTransformSync가 다른 클라이언트에 전한다
+    private void ApplyParryKnockback(Vector3 parrySourcePosition)
+    {
+        if (parryKnockbackDistance <= 0f || parryKnockbackDuration <= 0f)
+            return;
+
+        Vector3 awayFromSource = transform.position - parrySourcePosition;
+        awayFromSource.y = 0f;
+        Vector3 knockbackDirection = awayFromSource.sqrMagnitude > 0.0001f ? awayFromSource.normalized : -transform.forward;
+
+        if (!TryGetComponent(out PotionKnockbackMover knockbackMover))
+            knockbackMover = gameObject.AddComponent<PotionKnockbackMover>();
+
+        knockbackMover.Push(knockbackDirection * parryKnockbackDistance, parryKnockbackDuration);
+    }
+
+    // WorldAnimatorSync가 있으면 트리거를 다른 클라이언트에도 보내고, 없으면 이 컴퓨터에서만 재생한다
+    private void PlayParriedAnimation()
+    {
+        const string parriedTrigger = "Parried";
+
+        if (worldAnimatorSync != null)
+            worldAnimatorSync.SetTrigger(parriedTrigger);
+        else
+            animator.SetTrigger(parriedTrigger);
+    }
+
     #region 네트워크
     // 방 밖에서는 로컬 실행을 허용하고, 방 안에서는 마스터 클라이언트만 실행 권한을 가진다.
     //private bool IsMaster => !PhotonNetwork.InRoom || PhotonNetwork.IsMasterClient;
@@ -371,6 +458,10 @@ public class Enemy : Entity, IWorldRPC, IHealable
 
         if (!IsMaster)
             return;
+
+        // 스킬이 취소된 것도 스킬이 끝난 것으로 보고 다음 스킬 대상을 다시 정한다 (사망 시에는 제외)
+        if (!isDie)
+            RetargetToNearest();
 
         PacketData packet = new();
         packet.Write((byte)EnemyRPCType.CancelTelegraph);

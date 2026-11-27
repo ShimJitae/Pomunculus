@@ -49,6 +49,9 @@ namespace Pomunculus.Items
         [SerializeField] private GameObject message;
         private int hoveredMaterialIndex = -1;
         private bool isResultHovered;
+        [Header("제작 사운드")]
+        [SerializeField] private AudioSO craftingCloseSound;
+        [SerializeField] private AudioSO craftingSound;
 
         // 내 플레이어의 제조 기록을 연결한다
         public void BindCraftHistory(PotionCraftHistory history) => craftHistory = history;
@@ -80,7 +83,6 @@ namespace Pomunculus.Items
 
             RefreshUI();
         }
-
         public void Craft()
         {
             if (inventory == null || insertedMaterialCount <= 0)
@@ -116,7 +118,10 @@ namespace Pomunculus.Items
                 recipeBook.DiscoverPotion(resultPotion.Id);
 
             AddPreviousMaterials();
+            inventory.AddItem(resultPotion.Id, ResultAmount);
 
+            if (craftingSound != null && AudioManager.Instance != null)
+                AudioManager.Instance.PlaySound(craftingSound);
             Debug.Log($"제작 결과: {resultPotion.ItemName} × {ResultAmount}", this);
         }
 
@@ -316,6 +321,14 @@ namespace Pomunculus.Items
         {
             HideInsertedMaterialTooltip();
             HideResultTooltip();
+
+            if (Application.isPlaying &&
+                !gameObject.activeInHierarchy &&
+                craftingCloseSound != null &&
+                AudioManager.Instance != null)
+            {
+                AudioManager.Instance.PlaySound(craftingCloseSound);
+            }
         }
         public void ShowResultTooltip()
         {

@@ -6,19 +6,20 @@ public class StatusPanelView : MonoBehaviour, IStatusPanelView
 {
     [SerializeField] private Transform statusSlot;          // 아이콘이 붙을 부모 (Layout Group)
     [SerializeField] private StatusEffectIconView statusIconPrefab;
+    [SerializeField] private StatusEffectTooltip tooltip;
 
     private readonly Dictionary<StatusEffectType, StatusEffectIconView> statusIcons = new();
 
     // 상태이상이 걸렸을 때 아이콘 추가
-    public void AddStatusIcon(StatusEffectType type, Sprite icon, EffectCategory category, int stackCount, float remainingDuration, float totalDuration)
+    public void AddStatusIcon(StatusEffect effect)
     {
-        if (statusIcons.TryGetValue(type, out StatusEffectIconView iconView))
-            iconView.Refresh(stackCount, remainingDuration, totalDuration);
+        if (statusIcons.TryGetValue(effect.Type, out StatusEffectIconView iconView))
+            iconView.Refresh(effect.StackCount, effect.RemainingDuration, effect.Data.Duration);
         else
         {
             iconView = Instantiate(statusIconPrefab, statusSlot);
-            statusIcons.Add(type, iconView);
-            iconView.Setup(icon, category, stackCount, remainingDuration, totalDuration);
+            statusIcons.Add(effect.Type, iconView);
+            iconView.Setup(tooltip, effect.Data, effect.StackCount, effect.RemainingDuration);
         }
     }
 

@@ -6,7 +6,7 @@ public class HealPotionEffect : PotionEffect
 {
     [Min(0)]
     [SerializeField] private int amount = 30;
-
+    public int Amount => amount;
     // 회복 가능한 대상만 회복시킨다
     public override void Apply(in PotionHitContext context)
     {

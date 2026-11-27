@@ -1,4 +1,5 @@
 using Pomunculus.Items;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
@@ -18,8 +19,6 @@ public class PlayerInputReader : MonoBehaviour
     public float HoldRepathInterval = 0.1f;   // 우클릭 홀드 시 목적지 갱신 간격
     public float NavSampleRadius = 2f;        // 클릭 지점을 NavMesh 위로 보정하는 범위
     public LayerMask GroundLayer;
-    [Tooltip("클릭 위치에 표시할 오브젝트")]
-    public GameObject MoveMarker;
     public float InputBufferTime = 0.15f;
 
     public bool HasPendingMove { get; private set; }     // 아직 처리되지 않은 우클릭 이동 명령
@@ -36,6 +35,8 @@ public class PlayerInputReader : MonoBehaviour
     private float interactPressedAt = float.NegativeInfinity;
     private float nextHoldRepathAt = float.NegativeInfinity;
     private int pendingPotionSlot = -1;                   // 처리 대기 중인 포션 슬롯 선택 (-1이면 없음)
+
+    public event Action<Vector3> OnMoveCommandIssued;
 
     private InputActionMap playerMap;
     private InputAction moveAction;
@@ -70,7 +71,7 @@ public class PlayerInputReader : MonoBehaviour
         aimAction = playerMap.FindAction("Aim", throwIfNotFound: true);
         worldMapAction = playerMap.FindAction("WorldMap", throwIfNotFound: true);
         potionSlotActions = new InputAction[PotionLoadout.SlotCount];
-        
+
         for (int i = 0; i < PotionLoadout.SlotCount; i++)
         {
             potionSlotActions[i] = playerMap.FindAction("PotionSlot" + (i + 1), throwIfNotFound: true);
@@ -120,8 +121,6 @@ public class PlayerInputReader : MonoBehaviour
 
         if (rightDown)
             isMoveBlockedByUI = IsPointerOverRightClickConsumer();
-        if (!rightHeld)
-            isMoveBlockedByUI = false;
 
         if (!isMoveBlockedByUI && (rightDown || (rightHeld && Time.time >= nextHoldRepathAt)))
         {
@@ -130,9 +129,13 @@ public class PlayerInputReader : MonoBehaviour
             {
                 pendingDestination = dest;
                 HasPendingMove = true;
-                if (rightDown) ShowMoveMarker(dest);
+                if (rightDown) OnMoveCommandIssued?.Invoke(dest);
             }
         }
+
+        // 버튼을 뗐으면 다음 클릭을 위해 차단을 푼다. 이동 판정 뒤에 풀어야 같은 프레임에 누르고 뗀 클릭도 막힌다
+        if (!rightHeld)
+            isMoveBlockedByUI = false;
 
         // 좌클릭: 던지기. 클릭한 순간의 마우스 위치를 목표로 저장
         if (!pointerOverUI && attackAction.WasPressedThisFrame() && TryGetMouseWorldPoint(out Vector3 target))
@@ -243,14 +246,6 @@ public class PlayerInputReader : MonoBehaviour
 
         point = navHit.position;
         return true;
-    }
-
-    void ShowMoveMarker(Vector3 position)
-    {
-        if (MoveMarker == null) return;
-        MoveMarker.transform.position = position;
-        MoveMarker.SetActive(false);   // 껐다 켜서 파티클 등을 다시 재생
-        MoveMarker.SetActive(true);
     }
 
     // 커서 바로 아래 UI가 우클릭을 쓰는 UI인지 확인한다
