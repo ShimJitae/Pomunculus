@@ -73,7 +73,12 @@ public class ChatUI : MonoBehaviour
             m_closeRequested = false;
             Close();
         }
-        if (m_blockKeyboard && !m_isOpen && Time.frameCount > m_unblockAfterFrame && !IsAnyKeyHeld()) m_blockKeyboard = false;
+        if (m_blockKeyboard && !m_isOpen && Time.frameCount > m_unblockAfterFrame)
+        {
+            if (!IsAnyKeyHeld()) m_blockKeyboard = false;
+            // 한글 IME(한/영 키, 조합 중 Enter 등) 때문에 키 업 이벤트가 오지 않으면 눌린 키가 영원히 남으므로 일정 시간 후 강제로 풂
+            else if (Time.unscaledTime - m_closedTime >= m_unblockTimeout) ForceUnblockKeyboard();
+        }
         var keyboard = Keyboard.current;
         if (!m_isOpen && !m_blockKeyboard && keyboard != null && keyboard.backquoteKey.wasPressedThisFrame && !IsOtherInputFieldFocused()) Open();
         if (m_reactivateInput && m_isOpen) ReactivateInput();
@@ -110,6 +115,14 @@ public class ChatUI : MonoBehaviour
         foreach (var device in InputSystem.devices)
             if (device is Keyboard) InputSystem.ResetDevice(device);
     }
+    // 차단을 풀고 키보드 상태를 초기화해서, 키 업을 받지 못한 키가 눌린 상태로 남지 않게 함
+    private void ForceUnblockKeyboard()
+    {
+        m_blockKeyboard = false;
+        if (m_heldKeys != null) System.Array.Clear(m_heldKeys, 0, m_heldKeys.Length);
+        foreach (var device in InputSystem.devices)
+            if (device is Keyboard) InputSystem.ResetDevice(device);
+    }
     private bool IsAnyKeyHeld()
     {
         if (m_heldKeys == null) return false;
@@ -139,6 +152,7 @@ public class ChatUI : MonoBehaviour
         // 키보드 차단은 바로 풀지 않고, 다음 프레임 이후 누른 키를 모두 떼면 Update에서 풂
         // (Esc로 닫은 경우 Esc의 Input System 이벤트가 한 프레임 늦게 올 수 있음)
         m_unblockAfterFrame = Time.frameCount + 1;
+        m_closedTime = Time.unscaledTime;
         // 지금까지 온 메시지는 채팅창에서 봤으므로 닫은 뒤 미리보기로 다시 띄우지 않음
         m_previewHiddenUntil = Time.unscaledTime;
         if (m_input.isFocused) m_input.DeactivateInputField(); // OnEndEdit -> Close가 다시 불리지만 m_isOpen으로 무시됨
@@ -283,6 +297,7 @@ public class ChatUI : MonoBehaviour
     [SerializeField] private float m_previewDuration = 5f; // 새 메시지를 미리보기로 보여주는 시간 (초)
     [SerializeField] private float m_fadeDuration = 1f;    // 미리보기가 끝날 때 사라지는 데 걸리는 시간 (초)
     [SerializeField] private int m_previewLines = 5;       // 미리보기 최대 줄 수
+    [SerializeField] private float m_unblockTimeout = 0.3f; // 닫은 뒤 키를 떼지 않아도(키 업이 오지 않아도) 키보드 차단을 강제로 푸는 시간 (초)
 
     private const string TextColor = "FFFFFF";
     private const string NameColor = "9CDCFE";
@@ -297,6 +312,7 @@ public class ChatUI : MonoBehaviour
     private bool m_closeRequested;  // 막는 중에 ` 키가 눌려서 다음 Update에서 닫음
     private bool[] m_heldKeys;      // 막는 동안 실제로 눌려 있는 키 (Keyboard.allKeys 순서)
     private int m_unblockAfterFrame;
+    private float m_closedTime;     // 채팅창을 닫은 시각 (unscaled). m_unblockTimeout 계산용
     private System.Action<InputEventPtr, InputDevice> m_onInputEvent;
     private int m_submitFrame = -1;  // Enter로 제출한 프레임. 같은 프레임의 onEndEdit에서 닫지 않기 위해 사용
     private bool m_reactivateInput; // 다음 Update에서 입력창을 다시 활성화
