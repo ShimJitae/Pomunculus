@@ -3263,6 +3263,22 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 221cbd062027e08468fdef6714abb672, type: 3}
+--- !u!1 &363368493 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3236680606166854345, guid: 221cbd062027e08468fdef6714abb672, type: 3}
+  m_PrefabInstance: {fileID: 363368492}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &363368494 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8387190345246696708, guid: 221cbd062027e08468fdef6714abb672, type: 3}
+  m_PrefabInstance: {fileID: 363368492}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7282f8d52d06f1e4985f05fe1f891ccb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TutorialUI
 --- !u!1 &387542833
 GameObject:
   m_ObjectHideFlags: 0
@@ -5842,6 +5858,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: World_PurePoly
       objectReference: {fileID: 0}
+    - target: {fileID: 5592398614940485865, guid: 200ec7a1d3e08454ab91bc116eb16d3d, type: 3}
+      propertyPath: tutorialUI
+      value: 
+      objectReference: {fileID: 363368494}
+    - target: {fileID: 5592398614940485865, guid: 200ec7a1d3e08454ab91bc116eb16d3d, type: 3}
+      propertyPath: interactionText
+      value: 
+      objectReference: {fileID: 363368493}
     - target: {fileID: 8699424356000926423, guid: 200ec7a1d3e08454ab91bc116eb16d3d, type: 3}
       propertyPath: m_LocalPosition.y
       value: 10.84
