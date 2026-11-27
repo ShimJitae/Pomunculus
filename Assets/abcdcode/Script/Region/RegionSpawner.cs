@@ -17,7 +17,7 @@ public class RegionSpawner : Singleton<RegionSpawner>
         {
             GetPoints = (registry, region) => registry.GetNormalMobPoints(region),
             GetRecords = data => data.RegionMobs,
-            Pick = region => m_table.PickMob(MobTableRegion(region)),
+            Pick = region => NetworkPrefabCatalog.GetHashIdOrNone(m_table.PickMob(MobTableRegion(region))),
         };
         m_categories = new[]
         {
@@ -25,14 +25,14 @@ public class RegionSpawner : Singleton<RegionSpawner>
             {
                 GetPoints = (registry, region) => registry.GetGatherMobPoints(region),
                 GetRecords = data => data.RegionGathers,
-                Pick = region => m_table.PickGather(region),
+                Pick = region => NetworkPrefabCatalog.GetHashIdOrNone(m_table.PickGather(region)),
             },
             m_mobCategory,
             new Category
             {
                 GetPoints = (registry, region) => SinglePoint(registry.GetBossPoint(region)),
                 GetRecords = data => data.RegionBosses,
-                Pick = region => m_table.PickFieldBoss(region),
+                Pick = region => NetworkPrefabCatalog.GetHashIdOrNone(m_table.PickFieldBoss(region)),
                 RespawnDays = BossRespawnDays,
                 KeepUntilConsumed = true,
             },
@@ -81,7 +81,7 @@ public class RegionSpawner : Singleton<RegionSpawner>
             {
                 // 사망 연출 중인 개체도 같이 정리
                 if (IsAlive(p.ObjectId)) WorldManager.Instance.Find(p.ObjectId).Despawn();
-                p.PrefabId = m_mobCategory.Pick(region);
+                p.PrefabHash = m_mobCategory.Pick(region);
                 p.ObjectId = -1;
                 p.Consumed = false;
                 p.State = null;
@@ -284,7 +284,7 @@ public class RegionSpawner : Singleton<RegionSpawner>
         // 맵 수정으로 포인트 수가 달라졌으면 기존 기록은 버리고 새로 시작
         if (rec != null) Deactivate(rec);
         rec = new RegionSpawnRecord { Day = data.Day };
-        for (int i = 0; i < points.Count; i++) rec.Points.Add(new SpawnPointRecord { PrefabId = cat.Pick(region) });
+        for (int i = 0; i < points.Count; i++) rec.Points.Add(new SpawnPointRecord { PrefabHash = cat.Pick(region) });
         records[region] = rec;
         return rec;
     }
@@ -320,9 +320,9 @@ public class RegionSpawner : Singleton<RegionSpawner>
             {
                 if (rec.Active && IsAlive(p.ObjectId)) continue;
                 // 보스처럼 처치되기 전까지 유지하는 대상은 보관 중인 상태(체력 등)를 그대로 둔다
-                if (cat.KeepUntilConsumed && !string.IsNullOrEmpty(p.PrefabId)) continue;
+                if (cat.KeepUntilConsumed && p.PrefabHash != NetworkPrefabCatalog.NoHash) continue;
             }
-            p.PrefabId = cat.Pick(region);
+            p.PrefabHash = cat.Pick(region);
             p.ObjectId = -1;
             p.Consumed = false;
             p.State = null;
@@ -377,9 +377,9 @@ public class RegionSpawner : Singleton<RegionSpawner>
     // 몬스터가 돌아다녔더라도 다시 소환할 때는 원래 포인트에서
     private static void SpawnPoint(SpawnPointRecord p, Transform point)
     {
-        if (string.IsNullOrEmpty(p.PrefabId) || point == null) return;
+        if (p.PrefabHash == NetworkPrefabCatalog.NoHash || point == null) return;
         var state = p.State;
-        var obj = WorldManager.Instance.Spawn(p.PrefabId, point.position, point.rotation,
+        var obj = WorldManager.Instance.Spawn(p.PrefabHash, point.position, point.rotation,
             state != null ? o => o.LoadData(state) : null);
         p.ObjectId = obj?.ID ?? -1;
         p.State = null;
@@ -413,7 +413,7 @@ public class RegionSpawner : Singleton<RegionSpawner>
     {
         public Func<SpawnPointRegistry, RegionType, IReadOnlyList<Transform>> GetPoints;
         public Func<WorldData, Dictionary<RegionType, RegionSpawnRecord>> GetRecords;
-        public Func<RegionType, string> Pick;
+        public Func<RegionType, int> Pick; // 고른 프리팹의 해시. 없으면 NetworkPrefabCatalog.NoHash
         public int RespawnDays = 1; // 사라진 날로부터 이 일수가 지나야 다시 소환
         public bool KeepUntilConsumed; // true면 날짜가 바뀌어도 처치되기 전까지는 같은 개체(보관 상태)를 유지
     }

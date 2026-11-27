@@ -31,6 +31,7 @@ public class WorldSlotLoader : Singleton<WorldSlotLoader>
         data.SlotId = SaveInfo.LastSlotId;
         data.WorldName = worldName;
         data.DayTime = spawnTime;
+        data.WorldVersion = GameManager.Instance.Version;
         SaveInfo.Slots.Add(data);
         Save();
     }
