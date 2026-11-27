@@ -89,7 +89,7 @@ public class RegionSpawnRecord
 }
 public class SpawnPointRecord
 {
-    public string PrefabId{get;set;}
+    public int PrefabHash{get;set;} = NetworkPrefabCatalog.NoHash; // NetworkPrefabCatalog.GetHashId(이름). 고른 프리팹이 없으면 NoHash
     public int ObjectId{get;set;} = -1; // 나와 있는 오브젝트 ID. 없으면 -1
     public bool Consumed{get;set;} // 이미 채집/처치되어 사라짐. 재소환 주기가 지나기 전까지 비어 있다
     public int ConsumedDay{get;set;} // 사라진 날. Consumed일 때만 의미 있음
@@ -130,7 +130,12 @@ public class WorldSnapshot
         inner.Write(Entities.Count);
         foreach(var e in Entities) e.Write(inner, compressState: false); // 바깥에서 한 번에 압축하므로 개별 압축 안 함
         inner.Save();
+        int rawLength = inner.GetData().Length;
+        int before = p.WrittenLength;
         p.WriteBlock(inner.GetData(), compress: true);
+        int blockLength = p.WrittenLength - before; // 블록 헤더(플래그 1 + 길이 4) 포함
+        Debug.Log($"[WorldSnapshot] 엔티티 {Entities.Count}개 | 압축 전 {rawLength:N0}B | 압축 후 {blockLength:N0}B " +
+                  $"({(rawLength > 0 ? blockLength * 100f / rawLength : 0f):F1}%) | 스냅샷 전체 {p.WrittenLength:N0}B");
     }
     public static WorldSnapshot Read(PacketData p)
     {
@@ -146,7 +151,7 @@ public class WorldSnapshot
 public class WorldObjSaveData
 {
     public int ID{get;set;} // IdManager 발급 id
-    public string PrefabId{get;set;} // NetworkPrefabCatalog 이름
+    public int PrefabHash{get;set;} // NetworkPrefabCatalog.GetHashId(PrefabId). 세이브/통신 용량을 줄이기 위해 문자열 대신 저장
     public SerialVector3 Position{get;set;}
     public SerialVector3 Rotation{get;set;} // eulerAngles
     public SaveData State{get;set;} // Entity가 ISavable.SaveData로 채운 상태
@@ -159,7 +164,7 @@ public class WorldObjSaveData
         return new()
         {
             ID = obj.ID,
-            PrefabId = obj.PrefabId,
+            PrefabHash = NetworkPrefabCatalog.GetHashId(obj.PrefabId),
             Position = t.position,
             Rotation = t.eulerAngles,
             State = state
@@ -172,7 +177,7 @@ public class WorldObjSaveData
     public void Write(PacketData p, bool compressState = true)
     {
         p.Write(ID);
-        p.Write(PrefabId);
+        p.Write(PrefabHash);
         p.Write(Position.ToVector3());
         p.Write(Rotation.ToVector3());
         p.WriteSaveData(State, compressState);
@@ -180,7 +185,7 @@ public class WorldObjSaveData
     public static WorldObjSaveData Read(PacketData p) => new()
     {
         ID = p,
-        PrefabId = p,
+        PrefabHash = p,
         Position = p.ReadVector3(),
         Rotation = p.ReadVector3(),
         State = p.ReadSaveData()

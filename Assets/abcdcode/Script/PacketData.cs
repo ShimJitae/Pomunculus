@@ -9,6 +9,7 @@ using UnityEngine;
 public class PacketData
 {
     private List<byte> buffer = new List<byte>();
+    public int WrittenLength => buffer.Count; // 지금까지 Write한 바이트 수 (Save 전 기준)
     
     public PacketData()
     {

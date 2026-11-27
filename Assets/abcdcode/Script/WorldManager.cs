@@ -16,7 +16,17 @@ public class WorldManager : Singleton<WorldManager>
         if (m_initialized) return;
         Debug.Log($"WorldManager Init");
         m_catalog = Resources.Load<NetworkPrefabCatalog>("NetworkPrefabCatalog");
-        m_prefabs = m_catalog.Entries.ToDictionary(x => x.name);
+        m_keyDic = new BiDictionary<string, int>();
+        m_prefabs = new Dictionary<int, GameObject>();
+        NetworkPrefabCatalog.ValidateHashIds(m_catalog.Entries, Debug.LogError);
+        foreach(var e in m_catalog.Entries)
+        {
+            int hashId = NetworkPrefabCatalog.GetHashId(e.name);
+            if (m_prefabs.ContainsKey(hashId)) continue; // 충돌은 위에서 로그로 보고됨. 먼저 등록된 쪽 유지
+            m_keyDic.Add(e.name, hashId);
+            m_prefabs[hashId] = e;
+        }
+        //m_prefabs = m_catalog.Entries.ToDictionary(x => x.name);
         RaiseEventManager.Instance.RegisterEvent((int)WorldEventID.RequestSnapshot, OnRequestSnapshot);
         RaiseEventManager.Instance.RegisterEvent((int)WorldEventID.WorldSnapshot, OnReceiveSnapshot);
         RaiseEventManager.Instance.RegisterEvent((int)WorldEventID.SpawnObj, OnReceiveSpawn);
@@ -125,6 +135,15 @@ public class WorldManager : Singleton<WorldManager>
         CurSlot = slotindex;
         var slot = WorldSlotLoader.Instance.SaveInfo.Slots.Find(x => x.SlotId == slotindex);
         DayLength = ValidDayLength(slot?.DayTime ?? WorldSlotData.DefaultDayTime);
+        if (slot != null && !slot.IsCompatible)
+        {
+            // 슬롯 목록에서 걸러지므로 정상 경로로는 오지 않음. 이전 버전 세이브를 덮어쓰지 않도록 저장도 막고 빈 월드로 시작
+            Debug.LogError($"[WorldManager] 버전이 다른 월드 슬롯 : {slotindex} (슬롯 v{slot.WorldVersion}, 현재 v{GameManager.Instance.Version})");
+            CurSlot = NoSlot;
+            CurWorldData = new WorldData();
+            IsReady = true;
+            return;
+        }
         CurWorldData = SaveManager.Instance.Load(WorldFileName(slotindex))?.GetData<WorldData>() ?? new WorldData();
         foreach (var d in CurWorldData.Entities) SpawnLocal(d);
         // NextId가 없던 이전 세이브도 있으므로, 불러온 오브젝트 ID와 겹치지 않게 최대 ID + 1 이상으로 맞춤
@@ -226,13 +245,16 @@ public class WorldManager : Singleton<WorldManager>
     #region 생성/파괴 (방장이 호출하면 다른 플레이어에게 전파)
     // onInit : 다른 플레이어에게 전파되기 전에 초기 상태를 설정할 때 사용 (SaveData에 담겨 같이 전송됨)
     public IWorldObj Spawn(string prefabId, Vector3 position, Quaternion rotation, Action<IWorldObj> onInit = null)
+        => Spawn(NetworkPrefabCatalog.GetHashId(prefabId), position, rotation, onInit);
+    // prefabHash : NetworkPrefabCatalog.GetHashId(이름)
+    public IWorldObj Spawn(int prefabHash, Vector3 position, Quaternion rotation, Action<IWorldObj> onInit = null)
     {
         if (!IsMaster)
         {
             Debug.LogWarning("[WorldManager] 방장만 월드 오브젝트를 생성할 수 있음");
             return null;
         }
-        var obj = Instantiate(IdManager.Instance.Next, prefabId, position, rotation);
+        var obj = Instantiate(IdManager.Instance.Next, prefabHash, position, rotation);
         if (obj == null) return null;
         onInit?.Invoke(obj);
         if (obj is IPlayerObj player) RegisterPlayer(player);
@@ -244,7 +266,7 @@ public class WorldManager : Singleton<WorldManager>
         p.Write((int)WorldEventID.SpawnObj);
         WorldObjSaveData.Create(obj).Write(p);
         RaiseEventManager.Instance.SendPacket(p, new() { Receivers = ReceiverGroup.Others }, SendOptions.SendReliable);
-        Debug.Log($"방장 소환 명령 : {prefabId}");
+        Debug.Log($"방장 소환 명령 : {obj.PrefabId}");
         return obj;
     }
     // 방장이 아닌 플레이어도 호출 가능한 생성 요청. 방장이 대신 Spawn하므로 결과는 OnSpawnedEvent로 받는다
@@ -337,7 +359,7 @@ public class WorldManager : Singleton<WorldManager>
     {
         if (IsMaster) return;
         var d = WorldObjSaveData.Read(p);
-        Debug.Log($"소환 명령 : {d.PrefabId}");
+        Debug.Log($"소환 명령 : {PrefabName(d.PrefabHash)}");
         RunOrQueue(() => SpawnLocal(d));
     }
     private void OnReceiveSpawnRequest(EventData e, PacketData p)
@@ -368,7 +390,7 @@ public class WorldManager : Singleton<WorldManager>
     private void SpawnLocal(WorldObjSaveData d)
     {
         if (Find(d.ID) != null) return; // 스냅샷과 이벤트가 겹친 경우
-        var obj = Instantiate(d.ID, d.PrefabId, d.Position, Quaternion.Euler(d.Rotation));
+        var obj = Instantiate(d.ID, d.PrefabHash, d.Position, Quaternion.Euler(d.Rotation));
         if (obj == null) return;
         // Instantiate 시점에 OnEnable이 먼저 돌기 때문에 그 뒤에 상태를 덮어씀
         obj.LoadData(d.State);
@@ -385,11 +407,11 @@ public class WorldManager : Singleton<WorldManager>
         Object.Destroy(obj.gameObject);
     }
     // Photon을 거치지 않는 로컬 생성. PhotonView가 붙어있어도 ViewID가 없으므로 RPC/PhotonView 동기화는 동작하지 않음
-    private IWorldObj Instantiate(int id, string prefabId, Vector3 position, Quaternion rotation)
+    private IWorldObj Instantiate(int id, int prefabHash, Vector3 position, Quaternion rotation)
     {
-        if (!m_prefabs.TryGetValue(prefabId, out var prefab))
+        if (!m_keyDic.TryGetKey(prefabHash, out string prefabId) || !m_prefabs.TryGetValue(prefabHash, out var prefab))
         {
-            Debug.LogError($"[WorldManager] 카탈로그에 없는 프리팹 : {prefabId}");
+            Debug.LogError($"[WorldManager] 카탈로그에 없는 프리팹 해시 : {prefabHash}");
             return null;
         }
         var go = Object.Instantiate(prefab, position, rotation);
@@ -426,7 +448,9 @@ public class WorldManager : Singleton<WorldManager>
     private bool IsMaster => !PhotonNetwork.InRoom || PhotonNetwork.IsMasterClient; // 오프라인이면 본인이 방장
 
     private NetworkPrefabCatalog m_catalog;
-    private Dictionary<string, GameObject> m_prefabs;
+    private BiDictionary<string,int> m_keyDic = new BiDictionary<string, int>();
+    private string PrefabName(int prefabHash) => m_keyDic.TryGetKey(prefabHash, out var name) ? name : $"(알 수 없음 {prefabHash})";
+    private Dictionary<int, GameObject> m_prefabs;
     private readonly Dictionary<string, IWorldObj> m_players = new();
     private readonly Queue<Action> m_pendingEvents = new();
     private bool m_initialized;
